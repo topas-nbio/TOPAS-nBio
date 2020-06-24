@@ -59,7 +59,7 @@ b:Sc/NumberOfMoleculesAtTime/TimeBinLog = "True"
 s:Sc/NumberOfMoleculesAtTime/OutputType = "ascii" # or root
 s:Sc/NumberOfMoleculesAtTime/OutputFile = "NumberOfMoleculesAtTime_e_750keV"
 
-i:So/Demo/NumberOfHistoriesInRun = 12
+i:So/Demo/NumberOfHistoriesInRun = 4
 i:Ts/ShowHistoryCountAtInterval = 1 
-
+b:Ts/ShowCPUTime = "True"
 i:Ts/Seed = 12345

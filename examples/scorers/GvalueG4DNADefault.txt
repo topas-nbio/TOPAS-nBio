@@ -49,7 +49,7 @@ b:Sc/GValueInTarget/TimeBinLog = "true"
 s:Sc/GValueInTarget/OutputType = "ascii" # or root
 s:Sc/GValueInTarget/OutputFile = "Gvalue_e_750keV"
 
-i:So/Demo/NumberOfHistoriesInRun = 12
+i:So/Demo/NumberOfHistoriesInRun = 10
 i:Ts/ShowHistoryCountAtInterval = 1 
-
+b:Ts/ShowCPUTime = "True"
 i:Ts/Seed = 12345

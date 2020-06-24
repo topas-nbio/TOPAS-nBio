@@ -59,7 +59,7 @@
 
 #include "G4PhysicsConstructorFactory.hh"
 
-#include "TsDNAOneStepThermalizationModel.hh"
+#include "G4DNAOneStepThermalizationModel.hh"
 #include "G4DNAUeharaScreenedRutherfordElasticModel.hh"
 #include "G4DNACPA100ElasticModel.hh"
 #include "G4DNACPA100ExcitationModel.hh"
@@ -476,7 +476,7 @@ void TsEmDNAPhysics::ConstructProcess()
             
             G4DNAElectronSolvation* solvation = new G4DNAElectronSolvation("e-_G4DNAElectronSolvation");
             
-            G4VEmModel* solvationModel = new TsDNAOneStepThermalizationModel();
+            G4VEmModel* solvationModel = new G4DNAOneStepThermalizationModel();
             if ( solvationHighLimit > 0 )
                 solvationModel->SetHighEnergyLimit(solvationHighLimit);
             
