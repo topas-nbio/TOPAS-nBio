@@ -20,6 +20,7 @@
 #include "G4DNAElastic.hh"
 #include "G4DNAChampionElasticModel.hh"
 #include "G4DNAScreenedRutherfordElasticModel.hh"
+#include "G4DNAELSEPAElasticModel.hh"
 
 #include "G4DNAExcitation.hh"
 #include "G4DNAAttachment.hh"
@@ -158,7 +159,13 @@ void TsEmDNAPhysics::ConstructProcess()
                 ph->RegisterProcess(theDNAElasticProcess, particle);
                 solvationHighLimit = 7.4 * eV;
                 
-            } else if ( eScatteringModel == "screenedrutherford" ) {
+			} else if ( eScatteringModel == "elsepa" ) {
+				G4DNAElastic* theDNAElasticProcess = new G4DNAElastic("e-_G4DNAElastic");
+				theDNAElasticProcess->SetEmModel(new G4DNAELSEPAElasticModel());
+				ph->RegisterProcess(theDNAElasticProcess, particle);
+				solvationHighLimit = 7.4 * eV;
+				
+			} else if ( eScatteringModel == "screenedrutherford" ) {
                 G4DNAElastic* theDNAElasticProcess = new G4DNAElastic("e-_G4DNAElastic");
                 theDNAElasticProcess->SetEmModel(new G4DNAScreenedRutherfordElasticModel());
                 ph->RegisterProcess(theDNAElasticProcess, particle);
@@ -456,8 +463,10 @@ void TsEmDNAPhysics::ConstructProcess()
                     }
                 }
             } else {
-                //G4DNAIonisation*
                 G4DNAIonisation* theDNAIonisationProcess = new G4DNAIonisation("e-_G4DNAIonisation");
+				G4DNABornIonisationModel* mod = new G4DNABornIonisationModel();
+				mod->SelectFasterComputation(true);
+				theDNAIonisationProcess->SetEmModel(mod);
                 if ( !useVarianceReduction ) {
                     ph->RegisterProcess(theDNAIonisationProcess, particle);
                 } else {
@@ -521,19 +530,20 @@ void TsEmDNAPhysics::ConstructProcess()
             ph->RegisterProcess(new G4DNAExcitation("proton_G4DNAExcitation"), particle);
             
             G4DNAIonisation* protonIonisationProcess = new G4DNAIonisation("proton_G4DNAIonisation");
-            G4VEmModel* mod1 = new G4DNARuddIonisationModel();
+            G4DNARuddIonisationModel* mod1 = new G4DNARuddIonisationModel();
             mod1->SetLowEnergyLimit(0*eV);
             mod1->SetHighEnergyLimit(500*keV);
-            
-            G4VEmModel* mod2;
+			
+            G4DNABornIonisationModel* mod2;
             mod2= new G4DNABornIonisationModel();
             mod2->SetLowEnergyLimit(500*keV);
             mod2->SetHighEnergyLimit(100*MeV);
+			mod2->SelectFasterComputation(true);
             
-            G4VEmModel* mod3 = new TsDNARuddIonisationExtendedModel();
+            TsDNARuddIonisationExtendedModel* mod3 = new TsDNARuddIonisationExtendedModel();
             mod3->SetLowEnergyLimit(100*MeV);
             mod3->SetHighEnergyLimit(500*MeV);
-            
+			
             protonIonisationProcess->AddEmModel(1, mod1);
             protonIonisationProcess->AddEmModel(2, mod2);
             protonIonisationProcess->AddEmModel(3, mod3);
