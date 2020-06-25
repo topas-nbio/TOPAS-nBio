@@ -1,7 +1,7 @@
 # Setup to help to reproduce time-dependent G-values 
 
 sv:Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry"
-s:Ph/Default/Electron/SetElasticScatteringModel   = "ELSEPA" #"CPA100"
+s:Ph/Default/Electron/SetElasticScatteringModel   = "CPA100"
 
 s:Ch/ChemistryName = "TOPASChemistry"
 
