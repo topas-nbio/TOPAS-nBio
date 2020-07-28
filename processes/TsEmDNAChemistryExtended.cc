@@ -640,7 +640,7 @@ void TsEmDNAChemistryExtended::ConstructProcess()
     G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
     G4VProcess* process = G4ProcessTable::GetProcessTable()->FindProcess("e-_G4DNAVibExcitation", "e-");
     
-    if (process) {
+    if (process != nullptr) {
         G4DNAVibExcitation* vibExcitation = (G4DNAVibExcitation*) process;
         G4VEmModel* model = vibExcitation->EmModel();
         G4DNASancheExcitationModel* sancheExcitationMod =
@@ -651,7 +651,7 @@ void TsEmDNAChemistryExtended::ConstructProcess()
     }
     
     process = G4ProcessTable::GetProcessTable()->FindProcess("e-_G4DNAElectronSolvation", "e-");
-    if ( process ) {
+    if ( process == nullptr ) {
         G4DNAElectronSolvation* solvation = (G4DNAElectronSolvation*)process;
         G4VEmModel* solvationModel = new G4DNAOneStepThermalizationModel();
         solvation->SetEmModel(solvationModel, 0);
