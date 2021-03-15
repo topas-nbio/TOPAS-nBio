@@ -6,8 +6,8 @@ includeFile = TOPASChemistry.txt
 
 b:Ch/TOPASChemistry/ChemicalStageTransportActive     = "True"
 d:Ch/TOPASChemistry/ChemicalStageTimeEnd             = 3.0 ns
-dv:Ch/TOPASChemistry/ChemicalStageTimeStep           = 5 1.0  3.0   10.0   100.0  1000.0  ps 
-dv:Ch/TOPASChemistry/ChemicalStageTimeStepResolution = 5 0.1  1.0   10.0   100.0  1000.0  ps 
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsHighEdges = 5 1.0  3.0   10.0   100.0  1000.0  ps 
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsResolutions = 5 0.1  1.0   10.0   100.0  1000.0  ps 
 
 s:Ch/TOPASChemistry/RemoveInMaterial = "G4_WATER_MODIFIED"
 sv:Ch/TOPASChemistry/RemoveInMaterialTheseMolecules = 7 "solvatedelectron" "hydroxyl" "hydrogenperoxide" "hydrogen"  "hydronium" "dyhydrogen" "hydroxide" 
