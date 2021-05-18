@@ -161,13 +161,13 @@ void TsEmDNAPhysics::ConstructProcess()
                 ph->RegisterProcess(theDNAElasticProcess, particle);
                 solvationHighLimit = 7.4 * eV;
                 
-			} else if ( eScatteringModel == "elsepa" ) {
-				G4DNAElastic* theDNAElasticProcess = new G4DNAElastic("e-_G4DNAElastic");
-				theDNAElasticProcess->SetEmModel(new G4DNAELSEPAElasticModel());
-				ph->RegisterProcess(theDNAElasticProcess, particle);
-				solvationHighLimit = 10.0 * eV;
+            } else if ( eScatteringModel == "elsepa" ) {
+                G4DNAElastic* theDNAElasticProcess = new G4DNAElastic("e-_G4DNAElastic");
+                theDNAElasticProcess->SetEmModel(new G4DNAELSEPAElasticModel());
+                ph->RegisterProcess(theDNAElasticProcess, particle);
+                solvationHighLimit = 10.0 * eV;
 				
-			} else if ( eScatteringModel == "screenedrutherford" ) {
+            } else if ( eScatteringModel == "screenedrutherford" ) {
                 G4DNAElastic* theDNAElasticProcess = new G4DNAElastic("e-_G4DNAElastic");
                 theDNAElasticProcess->SetEmModel(new G4DNAScreenedRutherfordElasticModel());
                 ph->RegisterProcess(theDNAElasticProcess, particle);
