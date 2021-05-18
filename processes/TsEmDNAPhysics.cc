@@ -20,7 +20,7 @@
 #include "G4DNAElastic.hh"
 #include "G4DNAChampionElasticModel.hh"
 #include "G4DNAScreenedRutherfordElasticModel.hh"
-//#include "G4DNAELSEPAElasticModel.hh"
+#include "G4DNAELSEPAElasticModel.hh"
 
 #include "G4DNAExcitation.hh"
 #include "G4DNAAttachment.hh"
@@ -91,6 +91,7 @@ TsEmDNAPhysics::TsEmDNAPhysics(G4int ver, const G4String&)
     param->SetAuger(true);
     param->SetAugerCascade(true);
     param->SetDeexcitationIgnoreCut(true);
+    param->ActivateDNA();
     SetPhysicsType(bElectromagnetic);
 }
 
@@ -104,6 +105,7 @@ TsEmDNAPhysics::TsEmDNAPhysics(TsParameterManager* pM)
     param->SetAuger(true);
     param->SetAugerCascade(true);
     param->SetDeexcitationIgnoreCut(true);
+    param->ActivateDNA();
     SetPhysicsType(bElectromagnetic);
 }
 
@@ -159,7 +161,13 @@ void TsEmDNAPhysics::ConstructProcess()
                 ph->RegisterProcess(theDNAElasticProcess, particle);
                 solvationHighLimit = 7.4 * eV;
                 
-	    } else if ( eScatteringModel == "screenedrutherford" ) {
+            } else if ( eScatteringModel == "elsepa" ) {
+                G4DNAElastic* theDNAElasticProcess = new G4DNAElastic("e-_G4DNAElastic");
+                theDNAElasticProcess->SetEmModel(new G4DNAELSEPAElasticModel());
+                ph->RegisterProcess(theDNAElasticProcess, particle);
+                solvationHighLimit = 10.0 * eV;
+				
+            } else if ( eScatteringModel == "screenedrutherford" ) {
                 G4DNAElastic* theDNAElasticProcess = new G4DNAElastic("e-_G4DNAElastic");
                 theDNAElasticProcess->SetEmModel(new G4DNAScreenedRutherfordElasticModel());
                 ph->RegisterProcess(theDNAElasticProcess, particle);
