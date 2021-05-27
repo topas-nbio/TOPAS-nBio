@@ -26,6 +26,7 @@ public:
 	
 	G4VPhysicalVolume* Construct();
 	void SetBasicInfo();
+	void UpdateForNewRun(G4bool force);
 	
 private:
 	G4LogicalVolume* ConstructFiberLogicalVolume();
@@ -82,6 +83,7 @@ private:
 	G4String fDNAModel;
 	G4bool fShowNucleus, fShowDNAVoxels, fShowChromatinCylinders;
 	G4int fNumberOfBasePairs;
+	G4bool fRotateNucleusForEachRun;
 
 	//ParameterisationInfo
 	TsVoxelParameterisation* param;

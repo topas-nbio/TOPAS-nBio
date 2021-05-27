@@ -9,7 +9,7 @@
 // *																  *
 // ********************************************************************
 //
-// Authors: Hongyu Zhu, Nicholas Henthorn, Alexander Klapproth, Jan Schuemann
+// Authors: Hongyu Zhu, Nicholas Henthorn, Alexander Klapproth, Jan Schuemann, Alejandro Bertolet
 
 // This class creates either single histones, chromatin fibers, voxels filled with DNA 
 // or even a whole nucleus. The DNA is arranged in:
@@ -50,6 +50,8 @@
 #include "G4RotationMatrix.hh"
 #include "G4VisAttributes.hh"
 #include "G4UIcommand.hh"
+
+#include "G4RandomDirection.hh"
 
 #include <fstream>
 #include <sstream>
@@ -142,6 +144,9 @@ G4VPhysicalVolume* TsNucleus::Construct()
 	if (!(fDNAModel=="HalfCylinder" || fDNAModel=="Sphere" || fDNAModel=="QuarterCylinder"))
 		G4cerr << "Trying to build DNA with undefined value" << fDNAModel << G4endl;
 
+	fRotateNucleusForEachRun = false;
+	if (fPm->ParameterExists(GetFullParmName("RotateNucleusForEachRun")))
+		fRotateNucleusForEachRun = fPm->GetBooleanParameter(GetFullParmName("RotateNucleusForEachRun"));
 
 	// Not using this feature anymore
 	/*fScoreOnBases = true;
@@ -734,8 +739,7 @@ void TsNucleus::SetDNAVolumes(G4bool BuildHalfCyl,
 	}
 }
 
-
-//generate a path for DNA around the histones
+// Generate a path for DNA around the histones
 void TsNucleus::GenerateDNAPath(vector<pair<G4ThreeVector, G4RotationMatrix*>> &HistoneDetails,
 							  vector<G4ThreeVector> &path)
 {
@@ -821,8 +825,7 @@ void TsNucleus::GenerateDNAPath(vector<pair<G4ThreeVector, G4RotationMatrix*>> &
 	}
 }
 
-
-//Bezier curve to smoothly join 2 points (bending through 2 other points)
+// Bezier curve to smoothly join 2 points (bending through 2 other points)
 void TsNucleus::Bezier(G4ThreeVector &start,
 					 G4ThreeVector &MidPoint1,
 					 G4ThreeVector &MidPoint2,
@@ -839,8 +842,7 @@ void TsNucleus::Bezier(G4ThreeVector &start,
 	}
 }
 
-
-//split the DNA path into 0.34nm steps
+// Split the DNA path into 0.34nm steps
 void TsNucleus::SegmentDNAPath(std::vector<G4ThreeVector> &path)
 {
 	std::vector<G4ThreeVector> newPath;
@@ -862,8 +864,7 @@ void TsNucleus::SegmentDNAPath(std::vector<G4ThreeVector> &path)
 	}
 }
 
-
-//use DNA path to place sphere DNA volumes
+// Use DNA path to place sphere DNA volumes
 void TsNucleus::PlaceDNASphere(vector<G4ThreeVector> &newPath)
 {
 	G4double helixRadius = 1.0*nm;
@@ -938,16 +939,15 @@ void TsNucleus::PlaceDNASphere(vector<G4ThreeVector> &newPath)
 	fFiberDNAContent = (G4double)nBP;
 }
 
-//rotate a 3vector by a rot matrix and return new coordinates
+// Rotate a 3vector by a rot matrix and return new coordinates
 void TsNucleus::ApplyRotation(G4ThreeVector &rotated, G4ThreeVector &vector, G4RotationMatrix *rot)
 {
 	rotated[0] = vector[0]*rot->xx() + vector[1]*rot->yx() + vector[2]*rot->zx();
 	rotated[1] = vector[0]*rot->xy() + vector[1]*rot->yy() + vector[2]*rot->zy();
 	rotated[2] = vector[0]*rot->xz() + vector[1]*rot->yz() + vector[2]*rot->zz();
-
 }
 
-//Use DNA path to place halfCyl or quartCyl DNA volumes
+// Use DNA path to place halfCyl or quartCyl DNA volumes
 void TsNucleus::PlaceDNA(vector<G4ThreeVector> &newPath)
 {
 	G4double rotPair = ((2.0*pi)/10.0);   //10bp per turn
@@ -1010,3 +1010,19 @@ void TsNucleus::PlaceDNA(vector<G4ThreeVector> &newPath)
 	fFiberDNAContent = (G4double)nBP;
 }
 
+void TsNucleus::UpdateForNewRun(G4bool force = true)
+{
+	G4cout << "TsVGeometryComponent::UpdateForNewRun called for component: " << GetNameWithCopyId() << " - nucleus rotated." << G4endl;
+	if (fRotateNucleusForEachRun)
+	{
+		// Generate random numbers to rotate the nucleus for each run
+		G4RotationMatrix* newRotation = new G4RotationMatrix();
+		G4double rotX = G4UniformRand() * 2 * CLHEP::pi;
+		G4double rotY = G4UniformRand() * 2 * CLHEP::pi;
+		G4double rotZ = G4UniformRand() * 2 * CLHEP::pi;
+		newRotation->rotateX(rotX);
+		newRotation->rotateX(rotY);
+		newRotation->rotateX(rotZ);
+		fEnvelopePhys->SetRotation(newRotation);
+	}
+}
