@@ -134,6 +134,7 @@ private:
 	G4bool		fScoreIndirectDamages;
 	G4bool		fMinimalSDD;
 	G4bool		fWriteCSV;
+	G4bool		fFirstRun;
 
 	G4String 	fOutputFile;
 	G4String	fOutputMode;

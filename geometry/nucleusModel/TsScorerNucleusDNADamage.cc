@@ -607,6 +607,9 @@ void TsScorerNucleusDNADamage::UserHookForEndOfRun()
 		fNtuple->Fill();
 	}
 	fDefineDamage->UpdateDamageAndPrimaryCount(distinctLesions, HitsOfEvents.size());
+	HitsOfEvents.clear();
+	eventsEdep.clear();
+	eventsLength.clear();
 }
 
 G4int TsScorerNucleusDNADamage::Analyze(vector<TsHitsRecord*> hits, G4int eventID)

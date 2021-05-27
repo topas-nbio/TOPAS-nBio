@@ -32,6 +32,8 @@ TsDefineDamage::TsDefineDamage()
 	fScoreOnBackbones = true;
 	fScoreOnHydrationShell = true;
 
+	fFirstRun = true;
+
 	fEdep 			= 0;
 	fLET  			= 0;
 	fZetaBeta_sq 	= 0;
@@ -774,8 +776,11 @@ void TsDefineDamage::WriteDNADamageCSV()
 	G4String damFileName = fOutputFile + "_full.csv";
 	fstream fout;
 	// Creates a new file, appending results
-	if (fOutputMode == "overwrite")
+	if (fOutputMode == "overwrite" && fFirstRun)
+	{
 		fout.open(damFileName, ios::out | ios::trunc);
+		fFirstRun = false;
+	}
 	else
 		fout.open(damFileName, ios::out | ios::app);
 	// Insert headers
