@@ -27,13 +27,13 @@ s:Ge/Nucleus/HydrationShell2/Material   = "G4_WATER_MODIFIED"
 
 # Type DNA - Nucleus
 #s:Ge/Nucleus/DNABasicElement			= "ChromatinFiber"
-#s:Ge/Nucleus/ChromatinFiber/Material    = "G4_WATER"
-#i:Ge/Nucleus/HilbertCurveLayer          = 4
-#i:Ge/Nucleus/HilbertCurve3DRepeat       = 30
-#s:Ge/Nucleus/HilbertCurveFileName       = "supportFiles/HilbertPoints_iteration1.dat"
-#s:Ge/Nucleus/Voxel/Material             = "G4_WATER"
-#b:Ge/Nucleus/ShowDNAVoxels              = "false"
-#b:Ge/Nucleus/ShowChromatinCylinders     = "false"
+s:Ge/Nucleus/ChromatinFiber/Material    = "G4_WATER"
+i:Ge/Nucleus/HilbertCurveLayer          = 4
+i:Ge/Nucleus/HilbertCurve3DRepeat       = 30
+s:Ge/Nucleus/HilbertCurveFileName       = "supportFiles/HilbertPoints_iteration1.dat"
+s:Ge/Nucleus/Voxel/Material             = "G4_WATER"
+b:Ge/Nucleus/ShowDNAVoxels              = "false"
+b:Ge/Nucleus/ShowChromatinCylinders     = "false"
 
 # Type DNA - Linear plasmid
 s:Ge/Nucleus/DNABasicElement			= "LinearPlasmid"

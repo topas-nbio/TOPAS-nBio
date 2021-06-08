@@ -337,7 +337,6 @@ G4VPhysicalVolume* TsNucleus::Construct()
 
 		G4double basePairsInVoxel = fNumberOfBasePairs * CountFibers;
 		CreatePhysicalVolume("DNAContent", voxel_logic, fEnvelopePhys, kXAxis, fnVoxels, param);
-		InstantiateChildren(fEnvelopePhys);
 		G4cout << "Number of fibers: " << CountFibers <<  " - Number of base pairs in a voxel: " << basePairsInVoxel << " - Number of voxels: " << fnVoxels << G4endl;
 		fNumberOfBasePairs = basePairsInVoxel * fnVoxels;
 		G4cout << "DNA Construction done. Number of total base pairs: " << fNumberOfBasePairs << G4endl;
@@ -428,6 +427,7 @@ G4VPhysicalVolume* TsNucleus::Construct()
 		newRotation->rotateX(rotZ);
 		fEnvelopePhys->SetRotation(newRotation);
 	}
+	InstantiateChildren(fEnvelopePhys);
 	return fEnvelopePhys;
 }
 
