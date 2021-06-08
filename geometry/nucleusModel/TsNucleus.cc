@@ -413,6 +413,7 @@ G4VPhysicalVolume* TsNucleus::Construct()
 				}
 			}
 		}
+		G4cout << "DNA built. " << coordinates.size() << " plasmids of " << fFiberDNAContent << " bp each." << G4endl;
 	}
 
 	if (fRotateNucleusForEachRun)
@@ -995,16 +996,23 @@ void TsNucleus::PlaceDNASphere(vector<G4ThreeVector> &newPath, G4VPhysicalVolume
 		//set up new 3Vectors for rotated pos
 		G4ThreeVector back1(0.,0.,0.), back2(0.,0.,0.), base1(0.,0.,0.), base2(0.,0.,0.), hydration1(0.,0.,0.), hydration2(0.,0.,0.);
 
-		//Apply rotation
 		G4RotationMatrix *rot = new G4RotationMatrix;
-		rot->rotate(AngBetween, cross);
-
-		ApplyRotation(back1, back1temp, rot);
-		ApplyRotation(back2, back2temp, rot);
-		ApplyRotation(base1, base1temp, rot);
-		ApplyRotation(base2, base2temp, rot);
-		delete rot;
-
+		if (cross.x() != 0 || cross.y() != 0 || cross.z() != 0)
+		{
+			//Apply rotation
+			rot->rotate(AngBetween, cross);
+			ApplyRotation(back1, back1temp, rot);
+			ApplyRotation(back2, back2temp, rot);
+			ApplyRotation(base1, base1temp, rot);
+			ApplyRotation(base2, base2temp, rot);
+		}
+		else
+		{
+			base1 = base1temp;
+			base2 = base2temp;
+			back1 = back1temp;
+			back2 = back2temp;
+		}
 		//Translate
 		base1+=newPath[bp];
 		base2+=newPath[bp];
@@ -1012,7 +1020,6 @@ void TsNucleus::PlaceDNASphere(vector<G4ThreeVector> &newPath, G4VPhysicalVolume
 		back2+=newPath[bp];
 		hydration1+=newPath[bp];
 		hydration2+=newPath[bp];
-
 		G4int bpID=bp+1;
 
 		if(fAddBases) {
@@ -1096,7 +1103,8 @@ void TsNucleus::PlaceDNA(vector<G4ThreeVector> &newPath, G4VPhysicalVolume* phys
 
 		//Apply rotation
 		G4RotationMatrix *rot1 = new G4RotationMatrix(); 
-		rot1->rotate(AngBetween, cross);  // this causes a strange behavior when AngBetween close to pi, to be resolved ... easiest to see by setting angle1 = 0.
+		if (cross.x() != 0 || cross.y() != 0 || cross.z() != 0)
+			rot1->rotate(AngBetween, cross);  // this causes a strange behavior when AngBetween close to pi, to be resolved ... easiest to see by setting angle1 = 0.
 		rot1->rotateZ(angle1);
 
 		//Translate
@@ -1323,7 +1331,7 @@ G4LogicalVolume* TsNucleus::SetLinearPlasmid(std::vector<G4ThreeVector> &path, v
 	G4double gXMax = 0.0, gYMax = 0.0, gZMax = 0.0;
 	G4double xmin = 0.0, ymin = 0.0;
 
-	G4int nSteps = (int)(maxLengthInsideSphere/dz);
+	G4int nSteps = (int)((maxLengthInsideSphere-2.3*nm)/dz);
 
 	for (int k = 0; k < nSteps; k++)
 		path.push_back(G4ThreeVector(0, 0, zmin+k*dz));

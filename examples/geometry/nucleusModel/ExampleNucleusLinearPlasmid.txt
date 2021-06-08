@@ -1,8 +1,8 @@
 # -- Geometry
 # World
-d:Ge/World/HLX                          = 7.0 um
-d:Ge/World/HLY                          = 7.0 um
-d:Ge/World/HLZ                          = 7.0 um
+d:Ge/World/HLX                          = 0.75 um
+d:Ge/World/HLY                          = 0.75 um
+d:Ge/World/HLZ                          = 0.75 um
 b:Ge/World/Invisible                    = "true"
 s:Ge/World/Material                     = "G4_WATER"
 
@@ -11,7 +11,7 @@ s:Ge/Nucleus/Type                       = "TsNucleus"
 s:Ge/Nucleus/Parent                     = "World"
 s:Ge/Nucleus/Material                   = "G4_WATER"
 s:Ge/Nucleus/Color                      = "White"
-d:Ge/Nucleus/NucleusRadius              = 0.5 um
+d:Ge/Nucleus/NucleusRadius              = 0.25 um
 s:Ge/Nucleus/Histone/Material           = "G4_HistoneMaterial"
 b:Ge/Nucleus/OnlyBuildOneHistone        = "false"
 b:Ge/Nucleus/HistoneAsScavenger         = "true"
@@ -24,6 +24,7 @@ s:Ge/Nucleus/Backbone2/Material         = "G4_BackboneMaterial"
 b:Ge/Nucleus/AddHydrationShell          = "true"
 s:Ge/Nucleus/HydrationShell1/Material   = "G4_WATER_MODIFIED"
 s:Ge/Nucleus/HydrationShell2/Material   = "G4_WATER_MODIFIED"
+s:Ge/Nucleus/DNAModel					= "Sphere"
 
 # Type DNA - Nucleus
 #s:Ge/Nucleus/DNABasicElement			= "ChromatinFiber"
@@ -34,14 +35,20 @@ s:Ge/Nucleus/HilbertCurveFileName       = "supportFiles/HilbertPoints_iteration1
 s:Ge/Nucleus/Voxel/Material             = "G4_WATER"
 b:Ge/Nucleus/ShowDNAVoxels              = "false"
 b:Ge/Nucleus/ShowChromatinCylinders     = "false"
+b:Ge/CheckForUnusedComponents			= "false"
+# Info about nucleus geometry for scorer
+#s:Sc/DNAScorer/GeometryInfo                            = "supportFiles/Geoinfo.txt"
+#s:Sc/DNAScorer/CopyNoTable                             = "supportFiles/CopyNoTable.txt"
+#s:Sc/DNAScorer/signedCHVoxel                           = "supportFiles/signedCHVoxel.txt"
+
 
 # Type DNA - Linear plasmid
 s:Ge/Nucleus/DNABasicElement			= "LinearPlasmid"
 s:Ge/Nucleus/Plasmid/Material    		= "G4_WATER"
 i:Ge/Nucleus/NumberOfPlasmidsStart 		= 21
-i:Ge/Nucleus/MaximumNumberOfPlasmids 	= 62
-d:Ge/Nucleus/PlasmidSeparationX 		= 2.8 nm
-d:Ge/Nucleus/PlasmidSeparationY 		= 2.8 nm
+i:Ge/Nucleus/MaximumNumberOfPlasmids 	= 65
+d:Ge/Nucleus/PlasmidSeparationX 		= 10.8 nm
+d:Ge/Nucleus/PlasmidSeparationY 		= 10.8 nm
 
 # -- Materials
 s:Ma/G4_HistoneMaterial/CloneFromMaterial   = "G4_WATER"
@@ -66,7 +73,7 @@ s:So/ParticleGun/Type                               = "Beam"
 s:So/ParticleGun/Component                          = "BeamPosition"
 d:Ge/BeamPosition/TransX                            = 0. um
 d:Ge/BeamPosition/TransY                            = 0. um
-d:Ge/BeamPosition/TransZ                            = 5. um
+d:Ge/BeamPosition/TransZ                            = 0.25 um
 s:So/ParticleGun/BeamParticle                       = "proton"
 #s:So/ParticleGun/BeamPositionDistribution           = "none"					# EITHER single track position
 s:So/ParticleGun/BeamPositionDistribution			= "Flat"					# OR 	 disk source
@@ -116,11 +123,6 @@ i:Sc/DNAScorer/BasePairPositionAtGeometricHierarchy     = 0
 sv:Sc/DNAScorer/Strand1MaterialNames                    = 4 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial" "G4_HistoneMaterial"
 sv:Sc/DNAScorer/Strand2MaterialNames                    = 3 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial"
 
-# Info about nucleus geometry for scorer
-s:Sc/DNAScorer/GeometryInfo                            = "supportFiles/Geoinfo.txt"
-s:Sc/DNAScorer/CopyNoTable                             = "supportFiles/CopyNoTable.txt"
-s:Sc/DNAScorer/signedCHVoxel                           = "supportFiles/signedCHVoxel.txt"
-
 # SDD header - See Schuemann et al. (2019). A New Standard DNA Damage (SDD) Data Format. Rad Res, 191(1), 76
 s:Sc/DNAScorer/AuthorName							   = "Name"
 s:Sc/DNAScorer/SimulationDetails					   = "Nucleus simulation" 
@@ -140,14 +142,16 @@ s:Sc/DNAScorer/AdditionalInfo					       = ""
 Ts/ShowHistoryCountAtInterval                       = 1
 
 # -- Visualization
-s:Gr/view/Type                          = "OpenGL"
-i:Gr/view/WindowSizeX                   = 800
-i:Gr/view/WindowSizeY                   = 800
-d:Gr/view/Theta                         = 45 deg
-d:Gr/view/Phi                           = 30 deg
-s:Gr/view/ColorBy                       = "ParticleType"
-sv:Gr/view/ColorByParticleTypeNames     = 4 "e-" "alpha" "proton" "neutron"
-sv:Gr/view/ColorByParticleTypeColors    = 4 "green" "red" "blue" "grass"
-s:Gr/view/BackgroundColor               = "White"
+#s:Gr/view/Type             					= "OpenGL"
+#i:Gr/view/WindowSizeX      					= 800
+#i:Gr/view/WindowSizeY      					= 800
+#d:Gr/view/Theta 							= 45 deg
+#d:Gr/view/Phi 								= 30 deg
+#u:Gr/view/Zoom 								= 4
+#s:Gr/view/ColorBy     						= "ParticleType"
+#sv:Gr/view/ColorByParticleTypeNames      	= 4 "e-" "alpha" "proton" "neutron"
+#sv:Gr/view/ColorByParticleTypeColors     	= 4 "green" "red" "blue" "grass"
+#s:Gr/view/BackgroundColor 					= "White"
+#b:Ts/PauseBeforeQuit = "True"
 
 i:Ts/Seed = 2580
