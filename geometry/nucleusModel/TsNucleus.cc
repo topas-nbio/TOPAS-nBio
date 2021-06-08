@@ -344,7 +344,7 @@ G4VPhysicalVolume* TsNucleus::Construct()
 	}
 	else
 	{
-		G4String subcompname = fName + "_plasmid";
+		G4String subcompname = "Plasmid";
 		G4bool BuildHalfCyl = false;
 		G4bool BuildSphere = false;
 		G4bool BuildQuartCyl = false;
@@ -1277,7 +1277,7 @@ G4LogicalVolume* TsNucleus::SetSupercoiledPlasmid(vector<G4ThreeVector> &path, v
 	else
 		newPath = path;
 	path = newPath;
-	G4String subCompName = fName + "_plasmid";
+	G4String subCompName = "Plasmid";
 	G4Box* plasmid = new G4Box(subCompName, 0.5 * dx, 0.5 * dy, 0.5 * dz);
 	return CreateLogicalVolume(subCompName, plasmid);
 }
@@ -1303,7 +1303,7 @@ G4LogicalVolume* TsNucleus::SetSolenoidPlasmid(vector<G4ThreeVector> &coordinate
 			}
 		}
 	}
-	G4String subCompName = fName + "_plasmid";
+	G4String subCompName = "Plasmid";
 	G4Tubs* plasmid = new G4Tubs(subCompName, 0, fFiberRadius, fFiberLength/2, 180.*deg, 360.*deg);
 	return CreateLogicalVolume(subCompName, plasmid);
 }
@@ -1370,9 +1370,9 @@ G4LogicalVolume* TsNucleus::SetLinearPlasmid(std::vector<G4ThreeVector> &path, v
 	G4double HLZ = 0.5 * maxLengthInsideSphere;
 
 	// Plasmids
-	G4String subCompName = fName + "_plasmid";
+	G4String subCompName = "Plasmid";
     G4double delta = 0.0;
 
-	G4Tubs* plasmid = new G4Tubs(fName + "_plasmid", 0.0, 1.15*nm + delta, HLZ, 0.0, 380*deg);
+	G4Tubs* plasmid = new G4Tubs(subCompName, 0.0, 1.15*nm + delta, HLZ, 0.0, 380*deg);
 	return CreateLogicalVolume(subCompName, plasmid);
 }
