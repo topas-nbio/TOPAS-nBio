@@ -32,6 +32,9 @@
 // the general path is segmented in 0.34 nm steps
 // the DNA position and rotation is created and DNA placed
 
+// Jun-2021. This version includes the possibility of using different structures to fill
+// the nucleus and not only chromatin fibers following the Hilbert curve.
+// Addition by Alejandro Bertolet
 
 #include "TsNucleus.hh"
 #include "TsParameterManager.hh"
@@ -76,9 +79,13 @@ G4VPhysicalVolume* TsNucleus::Construct()
 	// Specify the radius of the nucleus
 	fNucleusRadius = fPm->GetDoubleParameter(GetFullParmName("NucleusRadius"),"Length");
 
+	// Specify the type of
+	fDNABasicElement = "ChromatinFiber";
+	if (fPm->ParameterExists(GetFullParmName("DNABasicElement")))
+		fDNABasicElement = fPm->GetStringParameter(GetFullParmName("DNABasicElement"));
+
 	// Specify how many chromatin fiber loops (Hilbert Curve) to put in a voxel
 	fHilbertCurveLayer = fPm->GetIntegerParameter(GetFullParmName("HilbertCurveLayer"));
-  
 	// Specify how many voxels to put in X/Y/Z directions
 	fHilbertCurve3DRepeat = fPm->GetIntegerParameter(GetFullParmName("HilbertCurve3DRepeat"));
 
@@ -165,70 +172,6 @@ G4VPhysicalVolume* TsNucleus::Construct()
 	if (fPm->ParameterExists(GetFullParmName("ScoreOnHistones")))
 		fScoreOnHistones = fPm->GetBooleanParameter(GetFullParmName("ScoreOnHistones"));*/
 
-
-	//****************************************************************************
-	//					 Read  Hilbert space filling  data					//
-	//****************************************************************************
-	const char* filename = HilbertCurveFileName;
-	std::ifstream Hfile(filename, std::ios::in);
-	G4double x, y, z;
- 
-	if (Hfile.is_open()) {
-		while (Hfile >> x >> y >> z){
-			fiberPosX.push_back(x);
-			fiberPosY.push_back(y);
-			fiberPosZ.push_back(z);
-		}
-	}
-	else {
-		G4cout << "ERROR: Unable to open file " << HilbertCurveFileName << G4endl;
-		exit(1);
-	}
-
-	G4int TotalPoints = fiberPosX.size();
-	G4cout << "Number of points " << TotalPoints << G4endl;
-
-	//****************************************************************************
-	//							   Set geometry size						  //
-	//****************************************************************************
-	
-	G4double FiberEnvelopeRadius = fFiberRadius;	//Fiber radius
-	G4double FiberEnvelopeLength = fFiberLength;
-	G4double HilbertPointDistance = 40*nm+FiberEnvelopeLength;
-
-	G4int HilbertFold = 1;
-	if(TotalPoints==8) HilbertFold = 1;
-	else if(TotalPoints==64) HilbertFold = 3;
-	else if(TotalPoints==512) HilbertFold = 7;
-	else if(TotalPoints==4096) HilbertFold = 15;
-	else {
-		G4cerr << "Hilbert folding does not match number available folds." << G4endl;
-		exit(1);
-	}
-
-	fVoxelLength = HilbertPointDistance*HilbertFold + fHilbertCurveLayer*FiberEnvelopeRadius*2 +0.001*um; //add tolerance 0.001 um
-	G4double ParaContainerHalfSize = fVoxelLength*fHilbertCurve3DRepeat/2;
-
-	G4cout<<"*********************************************************************************"<<G4endl;
-	G4cout<<"The Hilbert curve data file name: " << HilbertCurveFileName <<G4endl;
-	G4cout<<"The nuclues was devided into " << fHilbertCurve3DRepeat << " subdomains(voxels) on X/Y/Z diection respectively."<<G4endl;
-	G4cout<<"Voxel size :"<< fVoxelLength/um << " um " <<G4endl;
-	G4cout<<"Voxel container size :"<< ParaContainerHalfSize*2/um<<" um "<<G4endl;
-	G4cout<<"Reuse the Hilbert curve "<<fHilbertCurveLayer<<" times to fill each subdomain(voxels)."<<G4endl;
-	G4cout<<"HiberterPointDistance = "<<HilbertPointDistance/um<<" um"<<G4endl;
-	G4cout<<"*********************************************************************************"<<G4endl;
-
-	//****************************************************************************
-	//								Parameterise							  //
-	//****************************************************************************
-	SetBasicInfo();
-
-	////----- Create parameterisation and set
-	param = new TsVoxelParameterisation();
-	param->SetVoxelDimensions( fVoxelLength/2, fVoxelLength/2, fVoxelLength/2 ); 
-	param->SetNoVoxel( fHilbertCurve3DRepeat, fHilbertCurve3DRepeat, fHilbertCurve3DRepeat ); 
-	param->SetContainerDimensions(ParaContainerHalfSize, ParaContainerHalfSize, ParaContainerHalfSize);
-
 	//****************************************************************************
 	//							 Build basic geometry						 //
 	//****************************************************************************
@@ -241,99 +184,238 @@ G4VPhysicalVolume* TsNucleus::Construct()
 	Vis->SetVisibility(fShowNucleus);
 	fEnvelopeLog->SetVisAttributes(Vis);
 
+	if (fDNABasicElement == "ChromatinFiber")
+	{
+		//****************************************************************************
+		//					 Read  Hilbert space filling  data					//
+		//****************************************************************************
+		const char* filename = HilbertCurveFileName;
+		std::ifstream Hfile(filename, std::ios::in);
+		G4double x, y, z;
+
+		if (Hfile.is_open()) {
+			while (Hfile >> x >> y >> z){
+				fiberPosX.push_back(x);
+				fiberPosY.push_back(y);
+				fiberPosZ.push_back(z);
+			}
+		}
+		else {
+			G4cout << "ERROR: Unable to open file " << HilbertCurveFileName << G4endl;
+			exit(1);
+		}
+
+		G4int TotalPoints = fiberPosX.size();
+		G4cout << "Number of points " << TotalPoints << G4endl;
 	
-	// Fiber Envelope
-	G4double length = std::sqrt( pow(fiberPosX[2]-fiberPosX[1],2) + pow(fiberPosY[2]-fiberPosY[1],2) + pow(fiberPosZ[2]-fiberPosZ[1],2));
-	G4double scaleFactor = HilbertPointDistance/length; // scaleFactor used to get fiber lengths
-	length = scaleFactor*length;
+		//****************************************************************************
+		//							   Set geometry size						  //
+		//****************************************************************************
 
-	fNumberOfBasePairs = 0;
-	// Logic volume of fiber
-	fFiberLogic = ConstructFiberLogicalVolume();
-//	G4VisAttributes* FiberEnvelopeVis = new G4VisAttributes( blue ); //
-//	FiberEnvelopeVis->SetVisibility(true);
-//	FiberEnvelopeVis->SetForceWireframe(true);
-//	FiberEnvelopeVis->SetForceAuxEdgeVisible(true);
-//	fFiberLogic->SetVisAttributes(FiberEnvelopeVis);
+		G4double FiberEnvelopeRadius = fFiberRadius;	//Fiber radius
+		G4double FiberEnvelopeLength = fFiberLength;
+		G4double HilbertPointDistance = 40*nm+FiberEnvelopeLength;
 
-	//****************************************************************************
-	//					   Build Hilbert loop geometry						//
-	//****************************************************************************
-	G4int maxSize = fHilbertCurveLayer*TotalPoints*(G4int)pow(fHilbertCurve3DRepeat,3);
-	fFiberPhysVolLoop.resize(maxSize);
+		G4int HilbertFold = 1;
+		if(TotalPoints==8) HilbertFold = 1;
+		else if(TotalPoints==64) HilbertFold = 3;
+		else if(TotalPoints==512) HilbertFold = 7;
+		else if(TotalPoints==4096) HilbertFold = 15;
+		else {
+			G4cerr << "Hilbert folding does not match number available folds." << G4endl;
+			exit(1);
+		}
 
-	//----- Define voxel logical volume
-	G4String voxName = "Voxel";
-	G4Box		   * voxel_solid = new G4Box( voxName, fVoxelHalfDimX, fVoxelHalfDimY, fVoxelHalfDimZ);
-	G4LogicalVolume * voxel_logic = CreateLogicalVolume(voxel_solid); 
-	G4Colour  yellow  (1.0, 1.0, 0.0) ;
-	G4VisAttributes* voxelVis = new G4VisAttributes( yellow ); //
-	voxelVis->SetVisibility(fShowDNAVoxels);
-	voxelVis->SetForceWireframe(true);
-	voxelVis->SetForceAuxEdgeVisible(true);
-	voxel_logic->SetVisAttributes(voxelVis);
+		fVoxelLength = HilbertPointDistance*HilbertFold + fHilbertCurveLayer*FiberEnvelopeRadius*2 +0.001*um; //add tolerance 0.001 um
+		G4double ParaContainerHalfSize = fVoxelLength*fHilbertCurve3DRepeat/2;
 
-	G4int CountFibers = 0;
-	G4double xshift = -FiberEnvelopeRadius*(fHilbertCurveLayer-1);
-	G4double yshift = -FiberEnvelopeRadius*(fHilbertCurveLayer-1);
-	G4double zshift = -FiberEnvelopeRadius*(fHilbertCurveLayer-1);
+		G4cout<<"*********************************************************************************"<<G4endl;
+		G4cout<<"The Hilbert curve data file name: " << HilbertCurveFileName <<G4endl;
+		G4cout<<"The nuclues was devided into " << fHilbertCurve3DRepeat << " subdomains(voxels) on X/Y/Z diection respectively."<<G4endl;
+		G4cout<<"Voxel size :"<< fVoxelLength/um << " um " <<G4endl;
+		G4cout<<"Voxel container size :"<< ParaContainerHalfSize*2/um<<" um "<<G4endl;
+		G4cout<<"Reuse the Hilbert curve "<<fHilbertCurveLayer<<" times to fill each subdomain(voxels)."<<G4endl;
+		G4cout<<"HiberterPointDistance = "<<HilbertPointDistance/um<<" um"<<G4endl;
+		G4cout<<"*********************************************************************************"<<G4endl;
 
-	for (G4int jj = 0; jj < fHilbertCurveLayer; jj++)
-	{		
-		G4int max_loopthelayer = fiberPosX.size();
-		if (fOnlyBuildOneHistone)
-			max_loopthelayer = 2;
-		for (G4int loopthelayer = 1; loopthelayer < max_loopthelayer; loopthelayer++) 
+		//****************************************************************************
+		//								Parameterise							  //
+		//****************************************************************************
+		SetBasicInfo();
+
+		////----- Create parameterisation and set
+		param = new TsVoxelParameterisation();
+		param->SetVoxelDimensions( fVoxelLength/2, fVoxelLength/2, fVoxelLength/2 );
+		param->SetNoVoxel( fHilbertCurve3DRepeat, fHilbertCurve3DRepeat, fHilbertCurve3DRepeat );
+		param->SetContainerDimensions(ParaContainerHalfSize, ParaContainerHalfSize, ParaContainerHalfSize);
+
+		// Fiber Envelope
+		G4double length = std::sqrt( pow(fiberPosX[2]-fiberPosX[1],2) + pow(fiberPosY[2]-fiberPosY[1],2) + pow(fiberPosZ[2]-fiberPosZ[1],2));
+		G4double scaleFactor = HilbertPointDistance/length; // scaleFactor used to get fiber lengths
+		length = scaleFactor*length;
+
+		fNumberOfBasePairs = 0;
+		// Logic volume of fiber
+		fFiberLogic = ConstructFiberLogicalVolume();
+	//	G4VisAttributes* FiberEnvelopeVis = new G4VisAttributes( blue ); //
+	//	FiberEnvelopeVis->SetVisibility(true);
+	//	FiberEnvelopeVis->SetForceWireframe(true);
+	//	FiberEnvelopeVis->SetForceAuxEdgeVisible(true);
+	//	fFiberLogic->SetVisAttributes(FiberEnvelopeVis);
+
+		//****************************************************************************
+		//					   Build Hilbert loop geometry						//
+		//****************************************************************************
+		G4int maxSize = fHilbertCurveLayer*TotalPoints*(G4int)pow(fHilbertCurve3DRepeat,3);
+		fFiberPhysVolLoop.resize(maxSize);
+
+		//----- Define voxel logical volume
+		G4String voxName = "Voxel";
+		G4Box		   * voxel_solid = new G4Box( voxName, fVoxelHalfDimX, fVoxelHalfDimY, fVoxelHalfDimZ);
+		G4LogicalVolume * voxel_logic = CreateLogicalVolume(voxel_solid);
+		G4Colour  yellow  (1.0, 1.0, 0.0) ;
+		G4VisAttributes* voxelVis = new G4VisAttributes( yellow ); //
+		voxelVis->SetVisibility(fShowDNAVoxels);
+		voxelVis->SetForceWireframe(true);
+		voxelVis->SetForceAuxEdgeVisible(true);
+		voxel_logic->SetVisAttributes(voxelVis);
+
+		G4int CountFibers = 0;
+		G4double xshift = -FiberEnvelopeRadius*(fHilbertCurveLayer-1);
+		G4double yshift = -FiberEnvelopeRadius*(fHilbertCurveLayer-1);
+		G4double zshift = -FiberEnvelopeRadius*(fHilbertCurveLayer-1);
+	
+		for (G4int jj = 0; jj < fHilbertCurveLayer; jj++)
 		{
-			G4double layershift = FiberEnvelopeRadius*2.01;
-			G4int i=0;
-			if(jj%2==0) i= loopthelayer;
-			if(jj%2==1) i= max_loopthelayer-loopthelayer; 
-	
-			G4double midpoint_x = jj*layershift + xshift + (fiberPosX[i]+fiberPosX[i-1])/2*scaleFactor;
-			G4double midpoint_y = jj*layershift + yshift + (fiberPosY[i]+fiberPosY[i-1])/2*scaleFactor;
-			G4double midpoint_z = jj*layershift + zshift + (fiberPosZ[i]+fiberPosZ[i-1])/2*scaleFactor;
-			G4ThreeVector* midpoint  = new G4ThreeVector(midpoint_x,midpoint_y,midpoint_z);
-			G4ThreeVector direction = G4ThreeVector(fiberPosX[i]-fiberPosX[i-1],fiberPosY[i]-fiberPosY[i-1],fiberPosZ[i]-fiberPosZ[i-1]);
-			G4RotationMatrix* rotLoop = new G4RotationMatrix();
-			if ((direction.x() == 0) && (direction.y() == 0)) rotLoop->rotateZ(0*deg);
-			else if ((direction.y() == 0) && (direction.z() == 0)) rotLoop->rotateY(90*deg); //rotate along x
-			else if ((direction.x() == 0) && (direction.z() == 0)) rotLoop->rotateX(90*deg);
-			else G4cout << "Two consecutive Hilbert paths have the same direction." << G4endl;
-
-			G4String volumeName = "FiberCylinder"+G4UIcommand::ConvertToString(CountFibers);
-
-			fFiberPhysVolLoop[CountFibers] = CreatePhysicalVolume(
-														volumeName,	 //name
-														CountFibers,	//copy number
-														true,		   //use logical volume multiple times many
-														fFiberLogic,	 //logical volume
-														rotLoop,		// rotation
-														midpoint,	   //translation 
-														voxel_logic);   // mother logical volume
-			
-			if(fCheckOverlap)
+			G4int max_loopthelayer = fiberPosX.size();
+			if (fOnlyBuildOneHistone)
+				max_loopthelayer = 2;
+			for (G4int loopthelayer = 1; loopthelayer < max_loopthelayer; loopthelayer++)
 			{
-				G4cout<<"checking CountFibers="<<CountFibers<<G4endl;
-				if( fFiberPhysVolLoop[CountFibers]->CheckOverlaps(1000, 0, false)) 
+				G4double layershift = FiberEnvelopeRadius*2.01;
+				G4int i=0;
+				if(jj%2==0) i= loopthelayer;
+				if(jj%2==1) i= max_loopthelayer-loopthelayer;
+
+				G4double midpoint_x = jj*layershift + xshift + (fiberPosX[i]+fiberPosX[i-1])/2*scaleFactor;
+				G4double midpoint_y = jj*layershift + yshift + (fiberPosY[i]+fiberPosY[i-1])/2*scaleFactor;
+				G4double midpoint_z = jj*layershift + zshift + (fiberPosZ[i]+fiberPosZ[i-1])/2*scaleFactor;
+				G4ThreeVector* midpoint  = new G4ThreeVector(midpoint_x,midpoint_y,midpoint_z);
+				G4ThreeVector direction = G4ThreeVector(fiberPosX[i]-fiberPosX[i-1],fiberPosY[i]-fiberPosY[i-1],fiberPosZ[i]-fiberPosZ[i-1]);
+				G4RotationMatrix* rotLoop = new G4RotationMatrix();
+				if ((direction.x() == 0) && (direction.y() == 0)) rotLoop->rotateZ(0*deg);
+				else if ((direction.y() == 0) && (direction.z() == 0)) rotLoop->rotateY(90*deg); //rotate along x
+				else if ((direction.x() == 0) && (direction.z() == 0)) rotLoop->rotateX(90*deg);
+				else G4cout << "Two consecutive Hilbert paths have the same direction." << G4endl;
+
+				G4String volumeName = "FiberCylinder"+G4UIcommand::ConvertToString(CountFibers);
+
+				fFiberPhysVolLoop[CountFibers] = CreatePhysicalVolume(
+															volumeName,	 //name
+															CountFibers,	//copy number
+															true,		   //use logical volume multiple times many
+															fFiberLogic,	 //logical volume
+															rotLoop,		// rotation
+															midpoint,	   //translation
+															voxel_logic);   // mother logical volume
+
+				if(fCheckOverlap)
 				{
-					ofstream outfile;
-					outfile.open("overlap.txt",std::ios::out|std::ios::app);
-					outfile<<"In "<<" th subdomain "<<jj+1<<" th layer "<<CountFibers<<" th volume detected overlap\n";
-					outfile.close(); 
-					G4cout << "Detected Overlap, see file overlap.txt for more details." << G4endl;
+					G4cout<<"checking CountFibers="<<CountFibers<<G4endl;
+					if( fFiberPhysVolLoop[CountFibers]->CheckOverlaps(1000, 0, false))
+					{
+						ofstream outfile;
+						outfile.open("overlap.txt",std::ios::out|std::ios::app);
+						outfile<<"In "<<" th subdomain "<<jj+1<<" th layer "<<CountFibers<<" th volume detected overlap\n";
+						outfile.close();
+						G4cout << "Detected Overlap, see file overlap.txt for more details." << G4endl;
+					}
+				}
+				CountFibers++;
+			}
+		}
+
+		G4double basePairsInVoxel = fNumberOfBasePairs * CountFibers;
+		CreatePhysicalVolume("DNAContent", voxel_logic, fEnvelopePhys, kXAxis, fnVoxels, param);
+		InstantiateChildren(fEnvelopePhys);
+		G4cout << "Number of fibers: " << CountFibers <<  " - Number of base pairs in a voxel: " << basePairsInVoxel << " - Number of voxels: " << fnVoxels << G4endl;
+		fNumberOfBasePairs = basePairsInVoxel * fnVoxels;
+		G4cout << "DNA Construction done. Number of total base pairs: " << fNumberOfBasePairs << G4endl;
+	}
+	else
+	{
+		G4String subcompname = fName + "_plasmid";
+		G4bool BuildHalfCyl = false;
+		G4bool BuildSphere = false;
+		G4bool BuildQuartCyl = false;
+		if (fDNAModel=="HalfCylinder")
+			BuildHalfCyl=true;
+		else if (fDNAModel=="Sphere")
+			BuildSphere=true;
+		else if (fDNAModel=="QuarterCylinder")
+			BuildQuartCyl=true;
+		// Coordinates of voxel centers
+		vector<G4ThreeVector> coordinates;
+		// Path of single plasmid
+		vector<G4ThreeVector> path;
+		if (fDNABasicElement == "LinearPlasmid")
+		{
+			G4LogicalVolume* plasmidLog = SetLinearPlasmid(path, coordinates);
+			SetDNAVolumes(BuildHalfCyl, BuildQuartCyl, BuildSphere);
+			for (G4int t = 0; t < coordinates.size(); t++)
+			{
+				G4ThreeVector* position = new G4ThreeVector(coordinates[t].x(), coordinates[t].y(), coordinates[t].z());
+				G4VPhysicalVolume* plasmidPhys = CreatePhysicalVolume(subcompname, t, true, plasmidLog, 0, position, fEnvelopePhys);
+				if (t == 0)
+				{
+					if (BuildSphere)
+						PlaceDNASphere(path, plasmidPhys);
+					else
+						PlaceDNA(path, plasmidPhys);
 				}
 			}
-			CountFibers++;	 
+		}
+		if (fDNABasicElement == "SupercoiledPlasmid")
+		{
+			G4LogicalVolume* plasmidLog = SetSupercoiledPlasmid(path, coordinates);
+			SetDNAVolumes(BuildHalfCyl, BuildQuartCyl, BuildSphere);
+			for (G4int t = 0; t < coordinates.size(); t++)
+			{
+				G4ThreeVector* position = new G4ThreeVector(coordinates[t].x(), coordinates[t].y(), coordinates[t].z());
+				G4VPhysicalVolume* plasmidPhys = CreatePhysicalVolume(subcompname, t, true, plasmidLog, 0, position, fEnvelopePhys);
+				if (t == 0)
+				{
+					if (BuildSphere)
+						PlaceDNASphere(path, plasmidPhys);
+					else
+						PlaceDNA(path, plasmidPhys);
+				}
+			}
+		}
+		if (fDNABasicElement == "SolenoidPlasmid")
+		{
+			G4LogicalVolume* plasmidLog = SetSolenoidPlasmid(coordinates);
+			SetDNAVolumes(BuildHalfCyl, BuildQuartCyl, BuildSphere);
+			for (G4int t = 0; t < coordinates.size(); t++)
+			{
+				G4ThreeVector* position = new G4ThreeVector(coordinates[t].x(), coordinates[t].y(), coordinates[t].z());
+				G4VPhysicalVolume* plasmidPhys = CreatePhysicalVolume(subcompname, t, true, plasmidLog, 0, position, fEnvelopePhys);
+				if (t == 0)
+				{
+					// Set histones
+					vector<pair<G4ThreeVector, G4RotationMatrix*>> HistoneDetails;
+					BuildHistones(HistoneDetails, fFiberRadius, fFiberLength/2, plasmidPhys);
+					GenerateDNAPath(HistoneDetails, path);
+					SegmentDNAPath(path);
+					if (BuildSphere)
+						PlaceDNASphere(path, plasmidPhys);
+					else
+						PlaceDNA(path, plasmidPhys);
+				}
+			}
 		}
 	}
 
-	G4double basePairsInVoxel = fNumberOfBasePairs * CountFibers;
-	CreatePhysicalVolume("DNAContent", voxel_logic, fEnvelopePhys, kXAxis, fnVoxels, param);  
-	InstantiateChildren(fEnvelopePhys);
-	G4cout << "Number of fibers: " << CountFibers <<  " - Number of base pairs in a voxel: " << basePairsInVoxel << " - Number of voxels: " << fnVoxels << G4endl;
-	fNumberOfBasePairs = basePairsInVoxel * fnVoxels;
-	G4cout << "DNA Construction done. Number of total base pairs: " << fNumberOfBasePairs << G4endl;
 	if (fRotateNucleusForEachRun)
 	{
 		// Generate random numbers to rotate the nucleus for each run
@@ -415,7 +497,9 @@ G4LogicalVolume* TsNucleus::ConstructFiberLogicalVolume(){
 
 void TsNucleus::BuildHistones(vector<pair<G4ThreeVector, G4RotationMatrix*>> &HistoneDetails,
 							G4double ChromatinRadius,
-							G4double ChromatinLength){
+							G4double ChromatinLength,
+							G4VPhysicalVolume* physVol)
+{
 
 	//****************************************************************************
 	//							  Histones
@@ -481,7 +565,12 @@ void TsNucleus::BuildHistones(vector<pair<G4ThreeVector, G4RotationMatrix*>> &Hi
 		HistoneDetails.push_back(Details);
 
 		if (fAddHistones)
-			CreatePhysicalVolume("Histone", i, true, lHistone, HistoneRotation, &position, fFiberLogic);
+		{
+			if (physVol == NULL)
+				CreatePhysicalVolume("Histone", i, true, lHistone, HistoneRotation, &position, fFiberLogic);
+			else
+				CreatePhysicalVolume("Histone", i, true, lHistone, HistoneRotation, &position, physVol);
+		}
 		built++;
 	}
 
@@ -877,7 +966,7 @@ void TsNucleus::SegmentDNAPath(std::vector<G4ThreeVector> &path)
 }
 
 // Use DNA path to place sphere DNA volumes
-void TsNucleus::PlaceDNASphere(vector<G4ThreeVector> &newPath)
+void TsNucleus::PlaceDNASphere(vector<G4ThreeVector> &newPath, G4VPhysicalVolume* physVol)
 {
 	G4double helixRadius = 1.0*nm;
 	G4double rotPair = ((2.0*pi)/10.0);   //10bp per turn
@@ -928,23 +1017,47 @@ void TsNucleus::PlaceDNASphere(vector<G4ThreeVector> &newPath)
 
 		if(fAddBases) {
 			G4ThreeVector *posBase1 = &base1;
-			CreatePhysicalVolume("Base1_", bpID, true, lBase1, rot, posBase1, fFiberLogic);
 			G4ThreeVector *posBase2 = &base2;
-			CreatePhysicalVolume("Base2_", bpID, true, lBase2, rot, posBase2, fFiberLogic);
+			if (physVol == NULL)
+			{
+				CreatePhysicalVolume("Base1_", bpID, true, lBase1, rot, posBase1, fFiberLogic);
+				CreatePhysicalVolume("Base2_", bpID, true, lBase2, rot, posBase2, fFiberLogic);
+			}
+			else
+			{
+				CreatePhysicalVolume("Base1_", bpID, true, lBase1, rot, posBase1, physVol);
+				CreatePhysicalVolume("Base2_", bpID, true, lBase2, rot, posBase2, physVol);
+			}
 		}
 
 		if(fAddBackbones) {
 			G4ThreeVector *posBack1 = &back1;
-			CreatePhysicalVolume("Backbone1_", bpID, true, lBack1, rot, posBack1, fFiberLogic);  // ???? false?
 			G4ThreeVector *posBack2 = &back2;
-			CreatePhysicalVolume("Backbone2_", bpID, true, lBack2, rot, posBack2, fFiberLogic);
+			if (physVol == NULL)
+			{
+				CreatePhysicalVolume("Backbone1_", bpID, true, lBack1, rot, posBack1, fFiberLogic);
+				CreatePhysicalVolume("Backbone2_", bpID, true, lBack2, rot, posBack2, fFiberLogic);
+			}
+			else
+			{
+				CreatePhysicalVolume("Backbone1_", bpID, true, lBack1, rot, posBack1, physVol);
+				CreatePhysicalVolume("Backbone2_", bpID, true, lBack2, rot, posBack2, physVol);
+			}
 		}
 
 		if(fAddHydrationShell) {
 			G4ThreeVector *posHydration1 = &hydration1;
 			G4ThreeVector *posHydration2 = &hydration2;
-			CreatePhysicalVolume("HydrationShell1_", bpID, true, lHydrationShell1, rot, posHydration1, fFiberLogic);
-			CreatePhysicalVolume("HydrationShell2_", bpID, true, lHydrationShell2, rot, posHydration2, fFiberLogic);
+			if (physVol == NULL)
+			{
+				CreatePhysicalVolume("HydrationShell1_", bpID, true, lHydrationShell1, rot, posHydration1, fFiberLogic);
+				CreatePhysicalVolume("HydrationShell2_", bpID, true, lHydrationShell2, rot, posHydration2, fFiberLogic);
+			}
+			else
+			{
+				CreatePhysicalVolume("HydrationShell1_", bpID, true, lHydrationShell1, rot, posHydration1, physVol);
+				CreatePhysicalVolume("HydrationShell2_", bpID, true, lHydrationShell2, rot, posHydration2, physVol);
+			}
 		}
 	}
 	G4cout<<G4endl<<"Spherical DNA BUILT: "<<(G4double)nBP/1000.0<<" kbp"<<G4endl<<G4endl;
@@ -960,7 +1073,7 @@ void TsNucleus::ApplyRotation(G4ThreeVector &rotated, G4ThreeVector &vector, G4R
 }
 
 // Use DNA path to place halfCyl or quartCyl DNA volumes
-void TsNucleus::PlaceDNA(vector<G4ThreeVector> &newPath)
+void TsNucleus::PlaceDNA(vector<G4ThreeVector> &newPath, G4VPhysicalVolume* physVol)
 {
 	G4double rotPair = ((2.0*pi)/10.0);   //10bp per turn
 	G4int nBP=newPath.size();
@@ -998,23 +1111,47 @@ void TsNucleus::PlaceDNA(vector<G4ThreeVector> &newPath)
 
 		if(fAddBases){
 			G4ThreeVector *posBase1 = &base1;
-			CreatePhysicalVolume("Base1_", bpID, true, lBase1, rot1, posBase1, fFiberLogic);
 			G4ThreeVector *posBase2 = &base2;
-			CreatePhysicalVolume("Base2_", bpID, true, lBase2, rot1, posBase2, fFiberLogic);
+			if (physVol == NULL)
+			{
+				CreatePhysicalVolume("Base1_", bpID, true, lBase1, rot1, posBase1, fFiberLogic);
+				CreatePhysicalVolume("Base2_", bpID, true, lBase2, rot1, posBase2, fFiberLogic);
+			}
+			else
+			{
+				CreatePhysicalVolume("Base1_", bpID, true, lBase1, rot1, posBase1, physVol);
+				CreatePhysicalVolume("Base2_", bpID, true, lBase2, rot1, posBase2, physVol);
+			}
 		}
 
 		if(fAddBackbones){
 			G4ThreeVector *posBack1 = &back1;
-			CreatePhysicalVolume("Backbone1_", bpID, true, lBack1, rot1, posBack1, fFiberLogic);  // ???? false?
 			G4ThreeVector *posBack2 = &back2;
-			CreatePhysicalVolume("Backbone2_", bpID, true, lBack2, rot1, posBack2, fFiberLogic);
+			if (physVol == NULL)
+			{
+				CreatePhysicalVolume("Backbone1_", bpID, true, lBack1, rot1, posBack1, fFiberLogic);
+				CreatePhysicalVolume("Backbone2_", bpID, true, lBack2, rot1, posBack2, fFiberLogic);
+			}
+			else
+			{
+				CreatePhysicalVolume("Backbone1_", bpID, true, lBack1, rot1, posBack1, physVol);
+				CreatePhysicalVolume("Backbone2_", bpID, true, lBack2, rot1, posBack2, physVol);
+			}
 		}
 
 		if(fAddHydrationShell) {
 			G4ThreeVector *posHydration1 = &hydration1;
 			G4ThreeVector *posHydration2 = &hydration2;
-			CreatePhysicalVolume("HydrationShell1_", bpID, true, lHydrationShell1, rot1, posHydration1, fFiberLogic);
-			CreatePhysicalVolume("HydrationShell2_", bpID, true, lHydrationShell2, rot1, posHydration2, fFiberLogic);
+			if (physVol == NULL)
+			{
+				CreatePhysicalVolume("HydrationShell1_", bpID, true, lHydrationShell1, rot1, posHydration1, fFiberLogic);
+				CreatePhysicalVolume("HydrationShell2_", bpID, true, lHydrationShell2, rot1, posHydration2, fFiberLogic);
+			}
+			else
+			{
+				CreatePhysicalVolume("HydrationShell1_", bpID, true, lHydrationShell1, rot1, posHydration1, physVol);
+				CreatePhysicalVolume("HydrationShell2_", bpID, true, lHydrationShell2, rot1, posHydration2, physVol);
+			}
 		}
 	}
 
@@ -1037,4 +1174,205 @@ void TsNucleus::UpdateForNewRun(G4bool force = true)
 		newRotation->rotateX(rotZ);
 		fEnvelopePhys->SetRotation(newRotation);
 	}
+}
+
+G4LogicalVolume* TsNucleus::SetSupercoiledPlasmid(vector<G4ThreeVector> &path, vector<G4ThreeVector> &coordinates)
+{
+	// Read plasmid coordinates
+	fSupercoiledCoordinatesFilename = fPm->GetStringParameter(GetFullParmName("SupercoiledFileName"));
+	std::ifstream infile(fSupercoiledCoordinatesFilename);
+	if (!infile)
+	{
+		G4cout << "Can't open supercoiled plasmid coordinates file." << G4endl;
+		fPm->AbortSession(true);
+	}
+	G4double x, y, z;
+	G4double xmin = 1.0*mm, xmax = -1.0*mm;
+	G4double ymin = 1.0*mm, ymax = -1.0*mm;
+	G4double zmin = 1.0*mm, zmax = -1.0*mm;
+	while (1)
+	{
+		infile >> x >> y >> z;
+		if (!infile.good())
+			break;
+		x *= nm; y *=nm; z *= nm;
+		G4ThreeVector pathPoint = G4ThreeVector(x,y,z);
+		path.push_back(pathPoint);
+		if (xmin > x) xmin = x;
+		if (ymin > y) ymin = y;
+		if (zmin > z) zmin = z;
+		if (xmax < x) xmax = x;
+		if (ymax < y) ymax = y;
+		if (zmax < z) zmax = z;
+	}
+	path.push_back(path[0]);
+
+	// Get size of the plasmid / voxel. Add margin of 3.4 nm for plasmid radius. Set center position to 0
+	G4double dx = xmax - xmin + 3.4*nm;
+	G4double dy = ymax - ymin + 3.4*nm;
+	G4double dz = zmax - zmin + 3.4*nm;
+	G4ThreeVector offset = G4ThreeVector(0.5 * (xmax + xmin),
+										 0.5 * (ymax + ymin),
+										 0.5 * (zmax + zmin));
+	for (G4int i = 0; i < path.size(); i++)
+		path[i] -= offset;
+
+	// Get coordinates for plasmid voxel centers
+	G4double maxLengthInsideSphere = 2 * fNucleusRadius / std::sqrt(3);
+	G4int nx = 2*std::floor((maxLengthInsideSphere/2 - dx/2)/dx) + 1;
+	G4int ny = 2*std::floor((maxLengthInsideSphere/2 - dy/2)/dy) + 1;
+	G4int nz = 2*std::floor((maxLengthInsideSphere/2 - dz/2)/dz) + 1;
+	G4double xminpos = -double(nx-1)/2*dx;
+	G4double yminpos = -double(ny-1)/2*dy;
+	G4double zminpos = -double(nz-1)/2*dz;
+	for (G4int k = 0; k < nz; k++)
+	{
+		for (G4int j = 0;  j < ny; j++)
+		{
+			for (G4int i = 0; i < nx; i++)
+			{
+				G4ThreeVector pos(xminpos + i*dx, yminpos + j*dy, zminpos + k*dz);
+				coordinates.push_back(pos);
+			}
+		}
+	}
+	// Smooth the path
+	vector<G4ThreeVector> smoothedPath;
+	vector<G4ThreeVector> newPath;
+	fSmoothPath = true;
+	if (fPm->ParameterExists("SmoothPath"))
+		fSmoothPath = fPm->GetBooleanParameter(GetFullParmName("SmoothPath"))
+	if (fSmoothPath)
+	{
+		for (size_t i = 1; i < path.size()-1; i++)
+		{
+			G4ThreeVector OffDirect(0,0,0), OnDirect(0,0,0);
+			OffDirect = (path[i] - path[i-1]).unit();
+			OnDirect = (path[i] - path[i+1]).unit();
+			// Trace 2 nm
+			G4ThreeVector MidPoint1(0,0,0), MidPoint2(0,0,0);
+			MidPoint1 = path[i-1]+(2.0*OffDirect*nm);
+			MidPoint2 = path[i]+(2.0*OnDirect*nm);
+			Bezier(path[i-1], MidPoint1, MidPoint2, path[i], smoothedPath, 500);
+		}
+		G4double rise = 0.34*nm;
+		G4int nPts = smoothedPath.size();
+		G4int counter = 0;
+		newPath.push_back(smoothedPath[0]);
+		for (G4int i=0; i<nPts-1; i++)
+		{
+			G4ThreeVector vector = (smoothedPath[i+1]-newPath[counter]);
+			G4double length = vector.mag();
+			G4int nDiv = length/rise;
+			G4ThreeVector unit = vector.unit();
+			unit *= rise;
+			for (G4int j=0; j<nDiv; j++)
+			{
+				G4ThreeVector nuwe = newPath[counter] + unit;
+				newPath.push_back(nuwe);
+				counter++;
+			}
+		}
+	}
+	else
+		newPath = path;
+	path = newPath;
+	G4String subCompName = fName + "_plasmid";
+	G4Box* plasmid = new G4Box(subCompName, 0.5 * dx, 0.5 * dy, 0.5 * dz);
+	return CreateLogicalVolume(subCompName, plasmid);
+}
+
+G4LogicalVolume* TsNucleus::SetSolenoidPlasmid(vector<G4ThreeVector> &coordinates)
+{
+	// Get coordinates for solenoid fibers centers
+	G4double maxLengthInsideSphere = 2 * fNucleusRadius / sqrt(3);
+	G4int nx = 2 * floor((maxLengthInsideSphere/2 - fFiberRadius)/(2*fFiberRadius)) + 1;
+	G4int ny = 2 * floor((maxLengthInsideSphere/2 - fFiberRadius)/(2*fFiberRadius)) + 1;
+	G4int nz = 2 * floor((maxLengthInsideSphere/2 - fFiberLength/2)/(fFiberLength)) + 1;
+	G4double xminpos = -double(nx-1)*fFiberRadius;
+	G4double yminpos = -double(ny-1)*fFiberRadius;
+	G4double zminpos = -double(nz-1)*fFiberLength/2;
+	for (G4int k = 0; k < nz; k++)
+	{
+		for (G4int j = 0;  j < ny; j++)
+		{
+			for (G4int i = 0; i < nx; i++)
+			{
+				G4ThreeVector pos(xminpos + i*2*fFiberRadius, yminpos + j*2*fFiberRadius, zminpos + k*fFiberLength);
+				coordinates.push_back(pos);
+			}
+		}
+	}
+	G4String subCompName = fName + "_plasmid";
+	G4Tubs* plasmid = new G4Tubs(subCompName, 0, fFiberRadius, fFiberLength/2, 180.*deg, 360.*deg);
+	return CreateLogicalVolume(subCompName, plasmid);
+}
+
+G4LogicalVolume* TsNucleus::SetLinearPlasmid(std::vector<G4ThreeVector> &path, vector<G4ThreeVector> &coordinates)
+{
+	// Specific parameters for linear plasmids
+	fnPStart = fPm->GetIntegerParameter(GetFullParmName("NumberOfPlasmidsStart"));
+	fnPMax = fPm->GetIntegerParameter(GetFullParmName("MaximumNumberOfPlasmids"));
+	fdx = fPm->GetDoubleParameter(GetFullParmName("PlasmidSeparationX"),"Length");
+	fdy = fPm->GetDoubleParameter(GetFullParmName("PlasmidSeparationY"),"Length");
+
+	G4double maxLengthInsideSphere = 2 * fNucleusRadius / sqrt(3);
+	G4double zmin = -0.5 * maxLengthInsideSphere;
+	G4double dz = 0.34 * nm;
+	G4double gXMin = 1*mm, gYMin = 1*mm, gZMin = 1*mm;
+	G4double gXMax = 0.0, gYMax = 0.0, gZMax = 0.0;
+	G4double xmin = 0.0, ymin = 0.0;
+
+	G4int nSteps = (int)(maxLengthInsideSphere/dz);
+
+	for (int k = 0; k < nSteps; k++)
+		path.push_back(G4ThreeVector(0, 0, zmin+k*dz));
+
+	G4double x = 0, y = 0, shift = 0.5 * fdx;
+	G4int j = 0;
+	for ( int n = fnPStart; n < fnPMax + 1; n++ ) {
+		for ( int i = 0; i < n; i++ ) {
+			x = xmin + i * fdx;
+			y = ymin + j * fdy * 0.5;
+			coordinates.push_back(G4ThreeVector(x,y,0.0));
+			if ( gXMin > x )
+				gXMin = x;
+			if ( gXMax < x )
+				gXMax = x;
+			if ( gYMin > y )
+				gYMin = y;
+			if ( gYMax < y )
+				gYMax = y;
+		}
+		xmin -= 0.5 * fdx;
+		ymin += 0.5 * fdx;
+		j += 1;
+	}
+	xmin += fdx;
+	for ( int n = fnPMax-1; n >= fnPStart; n-- ) {
+		for ( int i = 0; i < n; i++ ) {
+			x = xmin + i * fdx;
+			y = ymin + j * fdy * 0.5;
+			coordinates.push_back(G4ThreeVector(x,y,0.0));
+			if ( gXMin > x )
+				gXMin = x;
+			if ( gXMax < x )
+				gXMax = x;
+			if ( gYMin > y )
+				gYMin = y;
+			if ( gYMax < y )
+				gYMax = y;
+		}
+		xmin += 0.5 * fdx;
+		ymin += 0.5 * fdx;
+		j += 1;
+	}
+	G4double HLZ = 0.5 * maxLengthInsideSphere;
+
+	// Plasmids
+	G4String subCompName = fName + "_plasmid";
+    G4double delta = 0.0;
+
+	G4Tubs* plasmid = new G4Tubs(fName + "_plasmid", 0.0, 1.15*nm + delta, HLZ, 0.0, 380*deg);
+	return CreateLogicalVolume(subCompName, plasmid);
 }

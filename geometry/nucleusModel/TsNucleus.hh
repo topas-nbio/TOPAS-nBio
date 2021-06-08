@@ -32,7 +32,8 @@ private:
 	G4LogicalVolume* ConstructFiberLogicalVolume();
 	void BuildHistones(std::vector<std::pair<G4ThreeVector, G4RotationMatrix*>> &HistoneDetails,
 					   G4double ChromatinRadius,
-					   G4double ChromatinLength);
+					   G4double ChromatinLength,
+					   G4VPhysicalVolume* vol = NULL);
 
 	void BuildDNA(std::vector<std::pair<G4ThreeVector, G4RotationMatrix*>> &HistoneDetails);
 	void SetDNAVolumes(G4bool BuildHalfCyl,
@@ -41,8 +42,8 @@ private:
 	void GenerateDNAPath(std::vector<std::pair<G4ThreeVector, G4RotationMatrix*>> &HistoneDetails,
 						 std::vector<G4ThreeVector> &path);
 	void SegmentDNAPath(std::vector<G4ThreeVector> &path);
-	void PlaceDNASphere(std::vector<G4ThreeVector> &path);
-	void PlaceDNA(std::vector<G4ThreeVector> &path);
+	void PlaceDNASphere(std::vector<G4ThreeVector> &path, G4VPhysicalVolume* vol = NULL);
+	void PlaceDNA(std::vector<G4ThreeVector> &path, G4VPhysicalVolume* vol = NULL);
 	G4double GetFiberDNAContent() {return fFiberDNAContent;}
 	void ApplyRotation(G4ThreeVector &Rotated,
 					   G4ThreeVector &Position,
@@ -54,6 +55,9 @@ private:
 				std::vector<G4ThreeVector> &path,
 				G4int nSteps);
 
+	G4LogicalVolume* SetSupercoiledPlasmid(std::vector<G4ThreeVector> &path, std::vector<G4ThreeVector> &coordinates);
+	G4LogicalVolume* SetSolenoidPlasmid(std::vector<G4ThreeVector> &coordinates);
+	G4LogicalVolume* SetLinearPlasmid(std::vector<G4ThreeVector> &path, std::vector<G4ThreeVector> &coordinates);
 
 	G4LogicalVolume * fFiberLogic;
 	std::vector<G4VPhysicalVolume*> fFiberPhysVolLoop;
@@ -99,6 +103,15 @@ private:
 	// Selecting Scoring components
 	G4bool fScoreOnBases, fScoreOnBackbones, fScoreOnHydrationShell, fScoreOnHistones;
 	
+	// Specific parameters for plasmids
+	G4String fDNABasicElement;
+	G4String fSupercoiledCoordinatesFilename;
+	G4bool fSmoothPath;
+	G4int fnPStart;
+	G4int fnPMax;
+	G4double fdx;
+	G4double fdy;
+
 //	G4double fBaseMaterialDensity;
 //	G4double fBackboneMaterialDensity;
 //	G4double fHistoneMaterialDensity;
