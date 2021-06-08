@@ -334,6 +334,18 @@ G4VPhysicalVolume* TsNucleus::Construct()
 	G4cout << "Number of fibers: " << CountFibers <<  " - Number of base pairs in a voxel: " << basePairsInVoxel << " - Number of voxels: " << fnVoxels << G4endl;
 	fNumberOfBasePairs = basePairsInVoxel * fnVoxels;
 	G4cout << "DNA Construction done. Number of total base pairs: " << fNumberOfBasePairs << G4endl;
+	if (fRotateNucleusForEachRun)
+	{
+		// Generate random numbers to rotate the nucleus for each run
+		G4RotationMatrix* newRotation = new G4RotationMatrix();
+		G4double rotX = G4UniformRand() * 2 * CLHEP::pi;
+		G4double rotY = G4UniformRand() * 2 * CLHEP::pi;
+		G4double rotZ = G4UniformRand() * 2 * CLHEP::pi;
+		newRotation->rotateX(rotX);
+		newRotation->rotateX(rotY);
+		newRotation->rotateX(rotZ);
+		fEnvelopePhys->SetRotation(newRotation);
+	}
 	return fEnvelopePhys;
 }
 
