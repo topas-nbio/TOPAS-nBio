@@ -1241,7 +1241,7 @@ G4LogicalVolume* TsNucleus::SetSupercoiledPlasmid(vector<G4ThreeVector> &path, v
 	vector<G4ThreeVector> newPath;
 	fSmoothPath = true;
 	if (fPm->ParameterExists("SmoothPath"))
-		fSmoothPath = fPm->GetBooleanParameter(GetFullParmName("SmoothPath"))
+		fSmoothPath = fPm->GetBooleanParameter(GetFullParmName("SmoothPath"));
 	if (fSmoothPath)
 	{
 		for (size_t i = 1; i < path.size()-1; i++)

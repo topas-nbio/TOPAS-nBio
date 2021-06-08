@@ -11,7 +11,7 @@ s:Ge/Nucleus/Type                       = "TsNucleus"
 s:Ge/Nucleus/Parent                     = "World"
 s:Ge/Nucleus/Material                   = "G4_WATER"
 s:Ge/Nucleus/Color                      = "White"
-d:Ge/Nucleus/NucleusRadius              = 4.65 um
+d:Ge/Nucleus/NucleusRadius              = 0.5 um
 s:Ge/Nucleus/Histone/Material           = "G4_HistoneMaterial"
 b:Ge/Nucleus/OnlyBuildOneHistone        = "false"
 b:Ge/Nucleus/HistoneAsScavenger         = "true"
@@ -140,14 +140,14 @@ s:Sc/DNAScorer/AdditionalInfo					       = ""
 Ts/ShowHistoryCountAtInterval                       = 1
 
 # -- Visualization
-#s:Gr/view/Type                          = "OpenGL"
-#i:Gr/view/WindowSizeX                   = 800
-#i:Gr/view/WindowSizeY                   = 800
-#d:Gr/view/Theta                         = 45 deg
-#d:Gr/view/Phi                           = 30 deg
-#s:Gr/view/ColorBy                       = "ParticleType"
-#sv:Gr/view/ColorByParticleTypeNames     = 4 "e-" "alpha" "proton" "neutron"
-#sv:Gr/view/ColorByParticleTypeColors    = 4 "green" "red" "blue" "grass"
-#s:Gr/view/BackgroundColor               = "White"
+s:Gr/view/Type                          = "OpenGL"
+i:Gr/view/WindowSizeX                   = 800
+i:Gr/view/WindowSizeY                   = 800
+d:Gr/view/Theta                         = 45 deg
+d:Gr/view/Phi                           = 30 deg
+s:Gr/view/ColorBy                       = "ParticleType"
+sv:Gr/view/ColorByParticleTypeNames     = 4 "e-" "alpha" "proton" "neutron"
+sv:Gr/view/ColorByParticleTypeColors    = 4 "green" "red" "blue" "grass"
+s:Gr/view/BackgroundColor               = "White"
 
 i:Ts/Seed = 2580
