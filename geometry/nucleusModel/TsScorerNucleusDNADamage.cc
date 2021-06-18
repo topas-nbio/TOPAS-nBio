@@ -321,7 +321,6 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 		fSkippedWhileInactive++;
 		return false;
 	}
-
 	// Check if within nucleus
 	G4ThreeVector pos = aStep->GetPreStepPoint()->GetPosition();
 	G4bool withinNucleus = ( (pow(pos.x(),2) + pow(pos.y(), 2) + pow(pos.z(), 2)) < pow(fScoringRadius, 2) );
@@ -424,11 +423,11 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			G4String speciesName 	= GetMolecule(aStep->GetTrack())->GetName();
 			G4bool isSpeciesToKill 	= (speciesName == "OH^0" || speciesName == "e_aq^-1" || speciesName == "H^0");
 			G4bool isHydroxyl		= (speciesName == "OH^0");
-			G4bool justEnterVolume	= (aStep->GetPreStepPoint()->GetStepStatus() != fGeomBoundary);
+			G4bool justEnterVolume	= (aStep->GetPreStepPoint()->GetStepStatus() == fGeomBoundary);
 			G4String backName = "Backbone";
 			G4String baseName = "Base";
 			// Kill all species generated inside DNA volume
-			if (aStep->IsFirstStepInVolume())
+			if (!justEnterVolume && (strstr(volumeName, backName) != NULL || strstr(volumeName, baseName) != NULL))
 			{
 				aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 				delete hit;
@@ -451,7 +450,7 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 				return false;
 			}
 			// Scavenge {OH*, e_aq- and H*} diffusing into DNA volume
-			else if (!justEnterVolume && isSpeciesToKill)
+			else if (isSpeciesToKill)
 			{
 				G4String histoneName = "Histone";
 				if (fHistoneAsScavenger && strstr(volumeName, histoneName) != NULL)

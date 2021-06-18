@@ -1,4 +1,5 @@
 # -- Geometry
+i:Ts/NumberOfThreads		= 6
 # World
 d:Ge/World/HLX                          = 7.0 um
 d:Ge/World/HLY                          = 7.0 um
@@ -57,19 +58,19 @@ d:Ge/BeamPosition/TransX                            = 0. um
 d:Ge/BeamPosition/TransY                            = 0. um
 d:Ge/BeamPosition/TransZ                            = 5. um
 s:So/ParticleGun/BeamParticle                       = "proton"
-#s:So/ParticleGun/BeamPositionDistribution           = "none"					# EITHER single track position
-s:So/ParticleGun/BeamPositionDistribution			= "Flat"					# OR 	 disk source
-s:So/ParticleGun/BeamPositionCutoffShape			= "Ellipse"
-d:So/ParticleGun/BeamPositionCutoffX 				= Ge/Nucleus/NucleusRadius um
-d:So/ParticleGun/BeamPositionCutoffY 				= Ge/Nucleus/NucleusRadius um
+s:So/ParticleGun/BeamPositionDistribution           = "none"					# EITHER single track position
+#s:So/ParticleGun/BeamPositionDistribution			= "Flat"					# OR 	 disk source
+#s:So/ParticleGun/BeamPositionCutoffShape			= "Ellipse"
+#d:So/ParticleGun/BeamPositionCutoffX 				= Ge/Nucleus/NucleusRadius um
+#d:So/ParticleGun/BeamPositionCutoffY 				= Ge/Nucleus/NucleusRadius um
 s:So/ParticleGun/BeamAngularDistribution            = "none"
-d:So/ParticleGun/BeamEnergy                         = 5.0 MeV
-i:So/ParticleGun/NumberOfHistoriesInRun             = 1
-b:Ge/Nucleus/RotateNucleusForEachRun				= "true"
+d:So/ParticleGun/BeamEnergy                         = 0.45 MeV
+i:So/ParticleGun/NumberOfHistoriesInRun             = 10
+b:Ge/Nucleus/RotateNucleusForEachRun				= "false"
 # Producing separate runs instead of separate histories if rotation enabled
-d:Tf/TimelineStart 			 						= 0. s
-d:Tf/TimelineEnd   			 						= 10. s
-i:Tf/NumberOfSequentialTimes 						= 10 # Number of runs
+#d:Tf/TimelineStart 			 						= 0. s
+#d:Tf/TimelineEnd   			 						= 10. s
+#i:Tf/NumberOfSequentialTimes 						= 10 # Number of runs
 
 # -- Scorer --
 s:Sc/DNAScorer/Quantity                                 = "NucleusDNADamage"

@@ -11,9 +11,9 @@ s:Ge/Nucleus/Type                       = "TsNucleus"
 s:Ge/Nucleus/Parent                     = "World"
 s:Ge/Nucleus/Material                   = "G4_WATER"
 s:Ge/Nucleus/Color                      = "White"
-d:Ge/Nucleus/NucleusRadius              = 0.25 um
+d:Ge/Nucleus/NucleusRadius              = 0.15 um
 s:Ge/Nucleus/Histone/Material           = "G4_HistoneMaterial"
-b:Ge/Nucleus/OnlyBuildOneHistone        = "false"
+b:Ge/Nucleus/OnlyBuildOneHistone        = "true"
 b:Ge/Nucleus/HistoneAsScavenger         = "true"
 b:Ge/Nucleus/AddBases                   = "true"
 s:Ge/Nucleus/Base1/Material             = "G4_BaseMaterial"
@@ -45,7 +45,6 @@ b:Ge/CheckForUnusedComponents			= "false"
 # Type DNA - Linear plasmid
 s:Ge/Nucleus/DNABasicElement			= "SolenoidPlasmid"
 s:Ge/Nucleus/Plasmid/Material    		= "G4_WATER"
-i:Ge/Nucleus/SupercoiledFileName 		= "supportFiles/pBR322_a.xyz"
 
 # -- Materials
 s:Ma/G4_HistoneMaterial/CloneFromMaterial   = "G4_WATER"
@@ -71,21 +70,21 @@ s:So/ParticleGun/Component                          = "BeamPosition"
 d:Ge/BeamPosition/TransX                            = 0. um
 d:Ge/BeamPosition/TransY                            = 0. um
 d:Ge/BeamPosition/TransZ                            = 0.25 um
-s:So/ParticleGun/BeamParticle                       = "proton"
+s:So/ParticleGun/BeamParticle                       = "alpha"
 #s:So/ParticleGun/BeamPositionDistribution           = "none"					# EITHER single track position
 s:So/ParticleGun/BeamPositionDistribution			= "Flat"					# OR 	 disk source
 s:So/ParticleGun/BeamPositionCutoffShape			= "Ellipse"
 d:So/ParticleGun/BeamPositionCutoffX 				= Ge/Nucleus/NucleusRadius um
 d:So/ParticleGun/BeamPositionCutoffY 				= Ge/Nucleus/NucleusRadius um
 s:So/ParticleGun/BeamAngularDistribution            = "none"
-d:So/ParticleGun/BeamEnergy                         = 5.0 MeV
+d:So/ParticleGun/BeamEnergy                         = 2.0 MeV
 i:So/ParticleGun/NumberOfHistoriesInRun             = 1
 # -- Rotating each run
 b:Ge/Nucleus/RotateNucleusForEachRun				= "true"
 # Producing separate runs instead of separate histories if rotation enabled
-d:Tf/TimelineStart 			 						= 0. s
-d:Tf/TimelineEnd   			 						= 10. s
-i:Tf/NumberOfSequentialTimes 						= 10 # Number of runs
+#d:Tf/TimelineStart 			 						= 0. s
+#d:Tf/TimelineEnd   			 						= 10. s
+#i:Tf/NumberOfSequentialTimes 						= 1000 # Number of runs
 
 # -- Scorer --
 s:Sc/DNAScorer/Quantity                                 = "NucleusDNADamage"
@@ -139,16 +138,16 @@ s:Sc/DNAScorer/AdditionalInfo					       = ""
 Ts/ShowHistoryCountAtInterval                       = 1
 
 # -- Visualization
-#s:Gr/view/Type             					= "OpenGL"
-#i:Gr/view/WindowSizeX      					= 800
-#i:Gr/view/WindowSizeY      					= 800
-#d:Gr/view/Theta 							= 45 deg
-#d:Gr/view/Phi 								= 30 deg
-#u:Gr/view/Zoom 								= 4
-#s:Gr/view/ColorBy     						= "ParticleType"
-#sv:Gr/view/ColorByParticleTypeNames      	= 4 "e-" "alpha" "proton" "neutron"
-#sv:Gr/view/ColorByParticleTypeColors     	= 4 "green" "red" "blue" "grass"
-#s:Gr/view/BackgroundColor 					= "White"
-#b:Ts/PauseBeforeQuit = "True"
+s:Gr/view/Type             					= "OpenGL"
+i:Gr/view/WindowSizeX      					= 800
+i:Gr/view/WindowSizeY      					= 800
+d:Gr/view/Theta 							= 0 deg
+d:Gr/view/Phi 								= 30 deg
+u:Gr/view/Zoom 								= 9
+s:Gr/view/ColorBy     						= "ParticleType"
+sv:Gr/view/ColorByParticleTypeNames      	= 4 "e-" "alpha" "proton" "neutron"
+sv:Gr/view/ColorByParticleTypeColors     	= 4 "green" "red" "blue" "grass"
+s:Gr/view/BackgroundColor 					= "White"
+b:Ts/PauseBeforeQuit = "True"
 
 i:Ts/Seed = 2580

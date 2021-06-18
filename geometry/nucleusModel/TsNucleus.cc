@@ -1311,6 +1311,7 @@ G4LogicalVolume* TsNucleus::SetSolenoidPlasmid(vector<G4ThreeVector> &coordinate
 			}
 		}
 	}
+	G4cout << "Voxels for each plasmid: " << nx*ny*nz << " of dimensions (dx, dy, dz) = (" << 2*fFiberRadius << ", " << 2*fFiberRadius << ", " << fFiberLength << ")" << G4endl;
 	G4String subCompName = "Plasmid";
 	G4Tubs* plasmid = new G4Tubs(subCompName, 0, fFiberRadius, fFiberLength/2, 180.*deg, 360.*deg);
 	return CreateLogicalVolume(subCompName, plasmid);
