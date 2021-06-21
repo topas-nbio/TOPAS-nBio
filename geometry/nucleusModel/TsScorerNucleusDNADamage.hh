@@ -128,6 +128,8 @@ private:
 
 	std::vector<G4int> fCH_ID;
 	std::vector<G4int> fVoxel_ID;
+
+	std::map<G4double, G4bool> fTrackComingFromOutside;
 };
 
 

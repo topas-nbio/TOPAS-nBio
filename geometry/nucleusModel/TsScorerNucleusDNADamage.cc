@@ -424,10 +424,11 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			G4bool isSpeciesToKill 	= (speciesName == "OH^0" || speciesName == "e_aq^-1" || speciesName == "H^0");
 			G4bool isHydroxyl		= (speciesName == "OH^0");
 			G4bool justEnterVolume	= (aStep->GetPreStepPoint()->GetStepStatus() == fGeomBoundary);
+			if (justEnterVolume) fTrackComingFromOutside[aStep->GetTrack()->GetTrackID()] = true;
 			G4String backName = "Backbone";
 			G4String baseName = "Base";
 			// Kill all species generated inside DNA volume
-			if (!justEnterVolume && (strstr(volumeName, backName) != NULL || strstr(volumeName, baseName) != NULL))
+			if ((fTrackComingFromOutside[aStep->GetTrack()->GetTrackID()] == NULL || !fTrackComingFromOutside[aStep->GetTrack()->GetTrackID()]) && (strstr(volumeName, backName) != NULL || strstr(volumeName, baseName) != NULL))
 			{
 				aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 				delete hit;
@@ -450,15 +451,11 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 				return false;
 			}
 			// Scavenge {OH*, e_aq- and H*} diffusing into DNA volume
-			else if (isSpeciesToKill)
+			else if (isSpeciesToKill && fHistoneAsScavenger && strstr(volumeName, "Histone") != NULL)
 			{
-				G4String histoneName = "Histone";
-				if (fHistoneAsScavenger && strstr(volumeName, histoneName) != NULL)
-				{
-					aStep->GetTrack()->SetTrackStatus(fStopAndKill);
-					delete hit;
-					return false;
-				}
+				aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+				delete hit;
+				return false;
 			}
 		}
 		delete hit;

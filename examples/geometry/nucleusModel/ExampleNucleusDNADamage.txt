@@ -70,7 +70,7 @@ b:Ge/Nucleus/RotateNucleusForEachRun				= "true"
 # Producing separate runs instead of separate histories if rotation enabled
 d:Tf/TimelineStart 			 						= 0. s
 d:Tf/TimelineEnd   			 						= 10. s
-i:Tf/NumberOfSequentialTimes 						= 5 # Number of runs
+i:Tf/NumberOfSequentialTimes 						= 1 # Number of runs
 
 # -- Scorer --
 s:Sc/DNAScorer/Quantity                                 = "NucleusDNADamage"
