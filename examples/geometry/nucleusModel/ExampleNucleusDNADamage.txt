@@ -54,8 +54,8 @@ i:Ph/Verbosity                          	= 0
 # -- Source and runs
 s:So/ParticleGun/Type                               = "Beam"
 s:So/ParticleGun/Component                          = "BeamPosition"
-d:Ge/BeamPosition/TransX                            = 0. um
-d:Ge/BeamPosition/TransY                            = 0. um
+d:Ge/BeamPosition/TransX                            = 0.05 um
+d:Ge/BeamPosition/TransY                            = 0.05 um
 d:Ge/BeamPosition/TransZ                            = 4.7 um
 s:So/ParticleGun/BeamParticle                       = "proton"
 s:So/ParticleGun/BeamPositionDistribution           = "none"					# EITHER single track position
@@ -64,13 +64,13 @@ s:So/ParticleGun/BeamPositionDistribution           = "none"					# EITHER single
 #d:So/ParticleGun/BeamPositionCutoffX 				= Ge/Nucleus/NucleusRadius um
 #d:So/ParticleGun/BeamPositionCutoffY 				= Ge/Nucleus/NucleusRadius um
 s:So/ParticleGun/BeamAngularDistribution            = "none"
-d:So/ParticleGun/BeamEnergy                         = 2.0 MeV
+d:So/ParticleGun/BeamEnergy                         = 35 MeV
 i:So/ParticleGun/NumberOfHistoriesInRun             = 1
-b:Ge/Nucleus/RotateNucleusForEachRun				= "true"
+b:Ge/Nucleus/RotateNucleusForEachRun				= "false"
 # Producing separate runs instead of separate histories if rotation enabled
-d:Tf/TimelineStart 			 						= 0. s
-d:Tf/TimelineEnd   			 						= 10. s
-i:Tf/NumberOfSequentialTimes 						= 1 # Number of runs
+#d:Tf/TimelineStart 			 						= 0. s
+#d:Tf/TimelineEnd   			 						= 10. s
+#i:Tf/NumberOfSequentialTimes 						= 5 # Number of runs
 
 # -- Scorer --
 s:Sc/DNAScorer/Quantity                                 = "NucleusDNADamage"

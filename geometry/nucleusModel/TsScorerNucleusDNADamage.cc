@@ -350,6 +350,9 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 		fCalZetaBeta = true;
 	}
 
+	// Get steps this track has advanced
+	fTrackSteps[aStep->GetTrack()->GetTrackID()] += 1;
+
 	// Get volume at the depth of base pairs
 	G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
 	G4String volumeName = touchable->GetVolume(fBasePairDepth)->GetName();
@@ -423,19 +426,17 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			G4String speciesName 	= GetMolecule(aStep->GetTrack())->GetName();
 			G4bool isSpeciesToKill 	= (speciesName == "OH^0" || speciesName == "e_aq^-1" || speciesName == "H^0");
 			G4bool isHydroxyl		= (speciesName == "OH^0");
-			G4bool justEnterVolume	= (aStep->GetPreStepPoint()->GetStepStatus() == fGeomBoundary);
-			if (justEnterVolume) fTrackComingFromOutside[aStep->GetTrack()->GetTrackID()] = true;
 			G4String backName = "Backbone";
 			G4String baseName = "Base";
-			// Kill all species generated inside DNA volume
-			if ((fTrackComingFromOutside[aStep->GetTrack()->GetTrackID()] == NULL || !fTrackComingFromOutside[aStep->GetTrack()->GetTrackID()]) && (strstr(volumeName, backName) != NULL || strstr(volumeName, baseName) != NULL))
+			// Kill all species generated inside DNA volume except for the hydration shell
+			if (fTrackSteps[aStep->GetTrack()->GetTrackID()] == 1 && strstr(volumeName, "HydrationShell") == NULL)
 			{
 				aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 				delete hit;
 				return false;
 			}
 			// Make the hydroxyl damage to DNA
-			else if (justEnterVolume && isHydroxyl && (strstr(volumeName, backName) != NULL || strstr(volumeName, baseName) != NULL))
+			else if (isHydroxyl && (strstr(volumeName, backName) != NULL || strstr(volumeName, baseName) != NULL))
 			{
 				hit->SetEdep(-0.001 * eV);
 				hit->SetIsDirectDamage(false);
