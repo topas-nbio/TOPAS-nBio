@@ -64,8 +64,8 @@ s:So/ParticleGun/BeamPositionDistribution           = "none"					# EITHER single
 #d:So/ParticleGun/BeamPositionCutoffX 				= Ge/Nucleus/NucleusRadius um
 #d:So/ParticleGun/BeamPositionCutoffY 				= Ge/Nucleus/NucleusRadius um
 s:So/ParticleGun/BeamAngularDistribution            = "none"
-d:So/ParticleGun/BeamEnergy                         = 35 MeV
-i:So/ParticleGun/NumberOfHistoriesInRun             = 1
+d:So/ParticleGun/BeamEnergy                         = 2.0 MeV
+i:So/ParticleGun/NumberOfHistoriesInRun             = 5
 b:Ge/Nucleus/RotateNucleusForEachRun				= "false"
 # Producing separate runs instead of separate histories if rotation enabled
 #d:Tf/TimelineStart 			 						= 0. s
