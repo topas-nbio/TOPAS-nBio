@@ -182,9 +182,9 @@ void TsDefineDamage::ComputeStrandBreaks(std::vector<TsHitsRecord*> Hits)
 				if (iElem >= 0 && (((iElem == 4 || iElem == 5) && fScoreOnHydrationShell)) && fScoreDirectDamages)
 				{
 					// Score damage in backbone due to ionization of the corresponding hydration shell
-					if (fDamage[iChr][ibp][iElem - 2] < 2)
-						fDamage[iChr][ibp][iElem - 2] = quasidirect; // Quasi-direct if no previous indirect
-					else
+					if (fDamage[iChr][ibp][iElem - 2] < direct)
+						fDamage[iChr][ibp][iElem - 2] = quasidirect; // Quasi-direct if no previous damage
+					else if (fDamage[iChr][ibp][iElem - 2] < indirect)
 						fDamage[iChr][ibp][iElem - 2] = multiplewithquasidirect; // Multiple damage if previous indirect
 				}
 			}
