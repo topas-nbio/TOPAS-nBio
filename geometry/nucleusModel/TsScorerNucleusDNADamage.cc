@@ -105,6 +105,10 @@ TsScorerNucleusDNADamage::TsScorerNucleusDNADamage(TsParameterManager* pM, TsMat
 	if ( fPm->ParameterExists(GetFullParmName("ScoreIndirectDamages")) )
 		fScoreIndirectDamages = fPm->GetBooleanParameter(GetFullParmName("ScoreIndirectDamages"));
 
+	fScoreQuasiDirectDamages = false;
+	if ( fPm->ParameterExists(GetFullParmName("ScoreQuasiDirectDamages")))
+		fScoreQuasiDirectDamages = fPm->GetBooleanParameter(GetFullParmName("ScoreQuasiDirectDamages"));
+
 	/*fScoreOnBases = true;
 	if (fPm->ParameterExists(GetFullParmName("ScoreOnBases")))
 		fScoreOnBases = fPm->GetBooleanParameter(GetFullParmName("ScoreOnBases"));
@@ -225,6 +229,7 @@ TsScorerNucleusDNADamage::TsScorerNucleusDNADamage(TsParameterManager* pM, TsMat
 	if ( fPm->ParameterExists(GetFullParmName("AdditionalInfo")))
 		addInfo = fPm->GetStringParameter(GetFullParmName("AdditionalInfo"));
 
+
 	GetGeometryInfo();
 	fDefineDamage = new TsDefineDamage();
 	fDefineDamage->SetDamageThreshold(fDamageThreshold);
@@ -271,6 +276,7 @@ TsScorerNucleusDNADamage::TsScorerNucleusDNADamage(TsParameterManager* pM, TsMat
 	// Prepare nTuple
 	fNtuple->RegisterColumnD(&fEdepkeV, "Energy_imparted_keV", "");
 	fNtuple->RegisterColumnD(&fDoseGy, "Dose_per_event_Gy", "");
+	fNtuple->RegisterColumnD(&fTravelDistance, "Length_within_nucleus_um", "");
 	fNtuple->RegisterColumnD(&fLETtkeVum, "Track_averaged_LET_keV/um", "");
 	fNtuple->RegisterColumnI(&numSSB, "Number_of_SSBs");
 	fNtuple->RegisterColumnD(&yieldSSB, "SSB/Gy/Gbp", "");
@@ -294,6 +300,15 @@ TsScorerNucleusDNADamage::TsScorerNucleusDNADamage(TsParameterManager* pM, TsMat
 	fNtuple->RegisterColumnD(&yieldDSBPlus, "DSB_plus/Gy/Gbp", "");
 	fNtuple->RegisterColumnI(&numMoreComplex, "Number_of_more_complex_damages");
 	fNtuple->RegisterColumnD(&yieldMoreComplex, "More_Complex_Breaks/Gy/Gbp", "");
+	if (fScoreQuasiDirectDamages)
+	{
+		fNtuple->RegisterColumnI(&numSSB_qdir, "Number_of_quasidirect_SSB");
+		fNtuple->RegisterColumnI(&numDSB_dir1qdir, "Number_of_direct_quasidirect_DSB");
+		fNtuple->RegisterColumnI(&numDSB_dir2qdir, "Number_of_quasidirect_quasidirect_DSB");
+		fNtuple->RegisterColumnI(&numDSB_hyb1qdir, "Number_of_indirect_quasidirect_DSB");
+		if (fScoreOnBases)
+			fNtuple->RegisterColumnI(&numBaseDam_qdir, "Number_of_quasidirect_base_damages");
+	}
 	if (fExcludeShortFragment)
 	{
 		fNtuple->RegisterColumnI(&Excluded_numSSB, "Excluded_SSBs");
@@ -611,7 +626,7 @@ void TsScorerNucleusDNADamage::UserHookForEndOfRun()
 
 G4int TsScorerNucleusDNADamage::Analyze(vector<TsHitsRecord*> hits, G4int eventID)
 {
-	G4bool useNewMethod = true;
+	G4bool useNewMethod = false;
 
 	fDoseInThisExposure = (1.6e-13 * eventsEdep[eventID] / MeV) / (fNucleusMass / 1000);	// Gy
 	fTrackAveragedLET	= (eventsEdep[eventID] / keV) / (eventsLength[eventID] / um);

@@ -59,6 +59,13 @@ TsDefineDamage::TsDefineDamage()
 	numBaseDam_dir = 0;
 	numBaseDam_indir = 0;
 
+	numSB_qdir		= 0;
+	numSSB_qdir		= 0;
+    numDSB_dir1qdir = 0;
+    numDSB_dir2qdir = 0;
+    numDSB_hyb1qdir = 0;
+	numBaseDam_qdir	= 0;
+
 	Excluded_numSB			= 0;
 	Excluded_numSB_dir 		= 0;
 	Excluded_numSB_indir	= 0;
@@ -123,6 +130,7 @@ void TsDefineDamage::ComputeStrandBreaks(std::vector<TsHitsRecord*> Hits)
 			fDamagePositions[chromosomeID][basePairID][iElement] = Hits[i]->GetPosition();
 		}
 	}
+
 	// Classify damages into structures
 	for (auto& chromosome : fVEdepInDNA)
 	{
@@ -136,9 +144,9 @@ void TsDefineDamage::ComputeStrandBreaks(std::vector<TsHitsRecord*> Hits)
 				if (iElem >= 0 && (((iElem == 0 || iElem == 1) && fScoreOnBases) || ((iElem == 2 || iElem == 3) && fScoreOnBackbones)))
 				{
 					if (CauseDirectDamage(fVEdepInDNA[iChr][ibp][iElem]) && fScoreDirectDamages)
-						fDamage[iChr][ibp][iElem] = 1;
+						fDamage[iChr][ibp][iElem] = direct;
 					else
-						fDamage[iChr][ibp][iElem] = -1;
+						fDamage[iChr][ibp][iElem] = nodamage;
 				}
 			}
 		}
@@ -154,10 +162,10 @@ void TsDefineDamage::ComputeStrandBreaks(std::vector<TsHitsRecord*> Hits)
 				G4int iElem = pairElemEnergy.first;
 				if (iElem >= 0 && (((iElem == 0 || iElem == 1) && fScoreOnBases) || ((iElem == 2 || iElem == 3) && fScoreOnBackbones)) && fScoreIndirectDamages)
 				{
-					if (fDamage[iChr][ibp][iElem] == 1)
-						fDamage[iChr][ibp][iElem] = 3; // Multiple damage if previous direct
+					if (fDamage[iChr][ibp][iElem] == direct)
+						fDamage[iChr][ibp][iElem] = multiple; // Multiple damage if previous direct
 					else
-						fDamage[iChr][ibp][iElem] = 2; // Indirect if not
+						fDamage[iChr][ibp][iElem] = indirect; // Indirect if not
 				}
 			}
 		}
@@ -175,9 +183,9 @@ void TsDefineDamage::ComputeStrandBreaks(std::vector<TsHitsRecord*> Hits)
 				{
 					// Score damage in backbone due to ionization of the corresponding hydration shell
 					if (fDamage[iChr][ibp][iElem - 2] < 2)
-						fDamage[iChr][ibp][iElem - 2] = 1; // Direct if no previous indirect
+						fDamage[iChr][ibp][iElem - 2] = quasidirect; // Quasi-direct if no previous indirect
 					else
-						fDamage[iChr][ibp][iElem - 2] = 3; // Multiple damage if previous indirect
+						fDamage[iChr][ibp][iElem - 2] = multiplewithquasidirect; // Multiple damage if previous indirect
 				}
 			}
 		}
@@ -199,60 +207,70 @@ void TsDefineDamage::ComputeStrandBreaks(std::vector<TsHitsRecord*> Hits)
 				{
 					if (fDamage[iChr][ibp+inc2][3] > 0 && fDSB[iChr][ibp+inc2][2] == 0) // Go from ibp to ibp+10 to look for damage in backbone 2 (fDamage index 3) and not already a DSB identified in strand 2 (fDSB index 2)
 					{
-						G4int typeDamage2 = 2;
-						if (fDamage[iChr][ibp+inc2][3] == 1) typeDamage2 = 1; // Check if damage in backbone 2 is direct (1) or indirect (2)
+						G4int typeDamage2 = indirect;
+						if (fDamage[iChr][ibp+inc2][3] == direct || fDamage[iChr][ibp+inc2][3] == quasidirect) typeDamage2 = fDamage[iChr][ibp+inc2][3]; // Check if damage in backbone 2 is direct (1) or indirect (2)
+						if (fDamage[iChr][ibp+inc2][3] == multiple) typeDamage2 = direct; // If multiple damage, considers 'direct' (since it would happen even without chemistry)
+						if (fDamage[iChr][ibp+inc2][3] == multiplewithquasidirect) typeDamage2 = quasidirect; // If multiple damage, considers 'direct' (since it would happen even without chemistry)
 						// Once identified damage in strand 2 (and ensuring damage in strand 1), look for closest damage in strand 1 (just in case there are multiple damages)
 						G4int closestS1pos = ibp;
-						G4int typeDamage1 = 2;
+						G4int typeDamage1 = indirect;
 						for (G4int inc1 = 0; inc1 < fDSBSeparation; inc1++)
 						{
 							if (fDamage[iChr][ibp+inc2+inc1][2] > 0 && fDSB[iChr][ibp+inc2+inc1][1] == 0) // Go from ibp+inc2 increasing 1 bp....
 							{
 								closestS1pos = ibp + inc2 + inc1;
-								if (fDamage[iChr][ibp+inc2+inc1][2] == 1) typeDamage1 = 1;
+								if (fDamage[iChr][ibp+inc2+inc1][2] == direct || fDamage[iChr][ibp+inc2+inc1][2] == quasidirect) typeDamage1 = fDamage[iChr][ibp+inc2+inc1][2];
+								if (fDamage[iChr][ibp+inc2+inc1][2] == multiple) typeDamage1 = direct;
+								if (fDamage[iChr][ibp+inc2+inc1][2] == multiplewithquasidirect) typeDamage1 = quasidirect;
 								break;
 							}
 							if (ibp+inc2-inc1 >= 0 && inc1 > 0 && fDamage[iChr][ibp+inc2-inc1][2] > 0 && fDSB[iChr][ibp+inc2-inc1][1] == 0) // and decreasing 1 bp alternatively, breaking when closest damage is found
 							{
 								closestS1pos = ibp + inc2 - inc1;
-								if (fDamage[iChr][ibp+inc2-inc1][2] == 1) typeDamage1 = 1;
+								if (fDamage[iChr][ibp+inc2-inc1][2] == direct || fDamage[iChr][ibp+inc2-inc1][2] == quasidirect) typeDamage1 = fDamage[iChr][ibp+inc2-inc1][2];
+								if (fDamage[iChr][ibp+inc2-inc1][2] == multiple) typeDamage1 = direct;
+								if (fDamage[iChr][ibp+inc2-inc1][2] == multiplewithquasidirect) typeDamage1 = quasidirect;
 								break;
 							}
 						}
-						fDSB[iChr][closestS1pos][1] += typeDamage1;
-						fDSB[iChr][ibp + inc2][2] += typeDamage2;
+						fDSB[iChr][closestS1pos][1] = typeDamage1;
+						fDSB[iChr][ibp + inc2][2] = typeDamage2;
 						std::pair<G4int, G4int> pos(closestS1pos, ibp+inc2);
-						DSBPairs[iChr][pos] = typeDamage1 + typeDamage2; // 2->Direct, 3->Hybrid, 4->Indirect
-						//G4cout << "DSB found at " << closestS1pos << ", " << ibp+inc2 << " of type " << DSBPairs[pos] << G4endl;
+						DSBPairs[iChr][pos] = typeDamage1 + typeDamage2; // 2->Direct, 3->Hybrid, 4->Indirect, 5->Direct with 1 quasi, 6->Hybrid with 1 quasi, 8->Direct with 2 quasi
 						dsbFound = true;
 					}
 					if (ibp-inc2 >= 0 && inc2 > 0 && fDamage[iChr][ibp-inc2][3] > 0 && fDSB[iChr][ibp-inc2][2] == 0) // Go from ibp to ibp-10 to look for damage in backbone 2 (alternatively, if dsb is found then break)
 					{
-						G4int typeDamage2 = 2;
-						if (fDamage[iChr][ibp-inc2][3] == 1) typeDamage2 = 1; // Check if damage in backbone 2 is direct (1) or indirect (2)
+						G4int typeDamage2 = indirect;
+						if (fDamage[iChr][ibp-inc2][3] == direct || fDamage[iChr][ibp-inc2][3] == quasidirect) typeDamage2 = fDamage[iChr][ibp-inc2][3]; // Check if damage in backbone 2 is direct (1) or indirect (2)
+						if (fDamage[iChr][ibp-inc2][3] == multiple) typeDamage2 = direct;
+						if (fDamage[iChr][ibp-inc2][3] == multiplewithquasidirect) typeDamage2 = quasidirect;
 						// Look for closest damage in strand 1
 						G4int closestS1pos = ibp;
-						G4int typeDamage1 = 2;
+						G4int typeDamage1 = indirect;
 						for (G4int inc1 = 0; inc1 < fDSBSeparation; inc1++)
 						{
 							if (fDamage[iChr][ibp-inc2+inc1][2] > 0 && fDSB[iChr][ibp-inc2+inc1][1] == 0)
 							{
 								closestS1pos = ibp - inc2 + inc1;
-								if (fDamage[iChr][ibp-inc2+inc1][2] == 1) typeDamage1 = 1;
+								if (fDamage[iChr][ibp-inc2+inc1][2] == direct || fDamage[iChr][ibp-inc2+inc1][2] == quasidirect) typeDamage1 = fDamage[iChr][ibp-inc2+inc1][2];
+								if (fDamage[iChr][ibp-inc2+inc1][2] == multiple) typeDamage1 = direct;
+								if (fDamage[iChr][ibp-inc2+inc1][2] == multiplewithquasidirect) typeDamage1 = quasidirect;
 								break;
 							}
 							if (ibp-inc2-inc1 >= 0 && inc1 > 0 && fDamage[iChr][ibp-inc2-inc1][2] > 0 && fDSB[iChr][ibp-inc2-inc1][1] == 0)
 							{
 								closestS1pos = ibp - inc2 - inc1;
-								if (fDamage[iChr][ibp-inc2-inc1][2] == 1) typeDamage1 = 1;
+								if (fDamage[iChr][ibp-inc2-inc1][2] == 1 || fDamage[iChr][ibp-inc2-inc1][2] == quasidirect) typeDamage1 = fDamage[iChr][ibp-inc2-inc1][2];
+								if (fDamage[iChr][ibp-inc2-inc1][2] == multiple) typeDamage1 = direct;
+								if (fDamage[iChr][ibp-inc2-inc1][2] == multiplewithquasidirect) typeDamage1 = quasidirect;
 								break;
 							}
 						}
-						fDSB[iChr][closestS1pos][1] += typeDamage1;
-						fDSB[iChr][ibp - inc2][2] += typeDamage2;
+						fDSB[iChr][closestS1pos][1] = typeDamage1;
+						fDSB[iChr][ibp - inc2][2] = typeDamage2;
 						std::pair<G4int, G4int> pos(closestS1pos, ibp-inc2);
-						DSBPairs[iChr][pos] = typeDamage1 + typeDamage2; // 2->Direct, 3->Hybrid, 4->Indirect
-						//G4cout << "DSB found at " << closestS1pos << ", " << ibp-inc2 << " of type " << DSBPairs[pos] << G4endl;
+						DSBPairs[iChr][pos] = typeDamage1 + typeDamage2; // 2->Direct, 3->Hybrid, 4->Indirect, 5->Direct with 1 quasi, 6->Hybrid with 1 quasi, 8->Direct with 2 quasi
 						dsbFound = true;
 					}
 					if (dsbFound) break;
@@ -307,18 +325,34 @@ void TsDefineDamage::QuantifyDamage(std::map<G4int, std::map<std::pair<G4int, G4
 	numSSB = 0; numSSB_dir = 0; numSSB_indir = 0;
 	numSB = 0; numSB_dir = 0; numSB_indir = 0;
 	numBaseDam = 0; numBaseDam_dir = 0; numBaseDam_indir = 0;
+	numSB_qdir = 0;	numSSB_qdir	= 0; numDSB_dir1qdir = 0; numDSB_dir2qdir = 0; numDSB_hyb1qdir = 0; numBaseDam_qdir	= 0;
 	for (auto& chromosome : DSBPairs)
 	{
 		G4int iChr = chromosome.first;
 		for (auto& pairPosType : DSBPairs[iChr])
 		{
 			numDSB++;
-			if (pairPosType.second == 2)
+			if (pairPosType.second == direct+direct)
 				numDSB_dir++;
-			else if (pairPosType.second == 3)
+			else if (pairPosType.second == direct+indirect)
 				numDSB_hybrid++;
-			else if (pairPosType.second == 4)
+			else if (pairPosType.second == indirect+indirect)
 				numDSB_indir++;
+			else if (pairPosType.second == direct+quasidirect)
+			{
+				numDSB_dir++;
+				numDSB_dir1qdir++;
+			}
+			else if (pairPosType.second == indirect+quasidirect)
+			{
+				numDSB_hybrid++;
+				numDSB_hyb1qdir++;
+			}
+			else if (pairPosType.second == quasidirect+quasidirect)
+			{
+				numDSB_dir++;
+				numDSB_dir2qdir++;
+			}
 		}
 	}
 	for (auto& chromosome : SSB)
@@ -330,10 +364,15 @@ void TsDefineDamage::QuantifyDamage(std::map<G4int, std::map<std::pair<G4int, G4
 			for (auto& strand_type : SSB[iChr][bpPos])
 			{
 				numSSB++;
-				if (strand_type.second == 1)
+				if (strand_type.second == direct)
 					numSSB_dir++;
-				else if (strand_type.second == 2)
+				else if (strand_type.second == indirect)
 					numSSB_indir++;
+				else if (strand_type.second == quasidirect)
+				{
+					numSSB_dir++;
+					numSSB_qdir++;
+				}
 			}
 		}
 	}
@@ -346,16 +385,22 @@ void TsDefineDamage::QuantifyDamage(std::map<G4int, std::map<std::pair<G4int, G4
 			for (auto& strand_type : BaseDamage[iChr][bpPos])
 			{
 				numBaseDam++;
-				if (strand_type.second == 1)
+				if (strand_type.second == direct)
 					numBaseDam_dir++;
-				else if (strand_type.second == 2)
+				else if (strand_type.second == indirect)
 					numBaseDam_indir++;
+				else if (strand_type.second == quasidirect)
+				{
+					numBaseDam_dir++;
+					numBaseDam_qdir++;
+				}
 			}
 		}
 	}
 	numSB = numSSB + numDSB * 2;
 	numSB_dir = numSSB_dir + numDSB_dir * 2 + numDSB_hybrid;
 	numSB_indir = numSSB_indir + numDSB_indir * 2 + numDSB_hybrid;
+	numSB_qdir = numSSB_qdir + 2 * numDSB_dir2qdir + numDSB_dir1qdir + numDSB_hyb1qdir;
 	//G4cout << "numBaseDam: " << numBaseDam << " - numBaseDam_dir: " << numBaseDam_dir << " - numBaseDam_indir: " << numBaseDam_indir << G4endl;
 	//G4cout << "numSB: " << numSB << " - numSB_dir: " << numSB_dir << " - numSB_indir: " << numSB_indir << G4endl;
 	//G4cout << "numSSB: " << numSSB << " - numSSB_dir: " << numSSB_dir << " - numSSB_indir: " << numSSB_indir << G4endl;
@@ -576,20 +621,20 @@ G4int TsDefineDamage::OutputSDDFile(std::map<G4int, std::vector<G4int>> damageSi
 			G4int DSBinBlock = 0;
 			for (G4int j = 0; j < fDSBSeparation; j++)
 			{
-				if (fSSB[iChr][initialBp + j][1] == 1) { numDirDamage++; numSBinBlock++; }
-				if (fSSB[iChr][initialBp + j][2] == 1) { numDirDamage++; numSBinBlock++; }
-				if (fSSB[iChr][initialBp + j][1] >= 2) { numIndirDamage++; numSBinBlock++; }
-				if (fSSB[iChr][initialBp + j][2] >= 2) { numIndirDamage++; numSBinBlock++; }
-				if (fDSB[iChr][initialBp + j][1] == 1) { numDirDamage++; numSBinBlock++; DSBinBlock = 1; }
-				if (fDSB[iChr][initialBp + j][2] == 1) { numDirDamage++; numSBinBlock++; DSBinBlock = 1; }
-				if (fDSB[iChr][initialBp + j][1] >= 2) { numIndirDamage++; numSBinBlock++; DSBinBlock = 1; }
-				if (fDSB[iChr][initialBp + j][2] >= 2) { numIndirDamage++; numSBinBlock++; DSBinBlock = 1; }
+				if (fSSB[iChr][initialBp + j][1] == direct || fSSB[iChr][initialBp + j][1] == quasidirect) { numDirDamage++; numSBinBlock++; }
+				if (fSSB[iChr][initialBp + j][2] == direct || fSSB[iChr][initialBp + j][2] == quasidirect) { numDirDamage++; numSBinBlock++; }
+				if (fSSB[iChr][initialBp + j][1] == indirect) { numIndirDamage++; numSBinBlock++; }
+				if (fSSB[iChr][initialBp + j][2] == indirect) { numIndirDamage++; numSBinBlock++; }
+				if (fDSB[iChr][initialBp + j][1] == direct || fDSB[iChr][initialBp + j][1] == quasidirect) { numDirDamage++; numSBinBlock++; DSBinBlock = 1; }
+				if (fDSB[iChr][initialBp + j][2] == direct || fDSB[iChr][initialBp + j][2] == quasidirect) { numDirDamage++; numSBinBlock++; DSBinBlock = 1; }
+				if (fDSB[iChr][initialBp + j][1] == indirect) { numIndirDamage++; numSBinBlock++; DSBinBlock = 1; }
+				if (fDSB[iChr][initialBp + j][2] == indirect) { numIndirDamage++; numSBinBlock++; DSBinBlock = 1; }
 				if (fScoreOnBases)
 				{
-					if (fBaseDamage[iChr][initialBp + j][1] == 1) { numDirDamage++; numBaseDamagesinBlock++; }
-					if (fBaseDamage[iChr][initialBp + j][2] == 1) { numDirDamage++; numBaseDamagesinBlock++; }
-					if (fBaseDamage[iChr][initialBp + j][1] >= 2) { numIndirDamage++; numBaseDamagesinBlock++; }
-					if (fBaseDamage[iChr][initialBp + j][2] >= 2) { numIndirDamage++; numBaseDamagesinBlock++; }
+					if (fBaseDamage[iChr][initialBp + j][1] == direct || fBaseDamage[iChr][initialBp + j][1] == quasidirect) { numDirDamage++; numBaseDamagesinBlock++; }
+					if (fBaseDamage[iChr][initialBp + j][2] == direct || fBaseDamage[iChr][initialBp + j][2] == quasidirect) { numDirDamage++; numBaseDamagesinBlock++; }
+					if (fBaseDamage[iChr][initialBp + j][1] >= indirect) { numIndirDamage++; numBaseDamagesinBlock++; }
+					if (fBaseDamage[iChr][initialBp + j][2] >= indirect) { numIndirDamage++; numBaseDamagesinBlock++; }
 				}
 			}
 
@@ -674,7 +719,7 @@ G4int TsDefineDamage::OutputSDDFile(std::map<G4int, std::vector<G4int>> damageSi
 					if (fDamage[iChr][initialBp + j][0] != 0)
 					{
 						G4int typeDamage = fDamage[iChr][initialBp + j][0];
-						if (typeDamage == -1) typeDamage = 0;
+						if (typeDamage == nodamage) typeDamage = 0;
 						damageSpec += "1, " + (G4String)to_string(j+1) + ", " + (G4String)to_string(typeDamage) + " / ";
 					}
 				}
@@ -684,7 +729,7 @@ G4int TsDefineDamage::OutputSDDFile(std::map<G4int, std::vector<G4int>> damageSi
 					if (fDamage[iChr][initialBp + j][2] != 0)
 					{
 						G4int typeDamage = fDamage[iChr][initialBp + j][2];
-						if (typeDamage == -1) typeDamage = 0;
+						if (typeDamage == nodamage) typeDamage = 0;
 						damageSpec += "2, " + (G4String)to_string(j+1) + ", " + (G4String)to_string(typeDamage) + " / ";
 					}
 				}
@@ -694,7 +739,7 @@ G4int TsDefineDamage::OutputSDDFile(std::map<G4int, std::vector<G4int>> damageSi
 					if (fDamage[iChr][initialBp + j][3] != 0)
 					{
 						G4int typeDamage = fDamage[iChr][initialBp + j][3];
-						if (typeDamage == -1) typeDamage = 0;
+						if (typeDamage == nodamage) typeDamage = 0;
 						damageSpec += "3, " + (G4String)to_string(j+1) + ", " + (G4String)to_string(typeDamage) + " / ";
 					}
 				}
@@ -704,7 +749,7 @@ G4int TsDefineDamage::OutputSDDFile(std::map<G4int, std::vector<G4int>> damageSi
 					if (fDamage[iChr][initialBp + j][1] != 0)
 					{
 						G4int typeDamage = fDamage[iChr][initialBp + j][1];
-						if (typeDamage == -1) typeDamage = 0;
+						if (typeDamage == nodamage) typeDamage = 0;
 						damageSpec += "4, " + (G4String)to_string(j+1) + ", " + (G4String)to_string(typeDamage) + " / ";
 					}
 				}
@@ -794,22 +839,22 @@ void TsDefineDamage::WriteDNADamageCSV()
 		{
 			G4String base1 = "0", base2 = "0", bb1 = "0", bb2 = "0";
 			G4int ibp = pairbpElem.first;
-			if (fDamage[iChr][ibp][0] == 1) base1 = "D";
-			if (fDamage[iChr][ibp][0] == 2) base1 = "I";
-			if (fDamage[iChr][ibp][0] == 3) base1 = "M";
-			if (fDamage[iChr][ibp][0] == -1) base1 = "*";
-			if (fDamage[iChr][ibp][1] == 1) base2 = "D";
-			if (fDamage[iChr][ibp][1] == 2) base2 = "I";
-			if (fDamage[iChr][ibp][1] == 3) base2 = "M";
-			if (fDamage[iChr][ibp][1] == -1) base2 = "*";
-			if (fDamage[iChr][ibp][2] == 1) bb1 = "D";
-			if (fDamage[iChr][ibp][2] == 2) bb1 = "I";
-			if (fDamage[iChr][ibp][2] == 3) bb1 = "M";
-			if (fDamage[iChr][ibp][2] == -1) bb1 = "*";
-			if (fDamage[iChr][ibp][3] == 1) bb2 = "D";
-			if (fDamage[iChr][ibp][3] == 2) bb2 = "I";
-			if (fDamage[iChr][ibp][3] == 3) bb2 = "M";
-			if (fDamage[iChr][ibp][3] == -1) bb2 = "*";
+			if (fDamage[iChr][ibp][0] == direct || fDamage[iChr][ibp][0] == quasidirect) base1 = "D";
+			if (fDamage[iChr][ibp][0] == indirect) base1 = "I";
+			if (fDamage[iChr][ibp][0] == multiple || fDamage[iChr][ibp][0] == multiplewithquasidirect) base1 = "M";
+			if (fDamage[iChr][ibp][0] == nodamage) base1 = "*";
+			if (fDamage[iChr][ibp][1] == direct || fDamage[iChr][ibp][1] == quasidirect) base2 = "D";
+			if (fDamage[iChr][ibp][1] == indirect) base2 = "I";
+			if (fDamage[iChr][ibp][1] == multiple || fDamage[iChr][ibp][1] == multiplewithquasidirect) base2 = "M";
+			if (fDamage[iChr][ibp][1] == nodamage) base2 = "*";
+			if (fDamage[iChr][ibp][2] == direct || fDamage[iChr][ibp][2] == quasidirect) bb1 = "D";
+			if (fDamage[iChr][ibp][2] == indirect) bb1 = "I";
+			if (fDamage[iChr][ibp][2] == multiple || fDamage[iChr][ibp][2] == multiplewithquasidirect) bb1 = "M";
+			if (fDamage[iChr][ibp][2] == nodamage) bb1 = "*";
+			if (fDamage[iChr][ibp][3] == direct || fDamage[iChr][ibp][3] == quasidirect) bb2 = "D";
+			if (fDamage[iChr][ibp][3] == indirect) bb2 = "I";
+			if (fDamage[iChr][ibp][3] == multiple || fDamage[iChr][ibp][3] == multiplewithquasidirect) bb2 = "M";
+			if (fDamage[iChr][ibp][3] == nodamage) bb2 = "*";
 			fout << iChr << ", " << ibp << "," << bb1 << "," << base1 << "," << base2 << "," << bb2 << "\n";
 		}
 	}
@@ -846,23 +891,36 @@ void TsDefineDamage::ExcludeShortDNAFragments(std::map<G4int, std::map<std::pair
 				{
 					if (ibp <= maxbp)
 					{
-						if (fBaseDamage[iChr][ibp][1] == 1) { fBaseDamage[iChr][ibp][1] = 0; fDamage[iChr][ibp][0] = 0; Excluded_baseDam++; Excluded_baseDam_dir++;}
-						if (fBaseDamage[iChr][ibp][1] >= 2) { fBaseDamage[iChr][ibp][1] = 0; fDamage[iChr][ibp][0] = 0; Excluded_baseDam++; Excluded_baseDam_indir++;}
-						if (fBaseDamage[iChr][ibp][2] == 1) { fBaseDamage[iChr][ibp][2] = 0; fDamage[iChr][ibp][1] = 0; Excluded_baseDam++; Excluded_baseDam_dir++;}
-						if (fBaseDamage[iChr][ibp][2] >= 2) { fBaseDamage[iChr][ibp][2] = 0; fDamage[iChr][ibp][1] = 0; Excluded_baseDam++; Excluded_baseDam_indir++;}
-						if (fSSB[iChr][ibp][1] == 1) { fSSB[iChr][ibp][1] = 0; fDamage[iChr][ibp][2] = 0; Excluded_numSSB++; Excluded_numSSB_dir++;}
-						if (fSSB[iChr][ibp][1] >= 2) { fSSB[iChr][ibp][1] = 0; fDamage[iChr][ibp][2] = 0; Excluded_numSSB++; Excluded_numSSB_indir++;}
-						if (fSSB[iChr][ibp][2] == 1) { fSSB[iChr][ibp][2] = 0; fDamage[iChr][ibp][3] = 0; Excluded_numSSB++; Excluded_numSSB_dir++;}
-						if (fSSB[iChr][ibp][2] >= 2) { fSSB[iChr][ibp][2] = 0; fDamage[iChr][ibp][3] = 0; Excluded_numSSB++; Excluded_numSSB_indir++;}
+						if (fBaseDamage[iChr][ibp][1] == direct || fBaseDamage[iChr][ibp][1] == quasidirect) { fBaseDamage[iChr][ibp][1] = 0; fDamage[iChr][ibp][0] = 0; Excluded_baseDam++; Excluded_baseDam_dir++;}
+						if (fBaseDamage[iChr][ibp][1] == indirect) { fBaseDamage[iChr][ibp][1] = 0; fDamage[iChr][ibp][0] = 0; Excluded_baseDam++; Excluded_baseDam_indir++;}
+						if (fBaseDamage[iChr][ibp][2] == direct || fBaseDamage[iChr][ibp][2] == quasidirect) { fBaseDamage[iChr][ibp][2] = 0; fDamage[iChr][ibp][1] = 0; Excluded_baseDam++; Excluded_baseDam_dir++;}
+						if (fBaseDamage[iChr][ibp][2] == indirect) { fBaseDamage[iChr][ibp][2] = 0; fDamage[iChr][ibp][1] = 0; Excluded_baseDam++; Excluded_baseDam_indir++;}
+						if (fSSB[iChr][ibp][1] == direct || fSSB[iChr][ibp][1] == quasidirect) { fSSB[iChr][ibp][1] = 0; fDamage[iChr][ibp][2] = 0; Excluded_numSSB++; Excluded_numSSB_dir++;}
+						if (fSSB[iChr][ibp][1] == indirect) { fSSB[iChr][ibp][1] = 0; fDamage[iChr][ibp][2] = 0; Excluded_numSSB++; Excluded_numSSB_indir++;}
+						if (fSSB[iChr][ibp][2] == direct || fSSB[iChr][ibp][2] == quasidirect) { fSSB[iChr][ibp][2] = 0; fDamage[iChr][ibp][3] = 0; Excluded_numSSB++; Excluded_numSSB_dir++;}
+						if (fSSB[iChr][ibp][2] == indirect) { fSSB[iChr][ibp][2] = 0; fDamage[iChr][ibp][3] = 0; Excluded_numSSB++; Excluded_numSSB_indir++;}
 						// We use the break in the first break so we only check for damage in that to count DSBs. However, damage in second breaks are also disregarded. Also avoid first base pair
 						if (ibp > allFreeEndsOfThisChromosome[i-1])
 						{
-							if (fDSB[iChr][ibp][1] == 1) { fDSB[iChr][ibp][1] = 0; fDamage[iChr][ibp][2] = 0; Excluded_numDSB++; Excluded_numDSB_dir++;}
-							if (fDSB[iChr][ibp][1] == 2) { fDSB[iChr][ibp][1] = 0; fDamage[iChr][ibp][2] = 0; Excluded_numDSB++; Excluded_numDSB_indir++;}
-							if (fDSB[iChr][ibp][1] >= 3) { fDSB[iChr][ibp][1] = 0; fDamage[iChr][ibp][2] = 0; Excluded_numDSB++; Excluded_numDSB_hybrid++;}
+							if (fDSB[iChr][ibp][1] == direct)
+							{
+								fDSB[iChr][ibp][1] = 0; fDamage[iChr][ibp][2] = 0; Excluded_numDSB++;
+								if (fDSB[iChr][ibp][2] == direct)
+									Excluded_numDSB_dir++;
+								if (fDSB[iChr][ibp][2] == indirect)
+									Excluded_numDSB_hybrid++;
+							}
+							if (fDSB[iChr][ibp][1] == indirect)
+							{
+								fDSB[iChr][ibp][1] = 0; fDamage[iChr][ibp][2] = 0; Excluded_numDSB++;
+								if (fDSB[iChr][ibp][2] == direct)
+									Excluded_numDSB_hybrid++;
+								if (fDSB[iChr][ibp][2] == indirect)
+									Excluded_numDSB_indir++;
+							}
 						}
 						fDSB[iChr][ibp][2] = 0; fDamage[iChr][ibp][3] = 0;
-						fDSB[iChr][ibp][2] = 2; fDamage[iChr][ibp][3] = 0;
+						fDSB[iChr][ibp][2] = 0; fDamage[iChr][ibp][3] = 0;
 						fDSB[iChr][ibp][2] = 0; fDamage[iChr][ibp][3] = 0;
 					}
 				}

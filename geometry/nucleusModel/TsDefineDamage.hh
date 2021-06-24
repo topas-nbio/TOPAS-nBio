@@ -104,6 +104,12 @@ public:
 	inline G4int GetNumSSBPlus()		{ return numSSBPlus; }
 	inline G4int GetNumDSBPlus()		{ return numDSBPlus; }
 	inline G4int GetNumComplex()		{ return numMoreComplex; }
+	inline G4int GetNumQDirSB()			{ return numSB_qdir; }
+	inline G4int GetNumQDirSSB()		{ return numSSB_qdir; }
+	inline G4int GetNumDirDSB_1QDir()	{ return numDSB_dir1qdir; }
+	inline G4int GetNumDirDSB_2QDir()	{ return numDSB_dir2qdir; }
+	inline G4int GetNumHybDSB_1QDir()	{ return numDSB_hyb1qdir; }
+	inline G4int GetNumQDirBaseDam()	{ return numBaseDam_qdir; }
 	inline G4int GetExcludedNumSSB()			{ return Excluded_numSSB; }
 	inline G4int GetExcludedNumDirSSB()			{ return Excluded_numSSB_dir; }
 	inline G4int GetExcludedNumIndirSSB()		{ return Excluded_numSSB_indir; }
@@ -167,6 +173,14 @@ private:
     G4int numDSBPlus;
     G4int numMoreComplex;
 
+    // quasi-direct damage
+    G4int numSB_qdir;
+    G4int numSSB_qdir;
+    G4int numDSB_dir1qdir;
+    G4int numDSB_dir2qdir;
+    G4int numDSB_hyb1qdir;
+    G4int numBaseDam_qdir;
+
     G4int Excluded_numSB;
     G4int Excluded_numSB_dir;
     G4int Excluded_numSB_indir;
@@ -204,6 +218,15 @@ private:
     std::map<G4int, std::map<G4int, std::map<G4int, G4int>>> fBaseDamage;
 
     std::map<G4int, std::map<G4int, std::map<G4int, G4ThreeVector>>> fDamagePositions;
+
+	// Codes for different types of damage
+	G4int nodamage = -1;
+	G4int direct = 1;
+	G4int indirect = 2;
+	G4int multiple = 3;
+	G4int quasidirect = 4;
+	G4int multiplewithquasidirect = 5;
+
 };
 
 

@@ -48,6 +48,7 @@ private:
 	G4bool fWriteCSV;
 	G4bool fScoreDirectDamages;
 	G4bool fScoreIndirectDamages;
+	G4bool fScoreQuasiDirectDamages;
 	G4bool fScoreOnBases = true;
 	G4bool fScoreOnBackbones = true;
 	G4bool fScoreOnHydrationShell = true;
@@ -101,6 +102,14 @@ private:
     G4double yieldSSBPlus;
     G4double yieldDSBPlus;
     G4double yieldMoreComplex;
+
+    // quasi-direct damage
+    G4int numSB_qdir;
+    G4int numSSB_qdir;
+    G4int numDSB_dir1qdir;
+    G4int numDSB_dir2qdir;
+    G4int numDSB_hyb1qdir;
+    G4int numBaseDam_qdir;
 
 	std::vector<TsHitsRecord*> Hits;
 
