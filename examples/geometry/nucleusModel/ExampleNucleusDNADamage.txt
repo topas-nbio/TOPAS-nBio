@@ -65,7 +65,7 @@ s:So/ParticleGun/BeamPositionDistribution           = "none"					# EITHER single
 #d:So/ParticleGun/BeamPositionCutoffY 				= Ge/Nucleus/NucleusRadius um
 s:So/ParticleGun/BeamAngularDistribution            = "none"
 d:So/ParticleGun/BeamEnergy                         = 2.0 MeV
-i:So/ParticleGun/NumberOfHistoriesInRun             = 5
+i:So/ParticleGun/NumberOfHistoriesInRun             = 1
 b:Ge/Nucleus/RotateNucleusForEachRun				= "false"
 # Producing separate runs instead of separate histories if rotation enabled
 #d:Tf/TimelineStart 			 						= 0. s
@@ -94,12 +94,14 @@ i:Sc/DNAScorer/LowerFragmentDetectionThreshold          = 250
 i:Sc/DNAScorer/UpperFragmentDetectionThreshold          = 300000000
 b:Sc/DNAScorer/ScoreDirectDamages                       = "true"
 b:Sc/DNAScorer/ScoreIndirectDamages                     = "true"
+b:Sc/DNAScorer/ScoreQuasiDirectDamages					= "true"
 d:Sc/DNAScorer/ScoringRadius                            = Ge/Nucleus/NucleusRadius um
 b:Sc/DNAScorer/HistoneAsScavenger                       = Ge/Nucleus/HistoneAsScavenger
 i:Sc/DNAScorer/NumberOfHistoriesInRun                   = So/ParticleGun/NumberOfHistoriesInRun
 d:Sc/DNAScorer/DosePerExposure                          = 1 Gy
 s:Sc/DNAScorer/PrimaryParticle                          = So/ParticleGun/BeamParticle
 i:Sc/DNAScorer/BasePairPositionAtGeometricHierarchy     = 0
+
 
 # Materials to score
 sv:Sc/DNAScorer/Strand1MaterialNames                    = 4 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial" "G4_HistoneMaterial"
