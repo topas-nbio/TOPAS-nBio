@@ -626,7 +626,7 @@ void TsScorerNucleusDNADamage::UserHookForEndOfRun()
 
 G4int TsScorerNucleusDNADamage::Analyze(vector<TsHitsRecord*> hits, G4int eventID)
 {
-	G4bool useNewMethod = false;
+	G4bool useNewMethod = true;
 
 	fDoseInThisExposure = (1.6e-13 * eventsEdep[eventID] / MeV) / (fNucleusMass / 1000);	// Gy
 	fTrackAveragedLET	= (eventsEdep[eventID] / keV) / (eventsLength[eventID] / um);
