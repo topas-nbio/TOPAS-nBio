@@ -108,6 +108,7 @@ i:Sc/DNAScorer/LowerFragmentDetectionThreshold          = 250
 i:Sc/DNAScorer/UpperFragmentDetectionThreshold          = 300000000
 b:Sc/DNAScorer/ScoreDirectDamages                       = "true"
 b:Sc/DNAScorer/ScoreIndirectDamages                     = "true"
+b:Sc/DNAScorer/ScoreQuasiDirectDamages					= "true"
 d:Sc/DNAScorer/ScoringRadius                            = Ge/Nucleus/NucleusRadius um
 b:Sc/DNAScorer/HistoneAsScavenger                       = Ge/Nucleus/HistoneAsScavenger
 i:Sc/DNAScorer/NumberOfHistoriesInRun                   = So/ParticleGun/NumberOfHistoriesInRun
