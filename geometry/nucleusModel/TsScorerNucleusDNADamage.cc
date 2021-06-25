@@ -674,6 +674,15 @@ G4int TsScorerNucleusDNADamage::Analyze(vector<TsHitsRecord*> hits, G4int eventI
 		numSSBPlus			= fDefineDamage->GetNumSSBPlus();
 		numDSBPlus			= fDefineDamage->GetNumDSBPlus();
 		numMoreComplex		= fDefineDamage->GetNumComplex();
+		if (fScoreQuasiDirectDamages)
+		{
+			numSSB_qdir			= fDefineDamage->GetNumQDirSSB();
+			numDSB_dir1qdir		= fDefineDamage->GetNumDirDSB_1QDir();
+			numDSB_dir2qdir		= fDefineDamage->GetNumDirDSB_2QDir();
+			numDSB_hyb1qdir		= fDefineDamage->GetNumHybDSB_1QDir();
+			if (fScoreOnBases)
+				numBaseDam_qdir	= fDefineDamage->GetNumQDirBaseDam();
+		}
 		if (fExcludeShortFragment)
 		{
 		    Excluded_numSSB			= fDefineDamage->GetExcludedNumSSB();

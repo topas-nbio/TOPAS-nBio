@@ -24,7 +24,7 @@ s:Ge/Nucleus/Backbone2/Material         = "G4_BackboneMaterial"
 b:Ge/Nucleus/AddHydrationShell          = "true"
 s:Ge/Nucleus/HydrationShell1/Material   = "G4_WATER_MODIFIED"
 s:Ge/Nucleus/HydrationShell2/Material   = "G4_WATER_MODIFIED"
-s:Ge/Nucleus/DNAModel					= "Sphere"
+#s:Ge/Nucleus/DNAModel					= "Sphere"
 
 # Type DNA - Nucleus
 #s:Ge/Nucleus/DNABasicElement			= "ChromatinFiber"
@@ -57,25 +57,28 @@ s:Ma/G4_WATER_MODIFIED/CloneFromMaterial    = "G4_WATER"
 d:Ma/G4_WATER_MODIFIED/CloneWithDensity     = 1.0 g/cm3
 
 # -- Physics and Chemistry
-sv:Ph/Default/Modules                   	= 1 "g4em-dna" 						# EITHER only physics
-#sv:Ph/Default/Modules						= 2 "g4em-dna" "TsEmDNAChemistry" 	# OR	 physics and chemistry
-#includeFile									= supportFiles/TOPASChemistry.txt
-#s:Ch/ChemistryName							= "TOPASChemistry"
+#sv:Ph/Default/Modules                   	= 1 "g4em-dna" 						# EITHER only physics
+sv:Ph/Default/Modules						= 2 "g4em-dna" "TsEmDNAChemistry" 	# OR	 physics and chemistry
+includeFile									= supportFiles/TOPASChemistry.txt
+s:Ch/ChemistryName							= "TOPASChemistry"
+d:Ch/TOPASChemistry/ChemicalStageTimeEnd = 0.5 ns
+dv:Ch/TOPASChemistry/AddTimeStepHighEdge = 1 999999 ps
+dv:Ch/TOPASChemistry/AddTimeStepResolution = 1 1.0 ps
 i:Ph/Verbosity                          	= 0
 
 
 # -- Source and runs
 s:So/ParticleGun/Type                               = "Beam"
 s:So/ParticleGun/Component                          = "BeamPosition"
-d:Ge/BeamPosition/TransX                            = 0. um
-d:Ge/BeamPosition/TransY                            = 0. um
-d:Ge/BeamPosition/TransZ                            = 0.25 um
+d:Ge/BeamPosition/TransX                            = 0.01 um
+d:Ge/BeamPosition/TransY                            = 0.01 um
+d:Ge/BeamPosition/TransZ                            = 0.17 um
 s:So/ParticleGun/BeamParticle                       = "alpha"
-#s:So/ParticleGun/BeamPositionDistribution           = "none"					# EITHER single track position
-s:So/ParticleGun/BeamPositionDistribution			= "Flat"					# OR 	 disk source
-s:So/ParticleGun/BeamPositionCutoffShape			= "Ellipse"
-d:So/ParticleGun/BeamPositionCutoffX 				= Ge/Nucleus/NucleusRadius um
-d:So/ParticleGun/BeamPositionCutoffY 				= Ge/Nucleus/NucleusRadius um
+s:So/ParticleGun/BeamPositionDistribution           = "none"					# EITHER single track position
+#s:So/ParticleGun/BeamPositionDistribution			= "Flat"					# OR 	 disk source
+#s:So/ParticleGun/BeamPositionCutoffShape			= "Ellipse"
+#d:So/ParticleGun/BeamPositionCutoffX 				= Ge/Nucleus/NucleusRadius um
+#d:So/ParticleGun/BeamPositionCutoffY 				= Ge/Nucleus/NucleusRadius um
 s:So/ParticleGun/BeamAngularDistribution            = "none"
 d:So/ParticleGun/BeamEnergy                         = 2.0 MeV
 i:So/ParticleGun/NumberOfHistoriesInRun             = 1
