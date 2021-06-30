@@ -40,6 +40,7 @@ private:
 	G4bool fUseLinearProbabilityThreshold;
 	G4double fLinearProbability_lower_limit;
 	G4double fLinearProbability_upper_limit;
+	G4double fProbabilityOfTransferFromHydrationShellToBackbone;
 	G4int fDSBSeparation;
 	G4bool fExcludeShortFragment;
 	G4int fLowerFragmentDetectionThreshold;

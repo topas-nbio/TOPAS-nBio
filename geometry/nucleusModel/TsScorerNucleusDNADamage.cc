@@ -66,11 +66,11 @@ TsScorerNucleusDNADamage::TsScorerNucleusDNADamage(TsParameterManager* pM, TsMat
 		fUseLinearProbabilityThreshold = fPm->GetBooleanParameter(GetFullParmName("UseLinearProbabilityThreshold"));
 
 	fLinearProbability_lower_limit= 5*eV;
-		if ( fPm->ParameterExists(GetFullParmName("LinearProbability_lower_limit")) )
+	if ( fPm->ParameterExists(GetFullParmName("LinearProbability_lower_limit")) )
 		fLinearProbability_lower_limit = fPm->GetDoubleParameter(GetFullParmName("LinearProbability_lower_limit"),"Energy");
 
 	fLinearProbability_upper_limit= 37.5*eV;
-		if ( fPm->ParameterExists(GetFullParmName("LinearProbability_upper_limit")) )
+	if ( fPm->ParameterExists(GetFullParmName("LinearProbability_upper_limit")) )
 		fLinearProbability_upper_limit = fPm->GetDoubleParameter(GetFullParmName("LinearProbability_upper_limit"),"Energy");
 
 	fDSBSeparation = 10; //10 BP
@@ -108,6 +108,10 @@ TsScorerNucleusDNADamage::TsScorerNucleusDNADamage(TsParameterManager* pM, TsMat
 	fScoreQuasiDirectDamages = false;
 	if ( fPm->ParameterExists(GetFullParmName("ScoreQuasiDirectDamages")))
 		fScoreQuasiDirectDamages = fPm->GetBooleanParameter(GetFullParmName("ScoreQuasiDirectDamages"));
+
+	fProbabilityOfTransferFromHydrationShellToBackbone = 1.0/3.0;
+	if ( fPm->ParameterExists(GetFullParmName("ProbabilityOfTransferFromHydrationShellToBackbone")) )
+		fProbabilityOfTransferFromHydrationShellToBackbone = fPm->GetUnitlessParameter(GetFullParmName("ProbabilityOfTransferFromHydrationShellToBackbone"));
 
 	/*fScoreOnBases = true;
 	if (fPm->ParameterExists(GetFullParmName("ScoreOnBases")))
@@ -240,6 +244,7 @@ TsScorerNucleusDNADamage::TsScorerNucleusDNADamage(TsParameterManager* pM, TsMat
 	fDefineDamage->SetExcludeShortFragment(fExcludeShortFragment);
 	fDefineDamage->SetLowerFragmentDetectionThreshold(fLowerFragmentDetectionThreshold);
 	fDefineDamage->SetUpperFragmentDetectionThreshold(fUpperFragmentDetectionThreshold);
+	fDefineDamage->SetProbabilityOfTransferFromHydrationShellToBackbone(fProbabilityOfTransferFromHydrationShellToBackbone);
 	fDefineDamage->SetNucleusMass(fNucleusMass);
 	fDefineDamage->SetTotalDNAContent(fTotalDNAContent);
 	fDefineDamage->SetChromosomeDNAContent(fChromosomeDNAContent);

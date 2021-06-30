@@ -181,11 +181,16 @@ void TsDefineDamage::ComputeStrandBreaks(std::vector<TsHitsRecord*> Hits)
 				G4int iElem = pairElemEnergy.first;
 				if (iElem >= 0 && (((iElem == 4 || iElem == 5) && fScoreOnHydrationShell)) && fScoreDirectDamages)
 				{
-					// Score damage in backbone due to ionization of the corresponding hydration shell
-					if (fDamage[iChr][ibp][iElem - 2] < direct)
-						fDamage[iChr][ibp][iElem - 2] = quasidirect; // Quasi-direct if no previous damage
-					else if (fDamage[iChr][ibp][iElem - 2] < indirect)
-						fDamage[iChr][ibp][iElem - 2] = multiplewithquasidirect; // Multiple damage if previous indirect
+					// Score damage in backbone or base due to ionization of the corresponding hydration shell
+					G4int element = iElem - 4; // Transfer to base
+					G4double sample = G4UniformRand();
+					if (sample < fProbTransferHydShellToBackbone)
+						element = iElem - 2; // Transfer to backbone
+
+					if (fDamage[iChr][ibp][element] < direct)
+						fDamage[iChr][ibp][element] = quasidirect; // Quasi-direct if no previous damage
+					else if (fDamage[iChr][ibp][element] < indirect)
+						fDamage[iChr][ibp][element] = multiplewithquasidirect; // Multiple damage if previous indirect
 				}
 			}
 		}
