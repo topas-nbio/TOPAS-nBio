@@ -89,7 +89,7 @@ public:
 	inline void SetWriteCSV(G4bool wcsv)						{ fWriteCSV = wcsv; }
 	inline void SetOutputFileName(G4String fn)					{ fOutputFile = fn; }
 	inline void SetOutputFileMode(G4String fmode)				{ fOutputMode = fmode; }
-	inline void SetProbabilityOfTransferFromHydrationShellToBackbone(G4String p)	{ fProbTransferHydShellToBackbone = p; }
+	inline void SetProbabilityOfTransferFromHydrationShellToBackbone(G4double p)	{ fProbTransferHydShellToBackbone = p; }
 
 	// Get inline methods
 	inline G4int GetNumSSB()			{ return numSSB; }
