@@ -106,6 +106,7 @@ b:Sc/DNAScorer/UseLinearProbabilityThreshold            = "false"
 #d:Sc/DNAScorer/LinearProbability_lower_limit            = 5 eV
 #d:Sc/DNAScorer/LinearProbability_upper_limit            = 37.5 eV
 u:Sc/DNAScorer/ProbabilityForOHToCauseDamage            = 0.4
+u:Sc/DNAScorer/ProbabilityOfTransferFromHydrationShellToBackbone = 0.333333
 b:Sc/DNAScorer/ExcludeShortFragment                     = "false"
 i:Sc/DNAScorer/LowerFragmentDetectionThreshold          = 250
 i:Sc/DNAScorer/UpperFragmentDetectionThreshold          = 300000000
