@@ -35,7 +35,9 @@ public:
 
 private:
 	G4int fNumberOfHistoriesInRun;
-	G4double fProbabilityOfOHDamage;
+	G4double fProbabilityOfOHInteractionWithBackbone;
+	G4double fProbabilityOfOHDamageInBackbone;
+	G4double fProbabilityOfOHDamageInBase;
 	G4double fDamageThreshold;
 	G4bool fUseLinearProbabilityThreshold;
 	G4double fLinearProbability_lower_limit;

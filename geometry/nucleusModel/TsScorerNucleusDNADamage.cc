@@ -53,9 +53,17 @@ TsScorerNucleusDNADamage::TsScorerNucleusDNADamage(TsParameterManager* pM, TsMat
 
 	fNumberOfHistoriesInRun =  fPm->GetIntegerParameter(GetFullParmName("NumberOfHistoriesInRun"));
 
-	fProbabilityOfOHDamage = 0.4;
-	if ( fPm->ParameterExists(GetFullParmName("ProbabilityForOHToCauseDamage")) )
-		fProbabilityOfOHDamage = fPm->GetUnitlessParameter(GetFullParmName("ProbabilityForOHToCauseDamage"));
+	fProbabilityOfOHInteractionWithBackbone = 0.25;
+	if ( fPm->ParameterExists(GetFullParmName("ProbabilityForOHToInteractWithBackbone")) )
+		fProbabilityOfOHDamageInBackbone = fPm->GetUnitlessParameter(GetFullParmName("ProbabilityForOHToInteractWithBackbone"));
+
+	fProbabilityOfOHDamageInBase = 1.0;
+	if ( fPm->ParameterExists(GetFullParmName("ProbabilityForOHToCauseDamageInBase")) )
+		fProbabilityOfOHDamageInBackbone = fPm->GetUnitlessParameter(GetFullParmName("ProbabilityForOHToCauseDamageInBase"));
+
+	fProbabilityOfOHDamageInBackbone = 0.55;
+	if ( fPm->ParameterExists(GetFullParmName("ProbabilityForOHToCauseDamageInBackbone")) )
+		fProbabilityOfOHDamageInBackbone = fPm->GetUnitlessParameter(GetFullParmName("ProbabilityForOHToCauseDamageInBackbone"));
 
 	fDamageThreshold = 17.5*eV;
 	if ( fPm->ParameterExists(GetFullParmName("DamageThreshold")) )
