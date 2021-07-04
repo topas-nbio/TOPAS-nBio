@@ -276,7 +276,8 @@ TsScorerNucleusDNADamage::TsScorerNucleusDNADamage(TsParameterManager* pM, TsMat
 	// Print parameters
 	// ********************************************************************************
 	G4cout<<"*********************************************************************************"<<G4endl;
-	G4cout << "fProbabilityOfOHDamage = "<<fProbabilityOfOHDamage<<G4endl;
+	G4cout << "fProbabilityOfOHInteractionWithBackbone = "<<fProbabilityOfOHInteractionWithBackbone <<G4endl;
+	G4cout << "fProbabilityOfOHDamageInBackbone = "<<fProbabilityOfOHDamageInBackbone <<G4endl;
 	if (!fUseLinearProbabilityThreshold)
 	G4cout << "fDamageThreshold = "<<fDamageThreshold/eV<<" eV"<<G4endl;
 	else
@@ -463,19 +464,38 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 				delete hit;
 				return false;
 			}
-			// Make the hydroxyl damage to DNA
-			else if (isHydroxyl && (strstr(volumeName, backName) != NULL || strstr(volumeName, baseName) != NULL))
+			// Make the hydroxyl damage to DNA.
+			// 1 In bases, all OH are assumed to interact.
+			else if (isHydroxyl && strstr(volumeName, baseName) != NULL)
 			{
 				hit->SetEdep(-0.001 * eV);
 				hit->SetIsDirectDamage(false);
 				G4bool reacted = true;
-				if (reacted && G4UniformRand() < fProbabilityOfOHDamage)
+				if (reacted && G4UniformRand() < fProbabilityOfOHDamageInBase)
 				{
 					Hits.push_back(hit);
 					aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 					return true;
 				}
 				aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+				delete hit;
+				return false;
+			}
+			// 2 In backbones, only those interacting are killed; and only those making damage produce SB
+			else if (isHydroxyl && strstr(volumeName, backName) != NULL)
+			{
+				hit->SetEdep(-0.001 * eV);
+				hit->SetIsDirectDamage(false);
+				G4bool reacted = false;
+				if (G4UniformRand() < fProbabilityOfOHInteractionWithBackbone)
+					reacted = true;
+				if (reacted)
+				{
+					if (G4UniformRand() < fProbabilityOfOHDamageInBackbone)
+						Hits.push_back(hit);
+					aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+					return true;
+				}
 				delete hit;
 				return false;
 			}
