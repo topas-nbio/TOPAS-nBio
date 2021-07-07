@@ -142,6 +142,7 @@ private:
 	std::vector<G4int> fVoxel_ID;
 
 	std::map<G4double, G4int> fTrackSteps;
+	std::map<G4double, G4String> fTrackLastVolume;
 };
 
 

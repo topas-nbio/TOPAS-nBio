@@ -382,9 +382,16 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	// Get steps this track has advanced
 	fTrackSteps[aStep->GetTrack()->GetTrackID()] += 1;
 
+
 	// Get volume at the depth of base pairs
 	G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
 	G4String volumeName = touchable->GetVolume(fBasePairDepth)->GetName();
+
+	// Get last volume for this track
+	G4bool enteringInNewVolume = false;
+	if (volumeName == fTrackLastVolume[aStep->GetTrack()->GetTrackID()])
+		enteringInNewVolume = true;
+	fTrackLastVolume[aStep->GetTrack()->GetTrackID()] = volumeName;
 
 	// Check if hit happens in any of the strand materials
 	G4Material* material = aStep->GetPreStepPoint()->GetMaterial();
@@ -464,9 +471,9 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 				delete hit;
 				return false;
 			}
-			// Make the hydroxyl damage to DNA.
+			// Make the hydroxyl damage to DNA. We only consider one hydroxyl per base or backbone (just those entering in the volume)
 			// 1 In bases, all OH are assumed to interact.
-			else if (isHydroxyl && strstr(volumeName, baseName) != NULL)
+			else if (isHydroxyl && strstr(volumeName, baseName) != NULL && enteringInNewVolume)
 			{
 				hit->SetEdep(-0.001 * eV);
 				hit->SetIsDirectDamage(false);
@@ -481,7 +488,7 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 				return false;
 			}
 			// 2 In backbones, only those interacting are killed; and only those making damage produce SB
-			else if (isHydroxyl && strstr(volumeName, backName) != NULL)
+			else if (isHydroxyl && strstr(volumeName, backName) != NULL && enteringInNewVolume)
 			{
 				hit->SetEdep(-0.001 * eV);
 				hit->SetIsDirectDamage(false);
