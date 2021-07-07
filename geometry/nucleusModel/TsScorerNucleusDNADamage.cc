@@ -477,7 +477,6 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 					aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 					return true;
 				}
-				aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 				delete hit;
 				return false;
 			}
