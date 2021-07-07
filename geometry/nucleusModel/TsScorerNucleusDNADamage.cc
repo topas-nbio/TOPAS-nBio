@@ -462,6 +462,7 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			G4String speciesName 	= GetMolecule(aStep->GetTrack())->GetName();
 			G4bool isSpeciesToKill 	= (speciesName == "OH^0" || speciesName == "e_aq^-1" || speciesName == "H^0");
 			G4bool isHydroxyl		= (speciesName == "OH^0");
+			G4bool isHydElectron	= (speciesName == "e_aq^-1");
 			G4String backName = "Backbone";
 			G4String baseName = "Base";
 			// Kill all species generated inside DNA volume except for the hydration shell
@@ -472,8 +473,8 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 				return false;
 			}
 			// Make the hydroxyl damage to DNA. We only consider one hydroxyl per base or backbone (just those entering in the volume)
-			// 1 In bases, all OH are assumed to interact.
-			else if (isHydroxyl && strstr(volumeName, baseName) != NULL && enteringInNewVolume)
+			// 1 In bases, all OH and e_aq are assumed to interact.
+			else if ((isHydroxyl || isHydElectron) && strstr(volumeName, baseName) != NULL && enteringInNewVolume)
 			{
 				hit->SetEdep(-0.001 * eV);
 				hit->SetIsDirectDamage(false);
@@ -487,7 +488,7 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 				delete hit;
 				return false;
 			}
-			// 2 In backbones, only those interacting are killed; and only those making damage produce SB
+			// 2 In backbones, only those OH interacting are killed; and only those making damage produce SB
 			else if (isHydroxyl && strstr(volumeName, backName) != NULL && enteringInNewVolume)
 			{
 				hit->SetEdep(-0.001 * eV);
