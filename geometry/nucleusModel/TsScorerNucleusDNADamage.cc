@@ -389,7 +389,7 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 	// Get last volume for this track
 	G4bool enteringInNewVolume = false;
-	if (volumeName == fTrackLastVolume[aStep->GetTrack()->GetTrackID()])
+	if (volumeName != fTrackLastVolume[aStep->GetTrack()->GetTrackID()])
 		enteringInNewVolume = true;
 	fTrackLastVolume[aStep->GetTrack()->GetTrackID()] = volumeName;
 
