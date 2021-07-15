@@ -628,32 +628,13 @@ void TsNucleus::SetDNAVolumes(G4bool BuildHalfCyl,
 	//sphere DNA
 	if (BuildSphere){
 		if (fAddBases){
-			G4Sphere* gDNA_base1 = new G4Sphere("DNA_base1",
-											0*nm,
-											0.208*nm,
-											0*deg,
-											360*deg,
-											0*deg,
-											180*deg);
-			G4Sphere* gDNA_base2 = new G4Sphere("DNA_base2",
-											0*nm,
-											0.208*nm,
-											0*deg,
-											360*deg,
-											0*deg,
-											180*deg);
+			G4Sphere* gDNA_base = new G4Orb("DNA_base", 0.383*nm);
 			
-			lBase1 = CreateLogicalVolume("Base1", gDNA_base1);
-			lBase2 = CreateLogicalVolume("Base2", gDNA_base2);
+			lBase1 = CreateLogicalVolume("Base1", gDNA_base);
+			lBase2 = CreateLogicalVolume("Base2", gDNA_base);
 		 }
 		 if (fAddBackbones){
-			 G4Sphere* gDNA_backbone = new G4Sphere("DNA_backbone",
-													0.208*nm,
-													0.24*nm,
-													0*deg,
-													360*deg,
-													0*deg,
-													180*deg);
+			 G4Sphere* gDNA_backbone = new G4Orb("DNA_backbone", 0.383*nm);
 
 			 lBack1 = CreateLogicalVolume("Backbone1", gDNA_backbone);
 			 lBack2 = CreateLogicalVolume("Backbone2", gDNA_backbone);
@@ -661,16 +642,23 @@ void TsNucleus::SetDNAVolumes(G4bool BuildHalfCyl,
 
 		// ************************** build hydration shell layer **************************
 		if (fAddHydrationShell){
-			G4Sphere* gWater = new G4Sphere("DNA_WaterLayer",
-											   0.24*nm,
-											   0.24*nm+fHydrationShellThickness,
-											   0*deg,
-											   360*deg,
-											   0*deg,
-											   180*deg);
+			G4Sphere* gWater1 = new G4Sphere("DNA_WaterLayer1",
+											   3*0.383*nm,
+											   3*0.383*nm+fHydrationShellThickness,
+											   220*deg,
+											   100*deg,
+											   40*deg,
+											   100*deg);
+			G4Sphere* gWater2 = new G4Sphere("DNA_WaterLayer2",
+											    3*0.383*nm,
+												3*0.383*nm+fHydrationShellThickness,
+												40*deg,
+												100*deg,
+												40*deg,
+												100*deg);
 
-			lHydrationShell1 = CreateLogicalVolume("HydrationShell1", gWater);
-			lHydrationShell2 = CreateLogicalVolume("HydrationShell2", gWater);
+			lHydrationShell1 = CreateLogicalVolume("HydrationShell1", gWater1);
+			lHydrationShell2 = CreateLogicalVolume("HydrationShell2", gWater2);
 
 		}
 	}
@@ -969,11 +957,11 @@ void TsNucleus::SegmentDNAPath(std::vector<G4ThreeVector> &path)
 // Use DNA path to place sphere DNA volumes
 void TsNucleus::PlaceDNASphere(vector<G4ThreeVector> &newPath, G4VPhysicalVolume* physVol)
 {
-	G4double helixRadius = 1.0*nm;
+	G4double helixRadius = 1.15*nm;
 	G4double rotPair = ((2.0*pi)/10.0);   //10bp per turn
 	G4int nBP=newPath.size();
-	G4double rBack=helixRadius - 0.24*nm;
-	G4double rBase=rBack - 0.24*nm - 0.208*nm;
+	G4double rBack=helixRadius - 0.38333*nm;
+	G4double rBase=rBack - 0.38333*nm;
 
 	for (int bp=0; bp<nBP-1; bp++){
 		fNumberOfBasePairs++;
