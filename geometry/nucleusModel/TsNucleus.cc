@@ -628,13 +628,13 @@ void TsNucleus::SetDNAVolumes(G4bool BuildHalfCyl,
 	//sphere DNA
 	if (BuildSphere){
 		if (fAddBases){
-			G4Sphere* gDNA_base = new G4Orb("DNA_base", 0.383*nm);
+			G4Orb* gDNA_base = new G4Orb("DNA_base", 0.383*nm);
 			
 			lBase1 = CreateLogicalVolume("Base1", gDNA_base);
 			lBase2 = CreateLogicalVolume("Base2", gDNA_base);
 		 }
 		 if (fAddBackbones){
-			 G4Sphere* gDNA_backbone = new G4Orb("DNA_backbone", 0.383*nm);
+			 G4Orb* gDNA_backbone = new G4Orb("DNA_backbone", 0.383*nm);
 
 			 lBack1 = CreateLogicalVolume("Backbone1", gDNA_backbone);
 			 lBack2 = CreateLogicalVolume("Backbone2", gDNA_backbone);
