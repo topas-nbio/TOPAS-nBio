@@ -360,6 +360,10 @@ G4VPhysicalVolume* TsNucleus::Construct()
 		if (fDNABasicElement == "LinearPlasmid")
 		{
 			G4LogicalVolume* plasmidLog = SetLinearPlasmid(path, coordinates);
+			G4VisAttributes* plasmidVis = new G4VisAttributes(G4Colour(0.0, 0.0, 0.0));
+			plasmidVis->SetVisibility(false);
+			plasmidVis->SetForceSolid(false);
+			plasmidLog->SetVisAttributes(plasmidVis);
 			SetDNAVolumes(BuildHalfCyl, BuildQuartCyl, BuildSphere);
 			for (G4int t = 0; t < coordinates.size(); t++)
 			{
@@ -576,7 +580,7 @@ void TsNucleus::BuildHistones(vector<pair<G4ThreeVector, G4RotationMatrix*>> &Hi
 	}
 
 	if (fAddHistones){
-		G4VisAttributes* HistoneVis = new G4VisAttributes(G4Colour(0.,0.,1.));
+		G4VisAttributes* HistoneVis = new G4VisAttributes(G4Colour(0.9,0.9,1., 0.75));
 		HistoneVis->SetVisibility(true);
 		HistoneVis->SetForceSolid(true);
 		lHistone->SetVisAttributes(HistoneVis);
@@ -628,13 +632,13 @@ void TsNucleus::SetDNAVolumes(G4bool BuildHalfCyl,
 	//sphere DNA
 	if (BuildSphere){
 		if (fAddBases){
-			G4Orb* gDNA_base = new G4Orb("DNA_base", 0.383*nm);
+			G4Orb* gDNA_base = new G4Orb("DNA_base", 0.3125*nm);
 			
 			lBase1 = CreateLogicalVolume("Base1", gDNA_base);
 			lBase2 = CreateLogicalVolume("Base2", gDNA_base);
 		 }
 		 if (fAddBackbones){
-			 G4Orb* gDNA_backbone = new G4Orb("DNA_backbone", 0.383*nm);
+			 G4Orb* gDNA_backbone = new G4Orb("DNA_backbone", 0.3125*nm);
 
 			 lBack1 = CreateLogicalVolume("Backbone1", gDNA_backbone);
 			 lBack2 = CreateLogicalVolume("Backbone2", gDNA_backbone);
@@ -643,19 +647,19 @@ void TsNucleus::SetDNAVolumes(G4bool BuildHalfCyl,
 		// ************************** build hydration shell layer **************************
 		if (fAddHydrationShell){
 			G4Sphere* gWater1 = new G4Sphere("DNA_WaterLayer1",
-											   3*0.383*nm,
-											   3*0.383*nm+fHydrationShellThickness,
-											   220*deg,
-											   100*deg,
-											   40*deg,
-											   100*deg);
+											   0.3125*nm,
+											   0.3125*nm+fHydrationShellThickness,
+											   0*deg,
+											   180*deg,
+											   0*deg,
+											   180*deg);
 			G4Sphere* gWater2 = new G4Sphere("DNA_WaterLayer2",
-											    3*0.383*nm,
-												3*0.383*nm+fHydrationShellThickness,
-												40*deg,
-												100*deg,
-												40*deg,
-												100*deg);
+											    0.3125*nm,
+												0.3125*nm+fHydrationShellThickness,
+												180*deg,
+												180*deg,
+												0*deg,
+												180*deg);
 
 			lHydrationShell1 = CreateLogicalVolume("HydrationShell1", gWater1);
 			lHydrationShell2 = CreateLogicalVolume("HydrationShell2", gWater2);
@@ -817,12 +821,12 @@ void TsNucleus::SetDNAVolumes(G4bool BuildHalfCyl,
 	}
 	
 	if(fAddHydrationShell)	{
-		G4VisAttributes * Water1Vis = new G4VisAttributes(G4Colour(1.0, 0.0, 1.0));
+		G4VisAttributes * Water1Vis = new G4VisAttributes(G4Colour(0.2, 0.8, 1.0, 0.35));
 		Water1Vis->SetVisibility(true);
 		Water1Vis->SetForceSolid(true);
 		lHydrationShell1 -> SetVisAttributes(Water1Vis);
 
-		G4VisAttributes * Water2Vis = new G4VisAttributes(G4Colour(1.0, 1.0, 0.0));
+		G4VisAttributes * Water2Vis = new G4VisAttributes(G4Colour(0.00, 1.0, 1.0, 0.35));
 		Water2Vis->SetVisibility(true);
 		Water2Vis->SetForceSolid(true);
 		lHydrationShell2 -> SetVisAttributes(Water2Vis);
@@ -957,11 +961,11 @@ void TsNucleus::SegmentDNAPath(std::vector<G4ThreeVector> &path)
 // Use DNA path to place sphere DNA volumes
 void TsNucleus::PlaceDNASphere(vector<G4ThreeVector> &newPath, G4VPhysicalVolume* physVol)
 {
-	G4double helixRadius = 1.15*nm;
+	G4double helixRadius = 1.25*nm;
 	G4double rotPair = ((2.0*pi)/10.0);   //10bp per turn
 	G4int nBP=newPath.size();
-	G4double rBack=helixRadius - 0.38333*nm;
-	G4double rBase=rBack - 0.38333*nm;
+	G4double rBack=helixRadius - 0.31255*nm;
+	G4double rBase=rBack - 2 * 0.31255*nm;
 
 	for (int bp=0; bp<nBP-1; bp++){
 		fNumberOfBasePairs++;
@@ -982,7 +986,7 @@ void TsNucleus::PlaceDNASphere(vector<G4ThreeVector> &newPath, G4VPhysicalVolume
 		G4ThreeVector cross = (vecNext.cross(norm)).unit(); //vector perp to vecnext and norm
 
 		//set up new 3Vectors for rotated pos
-		G4ThreeVector back1(0.,0.,0.), back2(0.,0.,0.), base1(0.,0.,0.), base2(0.,0.,0.), hydration1(0.,0.,0.), hydration2(0.,0.,0.);
+		G4ThreeVector back1(0.,0.,0.), back2(0.,0.,0.), base1(0.,0.,0.), base2(0.,0.,0.);
 
 		G4RotationMatrix *rot = new G4RotationMatrix;
 		if (cross.x() != 0 || cross.y() != 0 || cross.z() != 0)
@@ -1006,8 +1010,7 @@ void TsNucleus::PlaceDNASphere(vector<G4ThreeVector> &newPath, G4VPhysicalVolume
 		base2+=newPath[bp];
 		back1+=newPath[bp];
 		back2+=newPath[bp];
-		hydration1+=newPath[bp];
-		hydration2+=newPath[bp];
+
 		G4int bpID=bp+1;
 
 		if(fAddBases) {
@@ -1041,17 +1044,22 @@ void TsNucleus::PlaceDNASphere(vector<G4ThreeVector> &newPath, G4VPhysicalVolume
 		}
 
 		if(fAddHydrationShell) {
-			G4ThreeVector *posHydration1 = &hydration1;
-			G4ThreeVector *posHydration2 = &hydration2;
+			G4ThreeVector *posHyd1 = &back1;
+			G4ThreeVector *posHyd2 = &back2;
+			//Apply rotation
+			G4RotationMatrix *rot1 = new G4RotationMatrix();
+			if (cross.x() != 0 || cross.y() != 0 || cross.z() != 0)
+				rot1->rotate(AngBetween, cross);  // this causes a strange behavior when AngBetween close to pi, to be resolved ... easiest to see by setting angle1 = 0.
+			rot1->rotateZ(-angle1+pi/2);
 			if (physVol == NULL)
 			{
-				CreatePhysicalVolume("HydrationShell1_", bpID, true, lHydrationShell1, rot, posHydration1, fFiberLogic);
-				CreatePhysicalVolume("HydrationShell2_", bpID, true, lHydrationShell2, rot, posHydration2, fFiberLogic);
+				CreatePhysicalVolume("HydrationShell1_", bpID, true, lHydrationShell1, rot1, posHyd1, fFiberLogic);
+				CreatePhysicalVolume("HydrationShell2_", bpID, true, lHydrationShell2, rot1, posHyd2, fFiberLogic);
 			}
 			else
 			{
-				CreatePhysicalVolume("HydrationShell1_", bpID, true, lHydrationShell1, rot, posHydration1, physVol);
-				CreatePhysicalVolume("HydrationShell2_", bpID, true, lHydrationShell2, rot, posHydration2, physVol);
+				CreatePhysicalVolume("HydrationShell1_", bpID, true, lHydrationShell1, rot1, posHyd1, physVol);
+				CreatePhysicalVolume("HydrationShell2_", bpID, true, lHydrationShell2, rot1, posHyd2, physVol);
 			}
 		}
 	}
