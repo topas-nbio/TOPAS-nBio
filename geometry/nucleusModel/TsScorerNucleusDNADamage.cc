@@ -459,18 +459,15 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 		// Including indirect damage
 		if (aStep->GetTrack()->GetTrackID() < 0 && fScoreIndirectDamages)
 		{
-			G4cout << "Track ID: " << aStep->GetTrack()->GetTrackID() << " - volume: " << volumeName << " - entering? " << enteringInNewVolume;
 			G4String speciesName 	= GetMolecule(aStep->GetTrack())->GetName();
 			G4bool isSpeciesToKill 	= (speciesName == "OH^0" || speciesName == "e_aq^-1" || speciesName == "H^0");
 			G4bool isHydroxyl		= (speciesName == "OH^0");
 			G4bool isHydElectron	= (speciesName == "e_aq^-1");
-			G4cout << " - species: " << speciesName;
 			G4String backName = "Backbone";
 			G4String baseName = "Base";
 			// Kill all species generated inside DNA volume except for the hydration shell
 			if (fTrackSteps[aStep->GetTrack()->GetTrackID()] == 1 && strstr(volumeName, "HydrationShell") == NULL)
 			{
-				G4cout << " - Generated inside DNA, killed" << G4endl;
 				aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 				delete hit;
 				return false;
@@ -479,7 +476,6 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			// 1 In bases, all OH and e_aq are assumed to interact.
 			else if ((isHydroxyl || isHydElectron) && strstr(volumeName, baseName) != NULL && enteringInNewVolume)
 			{
-				G4cout << ": damage to base - species: " << speciesName << G4endl;
 				hit->SetEdep(-0.001 * eV);
 				hit->SetIsDirectDamage(false);
 				G4bool reacted = true;
@@ -502,32 +498,23 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 					reacted = true;
 				if (reacted)
 				{
-					G4cout << ": interacting with backbone - damage? ";
 					if (G4UniformRand() < fProbabilityOfOHDamageInBackbone)
 					{
 						Hits.push_back(hit);
-						G4cout << "1" << G4endl;
 					}
-					else
-						G4cout << "0" << G4endl;
 					aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 					return true;
 				}
-				else
-					G4cout << ": NO int with backbone" << G4endl;
 				delete hit;
 				return false;
 			}
 			// Scavenge {OH*, e_aq- and H*} diffusing into DNA volume
 			else if (isSpeciesToKill && fHistoneAsScavenger && strstr(volumeName, "Histone") != NULL)
 			{
-				G4cout << " - SCAVENGED" << G4endl;
 				aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 				delete hit;
 				return false;
 			}
-			else
-				G4cout << " keeps going." << G4endl;
 		}
 		delete hit;
 	}
