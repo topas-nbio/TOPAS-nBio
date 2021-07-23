@@ -310,10 +310,10 @@ void TsDefineDamage::ComputeStrandBreaks(std::vector<TsHitsRecord*> Hits)
 				G4int ibp = pairbpElem.first;
 				if (fDamage[iChr][ibp][0] > 0 || fDamage[iChr][ibp][1] > 0)
 				{
-					G4int strand;
-					if (fDamage[iChr][ibp][0] > 0) strand = 1;
-					if (fDamage[iChr][ibp][1] > 0) strand = 2;
-					fBaseDamage[iChr][ibp][strand] = fDamage[iChr][ibp][strand-1];
+					if (fDamage[iChr][ibp][0] > 0)
+						fBaseDamage[iChr][ibp][1] = fDamage[iChr][ibp][0];
+					if (fDamage[iChr][ibp][1] > 0)
+						fBaseDamage[iChr][ibp][2] = fDamage[iChr][ibp][1];
 				}
 			}
 		}
