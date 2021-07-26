@@ -122,7 +122,7 @@ void TsDefineDamage::ComputeStrandBreaks(std::vector<TsHitsRecord*> Hits)
 		{
 			if (Hits[i]->GetIsDirectDamage()) fVEdepInDNA[chromosomeID][basePairID][iElement] += edep;
 			else fVIndirectDamageInDNA[chromosomeID][basePairID][iElement] = true;
-			if (strstr(Hits[i]->GetProcess(), "Ionisation"))
+			if (strstr(Hits[i]->GetProcess(), "Ionisation") && (iElement == 4 || iElement == 5))
 			{
 				fVIonizationInHydrationShell[chromosomeID][basePairID][iElement] = true;
 				fDamagePositions[chromosomeID][basePairID][iElement-2] = Hits[i]->GetPosition();
@@ -189,8 +189,8 @@ void TsDefineDamage::ComputeStrandBreaks(std::vector<TsHitsRecord*> Hits)
 
 					if (fDamage[iChr][ibp][element] < direct)
 						fDamage[iChr][ibp][element] = quasidirect; // Quasi-direct if no previous damage
-					else if (fDamage[iChr][ibp][element] < indirect)
-						fDamage[iChr][ibp][element] = multiplewithquasidirect; // Multiple damage if previous indirect
+					else if (fDamage[iChr][ibp][element] < indirect && fDamage[iChr][ibp][element] != direct)
+						fDamage[iChr][ibp][element] = multiplewithquasidirect; // Multiple damage if previous indirect. Keep direct if previous.
 				}
 			}
 		}
@@ -292,29 +292,18 @@ void TsDefineDamage::ComputeStrandBreaks(std::vector<TsHitsRecord*> Hits)
 			G4int ibp = pairbpElem.first;
 			if ((fDamage[iChr][ibp][2] > 0 && !(fDSB[iChr][ibp][1] > 0)) || (fDamage[iChr][ibp][3] > 0 && !(fDSB[iChr][ibp][2] > 0)))
 			{
-				G4bool s1 = false, s2 = false; G4int strand;
-				if (fDamage[iChr][ibp][2] > 0) strand = 1;
-				if (fDamage[iChr][ibp][3] > 0) strand = 2;
-				fSSB[iChr][ibp][strand] = fDamage[iChr][ibp][strand+1];
+				if (fDamage[iChr][ibp][2] > 0)
+					fSSB[iChr][ibp][1] = fDamage[iChr][ibp][2];
+				if (fDamage[iChr][ibp][3] > 0)
+					fSSB[iChr][ibp][2] = fDamage[iChr][ibp][3];
 			}
-		}
-	}
-	// Base damages
-	if (fScoreOnBases)
-	{
-		for (auto& chromosome : fDamage)
-		{
-			G4int iChr = chromosome.first;
-			for (auto& pairbpElem : fDamage[iChr])
+			// Base damages
+			if (fScoreOnBases && (fDamage[iChr][ibp][0] > 0 || fDamage[iChr][ibp][1] > 0))
 			{
-				G4int ibp = pairbpElem.first;
-				if (fDamage[iChr][ibp][0] > 0 || fDamage[iChr][ibp][1] > 0)
-				{
-					if (fDamage[iChr][ibp][0] > 0)
-						fBaseDamage[iChr][ibp][1] = fDamage[iChr][ibp][0];
-					if (fDamage[iChr][ibp][1] > 0)
-						fBaseDamage[iChr][ibp][2] = fDamage[iChr][ibp][1];
-				}
+				if (fDamage[iChr][ibp][0] > 0)
+					fBaseDamage[iChr][ibp][1] = fDamage[iChr][ibp][0];
+				if (fDamage[iChr][ibp][1] > 0)
+					fBaseDamage[iChr][ibp][2] = fDamage[iChr][ibp][1];
 			}
 		}
 	}
@@ -369,11 +358,11 @@ void TsDefineDamage::QuantifyDamage(std::map<G4int, std::map<std::pair<G4int, G4
 			for (auto& strand_type : SSB[iChr][bpPos])
 			{
 				numSSB++;
-				if (strand_type.second == direct)
+				if (strand_type.second == direct || strand_type.second == multiple)
 					numSSB_dir++;
 				else if (strand_type.second == indirect)
 					numSSB_indir++;
-				else if (strand_type.second == quasidirect)
+				else if (strand_type.second == quasidirect || strand_type.second == multiplewithquasidirect)
 				{
 					numSSB_dir++;
 					numSSB_qdir++;
@@ -390,11 +379,11 @@ void TsDefineDamage::QuantifyDamage(std::map<G4int, std::map<std::pair<G4int, G4
 			for (auto& strand_type : BaseDamage[iChr][bpPos])
 			{
 				numBaseDam++;
-				if (strand_type.second == direct)
+				if (strand_type.second == direct || strand_type.second == multiple)
 					numBaseDam_dir++;
 				else if (strand_type.second == indirect)
 					numBaseDam_indir++;
-				else if (strand_type.second == quasidirect)
+				else if (strand_type.second == quasidirect || strand_type.second == multiplewithquasidirect)
 				{
 					numBaseDam_dir++;
 					numBaseDam_qdir++;
