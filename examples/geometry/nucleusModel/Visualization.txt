@@ -32,7 +32,7 @@ s:Ge/Nucleus/Backbone2/Material         = "G4_BackboneMaterial"
 b:Ge/Nucleus/AddHydrationShell          = "true"
 s:Ge/Nucleus/HydrationShell1/Material   = "G4_WATER_MODIFIED"
 s:Ge/Nucleus/HydrationShell2/Material   = "G4_WATER_MODIFIED"
-s:Ge/Nucleus/DNAModel					= "QuarterCylinder"
+s:Ge/Nucleus/DNAModel					= "Sphere"
 
 # Type DNA - Linear plasmid
 #s:Ge/Nucleus/DNABasicElement			= "LinearPlasmid"
