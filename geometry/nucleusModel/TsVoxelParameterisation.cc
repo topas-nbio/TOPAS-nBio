@@ -92,7 +92,7 @@ void TsVoxelParameterisation::CheckCopyNo( const G4int copyNo ) const
 { 
   if( copyNo < 0 || copyNo >= G4int(fNoVoxel) )
   {
-    std::ostringstream message;
+    G4ExceptionDescription message;
     message << "Copy number is negative or too big!" << G4endl
             << "        Copy number: " << copyNo << G4endl
             << "        Total number of voxels: " << fNoVoxel;
