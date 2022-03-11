@@ -111,15 +111,6 @@ private:
 	G4int fnPMax;
 	G4double fdx;
 	G4double fdy;
-
-//	G4double fBaseMaterialDensity;
-//	G4double fBackboneMaterialDensity;
-//	G4double fHistoneMaterialDensity;
-
-//	G4Material* fBaseMaterial;
-//	G4Material* fBackboneMaterial;
-//	G4Material* fHistoneMaterial;
-
 };
 
 #endif

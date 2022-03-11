@@ -98,6 +98,7 @@ TsScorerNucleusDNADamage::TsScorerNucleusDNADamage(TsParameterManager* pM, TsMat
 		fUseLinearProbabilityThreshold = fPm->GetBooleanParameter(GetFullParmName("UseLinearProbabilityThreshold"));
 
 	fLinearProbability_lower_limit= 5*eV;
+
 	if ( fPm->ParameterExists(GetFullParmName("LinearProbability_lower_limit")) )
 		fLinearProbability_lower_limit = fPm->GetDoubleParameter(GetFullParmName("LinearProbability_lower_limit"),"Energy");
 
@@ -253,7 +254,6 @@ TsScorerNucleusDNADamage::TsScorerNucleusDNADamage(TsParameterManager* pM, TsMat
 	if ( fPm->ParameterExists(GetFullParmName("AdditionalInfo")))
 		addInfo = fPm->GetStringParameter(GetFullParmName("AdditionalInfo"));
 
-
 	GetGeometryInfo();
 	fDefineDamage = new TsDefineDamage();
 	fDefineDamage->SetDamageThreshold(fDamageThreshold);
@@ -288,8 +288,13 @@ TsScorerNucleusDNADamage::TsScorerNucleusDNADamage(TsParameterManager* pM, TsMat
 	// Print parameters
 	// ********************************************************************************
 	G4cout<<"*********************************************************************************"<<G4endl;
-	G4cout << "fProbabilityOfOHInteractionWithBackbone = "<<fProbabilityOfOHInteractionWithBackbone <<G4endl;
-	G4cout << "fProbabilityOfOHDamageInBackbone = "<<fProbabilityOfOHDamageInBackbone <<G4endl;
+	if (fSeparateProbabilitiesForIntAndDamage)
+	{
+		G4cout << "fProbabilityOfOHInteractionWithBackbone = "<<fProbabilityOfOHInteractionWithBackbone <<G4endl;
+		G4cout << "fProbabilityOfOHDamageInBackbone = "<<fProbabilityOfOHDamageInBackbone <<G4endl;
+	}
+	else	
+		G4cout << "fProbabilityOfOHDamage = "<<fProbabilityOfOHDamage<<G4endl;
 	if (!fUseLinearProbabilityThreshold)
 	G4cout << "fDamageThreshold = "<<fDamageThreshold/eV<<" eV"<<G4endl;
 	else
@@ -393,7 +398,6 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 	// Get steps this track has advanced
 	fTrackSteps[aStep->GetTrack()->GetTrackID()] += 1;
-
 
 	// Get volume at the depth of base pairs
 	G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
@@ -687,6 +691,7 @@ void TsScorerNucleusDNADamage::UserHookForEndOfRun()
 	HitsOfEvents.clear();
 	eventsEdep.clear();
 	eventsLength.clear();
+
 }
 
 G4int TsScorerNucleusDNADamage::Analyze(vector<TsHitsRecord*> hits, G4int eventID)
@@ -748,6 +753,7 @@ G4int TsScorerNucleusDNADamage::Analyze(vector<TsHitsRecord*> hits, G4int eventI
 			if (fScoreOnBases)
 				numBaseDam_qdir	= fDefineDamage->GetNumQDirBaseDam();
 		}
+
 		if (fExcludeShortFragment)
 		{
 		    Excluded_numSSB			= fDefineDamage->GetExcludedNumSSB();

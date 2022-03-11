@@ -228,7 +228,6 @@ private:
 	G4int multiple = 3;
 	G4int quasidirect = 4;
 	G4int multiplewithquasidirect = 5;
-
 };
 
 

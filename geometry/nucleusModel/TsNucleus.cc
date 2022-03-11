@@ -11,6 +11,7 @@
 //
 // Authors: Hongyu Zhu, Nicholas Henthorn, Alexander Klapproth, Jan Schuemann, Alejandro Bertolet
 
+
 // This class creates either single histones, chromatin fibers, voxels filled with DNA 
 // or even a whole nucleus. The DNA is arranged in:
 // 1) Basepairs wrapped around histones
@@ -55,7 +56,6 @@
 #include "G4RotationMatrix.hh"
 #include "G4VisAttributes.hh"
 #include "G4UIcommand.hh"
-
 #include "G4RandomDirection.hh"
 
 #include <fstream>
@@ -508,6 +508,7 @@ void TsNucleus::BuildHistones(vector<pair<G4ThreeVector, G4RotationMatrix*>> &Hi
 							G4VPhysicalVolume* physVol)
 {
 
+
 	//****************************************************************************
 	//							  Histones
 	//****************************************************************************
@@ -578,6 +579,7 @@ void TsNucleus::BuildHistones(vector<pair<G4ThreeVector, G4RotationMatrix*>> &Hi
 			else
 				CreatePhysicalVolume("Histone", i, true, lHistone, HistoneRotation, &position, physVol);
 		}
+
 		built++;
 	}
 

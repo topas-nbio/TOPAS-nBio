@@ -31,9 +31,7 @@ TsDefineDamage::TsDefineDamage()
 	fScoreOnBases = true;
 	fScoreOnBackbones = true;
 	fScoreOnHydrationShell = true;
-
 	fFirstRun = true;
-
 	fEdep 			= 0;
 	fLET  			= 0;
 	fZetaBeta_sq 	= 0;
@@ -122,6 +120,7 @@ void TsDefineDamage::ComputeStrandBreaks(std::vector<TsHitsRecord*> Hits)
 		{
 			if (Hits[i]->GetIsDirectDamage()) fVEdepInDNA[chromosomeID][basePairID][iElement] += edep;
 			else fVIndirectDamageInDNA[chromosomeID][basePairID][iElement] = true;
+
 			if (strstr(Hits[i]->GetProcess(), "Ionisation") && (iElement == 4 || iElement == 5))
 			{
 				fVIonizationInHydrationShell[chromosomeID][basePairID][iElement] = true;

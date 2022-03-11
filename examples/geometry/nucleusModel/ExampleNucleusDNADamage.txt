@@ -1,5 +1,4 @@
 # -- Geometry
-i:Ts/NumberOfThreads		= 6
 # World
 d:Ge/World/HLX                          = 7.0 um
 d:Ge/World/HLY                          = 7.0 um
@@ -44,7 +43,7 @@ s:Ma/G4_WATER_MODIFIED/CloneFromMaterial    = "G4_WATER"
 d:Ma/G4_WATER_MODIFIED/CloneWithDensity     = 1.0 g/cm3
 
 # -- Physics and Chemistry
-#sv:Ph/Default/Modules                   	= 1 "g4em-dna" 						# EITHER only physics
+#sv:Ph/Default/Modules                      = 7 "g4em-dna" "g4h-phy_QGSP_BIC_HP" "g4decay" "g4ion-binarycascade" "g4h-elastic_HP" "g4stopping" "TsEmDNAChemistry"
 sv:Ph/Default/Modules						= 2 "g4em-dna" "TsEmDNAChemistry" 	# OR	 physics and chemistry
 includeFile									= supportFiles/TOPASChemistry.txt
 s:Ch/ChemistryName							= "TOPASChemistry"
@@ -54,9 +53,9 @@ i:Ph/Verbosity                          	= 0
 # -- Source and runs
 s:So/ParticleGun/Type                               = "Beam"
 s:So/ParticleGun/Component                          = "BeamPosition"
-d:Ge/BeamPosition/TransX                            = 0.05 um
-d:Ge/BeamPosition/TransY                            = 0.05 um
-d:Ge/BeamPosition/TransZ                            = 4.65 um
+d:Ge/BeamPosition/TransX                            = 0.0 um
+d:Ge/BeamPosition/TransY                            = 0.0 um
+d:Ge/BeamPosition/TransZ                            = 5. um
 s:So/ParticleGun/BeamParticle                       = "proton"
 s:So/ParticleGun/BeamPositionDistribution           = "none"					# EITHER single track position
 #s:So/ParticleGun/BeamPositionDistribution			= "Flat"					# OR 	 disk source
@@ -64,7 +63,7 @@ s:So/ParticleGun/BeamPositionDistribution           = "none"					# EITHER single
 #d:So/ParticleGun/BeamPositionCutoffX 				= Ge/Nucleus/NucleusRadius um
 #d:So/ParticleGun/BeamPositionCutoffY 				= Ge/Nucleus/NucleusRadius um
 s:So/ParticleGun/BeamAngularDistribution            = "none"
-d:So/ParticleGun/BeamEnergy                         = 2.0 MeV
+d:So/ParticleGun/BeamEnergy                         = 1.0 MeV
 i:So/ParticleGun/NumberOfHistoriesInRun             = 1
 b:Ge/Nucleus/RotateNucleusForEachRun				= "false"
 # Producing separate runs instead of separate histories if rotation enabled
@@ -94,6 +93,7 @@ u:Sc/DNAScorer/ProbabilityForOHToInteractWithBackbone	= 0.1
 u:Sc/DNAScorer/ProbabilityForOHToCauseDamageInBase		= 1.0
 u:Sc/DNAScorer/ProbabilityForOHToCauseDamageInBackbone  = 0.55
 u:Sc/DNAScorer/ProbabilityOfTransferFromHydrationShellToBackbone = 0.3333333
+
 b:Sc/DNAScorer/ExcludeShortFragment                     = "false"
 i:Sc/DNAScorer/LowerFragmentDetectionThreshold          = 250
 i:Sc/DNAScorer/UpperFragmentDetectionThreshold          = 300000000
