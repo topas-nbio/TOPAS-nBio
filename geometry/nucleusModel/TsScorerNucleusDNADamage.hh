@@ -35,6 +35,8 @@ public:
 
 private:
 	G4int fNumberOfHistoriesInRun;
+	G4bool fSeparateProbabilitiesForIntAndDamage;
+	G4double fProbabilityOfOHDamage;
 	G4double fProbabilityOfOHInteractionWithBackbone;
 	G4double fProbabilityOfOHDamageInBackbone;
 	G4double fProbabilityOfOHDamageInBase;

@@ -40,11 +40,7 @@ TsScorerNucleusDNADamage::TsScorerNucleusDNADamage(TsParameterManager* pM, TsMat
 	fCalZetaBeta		= false;
 	fZetaBeta_sq		= 0;
 
-	// IS THIS NECESSARY?
-	//G4String componentName = fPm->GetStringParameter(GetFullParmName("Component"));
-	//TsVGeometryComponent* Component = gM->GetComponent(componentName);
-	//
-		// Parameters
+	// Parameters
 	fOutFileName = fPm->GetStringParameter(GetFullParmName("OutputFile"));
 
 	fMinimalSDDOutput = false;
@@ -53,18 +49,46 @@ TsScorerNucleusDNADamage::TsScorerNucleusDNADamage(TsParameterManager* pM, TsMat
 
 	fNumberOfHistoriesInRun =  fPm->GetIntegerParameter(GetFullParmName("NumberOfHistoriesInRun"));
 
-	fProbabilityOfOHInteractionWithBackbone = 0.25;
-	if ( fPm->ParameterExists(GetFullParmName("ProbabilityForOHToInteractWithBackbone")) )
-		fProbabilityOfOHInteractionWithBackbone = fPm->GetUnitlessParameter(GetFullParmName("ProbabilityForOHToInteractWithBackbone"));
+	fSeparateProbabilitiesForIntAndDamage = true;
+	if ( fPm->ParameterExists(GetFullParmName("UseSeparateProbabilitiesForInteractionAndDamage")) )
+		fSeparateProbabilitiesForIntAndDamage = fPm->GetBooleanParameter(GetFullParmName("UseSeparateProbabilitiesForInteractionAndDamage"));
 
-	fProbabilityOfOHDamageInBase = 1.0;
-	if ( fPm->ParameterExists(GetFullParmName("ProbabilityForOHToCauseDamageInBase")) )
-		fProbabilityOfOHDamageInBase = fPm->GetUnitlessParameter(GetFullParmName("ProbabilityForOHToCauseDamageInBase"));
+	if (!fSeparateProbabilitiesForIntAndDamage && (fPm->ParameterExists(GetFullParmName("ProbabilityForOHToInteractWithBackbone")) ||
+												  fPm->ParameterExists(GetFullParmName("ProbabilityForOHToCauseDamageInBase")) ||
+												  fPm->ParameterExists(GetFullParmName("ProbabilityForOHToCauseDamageInBackbone"))))
 
-	fProbabilityOfOHDamageInBackbone = 0.55;
-	if ( fPm->ParameterExists(GetFullParmName("ProbabilityForOHToCauseDamageInBackbone")) )
-		fProbabilityOfOHDamageInBackbone = fPm->GetUnitlessParameter(GetFullParmName("ProbabilityForOHToCauseDamageInBackbone"));
+	{
+		G4cerr << "Topas is exiting due to a serious error in scoring setup." << G4endl;
+		G4cerr << GetFullParmName("UseSeparateProbabilitiesForInteractionAndDamage") << " is set to False and separate probabilities were given." << G4endl;
+		fPm->AbortSession(1);
+	}
+	if (fSeparateProbabilitiesForIntAndDamage && fPm->ParameterExists(GetFullParmName("ProbabilityForOHToCauseDamage")))
+	{
+		G4cerr << "Topas is exiting due to a serious error in scoring setup." << G4endl;
+		G4cerr << GetFullParmName("UseSeparateProbabilitiesForInteractionAndDamage") << " is set to True and a single probability of damage was given." << G4endl;
+		fPm->AbortSession(1);
+	}
+	if (fSeparateProbabilitiesForIntAndDamage)
+	{
+		fProbabilityOfOHInteractionWithBackbone = 0.25;
+		if ( fPm->ParameterExists(GetFullParmName("ProbabilityForOHToInteractWithBackbone")) )
+			fProbabilityOfOHInteractionWithBackbone = fPm->GetUnitlessParameter(GetFullParmName("ProbabilityForOHToInteractWithBackbone"));
 
+		fProbabilityOfOHDamageInBase = 1.0;
+		if ( fPm->ParameterExists(GetFullParmName("ProbabilityForOHToCauseDamageInBase")) )
+			fProbabilityOfOHDamageInBase = fPm->GetUnitlessParameter(GetFullParmName("ProbabilityForOHToCauseDamageInBase"));
+
+		fProbabilityOfOHDamageInBackbone = 0.55;
+		if ( fPm->ParameterExists(GetFullParmName("ProbabilityForOHToCauseDamageInBackbone")) )
+			fProbabilityOfOHDamageInBackbone = fPm->GetUnitlessParameter(GetFullParmName("ProbabilityForOHToCauseDamageInBackbone"));
+	}
+	else
+	{
+		fProbabilityOfOHDamage = 0.4;
+		if ( fPm->ParameterExists(GetFullParmName("ProbabilityForOHToCauseDamage")) )
+			fProbabilityOfOHDamage = fPm->GetUnitlessParameter(GetFullParmName("ProbabilityForOHToCauseDamage"));
+
+	}
 	fDamageThreshold = 17.5*eV;
 	if ( fPm->ParameterExists(GetFullParmName("DamageThreshold")) )
 		fDamageThreshold = fPm->GetDoubleParameter(GetFullParmName("DamageThreshold"),"Energy");
@@ -120,18 +144,6 @@ TsScorerNucleusDNADamage::TsScorerNucleusDNADamage(TsParameterManager* pM, TsMat
 	fProbabilityOfTransferFromHydrationShellToBackbone = 1.0/3.0;
 	if ( fPm->ParameterExists(GetFullParmName("ProbabilityOfTransferFromHydrationShellToBackbone")) )
 		fProbabilityOfTransferFromHydrationShellToBackbone = fPm->GetUnitlessParameter(GetFullParmName("ProbabilityOfTransferFromHydrationShellToBackbone"));
-
-	/*fScoreOnBases = true;
-	if (fPm->ParameterExists(GetFullParmName("ScoreOnBases")))
-		fScoreOnBases = fPm->GetBooleanParameter(GetFullParmName("ScoreOnBases"));
-
-	fScoreOnBackbones = true;
-	if (fPm->ParameterExists(GetFullParmName("ScoreOnBackbones")))
-		fScoreOnBackbones = fPm->GetBooleanParameter(GetFullParmName("ScoreOnBackbones"));
-
-	fScoreOnHydrationShell = true;
-	if (fPm->ParameterExists(GetFullParmName("ScoreOnHydrationShell")))
-		fScoreOnHydrationShell = fPm->GetBooleanParameter(GetFullParmName("ScoreOnHydrationShell"));*/
 
 	// This is to specify the dose of each exposure for SDD output
 	// Please see Schuemann, J., et al. (2019). "A New Standard DNA Damage (SDD) Data Format." Radiat Res 191(1): 76-92.
@@ -479,7 +491,9 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 				hit->SetEdep(-0.001 * eV);
 				hit->SetIsDirectDamage(false);
 				G4bool reacted = true;
-				if (reacted && G4UniformRand() < fProbabilityOfOHDamageInBase)
+				G4double damageProb = fProbabilityOfOHDamageInBase;
+				if (!fSeparateProbabilitiesForIntAndDamage) damageProb = fProbabilityOfOHDamage;
+				if (reacted && G4UniformRand() < damageProb)
 				{
 					Hits.push_back(hit);
 					aStep->GetTrack()->SetTrackStatus(fStopAndKill);
@@ -494,11 +508,20 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 				hit->SetEdep(-0.001 * eV);
 				hit->SetIsDirectDamage(false);
 				G4bool reacted = false;
-				if (G4UniformRand() < fProbabilityOfOHInteractionWithBackbone)
+				G4double damageProb = fProbabilityOfOHDamageInBackbone;
+				if (fSeparateProbabilitiesForIntAndDamage)
+				{
+					if (G4UniformRand() < fProbabilityOfOHInteractionWithBackbone)
+						reacted = true;
+				}
+				else
+				{
+					damageProb = fProbabilityOfOHDamage;
 					reacted = true;
+				}
 				if (reacted)
 				{
-					if (G4UniformRand() < fProbabilityOfOHDamageInBackbone)
+					if (G4UniformRand() < damageProb)
 					{
 						Hits.push_back(hit);
 					}
