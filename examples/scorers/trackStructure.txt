@@ -1,0 +1,41 @@
+# Geometry
+d:Ge/World/HLX							= 1 um  
+d:Ge/World/HLY							= 1 um  
+d:Ge/World/HLZ							= 1 um  
+s:Ge/World/Material 					= "G4_WATER"
+b:Ge/World/Invisible 					= "True"
+
+s:Ge/Target/Parent 						= "World"
+s:Ge/Target/Type   						= "TsBox"
+s:Ge/Target/Material 					= "G4_WATER"
+s:Ge/Target/Color    					= "blue"
+d:Ge/Target/HLX     					= 0.5 um
+d:Ge/Target/HLY      					= 0.5 um
+d:Ge/Target/HLZ      					= 0.5 um
+
+# Particle source
+d:Ge/BeamPosition/TransZ 				= 1.0 um
+s:So/Demo/Type 							= "Beam"
+s:So/Demo/BeamParticle 					= "proton"
+d:So/Demo/BeamEnergy 					= 10 MeV 
+i:So/Demo/NumberOfHistoriesInRun 		= 1
+
+# Set physics
+sv:Ph/Default/Modules 					= 1 "g4em-dna"
+
+# Scorer
+s:Sc/trackS/Quantity 					= "TrackStructure"
+s:Sc/trackS/Component 					= "Target"
+s:Sc/trackS/OutputType 					= "ASCII"
+s:Sc/trackS/IfOutputFileAlreadyExists 	= "Overwrite"
+
+b:Sc/trackS/IncludeEventID 				= "True"
+b:Sc/trackS/IncludeTrackID 				= "True"
+b:Sc/trackS/IncludeParentID 			= "True"
+
+# Geometrical information
+b:Sc/trackS/IncludeVolumeName 			= "True"
+
+Ts/NumberOfThreads = 1 
+b:Ts/ShowCPUTime = "True"
+i:Ts/Seed = 1
