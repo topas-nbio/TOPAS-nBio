@@ -65,24 +65,30 @@ G4bool TsScoreTrackStructure::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 		return false;
 	}
 
-	G4Track* aTrack = aStep->GetTrack();
-
-	fEvt = GetEventID();
-	G4ThreeVector pos = aStep->GetPreStepPoint()->GetPosition();
-	fPosX = pos.x();
-	fPosY = pos.y();
-	fPosZ = pos.z();
 	fEdep = aStep->GetTotalEnergyDeposit();
+	if (fEdep > 0)
+	{
+		G4Track* aTrack = aStep->GetTrack();
 
-	fTrackID = aTrack->GetTrackID();
-	fParentID = aTrack->GetParentID();
-	fParticleName = aTrack->GetParticleDefinition()->GetParticleName();
+		fEvt = GetEventID();
+		G4ThreeVector pos = aStep->GetPreStepPoint()->GetPosition();
+		fPosX = pos.x();
+		fPosY = pos.y();
+		fPosZ = pos.z();
 
-	G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
-	fVolumeName = touchable->GetVolume()->GetName();
 
-	fNtuple->Fill();
+		fTrackID = aTrack->GetTrackID();
+		fParentID = aTrack->GetParentID();
+		fParticleName = aTrack->GetParticleDefinition()->GetParticleName();
 
-	return true;
+		G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
+		fVolumeName = touchable->GetVolume()->GetName();
+
+		fNtuple->Fill();
+
+		return true;
+	}
+	else
+		return false;
 }
 
