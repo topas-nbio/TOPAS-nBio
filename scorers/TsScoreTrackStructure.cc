@@ -15,7 +15,7 @@
 TsScoreTrackStructure::TsScoreTrackStructure(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
 											 G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer)
 					  :TsVNtupleScorer(pM, mM, gM, scM, eM, scorerName, quantity, outFileName, isSubScorer),
-fIncludeEventID(true),  fIncludeTrackID(true), fIncludeParentID(false), fIncludeParticleName(false), fIncludeVolumeName(false)
+fIncludeEventID(true),  fIncludeTrackID(true), fIncludeParentID(false), fIncludeParticleName(false), fIncludeVolumeName(false), fIncludePrimaryPositions(true)
 {
 	SetUnit("");
 
@@ -23,6 +23,9 @@ fIncludeEventID(true),  fIncludeTrackID(true), fIncludeParentID(false), fInclude
 	fNtuple->RegisterColumnF(&fPosY, "Position Y", "um");
 	fNtuple->RegisterColumnF(&fPosZ, "Position Z", "um");
 	fNtuple->RegisterColumnF(&fEdep, "Energy deposited", "keV");
+
+	if (fPm->ParameterExists(GetFullParmName("IncludePrimaryPositions")))
+		fIncludePrimaryPositions = fPm->GetBooleanParameter(GetFullParmName("IncludePrimaryPositions"))
 
 	if (fPm->ParameterExists(GetFullParmName("IncludeEventID")))
 		fIncludeEventID = fPm->GetBooleanParameter(GetFullParmName("IncludeEventID"));
@@ -66,9 +69,10 @@ G4bool TsScoreTrackStructure::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	}
 
 	fEdep = aStep->GetTotalEnergyDeposit();
-	if (fEdep > 0)
+	G4Track* aTrack = aStep->GetTrack();
+
+	if (fEdep > 0 || (fIncludePrimaryPositions && aTrack->GetTrackID() == 0))
 	{
-		G4Track* aTrack = aStep->GetTrack();
 
 		fEvt = GetEventID();
 		G4ThreeVector pos = aStep->GetPreStepPoint()->GetPosition();

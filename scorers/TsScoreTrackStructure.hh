@@ -35,6 +35,8 @@ private:
 	G4int fParentID;
 	G4String fVolumeName;
 
+	G4bool fIncludePrimaryPositions;
+
 	G4bool fIncludeEventID;
 	G4bool fIncludeTrackID;
 	G4bool fIncludeParentID;
