@@ -70,10 +70,8 @@ G4bool TsScoreTrackStructure::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 	fEdep = aStep->GetTotalEnergyDeposit();
 	G4Track* aTrack = aStep->GetTrack();
-
-	if (fEdep > 0 || (fIncludePrimaryPositions && aTrack->GetTrackID() == 0))
+	if (fEdep > 0 || (fIncludePrimaryPositions && aTrack->GetTrackID() == 1))
 	{
-
 		fEvt = GetEventID();
 		G4ThreeVector pos = aStep->GetPreStepPoint()->GetPosition();
 		fPosX = pos.x();
