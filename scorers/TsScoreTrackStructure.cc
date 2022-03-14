@@ -25,7 +25,7 @@ fIncludeEventID(true),  fIncludeTrackID(true), fIncludeParentID(false), fInclude
 	fNtuple->RegisterColumnF(&fEdep, "Energy deposited", "keV");
 
 	if (fPm->ParameterExists(GetFullParmName("IncludePrimaryPositions")))
-		fIncludePrimaryPositions = fPm->GetBooleanParameter(GetFullParmName("IncludePrimaryPositions"))
+		fIncludePrimaryPositions = fPm->GetBooleanParameter(GetFullParmName("IncludePrimaryPositions"));
 
 	if (fPm->ParameterExists(GetFullParmName("IncludeEventID")))
 		fIncludeEventID = fPm->GetBooleanParameter(GetFullParmName("IncludeEventID"));
