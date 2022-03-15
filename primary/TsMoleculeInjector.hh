@@ -15,6 +15,9 @@
 
 #include "TsVGenerator.hh"
 #include "G4MoleculeGun.hh"
+#include "G4MoleculeTable.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4OH.hh"
 
 #include <fstream>
 
@@ -49,12 +52,16 @@ private:
 	std::ifstream fDataFile;
 	std::streampos fFilePosition;
 
-	G4int fMoleculeID;
+	G4String fMoleculeID;
 	G4double fPosX;
 	G4double fPosY;
 	G4double fPosZ;
 	G4double fGlobalTime;
 	G4int fEvtID;
+
+	G4bool fDifferentTimesForEvents;
+	G4int fNEvents;
+	std::vector<G4double> fTimesForEvents;
 };
 
 #endif
