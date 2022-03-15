@@ -16,6 +16,8 @@
 #include "TsVGenerator.hh"
 #include "G4MoleculeGun.hh"
 
+#include <fstream>
+
 class TsMoleculeInjector : public TsVGenerator
 {
 public:
@@ -26,6 +28,7 @@ public:
 
 protected:
 	void ResolveParameters();
+	G4bool ShootMoleculePhaseSpace();
 
 private:
 	//std::unique_ptr<G4MoleculeGun> fMoleculeGun;
@@ -40,6 +43,18 @@ private:
 	G4int fNumberOfMolecules;
 	G4double fPartialPressuremmHg;
 	G4double fTemperature;
+
+	G4bool fUseMoleculePhaseSpace;
+	G4String fFileName;
+	std::ifstream fDataFile;
+	std::streampos fFilePosition;
+
+	G4int fMoleculeID;
+	G4double fPosX;
+	G4double fPosY;
+	G4double fPosZ;
+	G4double fGlobalTime;
+	G4int fEvtID;
 };
 
 #endif
