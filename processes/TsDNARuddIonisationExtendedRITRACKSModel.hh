@@ -23,11 +23,11 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: TsDNARuddIonisationExtendedModel.hh 96060 2016-03-11 12:58:04Z gcosmo $
+// $Id: TsDNARuddIonisationExtendedRITRACKSModel.hh 96060 2016-03-11 12:58:04Z gcosmo $
 //
 
-#ifndef TsDNARuddIonisationExtendedModel_h
-#define TsDNARuddIonisationExtendedModel_h 1
+#ifndef TsDNARuddIonisationExtendedRITRACKSModel_h
+#define TsDNARuddIonisationExtendedRITRACKSModel_h 1
 
 #include "G4VEmModel.hh"
 #include "G4ParticleChangeForGamma.hh"
@@ -45,15 +45,15 @@
 
 #include "TsParameterManager.hh"
 
-class TsDNARuddIonisationExtendedModel : public G4VEmModel
+class TsDNARuddIonisationExtendedRITRACKSModel : public G4VEmModel
 {
 
 public:
 
-  TsDNARuddIonisationExtendedModel(const G4ParticleDefinition* p = 0, 
+  TsDNARuddIonisationExtendedRITRACKSModel(const G4ParticleDefinition* p = 0, 
 		           const G4String& nam = "DNARuddIonisationExtendedModel");
 
-  virtual ~TsDNARuddIonisationExtendedModel();
+  virtual ~TsDNARuddIonisationExtendedRITRACKSModel();
 
   virtual void Initialise(const G4ParticleDefinition*, const G4DataVector&);
 
@@ -165,14 +165,14 @@ private:
    
   //
    
-  TsDNARuddIonisationExtendedModel & operator=(const  TsDNARuddIonisationExtendedModel &right);
-  TsDNARuddIonisationExtendedModel(const  TsDNARuddIonisationExtendedModel&);
+  TsDNARuddIonisationExtendedRITRACKSModel & operator=(const  TsDNARuddIonisationExtendedRITRACKSModel &right);
+  TsDNARuddIonisationExtendedRITRACKSModel(const  TsDNARuddIonisationExtendedRITRACKSModel&);
 
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-inline void TsDNARuddIonisationExtendedModel::SelectStationary (G4bool input)
+inline void TsDNARuddIonisationExtendedRITRACKSModel::SelectStationary (G4bool input)
 { 
     statCode = input; 
 }		 

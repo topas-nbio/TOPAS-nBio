@@ -11,7 +11,13 @@
 
 NtupleForHiC_EndOfSession::NtupleForHiC_EndOfSession(TsParameterManager* pM)
 {
-    Start(pM);
+    G4bool ActiveHiCScorer = false;
+
+    if (pM->ParameterExists("Sc/HiCScorer/Active"))
+        ActiveHiCScorer = pM->GetBooleanParameter("Sc/HiCScorer/Active");
+
+    if (ActiveHiCScorer)
+        Start(pM);
 }
 
 NtupleForHiC_EndOfSession::~NtupleForHiC_EndOfSession(){}

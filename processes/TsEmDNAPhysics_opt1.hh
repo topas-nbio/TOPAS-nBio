@@ -9,29 +9,27 @@
 // ********************************************************************
 //
 
-#ifndef TsEmDNAPhysics_h
-#define TsEmDNAPhysics_h 1
+#ifndef TsEmDNAPhysics_opt1_h
+#define TsEmDNAPhysics_opt1_h 1
 
 #include "G4VPhysicsConstructor.hh"
 #include "globals.hh"
 
 class TsParameterManager;
 
-class TsEmDNAPhysics : public G4VPhysicsConstructor
+class TsEmDNAPhysics_opt1 : public G4VPhysicsConstructor
 {
 public:
     
-    explicit TsEmDNAPhysics(G4int ver=1, const G4String& name="");
-    TsEmDNAPhysics(TsParameterManager* pM);
+    explicit TsEmDNAPhysics_opt1(G4int ver=1, const G4String& name="");
+    TsEmDNAPhysics_opt1(TsParameterManager* pM);
     
-    virtual ~TsEmDNAPhysics();
+    virtual ~TsEmDNAPhysics_opt1();
     
     virtual void ConstructParticle();
     virtual void ConstructProcess();
     
 private:
-    G4String fName;
-
     TsParameterManager* fPm;
     G4int  verbose;
 };

@@ -3,7 +3,7 @@
 sv:Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry"
 s:Ph/Default/Electron/SetElasticScatteringModel = "CPA100"
 
-includeFile = ../processes/TOPASChemistry.txt
+includeFile = ./TOPASChemistry.txt
 s:Ch/ChemistryName = "TOPASChemistry" 
 b:Ch/TOPASChemistry/ChemicalStageTransportActive     = "True"
 d:Ch/TOPASChemistry/ChemicalStageTimeEnd             = 15.0 ns 

@@ -1,4 +1,4 @@
-// Extra Class for TsEmDNAPhysics_stationary2
+// Extra Class for TsEmDNAPhysics
 // ********************************************************************
 // * License and Disclaimer                                           *
 // *                                                                  *
@@ -23,13 +23,13 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: TsDNARuddIonisationExtendedModel.cc 96060 2016-03-11 12:58:04Z gcosmo $
+// $Id: TsDNARuddIonisationExtendedRITRACKSModel.cc 96060 2016-03-11 12:58:04Z gcosmo $
 // GEANT4 tag $Name:  $
 //
 // Modified by Z. Francis, S. Incerti to handle HZE 
 // && inverse rudd function sampling 26-10-2010
 
-#include "TsDNARuddIonisationExtendedModel.hh"
+#include "TsDNARuddIonisationExtendedRITRACKSModel.hh"
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4UAtomicDeexcitation.hh"
@@ -50,7 +50,7 @@ using namespace std;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-TsDNARuddIonisationExtendedModel::TsDNARuddIonisationExtendedModel(const G4ParticleDefinition*,
+TsDNARuddIonisationExtendedRITRACKSModel::TsDNARuddIonisationExtendedRITRACKSModel(const G4ParticleDefinition*,
                                                                    const G4String& nam)
     :G4VEmModel(nam),isInitialised(false)
 {
@@ -102,7 +102,7 @@ TsDNARuddIonisationExtendedModel::TsDNARuddIonisationExtendedModel(const G4Parti
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-TsDNARuddIonisationExtendedModel::~TsDNARuddIonisationExtendedModel()
+TsDNARuddIonisationExtendedRITRACKSModel::~TsDNARuddIonisationExtendedRITRACKSModel()
 {  
     // Cross section
 
@@ -121,14 +121,14 @@ TsDNARuddIonisationExtendedModel::~TsDNARuddIonisationExtendedModel()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-void TsDNARuddIonisationExtendedModel::Initialise(const G4ParticleDefinition* particle,
+void TsDNARuddIonisationExtendedRITRACKSModel::Initialise(const G4ParticleDefinition* particle,
                                                   const G4DataVector& /*cuts*/)
 {
     if (verboseLevel > 3)
-        G4cout << "Calling TsDNARuddIonisationExtendedModel::Initialise()" << G4endl;
+        G4cout << "Calling TsDNARuddIonisationExtendedRITRACKSModel::Initialise()" << G4endl;
 
     // Energy limits
-    G4String fileProton        = "dna/sigma_ionisation_p_rudd";
+    G4String fileProton        = "dna/sigma_ionisation_p_rudd_RITRACKS";
     G4String fileHydrogen      = "dna/sigma_ionisation_h_rudd";
     G4String fileAlphaPlusPlus = "dna/sigma_ionisation_alphaplusplus_rudd";
     G4String fileAlphaPlus     = "dna/sigma_ionisation_alphaplus_rudd";
@@ -140,7 +140,7 @@ void TsDNARuddIonisationExtendedModel::Initialise(const G4ParticleDefinition* pa
     G4String fileNitrogen      = "dna/sigma_ionisation_n_rudd";
     G4String fileOxygen        = "dna/sigma_ionisation_o_rudd";
     G4String fileSilicon       = "dna/sigma_ionisation_si_rudd";
-    G4String fileIron          = "dna/sigma_ionisation_fe_rudd";
+    G4String fileIron          = "dna/sigma_ionisation_fe_rudd";  
 
     G4DNAGenericIonsManager *instance;
     instance = G4DNAGenericIonsManager::Instance();
@@ -164,8 +164,6 @@ void TsDNARuddIonisationExtendedModel::Initialise(const G4ParticleDefinition* pa
     G4ParticleDefinition* oxygenDef =  G4IonTable::GetIonTable()->GetIon(8,16);
     G4ParticleDefinition* siliconDef = G4IonTable::GetIonTable()->GetIon(14,28);
     G4ParticleDefinition* ironDef =  G4IonTable::GetIonTable()->GetIon(26,56);
-    G4ParticleDefinition* argonDef = G4IonTable::GetIonTable()->GetIon(18,40);
-    G4ParticleDefinition* neonDef = G4IonTable::GetIonTable()->GetIon(10,20);
     //
 
     G4String proton;
@@ -181,8 +179,6 @@ void TsDNARuddIonisationExtendedModel::Initialise(const G4ParticleDefinition* pa
     G4String oxygen;
     G4String silicon;
     G4String iron;
-    G4String argon;
-    G4String neon;
 
     G4double scaleFactor = 1 * m*m;
 
@@ -427,7 +423,9 @@ void TsDNARuddIonisationExtendedModel::Initialise(const G4ParticleDefinition* pa
                                                                        scaleFactor );
     tableIron->LoadData(fileIron);
     tableData[iron] = tableIron;
-    
+
+    // **********************************************************************************************
+
     //SEB: not anymore
     // ZF Following lines can be replaced by:
     //SetLowEnergyLimit(lowEnergyLimit[particle->GetParticleName()]);
@@ -511,18 +509,6 @@ void TsDNARuddIonisationExtendedModel::Initialise(const G4ParticleDefinition* pa
     SetLowEnergyLimit(lowEnergyLimit[iron]);
     SetHighEnergyLimit(highEnergyLimit[iron]);
   }
-    
-  if (particle==neonDef)
-  {
-      SetLowEnergyLimit(lowEnergyLimit[neon]);
-      SetHighEnergyLimit(highEnergyLimit[neon]);
-  }
-    
-  if (particle==argonDef)
-  {
-      SetLowEnergyLimit(lowEnergyLimit[argon]);
-      SetHighEnergyLimit(highEnergyLimit[argon]);
-  }
 
     //----------------------------------------------------------------------
 
@@ -550,7 +536,7 @@ void TsDNARuddIonisationExtendedModel::Initialise(const G4ParticleDefinition* pa
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-G4double TsDNARuddIonisationExtendedModel::CrossSectionPerVolume(const G4Material* material,
+G4double TsDNARuddIonisationExtendedRITRACKSModel::CrossSectionPerVolume(const G4Material* material,
                                                                  const G4ParticleDefinition* particleDefinition,
                                                                  G4double k,
                                                                  G4double,
@@ -561,7 +547,7 @@ G4double TsDNARuddIonisationExtendedModel::CrossSectionPerVolume(const G4Materia
     //     particleDefinition->GetAtomicNumber() is correct
 
     if (verboseLevel > 3)
-        G4cout << "Calling CrossSectionPerVolume() of TsDNARuddIonisationExtendedModel" << G4endl;
+        G4cout << "Calling CrossSectionPerVolume() of TsDNARuddIonisationExtendedRITRACKSModel" << G4endl;
 
     // Calculate total cross section for model
 
@@ -602,10 +588,6 @@ G4double TsDNARuddIonisationExtendedModel::CrossSectionPerVolume(const G4Materia
             particleDefinition != G4IonTable::GetIonTable()->GetIon(14,28)
             &&
             particleDefinition != G4IonTable::GetIonTable()->GetIon(26,56)
-            &&
-            particleDefinition != G4IonTable::GetIonTable()->GetIon(10,20)
-            &&
-            particleDefinition != G4IonTable::GetIonTable()->GetIon(18,40)
             //
             )
 
@@ -669,7 +651,7 @@ G4double TsDNARuddIonisationExtendedModel::CrossSectionPerVolume(const G4Materia
             }
             else
             {
-                G4Exception("TsDNARuddIonisationExtendedModel::CrossSectionPerVolume","em0002",
+                G4Exception("TsDNARuddIonisationExtendedRITRACKSModel::CrossSectionPerVolume","em0002",
                             FatalException,"Model not applicable to particle type.");
             }
 
@@ -678,12 +660,12 @@ G4double TsDNARuddIonisationExtendedModel::CrossSectionPerVolume(const G4Materia
         if (verboseLevel > 2)
         {
             G4cout << "__________________________________" << G4endl;
-            G4cout << "TsDNARuddIonisationExtendedModel - XS INFO START" << G4endl;
+            G4cout << "TsDNARuddIonisationExtendedRITRACKSModel - XS INFO START" << G4endl;
             G4cout << "Kinetic energy(eV)=" << k/eV << " particle : " << particleDefinition->GetParticleName() << G4endl;
             G4cout << "Cross section per water molecule (cm^2)=" << sigma/cm/cm << G4endl;
             G4cout << "Cross section per water molecule (cm^-1)=" << sigma*waterDensity/(1./cm) << G4endl;
             //G4cout << " - Cross section per water molecule (cm^-1)=" << sigma*material->GetAtomicNumDensityVector()[1]/(1./cm) << G4endl;
-            G4cout << "TsDNARuddIonisationExtendedModel - XS INFO END" << G4endl;
+            G4cout << "TsDNARuddIonisationExtendedRITRACKSModel - XS INFO END" << G4endl;
 
         }
 
@@ -696,7 +678,7 @@ G4double TsDNARuddIonisationExtendedModel::CrossSectionPerVolume(const G4Materia
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-void TsDNARuddIonisationExtendedModel::SampleSecondaries(std::vector<G4DynamicParticle*>* fvect,
+void TsDNARuddIonisationExtendedRITRACKSModel::SampleSecondaries(std::vector<G4DynamicParticle*>* fvect,
                                                          const G4MaterialCutsCouple* couple,
                                                          const G4DynamicParticle* particle,
                                                          G4double,
@@ -708,7 +690,7 @@ void TsDNARuddIonisationExtendedModel::SampleSecondaries(std::vector<G4DynamicPa
     //     particle->GetDefinition()->GetAtomicMass() is correct
 
     if (verboseLevel > 3)
-        G4cout << "Calling SampleSecondaries() of TsDNARuddIonisationExtendedModel" << G4endl;
+        G4cout << "Calling SampleSecondaries() of TsDNARuddIonisationExtendedRITRACKSModel" << G4endl;
 
     G4double lowLim = 0;
     G4double highLim = 0;
@@ -896,7 +878,7 @@ void TsDNARuddIonisationExtendedModel::SampleSecondaries(std::vector<G4DynamicPa
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4double TsDNARuddIonisationExtendedModel::RandomizeEjectedElectronEnergy(G4ParticleDefinition* particleDefinition, 
+G4double TsDNARuddIonisationExtendedRITRACKSModel::RandomizeEjectedElectronEnergy(G4ParticleDefinition* particleDefinition, 
                                                                           G4double k,
                                                                           G4int shell)
 {
@@ -930,7 +912,7 @@ G4double TsDNARuddIonisationExtendedModel::RandomizeEjectedElectronEnergy(G4Part
 // GetAngularDistribution()->SampleDirectionForShell is used instead
 
 /*
-void TsDNARuddIonisationExtendedModel::RandomizeEjectedElectronDirection(G4ParticleDefinition* particleDefinition, 
+void TsDNARuddIonisationExtendedRITRACKSModel::RandomizeEjectedElectronDirection(G4ParticleDefinition* particleDefinition, 
                                                                          G4double k,
                                                                          G4double secKinetic,
                                                                          G4double & cosTheta,
@@ -969,7 +951,7 @@ void TsDNARuddIonisationExtendedModel::RandomizeEjectedElectronDirection(G4Parti
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4double TsDNARuddIonisationExtendedModel::RejectionFunction(G4ParticleDefinition* particleDefinition, 
+G4double TsDNARuddIonisationExtendedRITRACKSModel::RejectionFunction(G4ParticleDefinition* particleDefinition, 
                                                              G4double k,
                                                              G4double proposed_ws,
                                                              G4int ionizationLevelIndex)
@@ -1104,7 +1086,7 @@ G4double TsDNARuddIonisationExtendedModel::RejectionFunction(G4ParticleDefinitio
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 
-G4double TsDNARuddIonisationExtendedModel::ProposedSampledEnergy(G4ParticleDefinition* particle, 
+G4double TsDNARuddIonisationExtendedRITRACKSModel::ProposedSampledEnergy(G4ParticleDefinition* particle, 
                                                                  G4double k,
                                                                  G4int ionizationLevelIndex)
 {
@@ -1222,7 +1204,7 @@ G4double TsDNARuddIonisationExtendedModel::ProposedSampledEnergy(G4ParticleDefin
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4double TsDNARuddIonisationExtendedModel::S_1s(G4double t, 
+G4double TsDNARuddIonisationExtendedRITRACKSModel::S_1s(G4double t, 
                                                 G4double energyTransferred,
                                                 G4double slaterEffectiveChg,
                                                 G4double shellNumber)
@@ -1238,7 +1220,7 @@ G4double TsDNARuddIonisationExtendedModel::S_1s(G4double t,
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4double TsDNARuddIonisationExtendedModel::S_2s(G4double t,
+G4double TsDNARuddIonisationExtendedRITRACKSModel::S_2s(G4double t,
                                                 G4double energyTransferred,
                                                 G4double slaterEffectiveChg,
                                                 G4double shellNumber)
@@ -1255,7 +1237,7 @@ G4double TsDNARuddIonisationExtendedModel::S_2s(G4double t,
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4double TsDNARuddIonisationExtendedModel::S_2p(G4double t, 
+G4double TsDNARuddIonisationExtendedRITRACKSModel::S_2p(G4double t, 
                                                 G4double energyTransferred,
                                                 G4double slaterEffectiveChg,
                                                 G4double shellNumber)
@@ -1271,7 +1253,7 @@ G4double TsDNARuddIonisationExtendedModel::S_2p(G4double t,
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4double TsDNARuddIonisationExtendedModel::R(G4double t,
+G4double TsDNARuddIonisationExtendedRITRACKSModel::R(G4double t,
                                              G4double energyTransferred,
                                              G4double slaterEffectiveChg,
                                              G4double shellNumber)
@@ -1289,7 +1271,7 @@ G4double TsDNARuddIonisationExtendedModel::R(G4double t,
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4double TsDNARuddIonisationExtendedModel::CorrectionFactor(G4ParticleDefinition* particleDefinition, G4double k, G4int shell) 
+G4double TsDNARuddIonisationExtendedRITRACKSModel::CorrectionFactor(G4ParticleDefinition* particleDefinition, G4double k, G4int shell) 
 {
     // ZF Shortened
     G4DNAGenericIonsManager *instance;
@@ -1309,7 +1291,7 @@ G4double TsDNARuddIonisationExtendedModel::CorrectionFactor(G4ParticleDefinition
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4int TsDNARuddIonisationExtendedModel::RandomSelect(G4double k, const G4String& particle )
+G4int TsDNARuddIonisationExtendedRITRACKSModel::RandomSelect(G4double k, const G4String& particle )
 {   
 
     G4int level = 0;
@@ -1361,7 +1343,7 @@ G4int TsDNARuddIonisationExtendedModel::RandomSelect(G4double k, const G4String&
     }
     else
     {
-        G4Exception("TsDNARuddIonisationExtendedModel::RandomSelect","em0002",
+        G4Exception("TsDNARuddIonisationExtendedRITRACKSModel::RandomSelect","em0002",
                     FatalException,"Model not applicable to particle type.");
     }
 
@@ -1370,7 +1352,7 @@ G4int TsDNARuddIonisationExtendedModel::RandomSelect(G4double k, const G4String&
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4double TsDNARuddIonisationExtendedModel::PartialCrossSection(const G4Track& track )
+G4double TsDNARuddIonisationExtendedRITRACKSModel::PartialCrossSection(const G4Track& track )
 {
     G4double sigma = 0.;
 
@@ -1413,7 +1395,7 @@ G4double TsDNARuddIonisationExtendedModel::PartialCrossSection(const G4Track& tr
         }
         else
         {
-            G4Exception("TsDNARuddIonisationExtendedModel::PartialCrossSection","em0002",
+            G4Exception("TsDNARuddIonisationExtendedRITRACKSModel::PartialCrossSection","em0002",
                         FatalException,"Model not applicable to particle type.");
         }
     }
@@ -1423,7 +1405,7 @@ G4double TsDNARuddIonisationExtendedModel::PartialCrossSection(const G4Track& tr
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4double TsDNARuddIonisationExtendedModel::Sum(G4double /* energy */, const G4String& /* particle */)
+G4double TsDNARuddIonisationExtendedRITRACKSModel::Sum(G4double /* energy */, const G4String& /* particle */)
 {
     return 0;
 }

@@ -147,11 +147,15 @@ void TsEmDNAChemistry::DefineParameters()
     std::vector<G4String>* reactionNames = new std::vector<G4String>;
     fPm->GetParameterNamesBracketedBy("Ch/" + fName, "ReactionRate", reactionNames);
     G4int numberOfReactions = reactionNames->size();
-    G4int prefixLength = G4String("Ch/" + fName + "/BinaryReaction/").length();
+    G4int prefixLength = G4String("Ch/" + fName + "/Reaction/").length();
     
     if ( numberOfReactions > 0 ) {
         for ( int i = 0; i < numberOfReactions; i++ ) {
             G4String parName = (*reactionNames)[i];
+			if (fPm->ParameterExists(parName.substr(0,parName.find("ReactionRate")-1) + "/CompatibleWithStepByStep") &&
+				!fPm->GetBooleanParameter(parName.substr(0,parName.find("ReactionRate")-1) + "/CompatibleWithStepByStep"))
+				continue;
+			
             G4String reactions = parName.substr(prefixLength, parName.find("ReactionRate")-prefixLength-1);
             G4String reactorA = reactions.substr(0, reactions.find("/"));
             G4String reactorB = reactions.substr(reactions.find("/") + 1);
@@ -175,8 +179,8 @@ void TsEmDNAChemistry::DefineParameters()
             
             for ( int j = 0; j < nbOfProduct; j++ ) {
                 product[j].toLower();
-                if ( product[j] == "noproduct" ) // Note on comparison of strings: See comment on ConstructReactionTable()
-                    products.push_back("noproduct");
+                if ( product[j] == "none" ) // Note on comparison of strings: See comment on ConstructReactionTable()
+                    products.push_back("none");
                 else if ( product[j] == "water") {
                     products.push_back("H2O");
                 } else {
@@ -299,17 +303,17 @@ void TsEmDNAChemistry::ConstructMolecule()
     G4H2::Definition();
     TsScavengerProduct::Definition();
     
+    G4MoleculeTable::Instance()->CreateConfiguration("H", G4Hydrogen::Definition());
+    G4MoleculeTable::Instance()->CreateConfiguration("OH", G4OH::Definition());
+    G4MoleculeTable::Instance()->CreateConfiguration("H2O2", G4H2O2::Definition());
+    G4MoleculeTable::Instance()->CreateConfiguration("H2", G4H2::Definition());
+    G4MoleculeTable::Instance()->CreateConfiguration("e_aq", G4Electron_aq::Definition());
     G4MoleculeTable::Instance()->CreateConfiguration("H3Op", G4H3O::Definition());
     
     G4MolecularConfiguration* OHm =
     G4MoleculeTable::Instance()-> CreateConfiguration("OHm", G4OH::Definition(), -1, 5.0e-9 * (m2 / s));
     OHm->SetMass(17.0079 * g / Avogadro * c_squared);
     
-    G4MoleculeTable::Instance()->CreateConfiguration("OH", G4OH::Definition());
-    G4MoleculeTable::Instance()->CreateConfiguration("e_aq", G4Electron_aq::Definition());
-    G4MoleculeTable::Instance()->CreateConfiguration("H", G4Hydrogen::Definition());
-    G4MoleculeTable::Instance()->CreateConfiguration("H2", G4H2::Definition());
-    G4MoleculeTable::Instance()->CreateConfiguration("H2O2", G4H2O2::Definition());
     G4MoleculeTable::Instance()->CreateConfiguration("Product", TsScavengerProduct::Definition());
     
     if ( fSetWaterConfiguration )
@@ -574,7 +578,7 @@ void TsEmDNAChemistry::ConstructReactionTable(G4DNAMolecularReactionTable*
         reactionData->SetReactionID(reactionType);
         
         for ( size_t u = 0; u < fReactionProducts[t].size(); u++ ) {
-            if ( "noproduct" != fReactionProducts[t][u] ) // This comparison crashes if the order is fReactionProducts[t][u] != "noproduct"
+            if ( "none" != fReactionProducts[t][u] ) // This comparison crashes if the order is fReactionProducts[t][u] != "none"
                 reactionData->AddProduct(reactions[ fReactionProducts[t][u] ] );
         }
         std::cout << " Re-set reaction kobs to : " << fReactionRates[t]/(1e-3*m3/(mole*s)) << "/M/s" << std::endl;

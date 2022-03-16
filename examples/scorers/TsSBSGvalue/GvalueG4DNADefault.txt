@@ -38,17 +38,23 @@ u:So/Demo/BeamEnergySpread = 0
 s:So/Demo/BeamParticle = "e-"
 s:So/Demo/BeamPositionDistribution = "None"
 
-s:Sc/GValueInTarget/Quantity = "gvalue" 
+u:perCent = 1
+
+s:Sc/GValueInTarget/Quantity = "TsSBSGValue" 
 s:Sc/GValueInTarget/Component = "Target"
 s:Sc/GValueInTarget/IfOutputFileAlreadyExists = "Overwrite"
 b:Sc/GValueInTarget/OutputToConsole = "True"
+d:Sc/GValueInTarget/KillPrimaryIfEnergyLossExceeds = So/Demo/BeamEnergy keV * perCent
+d:Sc/GValueInTarget/AbortEventIfPrimaryEnergyLossExceeds = 1.01 * Sc/GValueInTarget/KillPrimaryIfEnergyLossExceeds keV
+d:Sc/GValueInTarget/KillPrimaryBasedOnTrackLength = 5 um
 # Record time, do not confuse with Time features.
-i:Sc/GValueInTarget/TimeBins   = 20
-d:Sc/GValueInTarget/TimeBinMin = 1.0 ps
-d:Sc/GValueInTarget/TimeBinMax = 999999.0 ps 
-b:Sc/GValueInTarget/TimeBinLog = "true"
 s:Sc/GValueInTarget/OutputType = "ascii" # or root
 s:Sc/GValueInTarget/OutputFile = "Gvalue_e_750keV"
+dv:Sc/GValueInTarget/TimeToRecord = 20 1.00000e0 2.06913e0 4.28133e0 8.85866e0
+                                       1.83298e1 3.79268e1 7.84759e1 1.62377e2
+                                       3.35981e2 6.95192e2 1.43844e3 2.97634e3
+                                       6.15847e3 1.27427e4 2.63664e4 5.45559e4
+                                       1.12883e5 2.33571e5 4.83292e5 9.99999e5 ps
 
 i:So/Demo/NumberOfHistoriesInRun = 10
 i:Ts/ShowHistoryCountAtInterval = 1 

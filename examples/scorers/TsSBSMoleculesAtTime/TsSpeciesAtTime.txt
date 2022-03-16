@@ -1,4 +1,4 @@
-# Demonstrates scoring the number of molecules created 
+# Demonstrate scoring the number of molecules created 
 # at specific time with the Chemistry process.
 # Score the energy deposit per separated 
 # to the G-value in a post-simulation step
@@ -49,7 +49,7 @@ s:Sc/EnergyDeposit/OutputFile  = "Edep"
 sv:Sc/EnergyDeposit/Report     = 2 "Sum" "Standard_Deviation"
 s:Sc/EnergyDeposit/IfOutputFileAlreadyExists = "overwrite"
 
-s:Sc/NumberOfMoleculesAtTime/Quantity   = "NumberOfMoleculesAtTime" 
+s:Sc/NumberOfMoleculesAtTime/Quantity   = "TsSBSMoleculesAtTime" 
 s:Sc/NumberOfMoleculesAtTime/Component   = "Target"
 b:Sc/NumberOfMoleculesAtTime/OutputToConsole = "True"
 s:Sc/NumberOfMoleculesAtTime/IfOutputFileAlreadyExists = "Overwrite"
