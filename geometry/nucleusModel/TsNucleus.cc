@@ -240,7 +240,6 @@ G4VPhysicalVolume* TsNucleus::Construct()
 	param->SetNoVoxel( fHilbertCurve3DRepeat, fHilbertCurve3DRepeat, fHilbertCurve3DRepeat ); 
 	param->SetContainerDimensions(ParaContainerHalfSize, ParaContainerHalfSize, ParaContainerHalfSize);
 
->>>>>>> Stashed changes
 	//****************************************************************************
 	//							 Build basic geometry						 //
 	//****************************************************************************
@@ -313,7 +312,7 @@ G4VPhysicalVolume* TsNucleus::Construct()
 		SetBasicInfo();
 
 		////----- Create parameterisation and set
-		param = new TsVoxelParameterisation();
+		param = new TsVoxelParameterisation(fPm);
 		param->SetVoxelDimensions( fVoxelLength/2, fVoxelLength/2, fVoxelLength/2 );
 		param->SetNoVoxel( fHilbertCurve3DRepeat, fHilbertCurve3DRepeat, fHilbertCurve3DRepeat );
 		param->SetContainerDimensions(ParaContainerHalfSize, ParaContainerHalfSize, ParaContainerHalfSize);
