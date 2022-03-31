@@ -572,8 +572,9 @@ void TsScorerNucleusDNADamage::GetGeometryInfo()
 		G4String input;
 		if (!infile.is_open())
 		{
-			G4cout << "ERROR: Unable to open file " << fGeometryInfo << G4endl;
-			exit(0);
+			G4cerr << "Scoring of Nuclear Damage" << G4endl;
+			G4cerr << "ERROR: Unable to open file " << fGeometryInfo << G4endl;
+		    fPm->AbortSession(1);
 		}
 		else
 			G4cout << "Reading " << fGeometryInfo << G4endl;
@@ -604,8 +605,9 @@ void TsScorerNucleusDNADamage::GetGeometryInfo()
 
 		if (!infile.is_open())
 		{
-			G4cout << "ERROR: Unable to open file " << fCopyNoTable << G4endl;
-			exit(0);
+			G4cerr << "Scoring of Nuclear Damage" << G4endl;
+			G4cerr << "ERROR: Unable to open file " << fCopyNoTable << G4endl;
+		    fPm->AbortSession(1);
 		}
 		else
 			G4cout << "Reading " << fCopyNoTable << G4endl;
@@ -628,8 +630,9 @@ void TsScorerNucleusDNADamage::GetGeometryInfo()
 
 		if (!infile.is_open())
 		{
-			G4cout << "ERROR: Unable to open file " << fSignedCHVoxel << G4endl;
-			exit(0);
+			G4cerr << "Scoring of Nuclear Damage" << G4endl;
+			G4cerr << "ERROR: Unable to open file " << fSignedCHVoxel << G4endl;
+		    fPm->AbortSession(1);
 		}
 		else
 			G4cout << "Reading " << fSignedCHVoxel << G4endl;

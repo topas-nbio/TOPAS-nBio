@@ -58,7 +58,7 @@ void TsNeuroMorpho::ResolveParameters() {
     if (!fPm->ParameterExists(name)) {
         G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
         G4cerr << "Parameter " << name << " has to be specified for this scorer." << G4endl;
-        exit(1);
+        fPm->AbortSession(1);
     }
     G4String NeuroMorphoFileName = fPm->GetStringParameter(name);
     
@@ -129,8 +129,9 @@ void TsNeuroMorpho::ResolveParameters() {
     }
     else
     {
-        G4cout << "ERROR: Unable to open file " << FileName << G4endl;
-        exit(1);
+        G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
+        G4cerr << "ERROR: Unable to open file " << FileName << G4endl;
+        fPm->AbortSession(1);
     }
     f.close();
     
@@ -206,8 +207,9 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
     //First line of file should define a soma component, if this is not the case,
     //the neuron is one of the SWC file special cases, which is not currently supported. Check this:
     if (fPartID[0] != 1){
-        G4cout << "ERROR: Neuron does not contain a soma/cell body. These are special cases in the NeuroMorpho database, which we do not currently support." << G4endl;
-        exit(1);
+        G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
+        G4cerr << "ERROR: Neuron does not contain a soma/cell body. These are special cases in the NeuroMorpho database, which we do not currently support." << G4endl;
+        fPm->AbortSession(1);
     }
     
 
@@ -273,7 +275,7 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
         if (fPartID[i] == 0){
             G4cerr << "Topas is exiting due to a serious error in reading in NeuroMorpho file." << G4endl;
             G4cerr << "SWC file contains an undefined component" << G4endl;
-            exit(1);
+            fPm->AbortSession(1);
             
         }
         

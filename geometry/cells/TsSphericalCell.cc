@@ -83,7 +83,7 @@ G4VPhysicalVolume* TsSphericalCell::Construct()
             if (transNucX > NuclRadius) {
                 G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
                 G4cerr << "Parameter " << name1 << " sets nucleus outside of cell." << G4endl;
-                exit(1);
+                fPm->AbortSession(1);
             }
         }
         
@@ -93,7 +93,7 @@ G4VPhysicalVolume* TsSphericalCell::Construct()
             if (transNucY > NuclRadius) {
                 G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
                 G4cerr << "Parameter " << name1 << " sets nucleus outside of cell." << G4endl;
-                exit(1);
+                fPm->AbortSession(1);
             }
         }
         
@@ -103,7 +103,7 @@ G4VPhysicalVolume* TsSphericalCell::Construct()
             if (transNucZ > NuclRadius) {
                 G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
                 G4cerr << "Parameter " << name1 << " sets nucleus outside of cell." << G4endl;
-                exit(1);
+                fPm->AbortSession(1);
             }
             
         }
@@ -120,7 +120,7 @@ G4VPhysicalVolume* TsSphericalCell::Construct()
         if (OverlapCheck == true){
             G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
             G4cerr << "Nucleus overlaps with the cell." << G4endl;
-            exit(1);
+            fPm->AbortSession(1);
         }
         
     }

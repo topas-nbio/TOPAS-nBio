@@ -63,7 +63,7 @@ void TsFractalDNA::ResolveParameters(){
     if (!fPm->ParameterExists(name)) {
         G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
         G4cerr << "Parameter " << name << " has to be specified for this scorer." << G4endl;
-        exit(1);
+        fPm->AbortSession(1);
     }
     G4String FileName = fPm->GetStringParameter(name);
     
@@ -94,8 +94,9 @@ void TsFractalDNA::ResolveParameters(){
     }
     else
     {
+        G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
         G4cout << "ERROR: Unable to open file " << FileName << G4endl;
-        exit(1);
+        fPm->AbortSession(1);
     }
     f.close();
     

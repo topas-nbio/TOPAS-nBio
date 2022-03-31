@@ -725,6 +725,6 @@ G4String TsEmDNAChemistry::GetFullParmName(G4String suffix ) {
 void TsEmDNAChemistry::Quit(G4String parName, G4String message) {
     std::cerr << "TOPAS is exiting due to an error in Chemistry configuration." << std::endl;
     std::cerr << "Parameter: " << parName << " " << message << std::endl;
-    exit(1);
+    fPm->AbortSession(1);
 }
 
