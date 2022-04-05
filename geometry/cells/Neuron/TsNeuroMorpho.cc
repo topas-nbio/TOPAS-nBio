@@ -58,7 +58,7 @@ void TsNeuroMorpho::ResolveParameters() {
     if (!fPm->ParameterExists(name)) {
         G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
         G4cerr << "Parameter " << name << " has to be specified for this scorer." << G4endl;
-        fPm->AbortSession(1);
+        exit(1);
     }
     G4String NeuroMorphoFileName = fPm->GetStringParameter(name);
     
@@ -129,9 +129,8 @@ void TsNeuroMorpho::ResolveParameters() {
     }
     else
     {
-        G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
-        G4cerr << "ERROR: Unable to open file " << FileName << G4endl;
-        fPm->AbortSession(1);
+        G4cout << "ERROR: Unable to open file " << FileName << G4endl;
+        exit(1);
     }
     f.close();
     
@@ -207,9 +206,8 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
     //First line of file should define a soma component, if this is not the case,
     //the neuron is one of the SWC file special cases, which is not currently supported. Check this:
     if (fPartID[0] != 1){
-        G4cerr << "Topas is exiting due to a serious error in geometry setup." << G4endl;
-        G4cerr << "ERROR: Neuron does not contain a soma/cell body. These are special cases in the NeuroMorpho database, which we do not currently support." << G4endl;
-        fPm->AbortSession(1);
+        G4cout << "ERROR: Neuron does not contain a soma/cell body. These are special cases in the NeuroMorpho database, which we do not currently support." << G4endl;
+        exit(1);
     }
     
 
@@ -275,7 +273,7 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
         if (fPartID[i] == 0){
             G4cerr << "Topas is exiting due to a serious error in reading in NeuroMorpho file." << G4endl;
             G4cerr << "SWC file contains an undefined component" << G4endl;
-            fPm->AbortSession(1);
+            exit(1);
             
         }
         
@@ -351,7 +349,8 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
             G4ThreeVector colX = G4ThreeVector(mxx, myx, mzx);
             G4ThreeVector colY = G4ThreeVector(mxy, myy, mzy);
             G4ThreeVector colZ = G4ThreeVector(mxz, myz, mzz);
-            G4RotationMatrix* rotDend = new G4RotationMatrix(colX, colY, colZ);
+            G4RotationMatrix rotDend = G4RotationMatrix(colX, colY, colZ);
+            G4RotationMatrix* rotDendInv = new G4RotationMatrix(rotDend.inverse());
             
             //Check if component is in the soma volume
             
@@ -378,7 +377,7 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
                 
                     G4Tubs* Axon = new G4Tubs("Axon", 0, fRadius[i], r/2, 0*deg, 360*deg);
                     G4LogicalVolume* AxonLog = CreateLogicalVolume("Axon", Axon);
-                    G4VPhysicalVolume* AxonPhys = CreatePhysicalVolume("Axon", j, false, AxonLog, rotDend, CylPos, fEnvelopePhys);
+                    G4VPhysicalVolume* AxonPhys = CreatePhysicalVolume("Axon", j, false, AxonLog, rotDendInv, CylPos, fEnvelopePhys);
                     j++;
                 }
           
@@ -390,7 +389,7 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
 
                     G4Tubs* BDend = new G4Tubs("BasalDendrite", 0, fRadius[i], r/2, 0*deg, 360*deg);
                     G4LogicalVolume* BDendLog = CreateLogicalVolume("BasalDendrite", BDend);
-                    G4VPhysicalVolume* BDendPhys = CreatePhysicalVolume("BasalDendrite", k, false, BDendLog, rotDend, CylPos, fEnvelopePhys);
+                    G4VPhysicalVolume* BDendPhys = CreatePhysicalVolume("BasalDendrite", k, false, BDendLog, rotDendInv, CylPos, fEnvelopePhys);
                     k++;
                 }
         
@@ -401,7 +400,7 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
                   
                     G4Tubs* ADend = new G4Tubs("ApicalDendrite", 0, fRadius[i], r/2, 0*deg, 360*deg);
                     G4LogicalVolume* ADendLog = CreateLogicalVolume("ApicalDendrite", ADend);
-                    G4VPhysicalVolume* ADendPhys = CreatePhysicalVolume("ApicalDendrite", l, false, ADendLog, rotDend, CylPos, fEnvelopePhys);
+                    G4VPhysicalVolume* ADendPhys = CreatePhysicalVolume("ApicalDendrite", l, false, ADendLog, rotDendInv, CylPos, fEnvelopePhys);
                     l++;
                   
             
