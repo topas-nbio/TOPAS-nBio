@@ -172,15 +172,12 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 														"/ReactionRate","perMolarConcentration perTime");
 		
 		if ( nbOfProduct == 1 )
-			InsertReaction(fExistingMolecules[reactorA], fExistingMolecules[reactorB],
-						   fExistingMolecules[product[0]],"None","None",reactionRate,reactionType);
+			InsertReaction(reactorA, reactorB,
+						   product[0],"None","None",reactionRate,reactionType);
 		else if ( nbOfProduct == 2 )
-			InsertReaction(fExistingMolecules[reactorA], fExistingMolecules[reactorB],
-						   fExistingMolecules[product[0]],fExistingMolecules[product[1]],"None",reactionRate,reactionType);
+			InsertReaction(reactorA, reactorB,product[0],product[1],"None",reactionRate,reactionType);
 		else
-			InsertReaction(fExistingMolecules[reactorA], fExistingMolecules[reactorB],
-						   fExistingMolecules[product[0]],fExistingMolecules[product[1]],fExistingMolecules[product[2]],
-						   reactionRate,reactionType);
+			InsertReaction(reactorA, reactorB,product[0],product[1],product[2],reactionRate,reactionType);
 
 		if (fPm->ParameterExists(aparName.substr(0,aparName.find("Products")-1) + "/ActivationRate") ||
 			fPm->ParameterExists(aparName.substr(0,aparName.find("Products")-1) + "/DiffusionRate")){
@@ -228,15 +225,11 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 			G4double scavengingCapacity = fPm->GetDoubleParameter(aparName.substr(0,aparName.find("Products")-1) +
 																  "/ScavengingCapacity","perTime");
 			if ( nbOfProduct == 1 )
-				InsertBackgroundReaction(fExistingMolecules[reactorA], fExistingMolecules[reactorB],
-										 fExistingMolecules[product[0]],"None","None",scavengingCapacity,false);
+				InsertBackgroundReaction(reactorA, reactorB,product[0],"None","None",scavengingCapacity,false);
 			else if ( nbOfProduct == 2 )
-				InsertBackgroundReaction(fExistingMolecules[reactorA], fExistingMolecules[reactorB],
-										 fExistingMolecules[product[0]],fExistingMolecules[product[1]],"None",scavengingCapacity,false);
+				InsertBackgroundReaction(reactorA, reactorB,product[0],product[1],"None",scavengingCapacity,false);
 			else
-				InsertBackgroundReaction(fExistingMolecules[reactorA], fExistingMolecules[reactorB],
-										 fExistingMolecules[product[0]],fExistingMolecules[product[1]],fExistingMolecules[product[2]],
-										 scavengingCapacity,false);
+				InsertBackgroundReaction(reactorA, reactorB,product[0],product[1],product[2],scavengingCapacity,false);
 		} else {
 			G4double concentration = fPm->GetDoubleParameter(aparName.substr(0,aparName.find("Products")-1) +
 															 "/Concentration","molar concentration");
@@ -250,26 +243,19 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 			scavengingExponentialModel.toLower();
 			if ( scavengingExponentialModel == "exponentialsinglefactor" ) {
 				if ( nbOfProduct == 1 )
-					InsertBackgroundReaction(fExistingMolecules[reactorA], fExistingMolecules[reactorB],
-											 fExistingMolecules[product[0]],"None","None",reactionRate,concentration,false);//scavengingCapacity);
+					InsertBackgroundReaction(reactorA, reactorB,product[0],"None","None",reactionRate,concentration,false);//scavengingCapacity);
 				else if ( nbOfProduct == 2 )
-					InsertBackgroundReaction(fExistingMolecules[reactorA], fExistingMolecules[reactorB],
-											 fExistingMolecules[product[0]],fExistingMolecules[product[1]],"None",reactionRate,concentration,false);//,scavengingCapacity);
+					InsertBackgroundReaction(reactorA, reactorB,product[0],product[1],"None",reactionRate,concentration,false);//,scavengingCapacity);
 				else
-					InsertBackgroundReaction(fExistingMolecules[reactorA], fExistingMolecules[reactorB],
-											 fExistingMolecules[product[0]],fExistingMolecules[product[1]],
-											 fExistingMolecules[product[2]],reactionRate,concentration,false);//scavengingCapacity);
+					InsertBackgroundReaction(reactorA, reactorB,product[0],product[1],product[2],reactionRate,concentration,false);//scavengingCapacity);
 				
 			} else if (scavengingExponentialModel == "exponentialdoublefactor" ) {
 				if ( nbOfProduct == 1 )
-					InsertBackgroundReaction(fExistingMolecules[reactorA], fExistingMolecules[reactorB],
-											 fExistingMolecules[product[0]],"None","None",reactionRate,concentration,true);
+					InsertBackgroundReaction(reactorA, reactorB,product[0],"None","None",reactionRate,concentration,true);
 				else if ( nbOfProduct == 2 )
-					InsertBackgroundReaction(fExistingMolecules[reactorA], fExistingMolecules[reactorB],
-											 fExistingMolecules[product[0]],fExistingMolecules[product[1]],"None",reactionRate,concentration,true);
+					InsertBackgroundReaction(reactorA, reactorB,product[0],product[1],"None",reactionRate,concentration,true);
 				else
-					InsertBackgroundReaction(fExistingMolecules[reactorA], fExistingMolecules[reactorB],
-											 fExistingMolecules[product[0]],fExistingMolecules[product[1]],fExistingMolecules[product[2]],
+					InsertBackgroundReaction(reactorA, reactorB,product[0],product[1],product[2],
 											 reactionRate,concentration,true);
 			} else {
 				Quit(aparName.substr(0,aparName.find("Products")-1) + "/ScavengingModel",
@@ -530,9 +516,10 @@ G4bool TsIRTConfiguration::MoleculeExists(G4String name) {
 
 
 void TsIRTConfiguration::QuitIfMoleculeNotFound(G4String mol) {
-	if ( fMoleculesID.find(mol) == fMoleculesID.end() ) {
-		std::cout << "Error! Molecule " << mol << " does not exists in database" << std::endl;
-		exit(1);
+	if (fExistingMolecules.find(mol) == fExistingMolecules.end()) {
+		G4cerr << "TOPAS is exiting due to a fatal error in IRT Chemistry setup!" << G4endl;
+		G4cerr << "--- Molecule " << mol << " does not exists in database" << G4endl;
+		fPm->AbortSession(1);
 	}
 	return;
 }
@@ -1133,30 +1120,40 @@ void TsIRTConfiguration::InsertReaction(G4String A, G4String B, G4String p1, G4S
 {
 	QuitIfMoleculeNotFound(A);
 	QuitIfMoleculeNotFound(B);
-	G4int molA = fMoleculesID[A];
-	G4int molB = fMoleculesID[B];
+	G4String molNameA  = fExistingMolecules[A];
+	G4String molNameB  = fExistingMolecules[B];
+
+	std::vector<G4int> products;
+	G4String molNameP1 = p1;
+	if (p1 != "None") {
+		QuitIfMoleculeNotFound(p1);
+		molNameP1 = fExistingMolecules[p1];
+		products.push_back(fMoleculesID[molNameP1]);
+	}
+
+	G4String molNameP2 = p2;
+	if (p2 != "None") {
+		QuitIfMoleculeNotFound(p2);
+		molNameP2 = fExistingMolecules[p2];
+		products.push_back(fMoleculesID[molNameP2]);
+	}
+
+	G4String molNameP3 = p3;
+	if (p3 != "None") {
+		QuitIfMoleculeNotFound(p3);
+		molNameP3 = fExistingMolecules[p3];
+		products.push_back(fMoleculesID[molNameP3]);
+	}
+
+	G4int molA = fMoleculesID[molNameA];
+	G4int molB = fMoleculesID[molNameB];
 	
 	if ( GetReactionIndex(molA, molB) > -1 ) {
-		std::cout << " - warning this reaction already exists: "
-		<< A << " + " << B << " --> " << p1 << " + "
-		<< p2 << " + " << p3 << std::endl;
-		exit(1);
+		G4cerr << "TOPAS is exiting due to a fatal error in IRT Chemistry setup!" << G4endl;
+		G4cerr << "--- Reaction: " << molNameA << " + " << molNameB << " -> " 
+		                           << molNameP1 << " + " << molNameP2 << " + " << molNameP3 << " already exists." << G4endl;
+		fPm->AbortSession(1);
 		return;
-	}
-	
-	std::vector<G4int> products;
-	if ( p1 != "None" ) {
-		QuitIfMoleculeNotFound(p1);
-		products.push_back(fMoleculesID[p1]);
-		
-	} if ( p2 != "None" ) {
-		QuitIfMoleculeNotFound(p2);
-		products.push_back(fMoleculesID[p2]);
-		
-	} if ( p3 != "None" ) {
-		QuitIfMoleculeNotFound(p3);
-		products.push_back(fMoleculesID[p3]);
-		
 	}
 	
 	InsertReaction(molA, molB, products, kobs, reactionType);
@@ -1170,23 +1167,35 @@ void TsIRTConfiguration::InsertBackgroundReaction(G4String A, G4String B, G4Stri
 {
 	QuitIfMoleculeNotFound(A);
 	QuitIfMoleculeNotFound(B);
+	G4String molNameA = fExistingMolecules[A];
+	G4String molNameB = fExistingMolecules[B];
 	
 	G4int index = fReactionID;
 	fReactionID++;
-	G4int molA = fMoleculesID[A];
-	G4int molB = fMoleculesID[B];
+	G4int molA = fMoleculesID[molNameA];
+	G4int molB = fMoleculesID[molNameB];
 	// No need to test to confirm if this reaction already exists, because it could exists as a second order reaction
+
 	std::vector<G4int> products;
-	
-	if ( p1 != "None" ) {
+	G4String molNameP1 = p1;
+	if (p1 != "None") {
 		QuitIfMoleculeNotFound(p1);
-		products.push_back(fMoleculesID[p1]);
-	} if ( p2 != "None" ) {
+		molNameP1 = fExistingMolecules[p1];
+		products.push_back(fMoleculesID[molNameP1]);
+	}
+
+	G4String molNameP2 = p2;
+	if (p2 != "None") {
 		QuitIfMoleculeNotFound(p2);
-		products.push_back(fMoleculesID[p2]);
-	} if ( p3 != "None" ) {
+		molNameP2 = fExistingMolecules[p2];
+		products.push_back(fMoleculesID[molNameP2]);
+	}
+
+	G4String molNameP3 = p3;
+	if (p3 != "None") {
 		QuitIfMoleculeNotFound(p3);
-		products.push_back(fMoleculesID[p3]);
+		molNameP3 = fExistingMolecules[p3];
+		products.push_back(fMoleculesID[molNameP3]);
 	}
 	
 	TsMolecularReaction aMolecularReaction;
@@ -1209,22 +1218,34 @@ void TsIRTConfiguration::InsertBackgroundReaction(G4String A, G4String B, G4Stri
 {
 	QuitIfMoleculeNotFound(A);
 	QuitIfMoleculeNotFound(B);
+	G4String molNameA = fExistingMolecules[A];
+	G4String molNameB = fExistingMolecules[B];
 	
 	G4int index = fReactionID;
 	fReactionID++;
-	G4int molA = fMoleculesID[A];
-	G4int molB = fMoleculesID[B];
+	G4int molA = fMoleculesID[molNameA];
+	G4int molB = fMoleculesID[molNameB];
 	// No test to confirm if this reaction already exists, it could be a first order reaction
 	std::vector<G4int> products;
-	if ( p1 != "None" ) {
+	G4String molNameP1 = p1;
+	if (p1 != "None") {
 		QuitIfMoleculeNotFound(p1);
-		products.push_back(fMoleculesID[p1]);
-	} if ( p2 != "None" ) {
+		molNameP1 = fExistingMolecules[p1];
+		products.push_back(fMoleculesID[molNameP1]);
+	}
+
+	G4String molNameP2 = p2;
+	if (p2 != "None") {
 		QuitIfMoleculeNotFound(p2);
-		products.push_back(fMoleculesID[p2]);
-	} if ( p3 != "None" ) {
+		molNameP2 = fExistingMolecules[p2];
+		products.push_back(fMoleculesID[molNameP2]);
+	}
+
+	G4String molNameP3 = p3;
+	if (p3 != "None") {
 		QuitIfMoleculeNotFound(p3);
-		products.push_back(fMoleculesID[p3]);
+		molNameP3 = fExistingMolecules[p3];
+		products.push_back(fMoleculesID[molNameP3]);
 	}
 	
 	TsMolecularReaction aMolecularReaction;
@@ -2280,7 +2301,7 @@ G4double TsIRTConfiguration::CalculateProbabilityPartiallyDiffusionControlled(Ts
 
 void TsIRTConfiguration::Quit(const G4String& name, G4String message) {
 	G4cerr << G4endl;
-	G4cerr << "Topas is exiting due to a serious error in IRT setup." << G4endl;
+	G4cerr << "Topas is exiting due to a serious error in Chemistry IRT setup." << G4endl;
 	G4cerr << "--- Parameter name: " << name << G4endl;
 	G4cerr << "--- " << message << G4endl;
 	G4cerr << G4endl;
@@ -2997,7 +3018,11 @@ void TsIRTConfiguration::get_quads(double *a,int n,double *quad,double *x) {
 				std::cin >> quad[1];
 				std::cout << "Enter new trial value for 's' ( 0 to exit): ";
 				std::cin >> quad[0];
-				if (quad[0] == 0) exit(1);
+				if (quad[0] == 0) {
+					G4cerr << "TOPAS is exiting due to fatal error en IRT Chemistry setup!" << G4endl;
+					G4cerr << "--- No valid solution to the pH scaling system found!" << G4endl;
+					fPm->AbortSession(1);
+				}
 			}
 		} while (err > 0.01);
 		x[p-2] = quad[1];
