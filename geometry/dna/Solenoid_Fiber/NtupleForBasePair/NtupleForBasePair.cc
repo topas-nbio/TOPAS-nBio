@@ -91,10 +91,6 @@ G4bool NtupleForBasePair::ProcessHits(G4Step* aStep,G4TouchableHistory*)
       return false;
     }
 
-    if (Volume!="World" && Volume!="Fiber"){
-        G4cout<<"Hit in "<<Volume<<G4endl;
-    }
-
     if (Volume!=Base_strand1_name ||
         Volume!=Base_strand2_name ||
         Volume!=Back_strand1_name ||

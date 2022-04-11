@@ -43,9 +43,9 @@ b:Ge/CheckForUnusedComponents			= "false"
 
 
 # Type DNA - Linear plasmid
-s:Ge/Nucleus/DNABasicElement			= "SupercoiledPlasmid"
-s:Ge/Nucleus/Plasmid/Material    		= "G4_WATER"
-i:Ge/Nucleus/SupercoiledFileName 		= "supportFiles/pBR322_a.xyz"
+s:Ge/Nucleus/DNABasicElement		= "SupercoiledPlasmid"
+s:Ge/Nucleus/Plasmid/Material    	= "G4_WATER"
+s:Ge/Nucleus/SupercoiledFileName 	= "supportFiles/pBR322_a.xyz"
 
 # -- Materials
 s:Ma/G4_HistoneMaterial/CloneFromMaterial   = "G4_WATER"
