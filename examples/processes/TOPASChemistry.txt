@@ -16,7 +16,7 @@ b:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydroxyl/CompatibleWithStepB
 
 sv:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydrogen/Products            = 2 "Hydroxide" "Dyhydrogen"
 d:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydrogen/ReactionRate         = 2.652e10 /M/s
-d:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydrogen/CompatibleWithStepByStep = "True"
+b:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydrogen/CompatibleWithStepByStep = "True"
 
 sv:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydronium/Products           = 1 "Hydrogen"
 d:Ch/TOPASChemistry/BinaryReaction/SolvatedElectron/Hydronium/ReactionRate        = 2.109e10 /M/s
