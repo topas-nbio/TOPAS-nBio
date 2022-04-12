@@ -241,6 +241,9 @@ void TsScoreWithIRTCummulative::UserHookForPreTimeStepAction() {
                     fIRT->AddMolecule(*it_begin, time, 0, G4ThreeVector());
                 }
             }
+            else {
+                fIRT->AddMolecule(*it_begin, fShiftTime, 0, G4ThreeVector());
+            }
         }
         
         G4Scheduler::Instance()->Stop();
