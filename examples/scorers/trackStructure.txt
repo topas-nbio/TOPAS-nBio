@@ -1,0 +1,48 @@
+# Geometry
+d:Ge/World/HLX							= 1 um  
+d:Ge/World/HLY							= 1 um  
+d:Ge/World/HLZ							= 1 um  
+s:Ge/World/Material 					= "G4_WATER"
+b:Ge/World/Invisible 					= "True"
+
+s:Ge/Target/Parent 						= "World"
+s:Ge/Target/Type   						= "TsBox"
+s:Ge/Target/Material 					= "G4_WATER"
+s:Ge/Target/Color    					= "blue"
+d:Ge/Target/HLX     					= 0.5 um
+d:Ge/Target/HLY      					= 0.5 um
+d:Ge/Target/HLZ      					= 0.5 um
+
+# Particle source
+d:Ge/BeamPosition/TransZ 				= 1.0 um
+s:So/Beam/Type 							= "Beam"
+s:So/Beam/Component                     = "BeamPosition"
+s:So/Beam/BeamPositionDistribution      = "none"
+s:So/Beam/BeamAngularDistribution       = "none"
+s:So/Beam/BeamParticle 					= "proton"
+d:So/Beam/BeamEnergy 					= 10 MeV
+i:So/Beam/NumberOfHistoriesInRun 		= 1
+
+# Set physics
+sv:Ph/Default/Modules 					= 1 "g4em-dna"
+
+# Scorer
+s:Sc/trackS/Quantity 					= "TrackStructure"
+s:Sc/trackS/Component 					= "Target"
+s:Sc/trackS/OutputType 					= "ASCII"
+s:Sc/trackS/IfOutputFileAlreadyExists 	= "Overwrite"
+b:Sc/trackS/IncludeEventID 				= "True"
+b:Sc/trackS/IncludeTrackID 				= "True"
+b:Sc/trackS/IncludeParentID 			= "True"
+b:Sc/trackS/IncludeVolumeName 			= "True"
+
+#s:Gr/ViewA/Type = "OpenGL"
+#d:Gr/ViewA/Theta = 45 deg
+#d:Gr/ViewA/Phi   = 45 deg
+#i:Gr/ViewA/WindowSizeX = 900
+#i:Gr/ViewA/WindowSizeY = 700
+#Ts/PauseBeforeQuit = "False"
+
+Ts/NumberOfThreads = 1 
+b:Ts/ShowCPUTime = "True"
+i:Ts/Seed = 1

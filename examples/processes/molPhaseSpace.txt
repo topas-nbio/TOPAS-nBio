@@ -1,0 +1,61 @@
+# 
+# Set physics and chemistry processes
+sv:Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry"
+s:Ph/Default/Electron/SetElasticScatteringModel = "CPA100"
+
+includeFile = TOPASChemistry.txt
+s:Ch/ChemistryName = "TOPASChemistry" 
+b:Ch/TOPASChemistry/ChemicalStageTransportActive     = "True"
+d:Ch/TOPASChemistry/ChemicalStageTimeEnd             = 15.0 ns 
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsHighEdges   = 2 10.0 15.0  ns 
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsResolutions = 2  1.0 10.0  ps 
+
+# Geometry
+d:Ge/World/HLX= 1 um  
+d:Ge/World/HLY= 1 um  
+d:Ge/World/HLZ= 1 um  
+s:Ge/World/Material ="G4_WATER"
+b:Ge/World/Invisible = "True"
+
+s:Ge/target/Parent = "World"
+s:Ge/target/Type   = "TsSphere"
+s:Ge/target/Material = "G4_WATER"
+s:Ge/target/Color    = "blue"
+d:Ge/target/RMax     = 0.5 um
+d:Ge/target/HLY      = 0.5 um
+d:Ge/target/HLZ      = 0.5 um
+
+# Particle source
+d:Ge/BeamPosition/TransZ = 0.0 um
+s:So/Demo/Type = "Isotropic"
+s:So/Demo/BeamParticle = "e-"
+d:So/Demo/BeamEnergy = 10 keV 
+u:So/Demo/BeamEnergySpread = 0 
+i:So/Demo/NumberOfHistoriesInRun = 2
+
+# Tuple scorer. By default includes physical and chemical track.
+# For the physical track: the position and PDG Encoding
+# For the chemical track: the position at TimeCut and moleculeID
+s:Sc/MolPhSp/Quantity = "MoleculePhaseSpace"
+s:Sc/MolPhSp/Component = "target"
+s:Sc/MolPhSp/OutputType = "ASCII"
+b:Sc/MolPhSp/OutputToConsole = "True"
+s:Sc/MolPhSp/IfOutputFileAlreadyExists = "Overwrite"
+d:Sc/MolPhSp/TimeCut = 1.0 ps
+
+# Visualization
+s:Gr/view/Type = "OpenGl"
+s:Gr/view/ColorBy = "ParticleType"
+i:Gr/view/WindowSizeX = 800
+i:Gr/view/WindowSizeY = 800 
+d:Gr/view/Theta = 45 deg
+d:Gr/view/Phi = 45 deg
+b:Gr/view/UseSmoothTrajectories = "False"
+# Color per chemical specie. Use full name of the molecules
+sv:Gr/view/ColorByParticleTypeNames = 8 "e-" "proton" "alpha" "Hydroxil" "SolvatedElectron" "HydrogenPeroxide" "Hydrogen" "DiHydrogen" 
+sv:Gr/view/ColorByParticleTypeColors = 8 "red" "green" "green" "magenta" "yellow" "blue" "green" "white" 
+
+Ts/NumberOfThreads = 1 
+b:Ts/ShowCPUTime = "True"
+i:Ts/Seed = 1 
+
