@@ -93,7 +93,6 @@ u:Sc/DNAScorer/ProbabilityForOHToInteractWithBackbone	= 0.1
 u:Sc/DNAScorer/ProbabilityForOHToCauseDamageInBase		= 1.0
 u:Sc/DNAScorer/ProbabilityForOHToCauseDamageInBackbone  = 0.55
 u:Sc/DNAScorer/ProbabilityOfTransferFromHydrationShellToBackbone = 0.3333333
-
 b:Sc/DNAScorer/ExcludeShortFragment                     = "false"
 i:Sc/DNAScorer/LowerFragmentDetectionThreshold          = 250
 i:Sc/DNAScorer/UpperFragmentDetectionThreshold          = 300000000

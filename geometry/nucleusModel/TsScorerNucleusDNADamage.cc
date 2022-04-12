@@ -87,7 +87,6 @@ TsScorerNucleusDNADamage::TsScorerNucleusDNADamage(TsParameterManager* pM, TsMat
 		fProbabilityOfOHDamage = 0.4;
 		if ( fPm->ParameterExists(GetFullParmName("ProbabilityForOHToCauseDamage")) )
 			fProbabilityOfOHDamage = fPm->GetUnitlessParameter(GetFullParmName("ProbabilityForOHToCauseDamage"));
-
 	}
 	fDamageThreshold = 17.5*eV;
 	if ( fPm->ParameterExists(GetFullParmName("DamageThreshold")) )
