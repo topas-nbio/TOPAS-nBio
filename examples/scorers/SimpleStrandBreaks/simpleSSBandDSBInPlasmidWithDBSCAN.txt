@@ -92,7 +92,13 @@ d:Ge/BeamPosition/TransZ = -1.0 * Ge/World/HLZ nm
 d:Ge/BeamPosition/RotX   = 0 deg
 
 #Visualization
-s:Gr/ViewA/Type="OpenGL"
+#******************************************************
+# WARNING!!! 
+#******************************************************
+# Due to the high number of primaries, this example can 
+# frezee a computer if the visualization is used.
+#******************************************************
+#s:Gr/ViewA/Type="OpenGL"
 i:Gr/ViewA/WindowSizeX = 900
 i:Gr/ViewA/WindowSizeY = 700
 d:Gr/ViewA/Theta = 55 deg
