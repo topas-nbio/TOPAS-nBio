@@ -475,6 +475,7 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 		if (aStep->GetTrack()->GetTrackID() < 0 && fScoreIndirectDamages)
 		{
 			G4String speciesName 	= GetMolecule(aStep->GetTrack())->GetName();
+			G4cout<< speciesName << G4endl;
 			G4bool isSpeciesToKill 	= (speciesName == "OH^0" || speciesName == "e_aq^-1" || speciesName == "H^0");
 			G4bool isHydroxyl		= (speciesName == "OH^0");
 			G4bool isHydElectron	= (speciesName == "e_aq^-1");

@@ -55,10 +55,6 @@ private:
 				std::vector<G4ThreeVector> &path,
 				G4int nSteps);
 
-	G4LogicalVolume* SetSupercoiledPlasmid(std::vector<G4ThreeVector> &path, std::vector<G4ThreeVector> &coordinates);
-	G4LogicalVolume* SetSolenoidPlasmid(std::vector<G4ThreeVector> &coordinates);
-	G4LogicalVolume* SetLinearPlasmid(std::vector<G4ThreeVector> &path, std::vector<G4ThreeVector> &coordinates);
-
 	G4LogicalVolume * fFiberLogic;
 	std::vector<G4VPhysicalVolume*> fFiberPhysVolLoop;
 	std::vector<G4double> fiberPosX;
@@ -86,7 +82,7 @@ private:
 	G4double fHydrationShellThickness; 
 	G4String fDNAModel;
 	G4bool fShowNucleus, fShowDNAVoxels, fShowChromatinCylinders;
-	G4int fNumberOfBasePairs;
+	G4double fNumberOfBasePairs;
 	G4bool fRotateNucleusForEachRun;
 
 	//ParameterisationInfo
@@ -102,15 +98,6 @@ private:
 
 	// Selecting Scoring components
 	G4bool fScoreOnBases, fScoreOnBackbones, fScoreOnHydrationShell, fScoreOnHistones;
-	
-	// Specific parameters for plasmids
-	G4String fDNABasicElement;
-	G4String fSupercoiledCoordinatesFilename;
-	G4bool fSmoothPath;
-	G4int fnPStart;
-	G4int fnPMax;
-	G4double fdx;
-	G4double fdy;
 };
 
 #endif
