@@ -84,7 +84,7 @@ s:So/Field/BeamPositionCutoffShape  = "Rectangle"
 d:So/Field/BeamPositionCutOffX      = 120 nm
 d:So/Field/BeamPositionCutOffY      = 10  nm
 s:So/Field/BeamAngularDistribution  = "None"
-i:So/Field/NumberOfHistoriesInRun   = 50
+i:So/Field/NumberOfHistoriesInRun   = 2500
 
 i:Ts/ShowHistoryCountAtInterval     = 5
 

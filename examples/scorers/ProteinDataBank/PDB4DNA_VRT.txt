@@ -13,16 +13,13 @@ b:Ts/ShowCPUTime = "True"
 
 sv:Ph/Default/Modules = 1 "TsEmDNAPhysics"
 
-b:Vr/UseG4DNAVarianceReduction = "True"
-s:Vr/ParticleSplit/SplitElectronsInRegionNamed = "detector"
-i:Vr/ParticleSplit/NumberOfSplit = 50
 
 s:So/Demo/BeamParticle = "GenericIon(6,12)"
 d:So/Demo/BeamEnergy   = 12 MeV
 u:So/Demo/BeamEnergySpread = 0
 s:So/Demo/BeamPositionDistribution = "None"
 s:So/Demo/BeamAngularDistribution = "None"
-i:So/Demo/NumberOfHistoriesInRun = 1 
+i:So/Demo/NumberOfHistoriesInRun = 50
 i:Ts/ShowHistoryCountAtInterval = 1
 
 d:Ge/BeamPosition/TransZ = -1.0 * Ge/World/HLZ um
@@ -59,7 +56,6 @@ s:Sc/DSB/IfOutputFileAlreadyExists = "overwrite"
 # DSB configuration parameters
 i:Sc/DSB/MinimumDistanceForDSB       = 2       # Distance betwen SSB to form a DSB, in base-pair's factors
 d:Sc/DSB/LowerEnergyForSamplingSSB   = 8.22 eV # Hits are sampled from a ramp distribution between
-i:Sc/DBS/NumberOfSplit = Vr/ParticleSplit/NumberOfSplit
 
 s:Gr/view/Type = "OpenGl"
 i:Gr/view/WindowSizeX = 900
