@@ -153,7 +153,6 @@ G4VPhysicalVolume* TsNucleus::Construct()
 	if (fPm->ParameterExists(GetFullParmName("RotateNucleusForEachRun")))
 		fRotateNucleusForEachRun = fPm->GetBooleanParameter(GetFullParmName("RotateNucleusForEachRun"));
 
-
 	//****************************************************************************
 	//					 Read  Hilbert space filling  data					//
 	//****************************************************************************
