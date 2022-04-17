@@ -43,11 +43,12 @@ s:Ma/G4_WATER_MODIFIED/CloneFromMaterial    = "G4_WATER"
 d:Ma/G4_WATER_MODIFIED/CloneWithDensity     = 1.0 g/cm3
 
 # -- Physics and Chemistry
-#sv:Ph/Default/Modules                      = 1 "g4em-dna"
-sv:Ph/Default/Modules						= 2 "g4em-dna" "TsEmDNAChemistry" 	# OR	 physics and chemistry
-includeFile									= supportFiles/TOPASDefaultReactions.txt
-s:Ch/ChemistryName							= "TOPASChemistry"
-i:Ph/Verbosity                          	= 0
+#sv:Ph/Default/Modules                      		= 1 "g4em-dna"
+sv:Ph/Default/Modules								= 2 "g4em-dna" "TsEmDNAChemistry" 	# OR	 physics and chemistry
+includeFile											= supportFiles/TOPASDefaultReactions.txt
+s:Ch/ChemistryName									= "TOPASChemistry"
+b:Ch/TOPASChemistry/ChemicalStageTransportActive    = "True"
+i:Ph/Verbosity                          			= 0
 
 # -- Source and runs
 s:So/ParticleGun/Type                               = "Beam"
