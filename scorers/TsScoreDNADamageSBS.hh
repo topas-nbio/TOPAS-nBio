@@ -16,7 +16,7 @@
 
 #include "TsVNtupleScorer.hh"
 #include "TsHitInDNA.hh"
-//#include "TsDefineDamage.hh"
+#include "TsComputeDamageToDNA.hh"
 
 class TsScoreDNADamageSBS : public TsVNtupleScorer
 {
@@ -127,6 +127,9 @@ private:
 
 	// Collections of hits for each event
 	std::vector<std::vector<TsHitInDNA*>> fCollectionsOfHits;
+
+	// Auxiliary class for computing damage
+	TsComputeDamageToDNA* fDamageComputer;
 
 	// Codes for components ID
 	G4int base = 0;

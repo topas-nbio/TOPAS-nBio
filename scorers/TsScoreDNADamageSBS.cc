@@ -12,6 +12,8 @@
 
 #include "TsScoreDNADamageSBS.hh"
 
+#include "TsVGeometryComponent.hh"
+
 #include "G4SystemOfUnits.hh"
 #include "G4VTouchable.hh"
 
@@ -39,6 +41,12 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 	//---------------
 	// Get parameters
 	//---------------
+	if (!fPm->ParameterExists(GetFullParmName("NumberOfHistoriesInRun")))
+	{
+		G4cerr << "TOPAS is exiting due to a serious error in scoring setup." << G4endl;
+		G4cerr << GetFullParmName("NumberOfHistoriesInRun") << " has to be specified to manage the events and runs correctly." << G4endl;
+		fPm->AbortSession(1);
+	}
 	fNumberOfHistoriesInRun = fPm->GetIntegerParameter(GetFullParmName("NumberOfHistoriesInRun"));
 
 	// Output filename
@@ -73,7 +81,7 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 	// Options for direct damage
 	fDirectDamageThreshold = 11.75 * eV; // 17,5 eV for half-cylinder
 	if (fPm->ParameterExists(GetFullParmName("DirectDamageThreshold")))
-		fDirectDamageThreshold = fPm->GetBooleanParameter(GetFullParmName("DirectDamageThreshold"));
+		fDirectDamageThreshold = fPm->GetDoubleParameter(GetFullParmName("DirectDamageThreshold"), "Energy");
 	fUseLinearProbabilityForDirectDamage = false;
 	if ( fPm->ParameterExists(GetFullParmName("UseLinearProbabilityForDirectDamage")) )
 		fUseLinearProbabilityForDirectDamage = fPm->GetBooleanParameter(GetFullParmName("UseLinearProbabilityForDirectDamage"));
@@ -289,7 +297,7 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 
 	// Register variables in nTuple
 	fNtuple->RegisterColumnD(&fEdep, "Energy_imparted_per_event", "keV");
-	fNtuple->RegisterColumnD(&fDoseInThisExposure, "Dose_per_event", "Gy");
+	fNtuple->RegisterColumnD(&fDoseInThisExposure, "Dose_per_event_Gy", "");
 	fNtuple->RegisterColumnD(&fTrackAveragedLET, "LET_kev/um", "");
 	if (fScoreDSB)
 	{
@@ -332,6 +340,9 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 	}
 	if (fScoreFoci)
 		fNtuple->RegisterColumnI(&fNumFoci, "Foci");
+
+	// Initialize and setup damage computer
+	fDamageComputer = new TsComputeDamageToDNA();
 }
 
 TsScoreDNADamageSBS::~TsScoreDNADamageSBS() {}
@@ -405,7 +416,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 		else if (strstr(volumeName, "Histone") != NULL) { componentID = histone; }
 
 		// Gets particle and process info
-		G4ParticleDefinition* particle = aStep->GetTrack()->GetParticleDefinition();
+		const G4ParticleDefinition* particle = aStep->GetTrack()->GetParticleDefinition();
 		G4String particleName = particle->GetParticleName();
 		G4String processName = (G4String)aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
 
@@ -528,6 +539,25 @@ void TsScoreDNADamageSBS::UserHookForEndOfRun()
 	}
 	fCollectionsOfHits.clear();
 	fEventsEdep.clear();
+}
+
+G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
+{
+	// Calculating dose in this event. First we get volume of the component. Density is assumed to be water's
+	G4double componentVolume = fComponent->GetEnvelopeLogicalVolume()->GetSolid()->GetCubicVolume() / pow(m, 3); //m3
+	G4double waterDensity = 997; // kg/m3
+	G4double componentMass = waterDensity * componentVolume; // kg
+	fEdep = fEventsEdep[eventID];
+	fDoseInThisExposure = (1.6e-13 * fEventsEdep[eventID] / MeV) / componentMass; // This gives Gy
+	if (fDoseInThisExposure >= fExposureID * fDosePerExposure / gray)
+	{
+		fExposureID++;
+		G4cout << "Start new exposure (" << fDosePerExposure / gray << " Gy per exposure)" << " - Exposure ID: " << fExposureID << " - Event ID: " << eventID << G4endl;
+	}
+
+	G4int numberOfLesions = 0;
+
+	return numberOfLesions;
 }
 
 void TsScoreDNADamageSBS::AbsorbResultsFromWorkerScorer(TsVScorer* workerScorer)
