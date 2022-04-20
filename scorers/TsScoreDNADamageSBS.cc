@@ -38,6 +38,9 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 	fYSB = 0; fYSSB = 0; fYDSB = 0;
 	fYBaseDam = 0;
 
+	// Add the basic hierarchical level (base pair)
+	fHierarchicalLevels.push_back("BasePair");
+
 	//---------------
 	// Get parameters
 	//---------------
@@ -149,8 +152,8 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 
 	// Classify damage as SSBs and DSBs
 	fScoreDSB = true;
-	if (fPm->ParameterExists(GetFullParmName("ScoreDSBs")))
-		fScoreDSB = fPm->GetBooleanParameter(GetFullParmName("ScoreDSBs"));
+	if (fPm->ParameterExists(GetFullParmName("ScoreNumberOfSBsAndDSBs")))
+		fScoreDSB = fPm->GetBooleanParameter(GetFullParmName("ScoreNumberOfSBsAndDSBs"));
 	fNumberOfBasePairsForDSB = 10;
 	if (fPm->ParameterExists(GetFullParmName("MaximumBasePairDistanceToConsiderDSB")))
 		fNumberOfBasePairsForDSB = fPm->GetIntegerParameter(GetFullParmName("MaximumBasePairDistanceToConsiderDSB"));
@@ -221,48 +224,48 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 		fWriteMinimalSDDOutput = fPm->GetStringParameter(GetFullParmName("PrimaryParticle"));
 
 	// Parameters for the SDD header
-	G4String author = "@";
+	fAuthor = "@";
 	if ( fPm->ParameterExists(GetFullParmName("AuthorName")) )
-		author = fPm->GetStringParameter(GetFullParmName("AuthorName"));
-	G4String simulationDetails = "Sim details";
+		fAuthor = fPm->GetStringParameter(GetFullParmName("AuthorName"));
+	fSimulationDetails = "Sim details";
 	if ( fPm->ParameterExists(GetFullParmName("SimulationDetails")) )
-		simulationDetails = fPm->GetStringParameter(GetFullParmName("SimulationDetails"));
-	G4String sourceDetails = "Source details";
+		fSimulationDetails = fPm->GetStringParameter(GetFullParmName("SimulationDetails"));
+	fSourceDetails = "Source details";
 	if ( fPm->ParameterExists(GetFullParmName("SourceDetails")) )
-		sourceDetails = fPm->GetStringParameter(GetFullParmName("SourceDetails"));
-	G4int sourceType = 1;
+		fSourceDetails = fPm->GetStringParameter(GetFullParmName("SourceDetails"));
+	fSourceType = 1;
 	if ( fPm->ParameterExists(GetFullParmName("SourceType")) )
-		sourceType = fPm->GetIntegerParameter(GetFullParmName("SourceType"));
-	G4double meanEnergy = 0.0;
+		fSourceType = fPm->GetIntegerParameter(GetFullParmName("SourceType"));
+	fMeanEnergy = 0.0;
 	if ( fPm->ParameterExists(GetFullParmName("MeanEnergy")))
-		meanEnergy = fPm->GetDoubleParameter(GetFullParmName("MeanEnergy"), "Energy");
-	G4String energyDist = "M, 0";
+		fMeanEnergy = fPm->GetDoubleParameter(GetFullParmName("MeanEnergy"), "Energy");
+	fEnergyDist = "M, 0";
 	if ( fPm->ParameterExists(GetFullParmName("EnergyDistribution")) )
-		energyDist = fPm->GetStringParameter(GetFullParmName("EnergyDistribution"));
-	G4String irrTarget = "";
+		fEnergyDist = fPm->GetStringParameter(GetFullParmName("EnergyDistribution"));
+	fIrrTarget = "";
 	if ( fPm->ParameterExists(GetFullParmName("IrradiationTarget")) )
-		irrTarget = fPm->GetStringParameter(GetFullParmName("IrradiationTarget"));
-	G4String cellCycle = "0";
+		fIrrTarget = fPm->GetStringParameter(GetFullParmName("IrradiationTarget"));
+	fCellCycle = "0";
 	if ( fPm->ParameterExists(GetFullParmName("CellCycleStage")))
-		cellCycle = fPm->GetStringParameter(GetFullParmName("CellCycleStage"));
-	G4String DNAStructure = "0, 1";
+		fCellCycle = fPm->GetStringParameter(GetFullParmName("CellCycleStage"));
+	fDNAStructure = "0, 1";
 	if ( fPm->ParameterExists(GetFullParmName("DNAStructure")))
-		cellCycle = fPm->GetStringParameter(GetFullParmName("DNAStructure"));
-	G4int inVitroOrInVivo = 0;
+		fDNAStructure = fPm->GetStringParameter(GetFullParmName("DNAStructure"));
+	fInVitroOrInVivo = 0;
 	if ( fPm->ParameterExists(GetFullParmName("InVitroOrInVivo")) )
-		inVitroOrInVivo = fPm->GetIntegerParameter(GetFullParmName("InVitroOrInVivo"));
-	G4String proliferationStatus = "1";
+		fInVitroOrInVivo = fPm->GetIntegerParameter(GetFullParmName("InVitroOrInVivo"));
+	fProliferationStatus = "1";
 	if ( fPm->ParameterExists(GetFullParmName("ProliferationStatus")))
-		proliferationStatus = fPm->GetStringParameter(GetFullParmName("ProliferationStatus"));
-	G4String microenvironment = "20, 0.01";
+		fProliferationStatus = fPm->GetStringParameter(GetFullParmName("ProliferationStatus"));
+	fMicroenvironment = "20, 0.01";
 	if ( fPm->ParameterExists(GetFullParmName("Microenvironment")))
-		microenvironment = fPm->GetStringParameter(GetFullParmName("Microenvironment"));
-	G4double time = 0;
+		fMicroenvironment = fPm->GetStringParameter(GetFullParmName("Microenvironment"));
+	fTime = 0;
 	if ( fPm->ParameterExists(GetFullParmName("Time")))
-		time = fPm->GetDoubleParameter(GetFullParmName("Time"), "Time");
-	G4String addInfo = "";
+		fTime = fPm->GetDoubleParameter(GetFullParmName("Time"), "Time");
+	fAddInfo = "";
 	if ( fPm->ParameterExists(GetFullParmName("AdditionalInfo")))
-		addInfo = fPm->GetStringParameter(GetFullParmName("AdditionalInfo"));
+		fAddInfo = fPm->GetStringParameter(GetFullParmName("AdditionalInfo"));
 
 	// =============================
 	//       PRINT PARAMETERS
@@ -342,7 +345,29 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 		fNtuple->RegisterColumnI(&fNumFoci, "Foci");
 
 	// Initialize and setup damage computer
-	fDamageComputer = new TsComputeDamageToDNA();
+	fDamageCalculator = new TsDNADamageCalculator();
+	fDamageCalculator->SetDistanceBasePairsForDSB(fNumberOfBasePairsForDSB);
+	fDamageCalculator->SetDirectDamageAsLinearProbability(fUseLinearProbabilityForDirectDamage);
+	if (fUseLinearProbabilityForDirectDamage)
+	{
+		fDamageCalculator->SetLowerLimitForLinearProbability(fLowerLimitLinearProbability);
+		fDamageCalculator->SetUpperLimitForLinearProbability(fUpperLimitLinearProbability);
+	}
+	else
+		fDamageCalculator->SetDirectDamageThreshold(fDirectDamageThreshold);
+	fDamageCalculator->SetExcludeShortFragments(fExcludeShortFragments);
+	if (fExcludeShortFragments)
+	{
+		fDamageCalculator->SetLowerThresholdForFragmentDetection(fLowerThresholdForFragmentDetection);
+		fDamageCalculator->SetUpperThresholdForFragmentDetection(fUpperThresholdForFragmentDetection);
+	}
+	fDamageCalculator->SetOutputFileName(fOutFileName);
+	fDamageCalculator->SetOutputFileMode(fOutFileMode);
+	fDamageCalculator->SetWriteCSVFile(fWriteCSVWithExtensiveDamage);
+	fDamageCalculator->SetMinimalModeForSDD(fWriteMinimalSDDOutput);
+	fDamageCalculator->SetReturnOnlyDSBInSDD(fOnlyIncludeDSBinSDD);
+	fDamageCalculator->OutputSDDHeader(fWriteMinimalSDDOutput, fPrimaryParticle, fMeanEnergy, fDosePerExposure, fChromosomeContents, fScoreIndirectDamage, fScoreOnBases,
+			fAuthor, fSimulationDetails, fSourceDetails, fSourceType, fEnergyDist, fIrrTarget, fCellCycle, fDNAStructure, fInVitroOrInVivo, fProliferationStatus, fMicroenvironment, fTime, fAddInfo);
 }
 
 TsScoreDNADamageSBS::~TsScoreDNADamageSBS() {}
@@ -399,11 +424,15 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	// Goes on only if DNA materials has been matched
 	if (materialMatched)
 	{
-		// Gets bp ID
-		G4int bpID = touchable->GetVolume(fBasePairDepth)->GetCopyNo();
-		// Sets bpID to -1 if histone is touched
+		std::vector<G4int> hierarchicalIDs;
+		// Gets IDs in the different hierarchical levels
+		for (G4int i = 0; i < fHierarchicalLevels.size(); i++)
+		{
+			hierarchicalIDs.push_back(touchable->GetVolume(fBasePairDepth + i)->GetCopyNo());
+		}
+		// Sets base pair ID to -1 if histone is touched
 		if (strstr(volumeName, "Histone") != NULL)
-			bpID = -1;
+			hierarchicalIDs[0] = -1;
 
 		// Gets strand number and DNA component ID (see header file for component IDs)
 		G4int componentID = -1; G4int strandID = -1;
@@ -425,22 +454,31 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 		hit->SetEventID(GetEventID() + fNumberOfHistoriesInRun * GetRunID());
 		hit->SetEdep(edep);
 		hit->SetParticleName(particleName);
-		hit->SetBasePairID(bpID);
+		hit->SetHierarchicalIDs(hierarchicalIDs);
 		hit->SetStrandNumber(strandID);
 		hit->SetDNAComponentID(componentID);
 		hit->SetPosition(pos);
+		// Default options
+		hit->SetChromosomeID(1);
+		hit->SetBasePairID(hierarchicalIDs[0]);
 
 		// Adds direct damage
-		if (trackID >= 0 && edep > 0 && fScoreDirectDamage)
+		if (trackID >= 0 && edep > 0 && fScoreDirectDamage && ((componentID == base && fScoreOnBases) || (componentID == backbone && fScoreOnBackbones)))
 		{
+			hit->SetDamageType(direct);
 			fHits.push_back(hit);
 			return true;
 		}
 		// Adds quasi-direct damage
-		if (componentID == hydrationshell && strstr(processName, "Ionisation") != NULL)
+		if (componentID == hydrationshell && strstr(processName, "Ionisation") != NULL && fScoreQuasiDirectDamage)
 		{
-			fHits.push_back(hit);
-			return true;
+			if (G4UniformRand() < fProbabilityOfChargeTransferFromHydrationShellToBackbone)
+			{
+				hit->SetDNAComponentID(backbone);
+				hit->SetDamageType(quasidirect);
+				fHits.push_back(hit);
+				return true;
+			}
 		}
 		// Adds indirect damage
 		if (trackID < 0 && fScoreIndirectDamage)
@@ -457,7 +495,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 				return false;
 			}
 			// Makes damage to bases. OH and e_aq induce damage to bases. Only one step per species is considered (otherwise all would end up reacting), so we use the enteringInNewVolume flag
-			else if ((isHydroxil || isHydElectron) && componentID == base && enteringInNewVolume)
+			else if ((isHydroxil || isHydElectron) && componentID == base && enteringInNewVolume && fScoreOnBases)
 			{
 				hit->SetEdep(-0.001 * eV);
 				G4bool scavenged = false;
@@ -470,6 +508,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 					aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 					if (G4UniformRand() < fProbabilityOfDamageInBase)
 					{
+						hit->SetDamageType(indirect);
 						fHits.push_back(hit);
 						return true;
 					}
@@ -481,7 +520,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 				}
 			}
 			// Makes damage to backbones. Only OH induces damage to backbones. Only one step per species is considered (otherwise all would end up reacting), so we use the enteringInNewVolume flag
-			else if (isHydroxil && componentID == backbone && enteringInNewVolume)
+			else if (isHydroxil && componentID == backbone && enteringInNewVolume && fScoreOnBackbones)
 			{
 				hit->SetEdep(-0.001 * eV);
 				G4bool scavenged = false;
@@ -494,6 +533,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 					aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 					if (G4UniformRand() < fProbabilityOfDamageInBackbone)
 					{
+						hit->SetDamageType(indirect);
 						fHits.push_back(hit);
 						return true;
 					}
@@ -549,6 +589,7 @@ G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
 	G4double componentMass = waterDensity * componentVolume; // kg
 	fEdep = fEventsEdep[eventID];
 	fDoseInThisExposure = (1.6e-13 * fEventsEdep[eventID] / MeV) / componentMass; // This gives Gy
+	fDamageCalculator->SetEventID(eventID);
 	if (fDoseInThisExposure >= fExposureID * fDosePerExposure / gray)
 	{
 		fExposureID++;
@@ -556,8 +597,47 @@ G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
 	}
 
 	G4int numberOfLesions = 0;
+	if (fScoreDSB)
+	{
+		fDamageCalculator->ComputeStrandBreaks(hits);
+		std::map<G4int, std::vector<G4int>> initialPosDamageSites = fDamageCalculator->GetDamageSites();
+		numberOfLesions = fDamageCalculator->OutputSDDFile(initialPosDamageSites, eventID, fExposureID, fChromosomeContents);
 
+		fNumSB = fDamageCalculator->GetSB();
+		fNumSBDirect = fDamageCalculator->GetSBDirect();
+		fNumSBQuasiDirect = fDamageCalculator->GetSBQuasiDirect();
+		fNumSBIndirect = fDamageCalculator->GetSBIndirect();
+		fNumSSB = fDamageCalculator->GetSSB();
+		fNumSSBDirect = fDamageCalculator->GetSSBDirect();
+		fNumSSBQuasiDirect = fDamageCalculator->GetSSBQuasiDirect();
+		fNumSSBIndirect = fDamageCalculator->GetSSBIndirect();
+		fNumDSB = fDamageCalculator->GetDSB();
+		fNumDSBDirect = fDamageCalculator->GetDSBDirect();
+		fNumDSBIndirect = fDamageCalculator->GetDSBIndirect();
+		fNumDSBDirectIndirect = fDamageCalculator->GetDSBDirectIndirect();
+		fNumDSBDirectQuasiDirect = fDamageCalculator->GetDSBDirectQuasiDirect();
+		fNumDSBQuasiDirectQuasiDirect = fDamageCalculator->GetDSBQuasiDirectQuasiDirect();
+		fNumDSBIndirectQuasiDirect = fDamageCalculator->GetDSBIndirectQuasiDirect();
+		fNumBaseDamage = fDamageCalculator->GetBD();
+		fNumBaseDamageDirect = fDamageCalculator->GetBDDirect();
+		fNumBaseDamageQuasiDirect = fDamageCalculator->GetBDQuasiDirect();
+		fNumBaseDamageIndirect = fDamageCalculator->GetBDIndirect();
+		if (fChromosomeContents.size() > 0)
+			CalculateYields();
+	}
 	return numberOfLesions;
+}
+
+void TsScoreDNADamageSBS::CalculateYields()
+{
+	G4int totalContentOfDNA = 0;
+	for (G4int i = 0; i < fChromosomeContents.size(); i++)
+		totalContentOfDNA += fChromosomeContents[i];
+
+	fYBaseDam = (G4double)fNumBaseDamage / fDoseInThisExposure / totalContentOfDNA * 1e9;
+	fYSB = (G4double)fNumSB / fDoseInThisExposure / totalContentOfDNA * 1e9;
+	fYSSB = (G4double)fNumSSB / fDoseInThisExposure / totalContentOfDNA * 1e9;
+	fYDSB = (G4double)fNumDSB / fDoseInThisExposure / totalContentOfDNA * 1e9;
 }
 
 void TsScoreDNADamageSBS::AbsorbResultsFromWorkerScorer(TsVScorer* workerScorer)
@@ -572,4 +652,13 @@ void TsScoreDNADamageSBS::AbsorbResultsFromWorkerScorer(TsVScorer* workerScorer)
 	for(G4int i=0; i < workerMTScorer->fEventsEdep.size(); i++)
 		fEventsEdep.push_back(workerMTScorer->fEventsEdep[i]);
 	workerMTScorer->fEventsEdep.clear();
+}
+
+// Default implementation (no more hierarchy levels, everything is chromosome 1)
+std::pair<G4int, G4int> TsScoreDNADamageSBS::CalculateChromosomeAndBasePairID(std::vector<G4int> ids)
+{
+	std::pair<G4int, G4int> chromosomeAndBpID;
+	chromosomeAndBpID.first = 1;
+	chromosomeAndBpID.second = ids[0];
+	return chromosomeAndBpID;
 }

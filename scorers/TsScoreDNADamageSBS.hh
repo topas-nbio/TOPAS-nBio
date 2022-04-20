@@ -16,7 +16,7 @@
 
 #include "TsVNtupleScorer.hh"
 
-#include "TsDNADamageComputer.hh"
+#include "TsDNADamageCalculator.hh"
 #include "TsHitInDNA.hh"
 
 class TsScoreDNADamageSBS : public TsVNtupleScorer
@@ -29,8 +29,12 @@ public:
 	virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
 	void AccumulateEvent();
 	void AbsorbResultsFromWorkerScorer(TsVScorer*);
-	void UserHookForEndOfRun();
+	virtual void UserHookForEndOfRun();
 	G4int Analyze(std::vector<TsHitInDNA*> hits, G4int eventID);
+	void CalculateYields();
+
+	void inline AddHierarchyLevel(G4String level)	{ fHierarchicalLevels.push_back(level); }
+	virtual std::pair<G4int, G4int> CalculateChromosomeAndBasePairID(std::vector<G4int> hids) = 0;
 
 private:
 	G4int fNumberOfHistoriesInRun;
@@ -73,6 +77,7 @@ private:
 	G4bool fScoreOnBases;
 	G4bool fScoreOnBackbones;
 	G4bool fBreakDownPerDamageOrigin;
+	std::vector<G4int> fChromosomeContents;
 
 	// For SDD specification
 	G4double fDosePerExposure;
@@ -129,14 +134,41 @@ private:
 	// Collections of hits for each event
 	std::vector<std::vector<TsHitInDNA*>> fCollectionsOfHits;
 
-	// Auxiliary class for computing damage
-	TsComputeDamageToDNA* fDamageComputer;
+	// Auxiliary class for calculate damage
+	TsDNADamageCalculator* fDamageCalculator;
+
+	// Vector of geometric hierarchical levels
+	std::vector<G4String> fHierarchicalLevels;
+
+	// Parameter for SDD header
+	G4String fAuthor;
+	G4String fSimulationDetails;
+	G4String fSourceDetails;
+	G4int fSourceType;
+	G4double fMeanEnergy;
+	G4String fEnergyDist;
+	G4String fIrrTarget;
+	G4String fCellCycle;
+	G4String fDNAStructure;
+	G4int fInVitroOrInVivo;
+	G4String fProliferationStatus;
+	G4String fMicroenvironment;
+	G4double fTime;
+	G4String fAddInfo;
 
 	// Codes for components ID
+	G4int histone = -1;
 	G4int base = 0;
 	G4int backbone = 1;
 	G4int hydrationshell = 2;
-	G4int histone = 3;
+
+	// Codes for types of damage
+	G4int nodamage = -1;
+	G4int direct = 1;
+	G4int indirect = 2;
+	G4int multiple = 3;
+	G4int quasidirect = 4;
+	G4int multiplewithquasidirect = 5;
 };
 
 

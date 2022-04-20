@@ -20,10 +20,14 @@ TsHitInDNA::TsHitInDNA()
 	fEdep = 0.;
 	fParticleName = "";
 
-	fBasePairID = -1;
 	fStrandID = -1;
 	fComponentID = -1;
 	fPos = G4ThreeVector(0., 0., 0.);
+
+	fChromosomeID = -1;
+	fBasePairID = -1;
+
+	fDamageType = -1;
 }
 
 TsHitInDNA::~TsHitInDNA() {}
