@@ -1,3 +1,4 @@
+// Extra Class for TsScoreDNADamageSBS
 //
 // ********************************************************************
 // *																  *
@@ -10,16 +11,8 @@
 //
 // Authors: Alejandro Bertolet, Jan Schuemann
 
-#ifndef TsComputeDamageToDNA_hh
-#define TsComputeDamageToDNA_h
+#include "TsDNADamageComputer.hh"
 
-class TsComputeDamageToDNA
-{
-public:
-	TsComputeDamageToDNA();
-	~TsComputeDamageToDNA();
+TsDNADamageComputer::TsDNADamageComputer() {}
 
-
-};
-
-#endif
+TsDNADamageComputer::~TsDNADamageComputer() {}

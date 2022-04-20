@@ -15,8 +15,9 @@
 #define TsScoreDNADamageSBS_hh
 
 #include "TsVNtupleScorer.hh"
+
+#include "TsDNADamageComputer.hh"
 #include "TsHitInDNA.hh"
-#include "TsComputeDamageToDNA.hh"
 
 class TsScoreDNADamageSBS : public TsVNtupleScorer
 {
