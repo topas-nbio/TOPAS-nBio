@@ -436,7 +436,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 		// Gets strand number and DNA component ID (see header file for component IDs)
 		G4int componentID = -1; G4int strandID = -1;
-		if (strstr(volumeName, "Base1") != NULL) { componentID = base; strandID = 1; }
+		if (strstr(volumeName, "Base1") != NULL || strstr(volumeName, "BasePair") != NULL) { componentID = base; strandID = 1; }
 		else if (strstr(volumeName, "Base2") != NULL) { componentID = base; strandID = 2; }
 		else if (strstr(volumeName, "Backbone1") != NULL) { componentID = backbone; strandID = 1; }
 		else if (strstr(volumeName, "Backbone2") != NULL) { componentID = backbone; strandID = 2; }
