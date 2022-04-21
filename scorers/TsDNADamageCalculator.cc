@@ -112,9 +112,9 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 			{
 				G4int iComp = indirectDamageMap.first;
 				if (fDamageMap[iChr][iBp][iComp] == direct)
-					fDamageMap[iChr][iBp][iComp] == multiple;
+					fDamageMap[iChr][iBp][iComp] = multiple;
 				else
-					fDamageMap[iChr][iBp][iComp] == indirect;
+					fDamageMap[iChr][iBp][iComp] = indirect;
 			}
 		}
 	}
@@ -129,9 +129,9 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 			{
 				G4int iComp = quasidirectDamageMap.first;
 				if (fDamageMap[iChr][iBp][iComp] < direct)
-					fDamageMap[iChr][iBp][iComp] == quasidirect;
+					fDamageMap[iChr][iBp][iComp] = quasidirect;
 				else if (fDamageMap[iChr][iBp][iComp] == indirect)
-					fDamageMap[iChr][iBp][iComp] == multiplewithquasidirect;
+					fDamageMap[iChr][iBp][iComp] = multiplewithquasidirect;
 			}
 		}
 	}

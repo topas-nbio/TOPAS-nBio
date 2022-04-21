@@ -34,7 +34,7 @@ public:
 	void CalculateYields();
 
 	void inline AddHierarchyLevel(G4String level)	{ fHierarchicalLevels.push_back(level); }
-	virtual std::pair<G4int, G4int> CalculateChromosomeAndBasePairID(std::vector<G4int> hids) = 0;
+	virtual std::pair<G4int, G4int> CalculateChromosomeAndBasePairID(std::vector<G4int> hids);
 
 private:
 	G4int fNumberOfHistoriesInRun;
