@@ -58,12 +58,12 @@ d:Sc/StrandBreak/EnergyThresholdForHavingSSB          = 5.0 eV
 d:Sc/StrandBreak/EnergyLimitForHavingSSB              = 37.5 eV
 b:Sc/StrandBreak/SampleEnergyFromRampDistribution     = "True"
 u:Sc/StrandBreak/ScoreHitsWithProbability             = 0.16  # 16%
-# The sensitive detector is inherit to the children geometries (sugar1, sugar2)
+# The sensitive detector is inherit to the children geometries (backbone1, backbone2)
 b:Sc/StrandBreak/PropagateToChildren = "True"
 # For this example, the sugars and base are single volumes (no replicas)
 # placed within a box. The box is repeated a number = NumberOfBasePairs
 i:Sc/StrandBreak/BasePairPositionAtGeometricHierarchy = 1   # the sugars and base are in position 0.
-# To let the scorer differentiate between strand 1 (sugar1) and strand 2 (sugar2)
+# To let the scorer differentiate between strand 1 (backbone1) and strand 2 (backbone2)
 s:Sc/StrandBreak/Strand1MaterialName                  = "G4_WATER_MODIFIED_1"
 s:Sc/StrandBreak/Strand2MaterialName                  = "G4_WATER_MODIFIED_2"
 # Only hits in sugar's volume

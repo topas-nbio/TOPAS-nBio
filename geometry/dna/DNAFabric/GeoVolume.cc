@@ -505,19 +505,19 @@ std::map<G4String, std::vector<G4LogicalVolume*> >* GeoVolume::CreateNucleosomeC
 
         // Save the logical volumes in the output map
         //
-        (*logicSolidsMap)["sugarTMP1Water"].push_back(logicSugarTMP1Water);
-        (*logicSolidsMap)["sugarTHF1Water"].push_back(logicSugarTHF1Water);
-        (*logicSolidsMap)["base1Water"].push_back(logicBase1Water);
-        (*logicSolidsMap)["base2Water"].push_back(logicBase2Water);
-        (*logicSolidsMap)["sugarTHF2Water"].push_back(logicSugarTHF2Water);
-        (*logicSolidsMap)["sugarTMP2Water"].push_back(logicSugarTMP2Water);
+        (*logicSolidsMap)["sugarTMP1WaterBackbone1"].push_back(logicSugarTMP1Water);
+        (*logicSolidsMap)["sugarTHF1WaterBackbone1"].push_back(logicSugarTHF1Water);
+        (*logicSolidsMap)["base1WaterBase1"].push_back(logicBase1Water);
+        (*logicSolidsMap)["base2WaterBase2"].push_back(logicBase2Water);
+        (*logicSolidsMap)["sugarTHF2WaterBackbone2"].push_back(logicSugarTHF2Water);
+        (*logicSolidsMap)["sugarTMP2WaterBackbone2"].push_back(logicSugarTMP2Water);
 
-        (*logicSolidsMap)["sugarTMP1"].push_back(logicSugarTMP1);
-        (*logicSolidsMap)["sugarTHF1"].push_back(logicSugarTHF1);
-        (*logicSolidsMap)["base1"].push_back(logicBase1);
-        (*logicSolidsMap)["base2"].push_back(logicBase2);
-        (*logicSolidsMap)["sugarTHF2"].push_back(logicSugarTHF2);
-        (*logicSolidsMap)["sugarTMP2"].push_back(logicSugarTMP2);
+        (*logicSolidsMap)["sugarTMP1Backbone1"].push_back(logicSugarTMP1);
+        (*logicSolidsMap)["sugarTHF1Backbone1"].push_back(logicSugarTHF1);
+        (*logicSolidsMap)["base1Base1"].push_back(logicBase1);
+        (*logicSolidsMap)["base2Base2"].push_back(logicBase2);
+        (*logicSolidsMap)["sugarTHF2Backbone2"].push_back(logicSugarTHF2);
+        (*logicSolidsMap)["sugarTMP2Backbone2"].push_back(logicSugarTMP2);
     }
 
     return logicSolidsMap;
