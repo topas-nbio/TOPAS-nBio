@@ -575,7 +575,8 @@ void TsScoreDNADamageSBS::UserHookForEndOfRun()
 	for (G4int i = 0; i < fCollectionsOfHits.size(); i++)
 	{
 		numberOfLesions += Analyze(fCollectionsOfHits[i], i);
-		fNtuple->Fill();
+		// Only fill if there is any damage
+		if (numberOfLesions > 0) fNtuple->Fill();
 	}
 	fCollectionsOfHits.clear();
 	fEventsEdep.clear();

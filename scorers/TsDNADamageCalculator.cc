@@ -702,7 +702,8 @@ void TsDNADamageCalculator::WriteDNADamageCSV()
 		out.open(damageFileName, std::ios::out | std::ios::app);
 
 	// Inserts headers
-	out << "Event,Chromosome,Bp,Backbone1,Base1,Base2,Backbone2\n";
+	if (fEventID == 0)
+		out << "Event,Chromosome,Bp,Backbone1,Base1,Base2,Backbone2\n";
 	for (auto& chrMap : fDamageMap)
 	{
 		G4int iChr = chrMap.first;
