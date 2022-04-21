@@ -51,16 +51,16 @@ NtupleForBasePair::NtupleForBasePair(TsParameterManager* pM, TsMaterialManager* 
 
     //name the sensitive volumes
     if (fPm->ParameterExists("Base_strand1_name")){
-      Base_strand1_name=fPm->GetStringParameter("Base_strand1_name");
+    	Base_strand1_name=fPm->GetStringParameter("Base_strand1_name");
     }
     if (fPm->ParameterExists("Base_strand2_name")){
-      Base_strand1_name=fPm->GetStringParameter("Base_strand2_name");
+    	Base_strand2_name=fPm->GetStringParameter("Base_strand2_name");
     }
     if (fPm->ParameterExists("Back_strand1_name")){
-      Base_strand1_name=fPm->GetStringParameter("Back_strand1_name");
+    	Back_strand1_name=fPm->GetStringParameter("Back_strand1_name");
     }
     if (fPm->ParameterExists("Back_strand2_name")){
-      Base_strand1_name=fPm->GetStringParameter("Back_strand2_name");
+    	Back_strand2_name=fPm->GetStringParameter("Back_strand2_name");
     }
 
 }
