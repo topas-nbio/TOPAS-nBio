@@ -475,9 +475,14 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			{
 				hit->SetDNAComponentID(backbone);
 				hit->SetDamageType(quasidirect);
-				fHits.push_back(hit);
-				return true;
 			}
+			else
+			{
+				hit->SetDNAComponentID(base);
+				hit->SetDamageType(quasidirect);
+			}
+			fHits.push_back(hit);
+			return true;
 		}
 		// Adds indirect damage
 		if (trackID < 0 && fScoreIndirectDamage)

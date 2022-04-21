@@ -52,6 +52,9 @@ TsDNADamageCalculator::TsDNADamageCalculator()
 	fOutputFileName = "";
 	fOutputMode = "";
 	fWriteCSVFile = false;
+
+	fMinimalModeForSDD = false;
+	fReturnOnlyDSBinSDD = false;
 }
 
 TsDNADamageCalculator::~TsDNADamageCalculator() {}
