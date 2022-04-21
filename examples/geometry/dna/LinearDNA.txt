@@ -61,6 +61,7 @@ i:So/Disk/NumberOfHistoriesInRun=1
 #Score SSB and DSB in DNA
 
 # -- Scorer --
+s:Sc/DNADamageScorer/Quantity				= "DNADamageStepByStep"
 includeFile									= ../../scorers/DNAScorerStepByStep.txt
 s:Sc/DNADamageScorer/Component 				= "MyDNA"
 i:Sc/DNADamageScorer/NumberOfHistoriesInRun = So/Disk/NumberOfHistoriesInRun

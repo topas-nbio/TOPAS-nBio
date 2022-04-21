@@ -42,6 +42,7 @@ b:Ge/CircularPlasmid/Backbone2/Invisible   ="false"
 d:Ge/CircularPlasmid/RotX               = 90 deg
 
 # -- Scorer --
+s:Sc/DNADamageScorer/Quantity				= "DNADamageStepByStep"
 includeFile									= ../DNAScorerStepByStep.txt
 s:Sc/DNADamageScorer/Component 				= "CircularPlasmid"
 i:Sc/DNADamageScorer/NumberOfHistoriesInRun = So/Field/NumberOfHistoriesInRun

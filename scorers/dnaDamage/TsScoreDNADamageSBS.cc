@@ -427,9 +427,8 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 		std::vector<G4int> hierarchicalIDs;
 		// Gets IDs in the different hierarchical levels
 		for (G4int i = 0; i < fHierarchicalLevels.size(); i++)
-		{
 			hierarchicalIDs.push_back(touchable->GetVolume(fBasePairDepth + i)->GetCopyNo());
-		}
+
 		// Sets base pair ID to -1 if histone is touched
 		if (strstr(volumeName, "Histone") != NULL)
 			hierarchicalIDs[0] = -1;

@@ -24,9 +24,9 @@ class TsScoreDNADamageSBS : public TsVNtupleScorer
 public:
 	TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
 						G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer);
-	~TsScoreDNADamageSBS();
+	virtual ~TsScoreDNADamageSBS();
 
-	virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+	G4bool ProcessHits(G4Step*, G4TouchableHistory*);
 	void AccumulateEvent();
 	void AbsorbResultsFromWorkerScorer(TsVScorer*);
 	virtual void UserHookForEndOfRun();
@@ -36,7 +36,7 @@ public:
 	void inline AddHierarchyLevel(G4String level)	{ fHierarchicalLevels.push_back(level); }
 	virtual std::pair<G4int, G4int> CalculateChromosomeAndBasePairID(std::vector<G4int> hids);
 
-private:
+protected:
 	G4int fNumberOfHistoriesInRun;
 	// For Material-based filter
 	G4int fBasePairDepth;

@@ -38,6 +38,7 @@ s:Ge/MyDNA/Backbone2/DrawingStyle="solid"
 sv:Ph/Default/Modules = 1 "g4em-dna"
 
 # -- Scorer --
+s:Sc/DNADamageScorer/Quantity				= "DNADamageStepByStep"
 includeFile									= ../../scorers/DNAScorerStepByStep.txt
 s:Sc/DNADamageScorer/Component 				= "MyDNA"
 i:Sc/DNADamageScorer/NumberOfHistoriesInRun = So/Example/NumberOfHistoriesInRun

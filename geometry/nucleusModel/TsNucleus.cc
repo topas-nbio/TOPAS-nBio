@@ -141,7 +141,7 @@ G4VPhysicalVolume* TsNucleus::Construct()
 	if (fPm->ParameterExists(GetFullParmName("HydrationShellThickness")))
 	  fHydrationShellThickness = fPm->GetDoubleParameter(GetFullParmName("fHydrationShellThickness"),"Length");
 	
-	fDNAModel = "QuarterCylinder";
+	fDNAModel = "Sphere";
 	if (fPm->ParameterExists(GetFullParmName("DNAModel")))
 	  fDNAModel = fPm->GetStringParameter(GetFullParmName("DNAModel"));
 	if (!(fDNAModel=="HalfCylinder" || fDNAModel=="Sphere" || fDNAModel=="QuarterCylinder"))

@@ -17,11 +17,10 @@
 # --------------------------------------
 
 # Setting up the output
-s:Sc/DNADamageScorer/Quantity									= "DNADamageStepByStep"
 b:Sc/DNADamageScorer/PropagateToChildren						= "true"
 s:Sc/DNADamageScorer/OutputFile									= "DNADamage"
 s:Sc/DNADamageScorer/OutputType									= "ascii"
-s:Sc/DNADamageScorer/IfOutputAlreadyExists						= "overwrite"
+s:Sc/DNADamageScorer/IfOutputFileAlreadyExists					= "overwrite"
 
 # Options for direct damage (recommended values for spherical DNA model)
 d:Sc/DNADamageScorer/DirectDamageThreshold						= 11.75 eV    # For half-cylindrical DNA model, the recommended value is 17.5 eV
@@ -64,16 +63,16 @@ b:Sc/DNADamageScorer/IncludeDSBDamageSitesOnlyInSDD				= "false"
 b:Sc/DNADamageScorer/WriteMinimalSDDOutput						= "false"
 
 # Data for SDD header
-s:Sc/DNAScorer/AuthorName							   			= "Name"
-s:Sc/DNAScorer/SimulationDetails					   			= "Nucleus simulation" 
-s:Sc/DNAScorer/SourceDetails					   	   			= "Monoenergetic source"
-i:Sc/DNAScorer/SourceType					   		   			= 1
-s:Sc/DNAScorer/EnergyDistribution					   			= "M, 0"
-s:Sc/DNAScorer/IrradiationTarget					   			= "Nucleus"
-s:Sc/DNAScorer/CellCycleStage					       			= "0"
-s:Sc/DNAScorer/DNAStructure					           			= "0, 1"
-i:Sc/DNAScorer/InVitroOrInVivo						   			= 0
-s:Sc/DNAScorer/ProliferationStatus					   			= "1"
-s:Sc/DNAScorer/Microenvironment					       			= "20, 0.01"
-d:Sc/DNAScorer/Time					  				   			= 0 s
-s:Sc/DNAScorer/AdditionalInfo					       			= ""
+s:Sc/DNADamageScorer/AuthorName							   		= "Name"
+s:Sc/DNADamageScorer/SimulationDetails					   		= "Nucleus simulation" 
+s:Sc/DNADamageScorer/SourceDetails					   	   		= "Monoenergetic source"
+i:Sc/DNADamageScorer/SourceType					   		   		= 1
+s:Sc/DNADamageScorer/EnergyDistribution					   		= "M, 0"
+s:Sc/DNADamageScorer/IrradiationTarget					   		= "Nucleus"
+s:Sc/DNADamageScorer/CellCycleStage					       		= "0"
+s:Sc/DNADamageScorer/DNAStructure					           	= "0, 1"
+i:Sc/DNADamageScorer/InVitroOrInVivo						   	= 0
+s:Sc/DNADamageScorer/ProliferationStatus					   	= "1"
+s:Sc/DNADamageScorer/Microenvironment					       	= "20, 0.01"
+d:Sc/DNADamageScorer/Time					  				   	= 0 s
+s:Sc/DNADamageScorer/AdditionalInfo					       		= ""
