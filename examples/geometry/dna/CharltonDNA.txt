@@ -25,7 +25,7 @@ s:Ma/G4_WATER_MODIFIED_2/CloneFromMaterial = "G4_WATER_MODIFIED_1"
 d:Ma/G4_WATER_MODIFIED_2/CloneWithDensity  = 1.0 g/cm3
 
 #Modified water material is needed for scoring strand breaks:
-s:Ge/MyDNA/BasePair/Material="G4_WATER"
+s:Ge/MyDNA/BasePair/Material="G4_WATER_MODIFIED_1"
 s:Ge/MyDNA/Backbone1/Material="G4_WATER_MODIFIED_1"
 s:Ge/MyDNA/Backbone2/Material="G4_WATER_MODIFIED_2"
 
