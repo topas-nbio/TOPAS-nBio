@@ -27,7 +27,7 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 	// Initialize physical quantities
 	fEdep = 0;
 	fTrackAveragedLET = 0;
-	fDoseInThisExposure = 0;
+	fDoseInThisExposure = 0; fAccumulatedDoseInRun = 0;
 	fExposureID = 0;
 
 	// Initialize quantification of damage
@@ -185,6 +185,12 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 		if (fPm->ParameterExists(GetFullParmName("UpperThresholdForFragmentDetection")))
 			fUpperThresholdForFragmentDetection = fPm->GetIntegerParameter(GetFullParmName("UpperThresholdForFragmentDetection"));
 	}
+
+	// Stop at a given dose
+	fStopAtDose = 3E8;
+	G4cout << "Stop at dose: " << fStopAtDose << " Gy" << G4endl;
+	if (fPm->ParameterExists(GetFullParmName("StopTrackingAtDose")))
+		fStopAtDose = fPm->GetDoubleParameter(GetFullParmName("StopTrackingAtDose"), "Dose") / gray;
 
 	// Options for the output
 	fWriteCSVWithExtensiveDamage = false;
@@ -380,6 +386,14 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 		return false;
 	}
 
+	// Stops tracking if accumulated dose is higher than specified (only for a new event! A single event is always completed)
+	if (fAccumulatedDoseInRun >= fStopAtDose)
+	{
+		G4cout << "Track is stopped because the dose limit (" << fStopAtDose << " Gy) was reached. No more particles will be tracked/scored." << G4endl;
+		aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+		return false;
+	}
+
 	// Gets position
 	G4ThreeVector pos = aStep->GetPreStepPoint()->GetPosition();
 
@@ -568,6 +582,7 @@ void TsScoreDNADamageSBS::AccumulateEvent()
 	G4double edep = fEdep;
 	fEventsEdep.push_back(edep);
 	fEdep = 0.;
+	fAccumulatedDoseInRun += CalculateDoseInGray(edep);
 }
 
 void TsScoreDNADamageSBS::UserHookForEndOfRun()
@@ -578,9 +593,10 @@ void TsScoreDNADamageSBS::UserHookForEndOfRun()
 	G4int numberOfLesions = 0;
 	for (G4int i = 0; i < fCollectionsOfHits.size(); i++)
 	{
-		numberOfLesions += Analyze(fCollectionsOfHits[i], i);
+		G4int lesionsThisEvent = Analyze(fCollectionsOfHits[i], i);
+		numberOfLesions += lesionsThisEvent;
 		// Only fill if there is any damage
-		if (numberOfLesions > 0) fNtuple->Fill();
+		if (lesionsThisEvent > 0) fNtuple->Fill();
 	}
 	fCollectionsOfHits.clear();
 	fEventsEdep.clear();
@@ -588,12 +604,8 @@ void TsScoreDNADamageSBS::UserHookForEndOfRun()
 
 G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
 {
-	// Calculating dose in this event. First we get volume of the component. Density is assumed to be water's
-	G4double componentVolume = fComponent->GetEnvelopeLogicalVolume()->GetSolid()->GetCubicVolume() / pow(m, 3); //m3
-	G4double waterDensity = 997; // kg/m3
-	G4double componentMass = waterDensity * componentVolume; // kg
 	fEdep = fEventsEdep[eventID];
-	fDoseInThisExposure = (1.6e-13 * fEventsEdep[eventID] / MeV) / componentMass; // This gives Gy
+	fDoseInThisExposure = CalculateDoseInGray(fEventsEdep[eventID]);
 	fDamageCalculator->SetEventID(eventID);
 	if (fDoseInThisExposure >= fExposureID * fDosePerExposure / gray)
 	{
@@ -637,14 +649,21 @@ void TsScoreDNADamageSBS::CalculateYields()
 {
 	G4double totalContentOfDNA = 0;
 	for (G4int i = 0; i < fChromosomeContents.size(); i++)
-	{
 		totalContentOfDNA += fChromosomeContents[i];
-		G4cout << "Chromosome " << i << ". Content chromosome: " << fChromosomeContents[i] << ". Total content of DNA: " << totalContentOfDNA << G4endl;
-	}
+
 	fYBaseDam = (G4double)fNumBaseDamage / fDoseInThisExposure / totalContentOfDNA * 1e9;
 	fYSB = (G4double)fNumSB / fDoseInThisExposure / totalContentOfDNA * 1e9;
 	fYSSB = (G4double)fNumSSB / fDoseInThisExposure / totalContentOfDNA * 1e9;
 	fYDSB = (G4double)fNumDSB / fDoseInThisExposure / totalContentOfDNA * 1e9;
+}
+
+G4double TsScoreDNADamageSBS::CalculateDoseInGray(G4double edep)
+{
+	// Calculating dose in this event. First we get volume of the component. Density is assumed to be water's
+	G4double componentVolume = fComponent->GetEnvelopeLogicalVolume()->GetSolid()->GetCubicVolume() / pow(m, 3); //m3
+	G4double waterDensity = 997; // kg/m3
+	G4double componentMass = waterDensity * componentVolume; // kg
+	return (1.6e-13 * edep / MeV) / componentMass; // This gives Gy
 }
 
 void TsScoreDNADamageSBS::AbsorbResultsFromWorkerScorer(TsVScorer* workerScorer)

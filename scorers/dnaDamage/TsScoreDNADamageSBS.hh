@@ -32,6 +32,7 @@ public:
 	virtual void UserHookForEndOfRun();
 	G4int Analyze(std::vector<TsHitInDNA*> hits, G4int eventID);
 	void CalculateYields();
+	G4double CalculateDoseInGray(G4double edep);
 
 	void inline AddHierarchyLevel(G4String level)	{ fHierarchicalLevels.push_back(level); }
 	virtual std::pair<G4int, G4int> CalculateChromosomeAndBasePairID(std::vector<G4int> hids);
@@ -89,7 +90,11 @@ protected:
 	G4double fEdep;
 	G4double fTrackAveragedLET;
 	G4double fDoseInThisExposure;
+	G4double fAccumulatedDoseInRun;
 	G4int fExposureID;
+
+	// Stop tracking at a given dose
+	G4double fStopAtDose;
 
 	// Quantification of damage
 	G4int fNumSB;
