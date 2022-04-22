@@ -158,13 +158,41 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 	if (fPm->ParameterExists(GetFullParmName("MaximumBasePairDistanceToConsiderDSB")))
 		fNumberOfBasePairsForDSB = fPm->GetIntegerParameter(GetFullParmName("MaximumBasePairDistanceToConsiderDSB"));
 
-	// Classify damage as foci
+	// Foci scoring, creation of foci images
 	fScoreFoci = true;
 	if (fPm->ParameterExists(GetFullParmName("ScoreNumberOfFoci")))
 		fScoreFoci = fPm->GetBooleanParameter(GetFullParmName("ScoreNumberOfFoci"));
 	fFociSize = 500 * nm;
 	if (fPm->ParameterExists(GetFullParmName("FociSize")))
 		fFociSize = fPm->GetDoubleParameter(GetFullParmName("FociSize"), "Length");
+	fGet3DFociImage = false;
+	if (fPm->ParameterExists(GetFullParmName("Get3DFociImage")))
+		fGet3DFociImage = fPm->GetBooleanParameter(GetFullParmName("Get3DFociImage"));
+	fGet2DFociImage = false;
+	if (fPm->ParameterExists(GetFullParmName("Get2DFociImages")))
+		fGet2DFociImage = fPm->GetBooleanParameter(GetFullParmName("Get2DFociImages"));
+
+	if (fGet3DFociImage || fGet2DFociImage)
+	{
+		if (fGet2DFociImage)
+		{
+			G4String* planes;
+			G4int vectorLength, strand2Length;
+			if (fPm->ParameterExists(GetFullParmName("2DFociImagePlanes")))
+			{
+				planes = fPm->GetStringVector(GetFullParmName("2DFociImagePlanes"));
+				vectorLength = fPm->GetVectorLength(GetFullParmName("2DFociImagePlanes"));
+			}
+			for (G4int i = 0; i < vectorLength; i++)
+				f2DPlanesForFociImage.push_back(planes[i]);
+		}
+		fMicroscopePSFShape = "Gaussian";
+		if (fPm->ParameterExists(GetFullParmName("MicroscopePSFShape")))
+			fMicroscopePSFShape = fPm->GetStringParameter(GetFullParmName("MicroscopePSFShape"));
+		fMicroscopePSFWidth = 500 * nm;
+		if (fPm->ParameterExists(GetFullParmName("MicroscopePSFWidth")))
+			fMicroscopePSFWidth = fPm->GetDoubleParameter(GetFullParmName("MicroscopePSFWidth"), "Length");
+	}
 
 	// Considering fragments
 	fExcludeShortFragments = false;

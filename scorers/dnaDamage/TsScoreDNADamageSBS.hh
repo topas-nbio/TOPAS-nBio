@@ -63,8 +63,14 @@ protected:
 	G4bool fScoreDSB;
 	G4int fNumberOfBasePairsForDSB;
 
+	// Foci scoring, creation of foci images
 	G4bool fScoreFoci;
 	G4double fFociSize;
+	G4bool fGet3DFociImage;
+	G4bool fGet2DFociImage;
+	std::vector<G4String> f2DPlanesForFociImage;
+	G4String fMicroscopePSFShape;
+	G4double fMicroscopePSFWidth;
 
 	G4bool fExcludeShortFragments;
 	G4int fLowerThresholdForFragmentDetection;

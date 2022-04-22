@@ -42,11 +42,18 @@ b:Sc/DNADamageScorer/ScavengeInHistones							= "true"
 # Options for damage classification
 b:Sc/DNADamageScorer/ScoreNumberOfSBsAndDSBs					= "true"
 i:Sc/DNADamageScorer/MaximumBasePairDistanceToConsiderDSB		= 10
-b:Sc/DNADamageScorer/ScoreNumberOfFoci							= "true"
-d:Sc/DNADamageScorer/FociSize									= 500 nm
 b:Sc/DNADamageScorer/ExcludeShortFragments						= "false"
 #i:Sc/DNADamageScorer/LowerThresholdForFragmentDetection		= 0
 #i:Sc/DNADamageScorer/UpperThresholdForFragmentDetection		= 3E8
+
+# Options for foci scoring
+b:Sc/DNADamageScorer/ScoreNumberOfFoci							= "true"
+d:Sc/DNADamageScorer/FociSize									= 500 nm
+b:Sc/DNADamageScorer/Get3DFociImage								= "true"
+b:Sc/DNADamageScorer/Get2DFociImages							= "true"
+sv:Sc/DNADamageScorer/2DFociImagePlanes							= 3 "x" "y" "z"
+s:Sc/DNADamageScorer/MicroscopePSFShape							= "Gaussian"
+d:Sc/DNADamageScorer/MicroscopePSFWidth							= 500 nm
 
 # Options for output extension
 b:Sc/DNADamageScorer/WriteCSVOutputWithAllDamageSpecification	= "true"
