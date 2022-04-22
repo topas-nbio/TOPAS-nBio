@@ -70,6 +70,7 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 	fSSBMap.clear();
 	fBDMap.clear();
 	fDamagePositions.clear();
+	fDSB3DPositions.clear();
 
 	// Gets types of damage from the hits vector
 	for (G4int i = 0; i < hits.size(); i++)
@@ -197,6 +198,10 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 						std::pair<G4int, G4int> pos(closestPosInStrand1, iBp+i2);
 						// Combines damages in both strands: 2->Direct, 3->Hybrid, 4->Indirect, 5->Direct with 1 quasi, 6->Hybrid with 1 quasi, 8->Direct with 2 quasi
 						DSBPairs[iChr][pos] = adjustedTypeDamageInStrand1 + adjustedTypeDamageInStrand2;
+						G4ThreeVector posSB1 = fDamagePositions[iChr][closestPosInStrand1][2];
+						G4ThreeVector posSB2 = fDamagePositions[iChr][iBp+i2][3];
+						G4ThreeVector center = (posSB1 + posSB2) / 2;
+						fDSB3DPositions.push_back(center);
 						dsbFound = true;
 					}
 					// Goes from iBp to iBp-10 to find damage in backbone 2 (alternatively, if dsb is found then breaks) (avoiding index < 0)
@@ -241,6 +246,10 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 						std::pair<G4int, G4int> pos(closestPosInStrand1, iBp-i2);
 						// Combines damages in both strands: 2->Direct, 3->Hybrid, 4->Indirect, 5->Direct with 1 quasi, 6->Hybrid with 1 quasi, 8->Direct with 2 quasi
 						DSBPairs[iChr][pos] = adjustedTypeDamageInStrand1 + adjustedTypeDamageInStrand2;
+						G4ThreeVector posSB1 = fDamagePositions[iChr][closestPosInStrand1][2];
+						G4ThreeVector posSB2 = fDamagePositions[iChr][iBp-i2][3];
+						G4ThreeVector center = (posSB1 + posSB2) / 2;
+						fDSB3DPositions.push_back(center);
 						dsbFound = true;
 					}
 					if (dsbFound) break;

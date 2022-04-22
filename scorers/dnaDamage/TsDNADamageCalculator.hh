@@ -70,6 +70,7 @@ public:
 	inline G4int GetBDDirect()									{ return fNumBaseDamageDirect; }
 	inline G4int GetBDQuasiDirect()								{ return fNumBaseDamageQuasiDirect; }
 	inline G4int GetBDIndirect()								{ return fNumBaseDamageIndirect; }
+	inline std::vector<G4ThreeVector> GetDSB3DPositions()		{ return fDSB3DPositions; }
 
 private:
 	// Options to define damage
@@ -123,6 +124,8 @@ private:
 	std::map<G4int, std::map<G4int, std::map<G4int, G4int>>> fBDMap;
 
 	std::map<G4int, std::map<G4int, std::map<G4int, G4ThreeVector>>> fDamagePositions;
+
+	std::vector<G4ThreeVector> fDSB3DPositions;
 
 	// Data from end of the event
 	G4double fEventID;

@@ -40,7 +40,6 @@ u:Sc/DNADamageScorer/ProbabilityOfIndirectDamageToBase			= 1.0		  # If always sc
 b:Sc/DNADamageScorer/ScavengeInHistones							= "true"
 
 # Options for damage classification
-b:Sc/DNADamageScorer/ScoreNumberOfSBsAndDSBs					= "true"
 i:Sc/DNADamageScorer/MaximumBasePairDistanceToConsiderDSB		= 10
 b:Sc/DNADamageScorer/ExcludeShortFragments						= "false"
 #i:Sc/DNADamageScorer/LowerThresholdForFragmentDetection		= 0

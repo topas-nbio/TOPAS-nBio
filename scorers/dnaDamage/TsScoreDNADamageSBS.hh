@@ -18,6 +18,7 @@
 
 #include "TsDNADamageCalculator.hh"
 #include "TsHitInDNA.hh"
+#include "TsFociAnalysis.hh"
 
 class TsScoreDNADamageSBS : public TsVNtupleScorer
 {
@@ -60,7 +61,6 @@ protected:
 	G4bool fScavengeInHistones;
 
 	// For defining types of damage to be accounted for
-	G4bool fScoreDSB;
 	G4int fNumberOfBasePairsForDSB;
 
 	// Foci scoring, creation of foci images
@@ -125,6 +125,7 @@ protected:
 
 	// Quantification for foci
 	G4int fNumFoci;
+	std::vector<G4ThreeVector> fDSBPositionsInRun;
 
 	// Yields
 	G4double fYBaseDam;;
@@ -147,6 +148,7 @@ protected:
 
 	// Auxiliary class for calculate damage
 	TsDNADamageCalculator* fDamageCalculator;
+	TsFociAnalysis* fFociAnalyzer;
 
 	// Vector of geometric hierarchical levels
 	std::vector<G4String> fHierarchicalLevels;

@@ -151,9 +151,6 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 		fScavengeInHistones = fPm->GetBooleanParameter(GetFullParmName("ScavengeInHistones"));
 
 	// Classify damage as SSBs and DSBs
-	fScoreDSB = true;
-	if (fPm->ParameterExists(GetFullParmName("ScoreNumberOfSBsAndDSBs")))
-		fScoreDSB = fPm->GetBooleanParameter(GetFullParmName("ScoreNumberOfSBsAndDSBs"));
 	fNumberOfBasePairsForDSB = 10;
 	if (fPm->ParameterExists(GetFullParmName("MaximumBasePairDistanceToConsiderDSB")))
 		fNumberOfBasePairsForDSB = fPm->GetIntegerParameter(GetFullParmName("MaximumBasePairDistanceToConsiderDSB"));
@@ -336,45 +333,44 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 	fNtuple->RegisterColumnD(&fEdep, "Energy_imparted_per_event", "keV");
 	fNtuple->RegisterColumnD(&fDoseInThisExposure, "Dose_per_event_Gy", "");
 	fNtuple->RegisterColumnD(&fTrackAveragedLET, "LET_kev/um", "");
-	if (fScoreDSB)
+
+	if (fScoreOnBackbones)
+	{
+		fNtuple->RegisterColumnD(&fYDSB, "DSB/Gy/Gbp", "");
+		fNtuple->RegisterColumnD(&fYSSB, "SSB/Gy/Gbp", "");
+		fNtuple->RegisterColumnD(&fYSB, "SB/Gy/Gbp", "");
+	}
+	if (fScoreOnBases)
+		fNtuple->RegisterColumnD(&fYBaseDam, "BD/Gy/Gbp", "");
+	if (fBreakDownPerDamageOrigin)
 	{
 		if (fScoreOnBackbones)
 		{
-			fNtuple->RegisterColumnD(&fYDSB, "DSB/Gy/Gbp", "");
-			fNtuple->RegisterColumnD(&fYSSB, "SSB/Gy/Gbp", "");
-			fNtuple->RegisterColumnD(&fYSB, "SB/Gy/Gbp", "");
+			fNtuple->RegisterColumnI(&fNumDSB, "DSBs");
+			if (fScoreDirectDamage) fNtuple->RegisterColumnI(&fNumDSBDirect, "DSBs_Direct");
+			if (fScoreIndirectDamage) fNtuple->RegisterColumnI(&fNumDSBIndirect, "DSBs_Indirect");
+			if (fScoreDirectDamage && fScoreIndirectDamage) fNtuple->RegisterColumnI(&fNumDSBDirectIndirect, "DSBs_Hybrid");
+			if (fScoreDirectDamage && fScoreQuasiDirectDamage) fNtuple->RegisterColumnI(&fNumDSBDirectQuasiDirect, "DSBs_Direct_WithOneQuasiDirect");
+			if (fScoreQuasiDirectDamage) fNtuple->RegisterColumnI(&fNumDSBQuasiDirectQuasiDirect, "DSBs_Direct_WithBothQuasiDirect");
+			if (fScoreIndirectDamage && fScoreQuasiDirectDamage) fNtuple->RegisterColumnI(&fNumDSBIndirectQuasiDirect, "DSBs_Hybrid_WithOneQuasiDirect");
+			fNtuple->RegisterColumnI(&fNumSSB, "SSBs");
+			if (fScoreDirectDamage) fNtuple->RegisterColumnI(&fNumSSBDirect, "SSBs_Direct");
+			if (fScoreQuasiDirectDamage) fNtuple->RegisterColumnI(&fNumSSBQuasiDirect, "SSBs_QuasiDirect");
+			if (fScoreIndirectDamage) fNtuple->RegisterColumnI(&fNumSSBIndirect, "SSBs_Indirect");
+			fNtuple->RegisterColumnI(&fNumSB, "SBs");
+			if (fScoreDirectDamage) fNtuple->RegisterColumnI(&fNumSSBDirect, "SBs_Direct");
+			if (fScoreQuasiDirectDamage) fNtuple->RegisterColumnI(&fNumSSBQuasiDirect, "SBs_QuasiDirect");
+			if (fScoreIndirectDamage) fNtuple->RegisterColumnI(&fNumSSBIndirect, "SBs_Indirect");
 		}
 		if (fScoreOnBases)
-			fNtuple->RegisterColumnD(&fYBaseDam, "BD/Gy/Gbp", "");
-		if (fBreakDownPerDamageOrigin)
 		{
-			if (fScoreOnBackbones)
-			{
-				fNtuple->RegisterColumnI(&fNumDSB, "DSBs");
-				if (fScoreDirectDamage) fNtuple->RegisterColumnI(&fNumDSBDirect, "DSBs_Direct");
-				if (fScoreIndirectDamage) fNtuple->RegisterColumnI(&fNumDSBIndirect, "DSBs_Indirect");
-				if (fScoreDirectDamage && fScoreIndirectDamage) fNtuple->RegisterColumnI(&fNumDSBDirectIndirect, "DSBs_Hybrid");
-				if (fScoreDirectDamage && fScoreQuasiDirectDamage) fNtuple->RegisterColumnI(&fNumDSBDirectQuasiDirect, "DSBs_Direct_WithOneQuasiDirect");
-				if (fScoreQuasiDirectDamage) fNtuple->RegisterColumnI(&fNumDSBQuasiDirectQuasiDirect, "DSBs_Direct_WithBothQuasiDirect");
-				if (fScoreIndirectDamage && fScoreQuasiDirectDamage) fNtuple->RegisterColumnI(&fNumDSBIndirectQuasiDirect, "DSBs_Hybrid_WithOneQuasiDirect");
-				fNtuple->RegisterColumnI(&fNumSSB, "SSBs");
-				if (fScoreDirectDamage) fNtuple->RegisterColumnI(&fNumSSBDirect, "SSBs_Direct");
-				if (fScoreQuasiDirectDamage) fNtuple->RegisterColumnI(&fNumSSBQuasiDirect, "SSBs_QuasiDirect");
-				if (fScoreIndirectDamage) fNtuple->RegisterColumnI(&fNumSSBIndirect, "SSBs_Indirect");
-				fNtuple->RegisterColumnI(&fNumSB, "SBs");
-				if (fScoreDirectDamage) fNtuple->RegisterColumnI(&fNumSSBDirect, "SBs_Direct");
-				if (fScoreQuasiDirectDamage) fNtuple->RegisterColumnI(&fNumSSBQuasiDirect, "SBs_QuasiDirect");
-				if (fScoreIndirectDamage) fNtuple->RegisterColumnI(&fNumSSBIndirect, "SBs_Indirect");
-			}
-			if (fScoreOnBases)
-			{
-				fNtuple->RegisterColumnI(&fNumBaseDamage, "BDs");
-				if (fScoreDirectDamage) fNtuple->RegisterColumnI(&fNumBaseDamageDirect, "BDs_Direct");
-				if (fScoreQuasiDirectDamage) fNtuple->RegisterColumnI(&fNumBaseDamageQuasiDirect, "BDs_QuasiDirect");
-				if (fScoreIndirectDamage) fNtuple->RegisterColumnI(&fNumBaseDamageIndirect, "BDs_Indirect");
-			}
+			fNtuple->RegisterColumnI(&fNumBaseDamage, "BDs");
+			if (fScoreDirectDamage) fNtuple->RegisterColumnI(&fNumBaseDamageDirect, "BDs_Direct");
+			if (fScoreQuasiDirectDamage) fNtuple->RegisterColumnI(&fNumBaseDamageQuasiDirect, "BDs_QuasiDirect");
+			if (fScoreIndirectDamage) fNtuple->RegisterColumnI(&fNumBaseDamageIndirect, "BDs_Indirect");
 		}
 	}
+
 	if (fScoreFoci)
 		fNtuple->RegisterColumnI(&fNumFoci, "Foci");
 
@@ -402,6 +398,21 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 	fDamageCalculator->SetReturnOnlyDSBInSDD(fOnlyIncludeDSBinSDD);
 	fDamageCalculator->OutputSDDHeader(fWriteMinimalSDDOutput, fPrimaryParticle, fMeanEnergy, fDosePerExposure, fChromosomeContents, fScoreIndirectDamage, fScoreOnBases,
 			fAuthor, fSimulationDetails, fSourceDetails, fSourceType, fEnergyDist, fIrrTarget, fCellCycle, fDNAStructure, fInVitroOrInVivo, fProliferationStatus, fMicroenvironment, fTime, fAddInfo);
+
+	if (fScoreFoci)
+	{
+		fFociAnalyzer = new TsFociAnalysis();
+		fFociAnalyzer->SetFociSize(fFociSize);
+		fFociAnalyzer->Set3DFociImage(fGet3DFociImage);
+		fFociAnalyzer->Set2DFociImages(fGet2DFociImage);
+		if (fGet3DFociImage || fGet2DFociImage)
+		{
+			fFociAnalyzer->SetPSFShape(fMicroscopePSFShape);
+			fFociAnalyzer->SetPSFWidth(fMicroscopePSFWidth);
+			if (fGet2DFociImage)
+				fFociAnalyzer->SetPlanesFor2DFociImages(f2DPlanesForFociImage);
+		}
+	}
 }
 
 TsScoreDNADamageSBS::~TsScoreDNADamageSBS() {}
@@ -417,7 +428,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	// Stops tracking if accumulated dose is higher than specified (only for a new event! A single event is always completed)
 	if (fAccumulatedDoseInRun >= fStopAtDose)
 	{
-		G4cout << "Track is stopped because the dose limit (" << fStopAtDose << " Gy) was reached. No more particles will be tracked/scored." << G4endl;
+		G4cout << "Tracking is stopped because the dose limit (" << fStopAtDose << " Gy) was reached. No more particles will be tracked/scored." << G4endl;
 		aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 		return false;
 	}
@@ -642,34 +653,40 @@ G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
 	}
 
 	G4int numberOfLesions = 0;
-	if (fScoreDSB)
-	{
-		fDamageCalculator->ComputeStrandBreaks(hits);
-		std::map<G4int, std::vector<G4int>> initialPosDamageSites = fDamageCalculator->GetDamageSites();
-		numberOfLesions = fDamageCalculator->OutputSDDFile(initialPosDamageSites, eventID, fExposureID, fChromosomeContents);
+	fDamageCalculator->ComputeStrandBreaks(hits);
+	std::map<G4int, std::vector<G4int>> initialPosDamageSites = fDamageCalculator->GetDamageSites();
+	numberOfLesions = fDamageCalculator->OutputSDDFile(initialPosDamageSites, eventID, fExposureID, fChromosomeContents);
 
-		fNumSB = fDamageCalculator->GetSB();
-		fNumSBDirect = fDamageCalculator->GetSBDirect();
-		fNumSBQuasiDirect = fDamageCalculator->GetSBQuasiDirect();
-		fNumSBIndirect = fDamageCalculator->GetSBIndirect();
-		fNumSSB = fDamageCalculator->GetSSB();
-		fNumSSBDirect = fDamageCalculator->GetSSBDirect();
-		fNumSSBQuasiDirect = fDamageCalculator->GetSSBQuasiDirect();
-		fNumSSBIndirect = fDamageCalculator->GetSSBIndirect();
-		fNumDSB = fDamageCalculator->GetDSB();
-		fNumDSBDirect = fDamageCalculator->GetDSBDirect();
-		fNumDSBIndirect = fDamageCalculator->GetDSBIndirect();
-		fNumDSBDirectIndirect = fDamageCalculator->GetDSBDirectIndirect();
-		fNumDSBDirectQuasiDirect = fDamageCalculator->GetDSBDirectQuasiDirect();
-		fNumDSBQuasiDirectQuasiDirect = fDamageCalculator->GetDSBQuasiDirectQuasiDirect();
-		fNumDSBIndirectQuasiDirect = fDamageCalculator->GetDSBIndirectQuasiDirect();
-		fNumBaseDamage = fDamageCalculator->GetBD();
-		fNumBaseDamageDirect = fDamageCalculator->GetBDDirect();
-		fNumBaseDamageQuasiDirect = fDamageCalculator->GetBDQuasiDirect();
-		fNumBaseDamageIndirect = fDamageCalculator->GetBDIndirect();
-		if (fChromosomeContents.size() > 0)
-			CalculateYields();
+	fNumSB = fDamageCalculator->GetSB();
+	fNumSBDirect = fDamageCalculator->GetSBDirect();
+	fNumSBQuasiDirect = fDamageCalculator->GetSBQuasiDirect();
+	fNumSBIndirect = fDamageCalculator->GetSBIndirect();
+	fNumSSB = fDamageCalculator->GetSSB();
+	fNumSSBDirect = fDamageCalculator->GetSSBDirect();
+	fNumSSBQuasiDirect = fDamageCalculator->GetSSBQuasiDirect();
+	fNumSSBIndirect = fDamageCalculator->GetSSBIndirect();
+	fNumDSB = fDamageCalculator->GetDSB();
+	fNumDSBDirect = fDamageCalculator->GetDSBDirect();
+	fNumDSBIndirect = fDamageCalculator->GetDSBIndirect();
+	fNumDSBDirectIndirect = fDamageCalculator->GetDSBDirectIndirect();
+	fNumDSBDirectQuasiDirect = fDamageCalculator->GetDSBDirectQuasiDirect();
+	fNumDSBQuasiDirectQuasiDirect = fDamageCalculator->GetDSBQuasiDirectQuasiDirect();
+	fNumDSBIndirectQuasiDirect = fDamageCalculator->GetDSBIndirectQuasiDirect();
+	fNumBaseDamage = fDamageCalculator->GetBD();
+	fNumBaseDamageDirect = fDamageCalculator->GetBDDirect();
+	fNumBaseDamageQuasiDirect = fDamageCalculator->GetBDQuasiDirect();
+	fNumBaseDamageIndirect = fDamageCalculator->GetBDIndirect();
+	if (fChromosomeContents.size() > 0)
+		CalculateYields();
+	// Get all DSB positions to score foci
+	if (fScoreFoci)
+	{
+		std::vector<G4ThreeVector> dsbPosInEvent = fDamageCalculator->GetDSB3DPositions();
+		for (G4int i = 0; i < dsbPosInEvent.size(); i++)
+			fDSBPositionsInRun.push_back(dsbPosInEvent[i]);
+		fNumFoci = fFociAnalyzer->GetNumberOfFoci(fDSBPositionsInRun);
 	}
+
 	return numberOfLesions;
 }
 
