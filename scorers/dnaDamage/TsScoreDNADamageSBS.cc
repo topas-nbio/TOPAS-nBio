@@ -635,10 +635,12 @@ G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
 
 void TsScoreDNADamageSBS::CalculateYields()
 {
-	G4int totalContentOfDNA = 0;
+	G4double totalContentOfDNA = 0;
 	for (G4int i = 0; i < fChromosomeContents.size(); i++)
+	{
 		totalContentOfDNA += fChromosomeContents[i];
-
+		G4cout << "Chromosome " << i << ". Content chromosome: " << fChromosomeContents[i] << ". Total content of DNA: " << totalContentOfDNA << G4endl;
+	}
 	fYBaseDam = (G4double)fNumBaseDamage / fDoseInThisExposure / totalContentOfDNA * 1e9;
 	fYSB = (G4double)fNumSB / fDoseInThisExposure / totalContentOfDNA * 1e9;
 	fYSSB = (G4double)fNumSSB / fDoseInThisExposure / totalContentOfDNA * 1e9;
