@@ -125,8 +125,8 @@ protected:
 	G4int fNumBaseDamageQuasiDirect;
 	G4int fNumBaseDamageIndirect;
 
-	// Quantification for foci (vector to consider different foci sizes)
-	std::vector<G4int> fNumFoci;
+	// Quantification for foci (considers up to 5 different foci sizes)
+	G4int fNumFoci1, fNumFoci2, fNumFoci3, fNumFoci4, fNumFoci5;
 	std::vector<G4ThreeVector> fDSBPositionsInRun;
 
 	// Yields

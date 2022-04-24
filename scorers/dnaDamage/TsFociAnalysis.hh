@@ -22,14 +22,14 @@ public:
 	~TsFociAnalysis();
 
 	std::vector<G4int> GetNumberOfFoci(std::vector<G4ThreeVector> dsbPositions);
-	G4double GetDistance(G4ThreeVector a, G4ThreeVector b);
+	G4float GetDistance(G4ThreeVector a, G4ThreeVector b);
 	G4bool CheckIfAnyIndexIsAvailable(std::vector<G4bool> indexIsAvailable);
 
 	void Produce3DImage(std::vector<G4ThreeVector> dsbPositions);
 	void Produce2DImages(std::vector<G4ThreeVector> dsbPositions);
 
-	G4double Gaussian3D(G4double x, G4double y, G4double z, G4double sigma);
-	G4double Gaussian2D(G4double x, G4double y, G4double sigma);
+	G4float Gaussian3D(G4float x, G4float y, G4float z, G4float sigma);
+	G4float Gaussian2D(G4float x, G4float y, G4float sigma);
 
 	void inline SetFociSizes(std::vector<G4double> v)				{ fFociSizes = v; }
 	void inline SetPlanesFor2DFociImages(std::vector<G4String> v)	{ f2DPlanesForFociImage = v; }

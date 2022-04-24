@@ -166,10 +166,7 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 		G4int vectorLength = fPm->GetVectorLength(GetFullParmName("FociSizes"));
 		fFociSizes.clear();
 		for (G4int i = 0; i < vectorLength; i++)
-		{
 			fFociSizes.push_back(sizes[i]);
-			fNumFoci.push_back(0);
-		}
 	}
 	fGet3DFociImage = false;
 	if (fPm->ParameterExists(GetFullParmName("Get3DFociImage")))
@@ -408,8 +405,12 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 
 	if (fScoreFoci)
 	{
-		for (G4int i = 0; i < fFociSizes.size(); i++)
-			fNtuple->RegisterColumnI(&fNumFoci[i], "Foci_" + std::to_string(fFociSizes[i]));
+		fNumFoci1 = 0; fNumFoci2 = 0; fNumFoci3 = 0; fNumFoci4 = 0; fNumFoci5 = 0;
+		if (fFociSizes.size() >= 1) fNtuple->RegisterColumnI(&fNumFoci1, "Foci_" + std::to_string(int(fFociSizes[0]*1e6)) + "nm");
+		if (fFociSizes.size() >= 2) fNtuple->RegisterColumnI(&fNumFoci2, "Foci_" + std::to_string(int(fFociSizes[1]*1e6)) + "nm");
+		if (fFociSizes.size() >= 3) fNtuple->RegisterColumnI(&fNumFoci3, "Foci_" + std::to_string(int(fFociSizes[2]*1e6)) + "nm");
+		if (fFociSizes.size() >= 4) fNtuple->RegisterColumnI(&fNumFoci4, "Foci_" + std::to_string(int(fFociSizes[3]*1e6)) + "nm");
+		if (fFociSizes.size() >= 5) fNtuple->RegisterColumnI(&fNumFoci5, "Foci_" + std::to_string(int(fFociSizes[4]*1e6)) + "nm");
 	}
 	// Initialize and setup damage computer
 	fDamageCalculator = new TsDNADamageCalculator();
@@ -731,7 +732,12 @@ G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
 		std::vector<G4ThreeVector> dsbPosInEvent = fDamageCalculator->GetDSB3DPositions();
 		for (G4int i = 0; i < dsbPosInEvent.size(); i++)
 			fDSBPositionsInRun.push_back(dsbPosInEvent[i]);
-		fNumFoci = fFociAnalyzer->GetNumberOfFoci(fDSBPositionsInRun);
+		std::vector<G4int> numFoci = fFociAnalyzer->GetNumberOfFoci(fDSBPositionsInRun);
+		if (numFoci.size() >= 1) fNumFoci1 = numFoci[0];
+		if (numFoci.size() >= 2) fNumFoci2 = numFoci[1];
+		if (numFoci.size() >= 3) fNumFoci3 = numFoci[2];
+		if (numFoci.size() >= 4) fNumFoci4 = numFoci[3];
+		if (numFoci.size() >= 5) fNumFoci5 = numFoci[4];
 	}
 
 	return numberOfLesions;
