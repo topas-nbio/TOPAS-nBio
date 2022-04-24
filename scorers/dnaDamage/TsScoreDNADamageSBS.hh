@@ -71,7 +71,8 @@ protected:
 	std::vector<G4String> f2DPlanesForFociImage;
 	G4String fMicroscopePSFShape;
 	G4double fMicroscopePSFWidth;
-	std::vector<G4double> fImageResolutions;
+	std::vector<G4double> f2DImageResolutions;
+	G4double f3DImageResolution;
 	G4double fImXmin, fImXmax, fImYmin, fImYmax, fImZmin, fImZmax;
 
 	G4bool fExcludeShortFragments;

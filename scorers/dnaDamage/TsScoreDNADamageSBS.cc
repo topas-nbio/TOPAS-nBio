@@ -195,15 +195,18 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 		fMicroscopePSFWidth = 500 * nm;
 		if (fPm->ParameterExists(GetFullParmName("MicroscopePSFWidth")))
 			fMicroscopePSFWidth = fPm->GetDoubleParameter(GetFullParmName("MicroscopePSFWidth"), "Length");
-		fImageResolutions.push_back(2.5 * nm);
-		if (fPm->ParameterExists(GetFullParmName("FociImageResolutions")))
+		f2DImageResolutions.push_back(5.0 * nm);
+		if (fPm->ParameterExists(GetFullParmName("Foci2DImageResolutions")))
 		{
-			G4double* resolutions = fPm->GetDoubleVector(GetFullParmName("FociImageResolutions"), "Length");
-			G4int vectorLength = fPm->GetVectorLength(GetFullParmName("FociImageResolutions"));
-			fImageResolutions.clear();
+			G4double* resolutions = fPm->GetDoubleVector(GetFullParmName("Foci2DImageResolutions"), "Length");
+			G4int vectorLength = fPm->GetVectorLength(GetFullParmName("Foci2DImageResolutions"));
+			f2DImageResolutions.clear();
 			for (G4int i = 0; i < vectorLength; i++)
-				fImageResolutions.push_back(resolutions[i]);
+				f2DImageResolutions.push_back(resolutions[i]);
 		}
+		f3DImageResolution = 500 *nm;
+		if (fPm->ParameterExists(GetFullParmName("Foci3DImageResolution")))
+			f3DImageResolution = fPm->GetDoubleParameter(GetFullParmName("Foci3DImageResolution"), "Length");
 		fImXmin = -5 * um;
 		if (fPm->ParameterExists(GetFullParmName("ImageXMinPosition")))
 			fImXmin = fPm->GetDoubleParameter(GetFullParmName("ImageXMinPosition"), "Length");
@@ -445,7 +448,8 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 		{
 			fFociAnalyzer->SetPSFShape(fMicroscopePSFShape);
 			fFociAnalyzer->SetPSFWidth(fMicroscopePSFWidth);
-			fFociAnalyzer->SetImageResolutions(fImageResolutions);
+			fFociAnalyzer->Set2DImageResolutions(f2DImageResolutions);
+			fFociAnalyzer->Set3DImageResolution(f3DImageResolution);
 			fFociAnalyzer->SetMinX(fImXmin);
 			fFociAnalyzer->SetMaxX(fImXmax);
 			fFociAnalyzer->SetMinY(fImYmin);

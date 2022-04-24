@@ -21,6 +21,8 @@ TsFociAnalysis::TsFociAnalysis(TsVGeometryComponent* component)
 	fMicroscopePSFShape = "none";
 	fMicroscopePSFWidth = -1;
 
+	f3DResolution = 500 * nm;
+
 	fxmin = -5 * um;
 	fxmax = 5 * um;
 	fymin = -5 * um;
@@ -67,130 +69,128 @@ std::vector<G4int> TsFociAnalysis::GetNumberOfFoci(std::vector<G4ThreeVector> ds
 
 void TsFociAnalysis::Produce3DImage(std::vector<G4ThreeVector> dsbPositions)
 {
-	for (G4int iRes = 0; iRes < fResolutions.size(); iRes++)
+
+	// Creates 3D matrix
+	G4float dx = (G4float)f3DResolution;
+	G4float dy = (G4float)f3DResolution;
+	G4float dz = (G4float)f3DResolution;
+	G4int nx = std::floor((fxmax-fxmin) / dx + 1e-14) + 1;
+	G4int ny = std::floor((fymax-fymin) / dy + 1e-14) + 1;
+	G4int nz = std::floor((fzmax-fzmin) / dz + 1e-14) + 1;
+	G4float image3d[nx][ny][nz];
+
+	// Initialization
+	for (G4int i = 0; i < nx; i++)
 	{
-		// Creates 3D matrix
-		G4float dx = (G4float)fResolutions[iRes];
-		G4float dy = (G4float)fResolutions[iRes];
-		G4float dz = (G4float)fResolutions[iRes];
-		G4int nx = std::floor((fxmax-fxmin) / dx + 1e-14);
-		G4int ny = std::floor((fymax-fymin) / dy + 1e-14);
-		G4int nz = std::floor((fzmax-fzmin) / dz + 1e-14);
-		G4float image3d[nx][ny][nz];
-
-		// Initialization
-		for (G4int i = 0; i < nx; i++)
+		for (G4int j = 0; j < ny; j++)
 		{
-			for (G4int j = 0; j < ny; j++)
-			{
-				for (G4int k = 0; k < nz; k++)
-					image3d[i][j][k] = 0.0;
-			}
+			for (G4int k = 0; k < nz; k++)
+				image3d[i][j][k] = 0.0;
 		}
-		// Gets the PSF (Gaussian)
-		if (strstr(fMicroscopePSFShape, "Gaussian") != NULL)
-		{
-			G4int twoSigmas = std::floor(2 * fMicroscopePSFWidth / (G4float)fResolutions[iRes]);
-			G4int nkernel = 2 * twoSigmas + 1;
-			G4float psf[nkernel][nkernel][nkernel];
-			G4float minkernel = -twoSigmas * (G4float)fResolutions[iRes];
-			G4float sum = 0;
-			for (G4int ix = 0; ix < nkernel; ix++)
-			{
-				G4float xpos = minkernel + ix * (G4float)fResolutions[iRes];
-				for (G4int iy = 0; iy < nkernel; iy++)
-				{
-					G4float ypos = minkernel + iy * (G4float)fResolutions[iRes];
-					for (G4int iz = 0; iz < nkernel; iz++)
-					{
-						G4float zpos = minkernel + iz * (G4float)fResolutions[iRes];
-						G4float v = Gaussian3D(xpos, ypos, zpos, fMicroscopePSFWidth);
-						if (v > 1e-9)
-						{
-							psf[ix][iy][iz] = v;
-							sum += v;
-						}
-						else psf[ix][iy][iz] = 0.0;
-					}
-				}
-			}
-			// Normalize
-			for (G4int ix = 0; ix < nkernel; ix++)
-			{
-				for (G4int iy = 0; iy < nkernel; iy++)
-				{
-					for (G4int iz = 0; iz < nkernel; iz++)
-						psf[ix][iy][iz] /= sum;
-				}
-			}
-			// Convolves PSF for each DSB position
-			for (G4int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
-			{
-				G4int idx = std::floor((dsbPositions[iDsb].x() - fxmin) / dx + 1e-14);
-				G4int idy = std::floor((dsbPositions[iDsb].y() - fymin) / dy + 1e-14);
-				G4int idz = std::floor((dsbPositions[iDsb].z() - fzmin) / dz + 1e-14);
-				G4int startx = (idx - twoSigmas) < 0 ? 0 : idx - twoSigmas;
-				G4int starty = (idy - twoSigmas) < 0 ? 0 : idy - twoSigmas;
-				G4int startz = (idz - twoSigmas) < 0 ? 0 : idz - twoSigmas;
-				G4int endx = (idx + twoSigmas) > nx ? nx : idx + twoSigmas;
-				G4int endy = (idy + twoSigmas) > ny ? ny : idy + twoSigmas;
-				G4int endz = (idz + twoSigmas) > nz ? nz : idz + twoSigmas;
-				for (G4int i = startx; i < endx; i++)
-				{
-					for (G4int j = starty; j < endy; j++)
-					{
-						for (G4int k = startz; k < endz; k++)
-							image3d[i][j][k] += psf[i - idx][j - idy][k - idz];
-					}
-				}
-			}
-		}
-
-		// Writes csv file
-		G4String filename = "Foci3D_" + std::to_string(int(fResolutions[iRes]*1e6)) + "nm.csv";
-		std::fstream out;
-		// Creates a new file
-		out.open(filename, std::ios::out | std::ios::trunc);
-		// Inserts headers
-		out << "ix,iy,iz,v\n";
-		for (G4int i = 0; i < nx; i++)
-		{
-			for (G4int j = 0; j < ny; j++)
-			{
-				for (G4int k = 0; k < nz; k++)
-					for (G4int j = 0; j < nz; j++)
-					{
-						if (image3d[i][j][k] > 1e-9) out << i << "," << j << "," << k << "," << image3d[i][j][k] << "\n";
-						else out << i << "," << j << "," << k << "," << 0.0 << "\n";
-					}
-			}
-		}
-		out.close();
 	}
+	// Gets the PSF (Gaussian)
+	if (strstr(fMicroscopePSFShape, "Gaussian") != NULL)
+	{
+		G4int twoSigmas = std::floor(2 * fMicroscopePSFWidth / (G4float)f3DResolution);
+		G4int nkernel = 2 * twoSigmas + 1;
+		G4float psf[nkernel][nkernel][nkernel];
+		G4float minkernel = -twoSigmas * (G4float)f3DResolution;
+		G4float sum = 0;
+		for (G4int ix = 0; ix < nkernel; ix++)
+		{
+			G4float xpos = minkernel + ix * dx;
+			for (G4int iy = 0; iy < nkernel; iy++)
+			{
+				G4float ypos = minkernel + iy * dy;
+				for (G4int iz = 0; iz < nkernel; iz++)
+				{
+					G4float zpos = minkernel + iz * dz;
+					G4float v = Gaussian3D(xpos, ypos, zpos, fMicroscopePSFWidth);
+					if (v > 1e-9)
+					{
+						psf[ix][iy][iz] = v;
+						sum += v;
+					}
+					else psf[ix][iy][iz] = 0.0;
+				}
+			}
+		}
+		// Normalize
+		for (G4int ix = 0; ix < nkernel; ix++)
+		{
+			for (G4int iy = 0; iy < nkernel; iy++)
+			{
+				for (G4int iz = 0; iz < nkernel; iz++)
+					psf[ix][iy][iz] /= sum;
+			}
+		}
+		// Convolves PSF for each DSB position
+		for (G4int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
+		{
+			G4int idx = std::floor((dsbPositions[iDsb].x() - fxmin) / dx + 1e-14);
+			G4int idy = std::floor((dsbPositions[iDsb].y() - fymin) / dy + 1e-14);
+			G4int idz = std::floor((dsbPositions[iDsb].z() - fzmin) / dz + 1e-14);
+			G4int startx = (idx - twoSigmas) < 0 ? 0 : idx - twoSigmas;
+			G4int starty = (idy - twoSigmas) < 0 ? 0 : idy - twoSigmas;
+			G4int startz = (idz - twoSigmas) < 0 ? 0 : idz - twoSigmas;
+			G4int endx = (idx + twoSigmas) > nx ? nx : idx + twoSigmas;
+			G4int endy = (idy + twoSigmas) > ny ? ny : idy + twoSigmas;
+			G4int endz = (idz + twoSigmas) > nz ? nz : idz + twoSigmas;
+			for (G4int i = startx; i < endx; i++)
+			{
+				for (G4int j = starty; j < endy; j++)
+				{
+					for (G4int k = startz; k < endz; k++)
+						image3d[i][j][k] += psf[i - startx][j - starty][k - startz];
+				}
+			}
+		}
+	}
+
+	// Writes csv file
+	G4String filename = "Foci3D_" + std::to_string(int(f3DResolution*1e6)) + "nm.csv";
+	std::fstream out;
+	// Creates a new file
+	out.open(filename, std::ios::out | std::ios::trunc);
+	// Inserts headers
+	out << "ix,iy,iz,v\n";
+	for (G4int i = 0; i < nx; i++)
+	{
+		for (G4int j = 0; j < ny; j++)
+		{
+			for (G4int k = 0; k < nz; k++)
+				for (G4int j = 0; j < nz; j++)
+				{
+					if (image3d[i][j][k] > 1e-9) out << i << "," << j << "," << k << "," << image3d[i][j][k] << "\n";
+					else out << i << "," << j << "," << k << "," << 0.0 << "\n";
+				}
+		}
+	}
+	out.close();
 }
 
 void TsFociAnalysis::Produce2DImages(std::vector<G4ThreeVector> dsbPositions)
 {
-	for (G4int iRes = 0; iRes < fResolutions.size(); iRes++)
+	for (G4int iRes = 0; iRes < f2DResolutions.size(); iRes++)
 	{
 		for (G4int iPlane = 0; iPlane < f2DPlanesForFociImage.size(); iPlane++)
 		{
 			// Gets the PSF (Gaussian)
-			G4int twoSigmas = std::floor(2 * fMicroscopePSFWidth / fResolutions[iRes]);
+			G4int twoSigmas = std::floor(2 * fMicroscopePSFWidth / f2DResolutions[iRes]);
 			G4int nkernel = 2 * twoSigmas + 1;
-			G4float psf[nkernel][nkernel];
+			G4double psf[nkernel][nkernel];
 
 			if (strstr(fMicroscopePSFShape, "Gaussian") != NULL)
 			{
-				G4float minkernel = -twoSigmas * (G4float)fResolutions[iRes];
-				G4float sum = 0;
+				G4double minkernel = -twoSigmas * f2DResolutions[iRes];
+				G4double sum = 0;
 				for (G4int ix = 0; ix < nkernel; ix++)
 				{
-					G4float xpos = minkernel + ix * (G4float)fResolutions[iRes];
+					G4double xpos = minkernel + ix * f2DResolutions[iRes];
 					for (G4int iy = 0; iy < nkernel; iy++)
 					{
-						G4float ypos = minkernel + iy * (G4float)fResolutions[iRes];
-						G4float v = Gaussian2D(xpos, ypos, fMicroscopePSFWidth);
+						G4double ypos = minkernel + iy * f2DResolutions[iRes];
+						G4double v = Gaussian2D(xpos, ypos, fMicroscopePSFWidth);
 						if (v >= 1e-9)
 						{
 							psf[ix][iy] = v;
@@ -210,18 +210,18 @@ void TsFociAnalysis::Produce2DImages(std::vector<G4ThreeVector> dsbPositions)
 			if (f2DPlanesForFociImage[iPlane] == "Z")
 			{
 				// Creates 2D matrix
-				G4float dx = (G4float)fResolutions[iRes];
-				G4float dy = (G4float)fResolutions[iRes];
+				G4double dx = f2DResolutions[iRes];
+				G4double dy = f2DResolutions[iRes];
 
-				G4int nx = std::floor((fxmax-fxmin) / dx + 1e-14);
-				G4int ny = std::floor((fymax-fymin) / dy + 1e-14);
+				G4int nx = std::floor((fxmax-fxmin) / dx + 1e-14) + 1;
+				G4int ny = std::floor((fymax-fymin) / dy + 1e-14) + 1;
 
-				G4float image2d[nx][ny];
+				G4double image2d[nx][ny];
 				// Initialization
 				for (G4int i = 0; i < nx; i++)
 				{
 					for (G4int j = 0; j < ny; j++)
-							image2d[i][j] = 0.0;
+						image2d[i][j] = 0.0;
 				}
 
 				// Convolves PSF for each DSB position
@@ -236,11 +236,11 @@ void TsFociAnalysis::Produce2DImages(std::vector<G4ThreeVector> dsbPositions)
 					for (G4int i = startx; i < endx; i++)
 					{
 						for (G4int j = starty; j < endy; j++)
-							image2d[i][j] += psf[i - idx][j - idy];
+							image2d[i][j] += psf[i - startx][j - starty];
 					}
 				}
 				// Writes csv file
-				G4String filename = "Foci2D_ZPlane_" + std::to_string(int(fResolutions[iRes]*1e6)) + "nm.csv";
+				G4String filename = "Foci2D_ZPlane_" + std::to_string(int(f2DResolutions[iRes]*1e6)) + "nm.csv";
 				std::fstream out;
 				// Creates a new file
 				out.open(filename, std::ios::out | std::ios::trunc);
@@ -259,18 +259,19 @@ void TsFociAnalysis::Produce2DImages(std::vector<G4ThreeVector> dsbPositions)
 			if (f2DPlanesForFociImage[iPlane] == "Y")
 			{
 				// Creates 2D matrix
-				G4float dx = (G4float)fResolutions[iRes];
-				G4float dz = (G4float)fResolutions[iRes];
+				G4double dx = f2DResolutions[iRes];
+				G4double dz = f2DResolutions[iRes];
 
-				G4int nx = std::floor((fxmax-fxmin) / dx + 1e-14);
-				G4int nz = std::floor((fzmax-fzmin) / dz + 1e-14);
+				G4int nx = std::floor((fxmax-fxmin) / dx + 1e-14) + 1;
+				G4int nz = std::floor((fzmax-fzmin) / dz + 1e-14) + 1;
 
-				G4float image2d[nx][nz];
+				G4double image2d[nx][nz];
 				// Initialization
 				for (G4int i = 0; i < nx; i++)
 				{
 					for (G4int j = 0; j < nz; j++)
 						image2d[i][j] = 0;
+
 				}
 
 				// Convolves PSF for each DSB position
@@ -285,11 +286,11 @@ void TsFociAnalysis::Produce2DImages(std::vector<G4ThreeVector> dsbPositions)
 					for (G4int i = startx; i < endx; i++)
 					{
 						for (G4int j = startz; j < endz; j++)
-							image2d[i][j] += psf[i - idx][j - idz];
+							image2d[i][j] += psf[i - startx][j - startz];
 					}
 				}
 				// Writes csv file
-				G4String filename = "Foci2D_YPlane_" + std::to_string(int(fResolutions[iRes]*1e6)) + "nm.csv";
+				G4String filename = "Foci2D_YPlane_" + std::to_string(int(f2DResolutions[iRes]*1e6)) + "nm.csv";
 				std::fstream out;
 				// Creates a new file
 				out.open(filename, std::ios::out | std::ios::trunc);
@@ -308,13 +309,13 @@ void TsFociAnalysis::Produce2DImages(std::vector<G4ThreeVector> dsbPositions)
 			if (f2DPlanesForFociImage[iPlane] == "X")
 			{
 				// Creates 2D matrix
-				G4float dy = (G4float)fResolutions[iRes];
-				G4float dz = (G4float)fResolutions[iRes];
+				G4double dy = f2DResolutions[iRes];
+				G4double dz = f2DResolutions[iRes];
 
-				G4int ny = std::floor((fymax-fymin) / dy + 1e-14);
-				G4int nz = std::floor((fzmax-fzmin) / dz + 1e-14);
+				G4int ny = std::floor((fymax-fymin) / dy + 1e-14) + 1;
+				G4int nz = std::floor((fzmax-fzmin) / dz + 1e-14) + 1;
 
-				G4float image2d[ny][nz];
+				G4double image2d[ny][nz];
 				// Initialization
 				for (G4int i = 0; i < ny; i++)
 				{
@@ -334,11 +335,11 @@ void TsFociAnalysis::Produce2DImages(std::vector<G4ThreeVector> dsbPositions)
 					for (G4int i = starty; i < endy; i++)
 					{
 						for (G4int j = startz; j < endz; j++)
-							image2d[i][j] += psf[i - idy][j - idz];
+							image2d[i][j] += psf[i - starty][j - startz];
 					}
 				}
 				// Writes csv file
-				G4String filename = "Foci2D_XPlane_" + std::to_string(int(fResolutions[iRes]*1e6)) + "nm.csv";
+				G4String filename = "Foci2D_XPlane_" + std::to_string(int(f2DResolutions[iRes]*1e6)) + "nm.csv";
 				std::fstream out;
 				// Creates a new file
 				out.open(filename, std::ios::out | std::ios::trunc);

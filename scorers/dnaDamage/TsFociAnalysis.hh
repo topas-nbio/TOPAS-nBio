@@ -35,7 +35,8 @@ public:
 	void inline SetPlanesFor2DFociImages(std::vector<G4String> v)	{ f2DPlanesForFociImage = v; }
 	void inline SetPSFShape(G4String v)								{ fMicroscopePSFShape = v; }
 	void inline SetPSFWidth(G4double v)								{ fMicroscopePSFWidth = v; }
-	void inline SetImageResolutions(std::vector<G4double> v)		{ fResolutions = v; }
+	void inline Set2DImageResolutions(std::vector<G4double> v)		{ f2DResolutions = v; }
+	void inline Set3DImageResolution(G4double v)					{ f3DResolution = v; }
 	void inline SetMinX(G4double v)									{ fxmin = v; }
 	void inline SetMaxX(G4double v)									{ fxmax = v; }
 	void inline SetMinY(G4double v)									{ fymin = v; }
@@ -48,7 +49,8 @@ private:
 	std::vector<G4String> f2DPlanesForFociImage;
 	G4String fMicroscopePSFShape;
 	G4double fMicroscopePSFWidth;
-	std::vector<G4double> fResolutions;
+	std::vector<G4double> f2DResolutions;
+	G4double f3DResolution;
 	G4double fxmin, fxmax, fymin, fymax, fzmin, fzmax;
 
 	TsVGeometryComponent* fComponent;
