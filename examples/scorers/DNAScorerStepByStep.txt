@@ -47,12 +47,13 @@ b:Sc/DNADamageScorer/ExcludeShortFragments						= "false"
 
 # Options for foci scoring
 b:Sc/DNADamageScorer/ScoreNumberOfFoci							= "true"
-d:Sc/DNADamageScorer/FociSize									= 500 nm
+dv:Sc/DNADamageScorer/FociSizes									= 1 500 nm
 b:Sc/DNADamageScorer/Get3DFociImage								= "true"
 b:Sc/DNADamageScorer/Get2DFociImages							= "true"
-sv:Sc/DNADamageScorer/2DFociImagePlanes							= 3 "x" "y" "z"
+sv:Sc/DNADamageScorer/2DFociImagePlanes							= 3 "X" "Y" "Z"
 s:Sc/DNADamageScorer/MicroscopePSFShape							= "Gaussian"
-d:Sc/DNADamageScorer/MicroscopePSFWidth							= 500 nm
+d:Sc/DNADamageScorer/MicroscopePSFWidth							= 400 nm
+dv:Sc/DNADamageScorer/FociImageResolutions						= 1 250 nm
 
 # Options for output extension
 b:Sc/DNADamageScorer/WriteCSVOutputWithAllDamageSpecification	= "true"

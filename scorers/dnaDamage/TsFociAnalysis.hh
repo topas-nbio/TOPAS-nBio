@@ -18,27 +18,40 @@
 class TsFociAnalysis
 {
 public:
-	TsFociAnalysis();
+	TsFociAnalysis(TsVGeometryComponent* component);
 	~TsFociAnalysis();
 
-	G4int GetNumberOfFoci(std::vector<G4ThreeVector> dsbPositions);
+	std::vector<G4int> GetNumberOfFoci(std::vector<G4ThreeVector> dsbPositions);
 	G4double GetDistance(G4ThreeVector a, G4ThreeVector b);
 	G4bool CheckIfAnyIndexIsAvailable(std::vector<G4bool> indexIsAvailable);
 
-	void inline SetFociSize(G4double v)								{ fFociSize = v; }
-	void inline Set3DFociImage(G4bool v)							{ fGet3DFociImage = v; }
-	void inline Set2DFociImages(G4bool v)							{ fGet2DFociImage = v; }
+	void Produce3DImage(std::vector<G4ThreeVector> dsbPositions);
+	void Produce2DImages(std::vector<G4ThreeVector> dsbPositions);
+
+	G4double Gaussian3D(G4double x, G4double y, G4double z, G4double sigma);
+	G4double Gaussian2D(G4double x, G4double y, G4double sigma);
+
+	void inline SetFociSizes(std::vector<G4double> v)				{ fFociSizes = v; }
 	void inline SetPlanesFor2DFociImages(std::vector<G4String> v)	{ f2DPlanesForFociImage = v; }
 	void inline SetPSFShape(G4String v)								{ fMicroscopePSFShape = v; }
 	void inline SetPSFWidth(G4double v)								{ fMicroscopePSFWidth = v; }
+	void inline SetImageResolutions(std::vector<G4double> v)		{ fResolutions = v; }
+	void inline SetMinX(G4double v)									{ fxmin = v; }
+	void inline SetMaxX(G4double v)									{ fxmax = v; }
+	void inline SetMinY(G4double v)									{ fymin = v; }
+	void inline SetMaxY(G4double v)									{ fymax = v; }
+	void inline SetMinZ(G4double v)									{ fzmin = v; }
+	void inline SetMaxZ(G4double v)									{ fzmax = v; }
 
 private:
-	G4double fFociSize;
-	G4bool fGet3DFociImage;
-	G4bool fGet2DFociImage;
+	std::vector<G4double> fFociSizes;
 	std::vector<G4String> f2DPlanesForFociImage;
 	G4String fMicroscopePSFShape;
 	G4double fMicroscopePSFWidth;
+	std::vector<G4double> fResolutions;
+	G4double fxmin, fxmax, fymin, fymax, fzmin, fzmax;
+
+	TsVGeometryComponent* fComponent;
 };
 
 #endif

@@ -159,9 +159,18 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 	fScoreFoci = true;
 	if (fPm->ParameterExists(GetFullParmName("ScoreNumberOfFoci")))
 		fScoreFoci = fPm->GetBooleanParameter(GetFullParmName("ScoreNumberOfFoci"));
-	fFociSize = 500 * nm;
-	if (fPm->ParameterExists(GetFullParmName("FociSize")))
-		fFociSize = fPm->GetDoubleParameter(GetFullParmName("FociSize"), "Length");
+	fFociSizes.push_back(500 * nm);
+	if (fPm->ParameterExists(GetFullParmName("FociSizes")))
+	{
+		G4double* sizes = fPm->GetDoubleVector(GetFullParmName("FociSizes"), "Length");
+		G4int vectorLength = fPm->GetVectorLength(GetFullParmName("FociSizes"));
+		fFociSizes.clear();
+		for (G4int i = 0; i < vectorLength; i++)
+		{
+			fFociSizes.push_back(sizes[i]);
+			fNumFoci.push_back(0);
+		}
+	}
 	fGet3DFociImage = false;
 	if (fPm->ParameterExists(GetFullParmName("Get3DFociImage")))
 		fGet3DFociImage = fPm->GetBooleanParameter(GetFullParmName("Get3DFociImage"));
@@ -189,6 +198,33 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 		fMicroscopePSFWidth = 500 * nm;
 		if (fPm->ParameterExists(GetFullParmName("MicroscopePSFWidth")))
 			fMicroscopePSFWidth = fPm->GetDoubleParameter(GetFullParmName("MicroscopePSFWidth"), "Length");
+		fImageResolutions.push_back(2.5 * nm);
+		if (fPm->ParameterExists(GetFullParmName("FociImageResolutions")))
+		{
+			G4double* resolutions = fPm->GetDoubleVector(GetFullParmName("FociImageResolutions"), "Length");
+			G4int vectorLength = fPm->GetVectorLength(GetFullParmName("FociImageResolutions"));
+			fImageResolutions.clear();
+			for (G4int i = 0; i < vectorLength; i++)
+				fImageResolutions.push_back(resolutions[i]);
+		}
+		fImXmin = -5 * um;
+		if (fPm->ParameterExists(GetFullParmName("ImageXMinPosition")))
+			fImXmin = fPm->GetDoubleParameter(GetFullParmName("ImageXMinPosition"), "Length");
+		fImXmax = 5 * um;
+		if (fPm->ParameterExists(GetFullParmName("ImageXMaxPosition")))
+			fImXmax = fPm->GetDoubleParameter(GetFullParmName("ImageXMaxPosition"), "Length");
+		fImYmin = -5 * um;
+		if (fPm->ParameterExists(GetFullParmName("ImageYMinPosition")))
+			fImYmin = fPm->GetDoubleParameter(GetFullParmName("ImageYMinPosition"), "Length");
+		fImYmax = 5 * um;
+		if (fPm->ParameterExists(GetFullParmName("ImageYMaxPosition")))
+			fImYmax = fPm->GetDoubleParameter(GetFullParmName("ImageYMaxPosition"), "Length");
+		fImZmin = -5 * um;
+		if (fPm->ParameterExists(GetFullParmName("ImageZMinPosition")))
+			fImZmin = fPm->GetDoubleParameter(GetFullParmName("ImageZMinPosition"), "Length");
+		fImZmax = 5 * um;
+		if (fPm->ParameterExists(GetFullParmName("ImageZMaxPosition")))
+			fImZmax = fPm->GetDoubleParameter(GetFullParmName("ImageZMaxPosition"), "Length");
 	}
 
 	// Considering fragments
@@ -213,7 +249,6 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 
 	// Stop at a given dose
 	fStopAtDose = 3E8;
-	G4cout << "Stop at dose: " << fStopAtDose << " Gy" << G4endl;
 	if (fPm->ParameterExists(GetFullParmName("StopTrackingAtDose")))
 		fStopAtDose = fPm->GetDoubleParameter(GetFullParmName("StopTrackingAtDose"), "Dose") / gray;
 
@@ -372,8 +407,10 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 	}
 
 	if (fScoreFoci)
-		fNtuple->RegisterColumnI(&fNumFoci, "Foci");
-
+	{
+		for (G4int i = 0; i < fFociSizes.size(); i++)
+			fNtuple->RegisterColumnI(&fNumFoci[i], "Foci_" + std::to_string(fFociSizes[i]));
+	}
 	// Initialize and setup damage computer
 	fDamageCalculator = new TsDNADamageCalculator();
 	fDamageCalculator->SetDistanceBasePairsForDSB(fNumberOfBasePairsForDSB);
@@ -401,14 +438,19 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 
 	if (fScoreFoci)
 	{
-		fFociAnalyzer = new TsFociAnalysis();
-		fFociAnalyzer->SetFociSize(fFociSize);
-		fFociAnalyzer->Set3DFociImage(fGet3DFociImage);
-		fFociAnalyzer->Set2DFociImages(fGet2DFociImage);
+		fFociAnalyzer = new TsFociAnalysis(fComponent);
+		fFociAnalyzer->SetFociSizes(fFociSizes);
 		if (fGet3DFociImage || fGet2DFociImage)
 		{
 			fFociAnalyzer->SetPSFShape(fMicroscopePSFShape);
 			fFociAnalyzer->SetPSFWidth(fMicroscopePSFWidth);
+			fFociAnalyzer->SetImageResolutions(fImageResolutions);
+			fFociAnalyzer->SetMinX(fImXmin);
+			fFociAnalyzer->SetMaxX(fImXmax);
+			fFociAnalyzer->SetMinY(fImYmin);
+			fFociAnalyzer->SetMaxY(fImYmax);
+			fFociAnalyzer->SetMinZ(fImZmin);
+			fFociAnalyzer->SetMaxZ(fImZmax);
 			if (fGet2DFociImage)
 				fFociAnalyzer->SetPlanesFor2DFociImages(f2DPlanesForFociImage);
 		}
@@ -636,6 +678,11 @@ void TsScoreDNADamageSBS::UserHookForEndOfRun()
 		numberOfLesions += lesionsThisEvent;
 		// Only fill if there is any damage
 		if (lesionsThisEvent > 0) fNtuple->Fill();
+	}
+	if (fScoreFoci)
+	{
+		if (fGet3DFociImage) fFociAnalyzer->Produce3DImage(fDSBPositionsInRun);
+		if (fGet2DFociImage) fFociAnalyzer->Produce2DImages(fDSBPositionsInRun);
 	}
 	fCollectionsOfHits.clear();
 	fEventsEdep.clear();

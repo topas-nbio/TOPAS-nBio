@@ -65,12 +65,14 @@ protected:
 
 	// Foci scoring, creation of foci images
 	G4bool fScoreFoci;
-	G4double fFociSize;
+	std::vector<G4double> fFociSizes;
 	G4bool fGet3DFociImage;
 	G4bool fGet2DFociImage;
 	std::vector<G4String> f2DPlanesForFociImage;
 	G4String fMicroscopePSFShape;
 	G4double fMicroscopePSFWidth;
+	std::vector<G4double> fImageResolutions;
+	G4double fImXmin, fImXmax, fImYmin, fImYmax, fImZmin, fImZmax;
 
 	G4bool fExcludeShortFragments;
 	G4int fLowerThresholdForFragmentDetection;
@@ -123,8 +125,8 @@ protected:
 	G4int fNumBaseDamageQuasiDirect;
 	G4int fNumBaseDamageIndirect;
 
-	// Quantification for foci
-	G4int fNumFoci;
+	// Quantification for foci (vector to consider different foci sizes)
+	std::vector<G4int> fNumFoci;
 	std::vector<G4ThreeVector> fDSBPositionsInRun;
 
 	// Yields
