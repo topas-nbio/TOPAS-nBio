@@ -53,8 +53,8 @@ b:Sc/DNADamageScorer/Get2DFociImages							= "true"
 sv:Sc/DNADamageScorer/2DFociImagePlanes							= 3 "X" "Y" "Z"
 s:Sc/DNADamageScorer/MicroscopePSFShape							= "Gaussian"
 d:Sc/DNADamageScorer/MicroscopePSFWidth							= 400 nm
-dv:Sc/DNADamageScorer/Foci2DImageResolutions					= 2 50 100 nm
-d:Sc/DNADamageScorer/Foci3DImageResolution						= 500 nm
+dv:Sc/DNADamageScorer/Foci2DImageResolutions					= 2 25 100 nm
+d:Sc/DNADamageScorer/Foci3DImageResolution						= 400 nm
 
 # Options for output extension
 b:Sc/DNADamageScorer/WriteCSVOutputWithAllDamageSpecification	= "true"

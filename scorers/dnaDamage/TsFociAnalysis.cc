@@ -195,16 +195,6 @@ void TsFociAnalysis::Produce2DImages(std::vector<G4ThreeVector> dsbPositions)
 					for (G4int iy = 0; iy < nkernel; iy++)
 						psf[ix][iy] /= sum;
 				}
-				G4String psffile = "PSF2D.csv";
-				std::fstream out;
-				out.open(psffile, std::ios::out | std::ios::trunc);
-				out << "ix,iy,iz,v\n";
-				for (G4int i = 0; i < nkernel; i++)
-				{
-					for (G4int j = 0; j < nkernel; j++)
-						out << i << "," << j << "," << psf[i][j] << "\n";
-				}
-				out.close();
 			}
 			if (f2DPlanesForFociImage[iPlane] == "Z")
 			{
