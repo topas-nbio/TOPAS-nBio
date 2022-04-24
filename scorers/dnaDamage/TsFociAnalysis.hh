@@ -29,7 +29,7 @@ public:
 	void Produce2DImages(std::vector<G4ThreeVector> dsbPositions);
 
 	G4float Gaussian3D(G4float x, G4float y, G4float z, G4float sigma);
-	G4float Gaussian2D(G4float x, G4float y, G4float sigma);
+	G4double Gaussian2D(G4double x, G4double y, G4double sigma);
 
 	void inline SetFociSizes(std::vector<G4double> v)				{ fFociSizes = v; }
 	void inline SetPlanesFor2DFociImages(std::vector<G4String> v)	{ f2DPlanesForFociImage = v; }
