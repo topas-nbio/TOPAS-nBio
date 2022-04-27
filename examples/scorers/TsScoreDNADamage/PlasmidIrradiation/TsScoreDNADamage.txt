@@ -17,9 +17,8 @@ s:Ch/ChemistryName = "TOPASChemistry"
 
 includeFile = TOPASDNAReactions.txt 
 b:Ch/TOPASChemistry/ChemicalStageTransportActive = "True"
-dv:Ch/TOPASChemistry/AddTimeStepHighEdge   = 1 999999 ps
-dv:Ch/TOPASChemistry/AddTimeStepResolution = 1 1e-6 ps
 d:Ch/TOPASChemistry/ChemicalStageTimeEnd = 1.00001 ps
+#i:Ch/TOPASChemistry/ChemicalStageMaximumStepNumber = 100 # Cannot be used in conjunction with ChemicalStageTimeEnd
 
 #############################
 #### Scavenger Molecules ####
