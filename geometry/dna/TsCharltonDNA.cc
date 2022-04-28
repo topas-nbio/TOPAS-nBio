@@ -81,14 +81,14 @@ G4VPhysicalVolume* TsCharltonDNA::Construct()
     
     //Strand 1
     
-    G4String subComponentName2 = "Sugar1";
+    G4String subComponentName2 = "Backbone1";
     G4Tubs* gSugar1 = new G4Tubs(subComponentName2, 0.5*nm, 1.15*nm, 0.17*nm, 0*deg, 180*deg);
     G4LogicalVolume* lSugar1 = CreateLogicalVolume(subComponentName2, gSugar1);
     
     
     //Strand 2
     
-    G4String subComponentName3 = "Sugar2";
+    G4String subComponentName3 = "Backbone2";
     G4Tubs* gSugar2 = new G4Tubs(subComponentName3, 0.5*nm, 1.15*nm, 0.17*nm, 180*deg, 180*deg);
     G4LogicalVolume* lSugar2 = CreateLogicalVolume(subComponentName3, gSugar2);
     

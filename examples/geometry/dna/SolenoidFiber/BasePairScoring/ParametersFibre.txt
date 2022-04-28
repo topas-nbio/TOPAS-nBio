@@ -39,10 +39,10 @@ s:Ge/Fiber/Parent = "World"
 
 s:Ge/Fiber/Histone/Material = "G4_WATER"
 
-s:Ge/Fiber/base1/Material = "G4_WATER"
-s:Ge/Fiber/base2/Material = "G4_WATER"
-s:Ge/Fiber/back1/Material = "G4_WATER"
-s:Ge/Fiber/back2/Material = "G4_WATER"
+s:Ge/Fiber/Base1/Material = "G4_WATER"
+s:Ge/Fiber/Base2/Material = "G4_WATER"
+s:Ge/Fiber/Backbone1/Material = "G4_WATER"
+s:Ge/Fiber/Backbone2/Material = "G4_WATER"
 
 b:Ge/CheckForOverlaps = "False"
 
