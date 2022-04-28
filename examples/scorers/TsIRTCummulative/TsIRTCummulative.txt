@@ -20,7 +20,8 @@ includeFile        = PlanteReactions.txt
 
 b:Ch/Plante/ChemicalStageTransportActive = "True"
 d:Ch/Plante/ChemicalStageTimeEnd         = 1.00001 ps
-#i:Ch/Plante/ChemicalStageMaximumStepNumber = 100 # Cannot be used in conjunction with ChemicalStageTimeEnd
+dv:Ch/Plante/ChemicalStageTimeStepsHighEdges = 1 999999 ps
+dv:Ch/Plante/ChemicalStageTimeStepsResolutions = 1 0.5 ps
 
 #######################
 ###### Geometry #######

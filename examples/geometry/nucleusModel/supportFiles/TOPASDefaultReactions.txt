@@ -6,7 +6,8 @@
 
 b:Ch/TOPASChemistry/ChemicalStageTransportActive = "True" # "true" or "false"
 d:Ch/TOPASChemistry/ChemicalStageTimeEnd = 1.0 ns
-#i:Ch/TOPASChemistry/ChemicalStageMaximumStepNumber = 100 # Cannot be used in conjunction with ChemicalStageTimeEnd
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsHighEdges = 1 999999 ps
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsResolutions = 1 0.5 ps
 
 ##########################
 # Diffusion Coefficients #

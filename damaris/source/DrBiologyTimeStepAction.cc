@@ -29,17 +29,17 @@ DrBiologyTimeStepAction::DrBiologyTimeStepAction(TsParameterManager* pM, G4Strin
 :G4UserTimeStepAction(), fPm(pM)
 {
     G4String parmName = "Ch/" + name + "/";
-    if ( fPm->ParameterExists(parmName + "AddTimeStepHighEdge") &&
-         fPm->ParameterExists(parmName + "AddTimeStepResolution")) {
-        G4int nSteps = fPm->GetVectorLength(parmName + "AddTimeStepHighEdge");
-        if ( nSteps != fPm->GetVectorLength(parmName + "AddTimeStepResolution")) {
+    if ( fPm->ParameterExists(parmName + "ChemicalStageTimeStepsHighEdges") &&
+         fPm->ParameterExists(parmName + "ChemicalStageTimeStepsResolutions")) {
+        G4int nSteps = fPm->GetVectorLength(parmName + "ChemicalStageTimeStepsHighEdges");
+        if ( nSteps != fPm->GetVectorLength(parmName + "ChemicalStageTimeStepsResolutions")) {
             G4cerr << "TOPAS is exiting due to an error in parameters definition" << G4endl;
-            G4cerr << "Length of double vector parameter: " << parmName + "AddTimeStepHighEdge" <<
+            G4cerr << "Length of double vector parameter: " << parmName + "ChemicalStageTimeStepsHighEdges" <<
                    " does not match with legth of double vector parameter: " <<
-                   parmName + "AddTimeStepResolution" << G4endl;
+                   parmName + "ChemicalStageTimeStepsResolutions" << G4endl;
         }
-        G4double* highEdges = fPm->GetDoubleVector(parmName + "AddTimeStepHighEdge","Time");
-        G4double* resolution = fPm->GetDoubleVector(parmName + "AddTimeStepResolution","Time");
+        G4double* highEdges = fPm->GetDoubleVector(parmName + "ChemicalStageTimeStepsHighEdges","Time");
+        G4double* resolution = fPm->GetDoubleVector(parmName + "ChemicalStageTimeStepsResolutions","Time");
         for ( int i = 0; i < nSteps; i++ ) AddTimeStep(highEdges[i], resolution[i]);
     }
 }
