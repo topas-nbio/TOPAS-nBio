@@ -83,11 +83,11 @@ G4VPhysicalVolume* TsLinearDNA::Construct()
     //Phosphodiester group - two sugars each consisting of quarter cylinders
     //The sugars are wrapped around the base pair
     
-    G4String Subcomponent2 = "Sugar1";
+    G4String Subcomponent2 = "Backbone1";
     G4Tubs* gSugarPhosphate1 = new G4Tubs(Subcomponent2, 0.5*nm, 1.185*nm, 0.17*nm, 0*deg, 45*deg);
     G4LogicalVolume* lSugarPhosphate1 = CreateLogicalVolume(Subcomponent2, gSugarPhosphate1);
     
-    G4String Subcomponent3 = "Sugar2";
+    G4String Subcomponent3 = "Backbone2";
     G4Tubs* gSugarPhosphate2 = new G4Tubs(Subcomponent3, 0.5*nm, 1.185*nm, 0.17*nm, 180*deg, 45*deg);
     G4LogicalVolume* lSugarPhosphate2 = CreateLogicalVolume(Subcomponent3, gSugarPhosphate2);
     

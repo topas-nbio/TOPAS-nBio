@@ -64,7 +64,7 @@ G4LogicalVolume* GeoVolume::BuildLogicFiber(std::vector<std::vector<DNAPlacement
                                             std::map<G4ThreeVector, G4double>* posAndRadiusMap,
                                             G4bool isVisu)
 {
-    G4Tubs* solidFiber = new G4Tubs("solid histone", 0., 17.*fFactor*nm, 80.*fFactor*nm, 0, 360);
+    G4Tubs* solidFiber = new G4Tubs("Histone", 0., 17.*fFactor*nm, 80.*fFactor*nm, 0, 360);
 
     G4LogicalVolume* logicFiber = new G4LogicalVolume(solidFiber, fWater,"logic fiber");
 
@@ -85,7 +85,7 @@ G4LogicalVolume* GeoVolume::BuildLogicFiber(std::vector<std::vector<DNAPlacement
 
     G4VisAttributes white(G4Colour(1.0, 1.0, 1.0) );
 
-    G4Tubs* solidHistone = new G4Tubs("solid histone", 0., fHistoneRadius, fHistoneHeight, 0, 360);
+    G4Tubs* solidHistone = new G4Tubs("Histone", 0., fHistoneRadius, fHistoneHeight, 0, 360);
     G4LogicalVolume* logicHistone = new G4LogicalVolume(solidHistone,fWater,"logic histone");
     logicHistone->SetVisAttributes(white);
 
@@ -446,29 +446,29 @@ std::map<G4String, std::vector<G4LogicalVolume*> >* GeoVolume::CreateNucleosomeC
 
         // Create the logical volumes
         //
-        logicSugarTMP1Water = new G4LogicalVolume(sugarTMP1Water,fWater,"logic_sugarTMP_1_hydra");
-        logicSugarTHF1Water = new G4LogicalVolume(sugarTHF1Water,fWater,"logic_sugarTHF_1_hydra");
-        logicBase1Water = new G4LogicalVolume(base1Water, fWater,"logic_base_1_hydra");
-        logicBase2Water = new G4LogicalVolume(base2Water, fWater,"logic_base_2_hydra");
-        logicSugarTHF2Water = new G4LogicalVolume(sugarTHF2Water,fWater,"logic_sugarTHF_2_hydra");
-        logicSugarTMP2Water = new G4LogicalVolume(sugarTMP2Water,fWater,"logic_sugarTMP_2_hydra");
+        logicSugarTMP1Water = new G4LogicalVolume(sugarTMP1Water,fWater,"logic_sugarTMP_1_hydra_Backbone1");
+        logicSugarTHF1Water = new G4LogicalVolume(sugarTHF1Water,fWater,"logic_sugarTHF_1_hydra_Backbone1");
+        logicBase1Water = new G4LogicalVolume(base1Water, fWater,"logic_base_1_hydra_Base1");
+        logicBase2Water = new G4LogicalVolume(base2Water, fWater,"logic_base_2_hydra_Base2");
+        logicSugarTHF2Water = new G4LogicalVolume(sugarTHF2Water,fWater,"logic_sugarTHF_2_hydra_Backbone2");
+        logicSugarTMP2Water = new G4LogicalVolume(sugarTMP2Water,fWater,"logic_sugarTMP_2_hydra_Backbone2");
 
         // Only water here
         //
-        logicSugarTMP1 = new G4LogicalVolume(sugarTMP1,fWater,"logic_sugar_TMP_1");
-        logicSugarTHF1 = new G4LogicalVolume(sugarTHF1,fWater,"logic_sugar_THF_1");
+        logicSugarTMP1 = new G4LogicalVolume(sugarTMP1,fWater,"logic_sugar_TMP_1_Backbone1");
+        logicSugarTHF1 = new G4LogicalVolume(sugarTHF1,fWater,"logic_sugar_THF_1_Backbone1");
         if(j%2) // odd
         {
-            logicBase1 = new G4LogicalVolume(base1,fWater,"logic_base_cytosine"); // PY
-            logicBase2 = new G4LogicalVolume(base2,fWater,"logic_base_guanine"); // PU
+            logicBase1 = new G4LogicalVolume(base1,fWater,"logic_base_cytosine_Base1"); // PY
+            logicBase2 = new G4LogicalVolume(base2,fWater,"logic_base_guanine_Base2"); // PU
         }
         else // even
         {
-            logicBase1 = new G4LogicalVolume(base1,fWater,"logic_base_thymine"); // PY
-            logicBase2 = new G4LogicalVolume(base2,fWater,"logic_base_adenine"); // PU
+            logicBase1 = new G4LogicalVolume(base1,fWater,"logic_base_thymine_Base1"); // PY
+            logicBase2 = new G4LogicalVolume(base2,fWater,"logic_base_adenine_Base2"); // PU
         }
-        logicSugarTHF2 = new G4LogicalVolume(sugarTHF2,fWater,"logic_sugar_THF_2");
-        logicSugarTMP2 = new G4LogicalVolume(sugarTMP2,fWater,"logic_sugar_TMP_2");
+        logicSugarTHF2 = new G4LogicalVolume(sugarTHF2,fWater,"logic_sugar_THF_2_Backbone2");
+        logicSugarTMP2 = new G4LogicalVolume(sugarTMP2,fWater,"logic_sugar_TMP_2_Backbone2");
 
         /*
         logicSugarTMP1 = new G4LogicalVolume(sugarTMP1,backbone_TMP,"logic_sugar_TMP_1");
@@ -505,19 +505,19 @@ std::map<G4String, std::vector<G4LogicalVolume*> >* GeoVolume::CreateNucleosomeC
 
         // Save the logical volumes in the output map
         //
-        (*logicSolidsMap)["sugarTMP1Water"].push_back(logicSugarTMP1Water);
-        (*logicSolidsMap)["sugarTHF1Water"].push_back(logicSugarTHF1Water);
-        (*logicSolidsMap)["base1Water"].push_back(logicBase1Water);
-        (*logicSolidsMap)["base2Water"].push_back(logicBase2Water);
-        (*logicSolidsMap)["sugarTHF2Water"].push_back(logicSugarTHF2Water);
-        (*logicSolidsMap)["sugarTMP2Water"].push_back(logicSugarTMP2Water);
+        (*logicSolidsMap)["sugarTMP1WaterBackbone1"].push_back(logicSugarTMP1Water);
+        (*logicSolidsMap)["sugarTHF1WaterBackbone1"].push_back(logicSugarTHF1Water);
+        (*logicSolidsMap)["base1WaterBase1"].push_back(logicBase1Water);
+        (*logicSolidsMap)["base2WaterBase2"].push_back(logicBase2Water);
+        (*logicSolidsMap)["sugarTHF2WaterBackbone2"].push_back(logicSugarTHF2Water);
+        (*logicSolidsMap)["sugarTMP2WaterBackbone2"].push_back(logicSugarTMP2Water);
 
-        (*logicSolidsMap)["sugarTMP1"].push_back(logicSugarTMP1);
-        (*logicSolidsMap)["sugarTHF1"].push_back(logicSugarTHF1);
-        (*logicSolidsMap)["base1"].push_back(logicBase1);
-        (*logicSolidsMap)["base2"].push_back(logicBase2);
-        (*logicSolidsMap)["sugarTHF2"].push_back(logicSugarTHF2);
-        (*logicSolidsMap)["sugarTMP2"].push_back(logicSugarTMP2);
+        (*logicSolidsMap)["sugarTMP1Backbone1"].push_back(logicSugarTMP1);
+        (*logicSolidsMap)["sugarTHF1Backbone1"].push_back(logicSugarTHF1);
+        (*logicSolidsMap)["base1Base1"].push_back(logicBase1);
+        (*logicSolidsMap)["base2Base2"].push_back(logicBase2);
+        (*logicSolidsMap)["sugarTHF2Backbone2"].push_back(logicSugarTHF2);
+        (*logicSolidsMap)["sugarTMP2Backbone2"].push_back(logicSugarTMP2);
     }
 
     return logicSolidsMap;

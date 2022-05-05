@@ -11,6 +11,7 @@ s:Ge/Nucleus/Type                       = "TsNucleus"
 s:Ge/Nucleus/Parent                     = "World"
 s:Ge/Nucleus/Material                   = "G4_WATER"
 s:Ge/Nucleus/Color                      = "White"
+s:Ge/Nucleus/DNAModel					= "Sphere"
 d:Ge/Nucleus/NucleusRadius              = 4.65 um
 i:Ge/Nucleus/HilbertCurveLayer          = 4
 i:Ge/Nucleus/HilbertCurve3DRepeat       = 30
@@ -43,11 +44,11 @@ s:Ma/G4_WATER_MODIFIED/CloneFromMaterial    = "G4_WATER"
 d:Ma/G4_WATER_MODIFIED/CloneWithDensity     = 1.0 g/cm3
 
 # -- Physics and Chemistry
-#sv:Ph/Default/Modules                      		= 1 "g4em-dna"
-sv:Ph/Default/Modules								= 2 "g4em-dna" "TsEmDNAChemistry" 	# OR	 physics and chemistry
-includeFile											= supportFiles/TOPASDefaultReactions.txt
-s:Ch/ChemistryName									= "TOPASChemistry"
-b:Ch/TOPASChemistry/ChemicalStageTransportActive    = "True"
+sv:Ph/Default/Modules                      		= 1 "g4em-dna"
+#sv:Ph/Default/Modules								= 2 "g4em-dna" "TsEmDNAChemistry" 	# OR	 physics and chemistry
+#includeFile											= supportFiles/TOPASDefaultReactions.txt
+#s:Ch/ChemistryName									= "TOPASChemistry"
+#b:Ch/TOPASChemistry/ChemicalStageTransportActive    = "True"
 i:Ph/Verbosity                          			= 0
 
 # -- Source and runs
@@ -83,13 +84,13 @@ b:Sc/DNAScorer/WriteCSVOutputWithAllDamageSpecification = "true"
 b:Sc/DNAScorer/MinimalSDDOutput                         = "false"
 b:Sc/DNAScorer/IncludeDSBDamageSitesOnlyinSDD           = "false"
 i:Sc/DNAScorer/DSBSeparation                            = 10
-d:Sc/DNAScorer/DamageThreshold                          = 17.5 eV
+d:Sc/DNAScorer/DamageThreshold                          = 11.75 eV
 b:Sc/DNAScorer/UseLinearProbabilityThreshold            = "false"
 #d:Sc/DNAScorer/LinearProbability_lower_limit            = 5 eV
 #d:Sc/DNAScorer/LinearProbability_upper_limit            = 37.5 eV
 b:Sc/DNAScorer/UseSeparateProbabilitiesForInteractionAndDamage = "true"
 #u:Sc/DNAScorer/ProbabilityForOHToCauseDamage            = 0.4
-u:Sc/DNAScorer/ProbabilityForOHToInteractWithBackbone	= 0.1
+u:Sc/DNAScorer/ProbabilityForOHToInteractWithBackbone	= 0.25
 u:Sc/DNAScorer/ProbabilityForOHToCauseDamageInBase		= 1.0
 u:Sc/DNAScorer/ProbabilityForOHToCauseDamageInBackbone  = 0.55
 u:Sc/DNAScorer/ProbabilityOfTransferFromHydrationShellToBackbone = 0.3333333
