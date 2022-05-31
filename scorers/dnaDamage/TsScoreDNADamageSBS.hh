@@ -125,6 +125,9 @@ protected:
 	G4int fNumBaseDamageDirect;
 	G4int fNumBaseDamageQuasiDirect;
 	G4int fNumBaseDamageIndirect;
+	G4int fNumSSBPlus;
+	G4int fNumDSBPlus;
+	G4int fNumDSBComplex;
 
 	// Quantification for foci (considers up to 5 different foci sizes)
 	G4int fNumFoci1, fNumFoci2, fNumFoci3, fNumFoci4, fNumFoci5;
@@ -135,6 +138,9 @@ protected:
 	G4double fYSB;
 	G4double fYSSB;
 	G4double fYDSB;
+	G4double fYSSBPlus;
+	G4double fYDSBPlus;
+	G4double fYDSBComplex;
 
 	// Accumulation of events
 	std::vector<G4double> fEventsEdep;

@@ -348,6 +348,7 @@ void TsDNADamageCalculator::QuantifyDamage(std::map<G4int, std::map<std::pair<G4
 
 std::map<G4int, std::vector<G4int>> TsDNADamageCalculator::GetDamageSites()
 {
+	fNumSSBPlus = 0; fNumDSBPlus = 0; fNumDSBComplex = 0;
 	// Uses a scoring system to sort damage sites in descendent complexity order
 	// Base damage is assigned 0.001 value, SSB is assigned 0.1 value and DSB is assigned 10 value in total (5 per break)
 	std::map<G4int, std::map<G4int, std::map<G4int, G4double>>> damageScore;
@@ -431,6 +432,9 @@ std::map<G4int, std::vector<G4int>> TsDNADamageCalculator::GetDamageSites()
 				}
 			}
 			maxDamage = m;
+			if (maxDamage >= 0.2 && maxDamage < 10) fNumSSBPlus++;
+			if (maxDamage >= 20 && maxDamage < 30) fNumDSBPlus++;
+			if (maxDamage >= 30) fNumDSBComplex++;
 			if (maxDamage < minDamage) break;
 			// Populates a new vector sorted by maximum damage
 			startingBpIdForDamageSites.push_back(index);

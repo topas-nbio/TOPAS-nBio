@@ -35,7 +35,8 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 	fNumSSB = 0; fNumSSBDirect = 0; fNumSSBQuasiDirect = 0; fNumSSBIndirect = 0;
 	fNumDSB = 0; fNumDSBDirect = 0; fNumDSBIndirect = 0; fNumDSBDirectIndirect = 0; fNumDSBDirectQuasiDirect = 0; fNumDSBQuasiDirectQuasiDirect = 0; fNumDSBIndirectQuasiDirect = 0;
 	fNumBaseDamage = 0; fNumBaseDamageDirect = 0; fNumBaseDamageQuasiDirect = 0; fNumBaseDamageIndirect = 0;
-	fYSB = 0; fYSSB = 0; fYDSB = 0;
+	fNumSSBPlus = 0; fNumDSBPlus = 0; fNumDSBComplex = 0;
+	fYSB = 0; fYSSB = 0; fYDSB = 0; fYSSBPlus = 0; fYDSBPlus = 0; fYDSBComplex = 0;
 	fYBaseDam = 0;
 
 	// Add the basic hierarchical level (base pair)
@@ -374,6 +375,9 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 		fNtuple->RegisterColumnD(&fYDSB, "DSB/Gy/Gbp", "");
 		fNtuple->RegisterColumnD(&fYSSB, "SSB/Gy/Gbp", "");
 		fNtuple->RegisterColumnD(&fYSB, "SB/Gy/Gbp", "");
+		fNtuple->RegisterColumnD(&fYSSBPlus, "SSB+/Gy/Gbp", "");
+		fNtuple->RegisterColumnD(&fYDSBPlus, "DSB+/Gy/Gbp", "");
+		fNtuple->RegisterColumnD(&fYDSBComplex, "MoreComplexDamage/Gy/Gbp", "");
 	}
 	if (fScoreOnBases)
 		fNtuple->RegisterColumnD(&fYBaseDam, "BD/Gy/Gbp", "");
@@ -396,6 +400,9 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 			if (fScoreDirectDamage) fNtuple->RegisterColumnI(&fNumSSBDirect, "SBs_Direct");
 			if (fScoreQuasiDirectDamage) fNtuple->RegisterColumnI(&fNumSSBQuasiDirect, "SBs_QuasiDirect");
 			if (fScoreIndirectDamage) fNtuple->RegisterColumnI(&fNumSSBIndirect, "SBs_Indirect");
+			fNtuple->RegisterColumnI(&fNumSSBPlus, "SSB+s");
+			fNtuple->RegisterColumnI(&fNumDSBPlus, "DSB+s");
+			fNtuple->RegisterColumnI(&fNumDSBComplex, "More complex damages");
 		}
 		if (fScoreOnBases)
 		{
@@ -728,6 +735,9 @@ G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
 	fNumBaseDamageDirect = fDamageCalculator->GetBDDirect();
 	fNumBaseDamageQuasiDirect = fDamageCalculator->GetBDQuasiDirect();
 	fNumBaseDamageIndirect = fDamageCalculator->GetBDIndirect();
+	fNumSSBPlus = fDamageCalculator->GetSSBPlus();
+	fNumDSBPlus = fDamageCalculator->GetDSBPlus();
+	fNumDSBComplex = fDamageCalculator->GetDSBComplex();
 	if (fChromosomeContents.size() > 0)
 		CalculateYields();
 	// Get all DSB positions to score foci
@@ -757,6 +767,9 @@ void TsScoreDNADamageSBS::CalculateYields()
 	fYSB = (G4double)fNumSB / fDoseInThisExposure / totalContentOfDNA * 1e9;
 	fYSSB = (G4double)fNumSSB / fDoseInThisExposure / totalContentOfDNA * 1e9;
 	fYDSB = (G4double)fNumDSB / fDoseInThisExposure / totalContentOfDNA * 1e9;
+	fYSSBPlus = (G4double)fNumSSBPlus / fDoseInThisExposure / totalContentOfDNA * 1e9;
+	fYDSBPlus = (G4double)fNumDSBPlus / fDoseInThisExposure / totalContentOfDNA * 1e9;
+	fYDSBComplex = (G4double)fNumDSBComplex / fDoseInThisExposure / totalContentOfDNA * 1e9;
 }
 
 G4double TsScoreDNADamageSBS::CalculateDoseInGray(G4double edep)
