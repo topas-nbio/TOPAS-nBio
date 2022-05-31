@@ -70,6 +70,9 @@ public:
 	inline G4int GetBDDirect()									{ return fNumBaseDamageDirect; }
 	inline G4int GetBDQuasiDirect()								{ return fNumBaseDamageQuasiDirect; }
 	inline G4int GetBDIndirect()								{ return fNumBaseDamageIndirect; }
+	inline G4int GetSSBPlus()									{ return fNumSSBPlus; }
+	inline G4int GetDSBPlus()									{ return fNumDSBPlus; }
+	inline G4int GetDSBComplex()								{ return fNumDSBComplex; }
 	inline std::vector<G4ThreeVector> GetDSB3DPositions()		{ return fDSB3DPositions; }
 
 private:
@@ -112,6 +115,9 @@ private:
 	G4int fNumBaseDamageDirect;
 	G4int fNumBaseDamageQuasiDirect;
 	G4int fNumBaseDamageIndirect;
+	G4int fNumSSBPlus;
+	G4int fNumDSBPlus;
+	G4int fNumDSBComplex;
 
 	// Maps of damage. First index is chromosome, second index is base pair, third index is element in the base pair (base, backbone, hydshell)
 	std::map<G4int, std::map<G4int, std::map<G4int, G4double>>> fMapEdep;
