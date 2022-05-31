@@ -457,7 +457,63 @@ std::map<G4int, std::vector<G4int>> TsDNADamageCalculator::GetDamageSites()
 
 void TsDNADamageCalculator::ExcludeShortDNAFragments(std::map<G4int, std::map<std::pair<G4int, G4int>, G4int>> DSBPairs)
 {
-	// To be done
+	// Get initial positions for DSB to define fragments
+	std::map<G4int, std::vector<G4int>> initialBasePairsInEachChromosome;
+	for (auto& chrDSBPair : DSBPairs)
+	{
+		G4int iChr = chrDSBPair.first;
+		for (auto& pairDamage : DSBPairs[iChr])
+		{
+			std::pair<G4int, G4int> pairPos = pairDamage.first;
+			initialBasePairsInEachChromosome[iChr].push_back(std::min(pairPos.first, pairPos.second));
+		}
+	}
+	// Exclude damages in short fragments
+	for (auto& chrMap : fDamageMap)
+	{
+		G4int iChr = chrMap.first;
+		// Get maximum bp possible to avoid segmentation fault when not using actual chromosomes
+		G4int maxBp = 0;
+		for (auto& bpMap : fDamageMap[iChr]) { if (bpMap.first > maxBp) maxBp = bpMap.first; }
+
+		G4int inviableFragments = 0;
+		std::vector<G4int> allFreeEndsOfThisChromosome = initialBasePairsInEachChromosome[iChr];
+		for (G4int i = 1; i < allFreeEndsOfThisChromosome.size(); i++)
+		{
+			G4int fragmentSize = std::min(maxBp, allFreeEndsOfThisChromosome[i] - allFreeEndsOfThisChromosome[i-1]);
+			G4bool isInviableFragment = (fragmentSize < fLowerThresholdForFragmentDetection || fragmentSize > fUpperThresholdForFragmentDetection);
+			if (isInviableFragment)
+			{
+				inviableFragments++;
+				// Exclude damage to bases, SSB and DSB on the short fragments
+				for (G4int ibp = allFreeEndsOfThisChromosome[i-1]; ibp < allFreeEndsOfThisChromosome[i]; ibp++)
+				{
+					if (ibp <= maxBp)
+					{
+						if (fBDMap[iChr][ibp][1] == 1) { fBDMap[iChr][ibp][1] = 0; fDamageMap[iChr][ibp][0] = 0; }
+						if (fBDMap[iChr][ibp][1] >= 2) { fBDMap[iChr][ibp][1] = 0; fDamageMap[iChr][ibp][0] = 0; }
+						if (fBDMap[iChr][ibp][2] == 1) { fBDMap[iChr][ibp][2] = 0; fDamageMap[iChr][ibp][1] = 0; }
+						if (fBDMap[iChr][ibp][2] >= 2) { fBDMap[iChr][ibp][2] = 0; fDamageMap[iChr][ibp][1] = 0; }
+						if (fSSBMap[iChr][ibp][1] == 1) { fSSBMap[iChr][ibp][1] = 0; fDamageMap[iChr][ibp][2] = 0; }
+						if (fSSBMap[iChr][ibp][1] >= 2) { fSSBMap[iChr][ibp][1] = 0; fDamageMap[iChr][ibp][2] = 0; }
+						if (fSSBMap[iChr][ibp][2] == 1) { fSSBMap[iChr][ibp][2] = 0; fDamageMap[iChr][ibp][3] = 0; }
+						if (fSSBMap[iChr][ibp][2] >= 2) { fSSBMap[iChr][ibp][2] = 0; fDamageMap[iChr][ibp][3] = 0; }
+						// We use the break in the first break so we only check for damage in that to count DSBs. However, damage in second breaks are also disregarded. Also avoid first base pair
+						if (ibp > allFreeEndsOfThisChromosome[i-1])
+						{
+							if (fDSBMap[iChr][ibp][1] == 1) { fDSBMap[iChr][ibp][1] = 0; fDamageMap[iChr][ibp][2] = 0; }
+							if (fDSBMap[iChr][ibp][1] == 2) { fDSBMap[iChr][ibp][1] = 0; fDamageMap[iChr][ibp][2] = 0; }
+							if (fDSBMap[iChr][ibp][1] >= 3) { fDSBMap[iChr][ibp][1] = 0; fDamageMap[iChr][ibp][2] = 0; }
+						}
+						fDSBMap[iChr][ibp][2] = 0; fDamageMap[iChr][ibp][3] = 0;
+						fDSBMap[iChr][ibp][2] = 2; fDamageMap[iChr][ibp][3] = 0;
+						fDSBMap[iChr][ibp][2] = 0; fDamageMap[iChr][ibp][3] = 0;
+					}
+				}
+			}
+		}
+
+	}
 }
 
 G4bool TsDNADamageCalculator::CauseDirectDamage(G4double edep)
