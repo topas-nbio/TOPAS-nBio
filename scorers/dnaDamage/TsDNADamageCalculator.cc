@@ -47,6 +47,7 @@ TsDNADamageCalculator::TsDNADamageCalculator()
 	fNumBaseDamageDirect = 0;
 	fNumBaseDamageQuasiDirect = 0;
 	fNumBaseDamageIndirect = 0;
+	fNumSSBPlus = 0; fNumDSBPlus = 0; fNumDSBComplex = 0;
 
 	fEventID = 0;
 	fOutputFileName = "";
@@ -287,6 +288,7 @@ void TsDNADamageCalculator::QuantifyDamage(std::map<G4int, std::map<std::pair<G4
 	fNumSSB = 0; fNumSSBDirect = 0; fNumSSBQuasiDirect = 0; fNumSSBIndirect = 0;
 	fNumDSB = 0; fNumDSBDirect = 0; fNumDSBIndirect = 0; fNumDSBDirectIndirect = 0; fNumDSBDirectQuasiDirect = 0; fNumDSBQuasiDirectQuasiDirect = 0; fNumDSBIndirectQuasiDirect = 0;
 	fNumBaseDamage = 0; fNumBaseDamageDirect = 0; fNumBaseDamageQuasiDirect = 0; fNumBaseDamageIndirect = 0;
+	fNumSSBPlus = 0; fNumDSBPlus = 0; fNumDSBComplex = 0;
 
 	// Loops through DSB pairs
 	for (auto& chrMap : DSBPairs)
@@ -348,7 +350,6 @@ void TsDNADamageCalculator::QuantifyDamage(std::map<G4int, std::map<std::pair<G4
 
 std::map<G4int, std::vector<G4int>> TsDNADamageCalculator::GetDamageSites()
 {
-	fNumSSBPlus = 0; fNumDSBPlus = 0; fNumDSBComplex = 0;
 	// Uses a scoring system to sort damage sites in descendent complexity order
 	// Base damage is assigned 0.001 value, SSB is assigned 0.1 value and DSB is assigned 10 value in total (5 per break)
 	std::map<G4int, std::map<G4int, std::map<G4int, G4double>>> damageScore;

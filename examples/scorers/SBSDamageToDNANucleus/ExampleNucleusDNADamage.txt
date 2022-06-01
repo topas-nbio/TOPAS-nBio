@@ -46,9 +46,9 @@ d:Ma/G4_WATER_MODIFIED/CloneWithDensity     = 1.0 g/cm3
 # -- Physics and Chemistry
 #sv:Ph/Default/Modules                      		= 1 "g4em-dna"
 sv:Ph/Default/Modules								= 2 "g4em-dna" "TsEmDNAChemistry" 	# OR	 physics and chemistry
-#includeFile											= supportFiles/TOPASDefaultReactions.txt
-#s:Ch/ChemistryName									= "TOPASChemistry"
-#b:Ch/TOPASChemistry/ChemicalStageTransportActive    = "True"
+includeFile											= supportFiles/TOPASDefaultReactions.txt
+s:Ch/ChemistryName									= "TOPASChemistry"
+b:Ch/TOPASChemistry/ChemicalStageTransportActive    = "True"
 #i:Ph/Verbosity                          			= 0
 
 # -- Source and runs
@@ -108,4 +108,4 @@ Ts/ShowHistoryCountAtInterval                       = 1
 #sv:Gr/view/ColorByParticleTypeColors    = 4 "green" "red" "blue" "grass"
 #s:Gr/view/BackgroundColor               = "White"
 
-i:Ts/Seed = 2580
+i:Ts/Seed = 2581
