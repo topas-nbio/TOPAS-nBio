@@ -505,9 +505,6 @@ void TsDNADamageCalculator::ExcludeShortDNAFragments(std::map<G4int, std::map<st
 							if (fDSBMap[iChr][ibp][1] == 2) { fDSBMap[iChr][ibp][1] = 0; fDamageMap[iChr][ibp][2] = 0; }
 							if (fDSBMap[iChr][ibp][1] >= 3) { fDSBMap[iChr][ibp][1] = 0; fDamageMap[iChr][ibp][2] = 0; }
 						}
-						fDSBMap[iChr][ibp][2] = 0; fDamageMap[iChr][ibp][3] = 0;
-						fDSBMap[iChr][ibp][2] = 2; fDamageMap[iChr][ibp][3] = 0;
-						fDSBMap[iChr][ibp][2] = 0; fDamageMap[iChr][ibp][3] = 0;
 					}
 				}
 			}
