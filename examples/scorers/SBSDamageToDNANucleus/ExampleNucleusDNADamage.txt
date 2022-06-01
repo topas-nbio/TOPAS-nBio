@@ -44,8 +44,8 @@ s:Ma/G4_WATER_MODIFIED/CloneFromMaterial    = "G4_WATER"
 d:Ma/G4_WATER_MODIFIED/CloneWithDensity     = 1.0 g/cm3
 
 # -- Physics and Chemistry
-sv:Ph/Default/Modules                      		= 1 "g4em-dna"
-#sv:Ph/Default/Modules								= 2 "g4em-dna" "TsEmDNAChemistry" 	# OR	 physics and chemistry
+#sv:Ph/Default/Modules                      		= 1 "g4em-dna"
+sv:Ph/Default/Modules								= 2 "g4em-dna" "TsEmDNAChemistry" 	# OR	 physics and chemistry
 #includeFile											= supportFiles/TOPASDefaultReactions.txt
 #s:Ch/ChemistryName									= "TOPASChemistry"
 #b:Ch/TOPASChemistry/ChemicalStageTransportActive    = "True"
@@ -65,7 +65,7 @@ d:So/ParticleGun/BeamPositionCutoffX 				= Ge/Nucleus/NucleusRadius um
 d:So/ParticleGun/BeamPositionCutoffY 				= Ge/Nucleus/NucleusRadius um
 s:So/ParticleGun/BeamAngularDistribution            = "none"
 d:So/ParticleGun/BeamEnergy                         = 5 MeV
-i:So/ParticleGun/NumberOfHistoriesInRun             = 200
+i:So/ParticleGun/NumberOfHistoriesInRun             = 1
 b:Ge/Nucleus/RotateNucleusForEachRun				= "false"
 # Producing separate runs instead of separate histories if rotation enabled
 #d:Tf/TimelineStart 			 					= 0. s
@@ -82,7 +82,7 @@ sv:Sc/DNADamageScorer/Strand1MaterialNames  = 4 "G4_WATER_MODIFIED" "G4_Backbone
 sv:Sc/DNADamageScorer/Strand2MaterialNames  = 3 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial"
 s:Sc/DNADamageScorer/PrimaryParticle		= So/ParticleGun/BeamParticle
 d:Sc/DNADamageScorer/MeanEnergy				= So/ParticleGun/BeamEnergy MeV
-d:Sc/DNADamageScorer/StopTrackingAtDose		= 0.5 gray
+#d:Sc/DNADamageScorer/StopTrackingAtDose		= 0.5 gray
 d:Sc/DNADamageScorer/ImageXMinPosition		= 0 um - Ge/Nucleus/NucleusRadius
 d:Sc/DNADamageScorer/ImageXMaxPosition		= Ge/Nucleus/NucleusRadius um
 d:Sc/DNADamageScorer/ImageYMinPosition		= 0 um - Ge/Nucleus/NucleusRadius
