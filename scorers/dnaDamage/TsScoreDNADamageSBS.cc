@@ -598,10 +598,11 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			G4bool isSpeciesToKill = (speciesName == "OH^0" || speciesName == "e_aq^-1" || speciesName == "H^0");
 			G4bool isHydroxil = (speciesName == "OH^0");
 			G4bool isHydElectron =  (speciesName == "e^aq^-1");
+			//G4cout << "Species: " << speciesName << " in " << volumeName << " with trackID: " << trackID << " at time " << aStep->GetTrack()->GetLocalTime() << G4endl;
 			// Kills all species generated inside DNA volumes except for the hydration shell
 			if (fTrackSteps[trackID] == 1 && componentID != hydrationshell)
 			{
-				aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+				aStep->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
 				delete hit;
 				return false;
 			}
@@ -616,7 +617,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 					if (G4UniformRand() < fProbabilityOfScavengingInBase) scavenged = true;
 				if (scavenged)
 				{
-					aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+					aStep->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
 					if (G4UniformRand() < fProbabilityOfDamageInBase)
 					{
 						hit->SetDamageType(indirect);
@@ -641,7 +642,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 					if (G4UniformRand() < fProbabilityOfScavengingInBackbone) scavenged = true;
 				if (scavenged)
 				{
-					aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+					aStep->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
 					if (G4UniformRand() < fProbabilityOfDamageInBackbone)
 					{
 						hit->SetDamageType(indirect);
@@ -658,13 +659,14 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			// Scavenge species by histones
 			else if (isSpeciesToKill && fScavengeInHistones && componentID == histone)
 			{
-				aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+				aStep->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
 				delete hit;
 				return false;
 			}
 		}
 		delete hit;
 	}
+
 	return false;
 }
 
