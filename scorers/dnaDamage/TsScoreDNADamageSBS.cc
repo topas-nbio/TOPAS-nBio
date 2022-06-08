@@ -397,9 +397,9 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 			if (fScoreQuasiDirectDamage) fNtuple->RegisterColumnI(&fNumSSBQuasiDirect, "SSBs_QuasiDirect");
 			if (fScoreIndirectDamage) fNtuple->RegisterColumnI(&fNumSSBIndirect, "SSBs_Indirect");
 			fNtuple->RegisterColumnI(&fNumSB, "SBs");
-			if (fScoreDirectDamage) fNtuple->RegisterColumnI(&fNumSSBDirect, "SBs_Direct");
-			if (fScoreQuasiDirectDamage) fNtuple->RegisterColumnI(&fNumSSBQuasiDirect, "SBs_QuasiDirect");
-			if (fScoreIndirectDamage) fNtuple->RegisterColumnI(&fNumSSBIndirect, "SBs_Indirect");
+			if (fScoreDirectDamage) fNtuple->RegisterColumnI(&fNumSBDirect, "SBs_Direct");
+			if (fScoreQuasiDirectDamage) fNtuple->RegisterColumnI(&fNumSBQuasiDirect, "SBs_QuasiDirect");
+			if (fScoreIndirectDamage) fNtuple->RegisterColumnI(&fNumSBIndirect, "SBs_Indirect");
 			fNtuple->RegisterColumnI(&fNumSSBPlus, "SSB+s");
 			fNtuple->RegisterColumnI(&fNumDSBPlus, "DSB+s");
 			fNtuple->RegisterColumnI(&fNumDSBComplex, "More complex damages");
