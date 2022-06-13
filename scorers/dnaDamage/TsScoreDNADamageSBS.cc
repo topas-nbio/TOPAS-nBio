@@ -600,7 +600,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			G4bool isHydElectron =  (speciesName == "e^aq^-1");
 			//G4cout << "Species: " << speciesName << " in " << volumeName << " with trackID: " << trackID << " at time " << aStep->GetTrack()->GetLocalTime() << G4endl;
 			// Kills all species generated inside DNA volumes except for the hydration shell
-			if (fTrackSteps[trackID] == 1 && componentID != hydrationshell)
+			if (fTrackSteps[trackID] == 1 && componentID != hydrationshell && isSpeciesToKill)
 			{
 				aStep->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
 				delete hit;
