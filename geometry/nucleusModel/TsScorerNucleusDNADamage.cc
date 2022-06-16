@@ -187,9 +187,9 @@ TsScorerNucleusDNADamage::TsScorerNucleusDNADamage(TsParameterManager* pM, TsMat
 		fNucleusMass = 997e3 * 4*CLHEP::pi/3 * pow(fScoringRadius/m, 3);
 		fChromosomeDNAContent.push_back(15149);
 	}
-	G4String* strand1materialNames;
-	G4String* strand2materialNames;
-	G4int strand1Length, strand2Length;
+	G4String* strand1materialNames= nullptr;
+	G4String* strand2materialNames= nullptr;
+	G4int strand1Length=0, strand2Length=0;
 	if ( fPm->ParameterExists(GetFullParmName("Strand1MaterialNames")) )
 	{
 		strand1materialNames = fPm->GetStringVector(GetFullParmName("Strand1MaterialNames"));
@@ -411,7 +411,7 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	// Check if hit happens in any of the strand materials
 	G4Material* material = aStep->GetPreStepPoint()->GetMaterial();
 	G4bool materialMatched = false;
-	for (G4int i = 0; i < fStrand1Materials.size(); i++)
+	for (unsigned int i = 0; i < fStrand1Materials.size(); i++)
 	{
 		if (material == fStrand1Materials[i])
 		{
@@ -421,7 +421,7 @@ G4bool TsScorerNucleusDNADamage::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	}
 	if (!materialMatched)
 	{
-		for (G4int i = 0; i < fStrand2Materials.size(); i++)
+		for (unsigned int i = 0; i < fStrand2Materials.size(); i++)
 		{
 			if (material == fStrand2Materials[i])
 			{
@@ -684,7 +684,7 @@ void TsScorerNucleusDNADamage::UserHookForEndOfRun()
 	G4cout << "\n\n------------------------------------" << G4endl;
 	G4cout << "HitsOfEvents size: " << HitsOfEvents.size() << G4endl;
 	G4int distinctLesions = 0;
-	for (G4int id = 0; id < HitsOfEvents.size(); id++)
+	for (unsigned int id = 0; id < HitsOfEvents.size(); id++)
 	{
 		distinctLesions += Analyze(HitsOfEvents[id], id);
 		fNtuple->Fill();
@@ -783,15 +783,15 @@ G4int TsScorerNucleusDNADamage::Analyze(vector<TsHitsRecord*> hits, G4int eventI
 	{
 		// Separate hits in different chromosomes
 		vector<G4int> chromosomeCopyNum;
-		for (G4int i = 0; i < hits.size(); i++)
+		for (unsigned int i = 0; i < hits.size(); i++)
 			chromosomeCopyNum.push_back(hits[i]->GetChromosomeID());
 		sort(chromosomeCopyNum.begin(), chromosomeCopyNum.end());
 		chromosomeCopyNum.erase(unique(chromosomeCopyNum.begin(), chromosomeCopyNum.end()), chromosomeCopyNum.end()); // @suppress("Invalid arguments")
 
-		for (G4int i = 0; i < chromosomeCopyNum.size(); i++)
+		for (unsigned int i = 0; i < chromosomeCopyNum.size(); i++)
 		{
 			vector<TsHitsRecord*> hitsOnThisChromosome;
-			for (G4int j = 0; j < hits.size(); j++)
+			for (unsigned int j = 0; j < hits.size(); j++)
 			{
 				if (hits[j]->GetChromosomeID() == chromosomeCopyNum[i])
 					hitsOnThisChromosome.push_back(hits[j]);

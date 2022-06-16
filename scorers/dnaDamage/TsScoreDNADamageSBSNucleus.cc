@@ -69,9 +69,9 @@ TsScoreDNADamageSBSNucleus::~TsScoreDNADamageSBSNucleus() { }
 // This structure is mandatory:
 void TsScoreDNADamageSBSNucleus::UserHookForEndOfRun()
 {
-	for (G4int iEvent = 0; iEvent < fCollectionsOfHits.size(); iEvent++)
+	for (unsigned int iEvent = 0; iEvent < fCollectionsOfHits.size(); iEvent++)
 	{
-		for (G4int iHit = 0; iHit < fCollectionsOfHits[iEvent].size(); iHit++)
+		for (unsigned int iHit = 0; iHit < fCollectionsOfHits[iEvent].size(); iHit++)
 		{
 			std::pair<G4int, G4int> chromosomeBpIDs = CalculateChromosomeAndBasePairID(fCollectionsOfHits[iEvent][iHit]->GetHierarchicalIDs());
 			fCollectionsOfHits[iEvent][iHit]->SetChromosomeID(chromosomeBpIDs.first);
@@ -111,7 +111,8 @@ std::pair<G4int, G4int> TsScoreDNADamageSBSNucleus::CalculateChromosomeAndBasePa
 void TsScoreDNADamageSBSNucleus::ReadGeometryAndCopyNumberMaps()
 {
 	// Reads geometry information file. Contains the following components
-	G4int nBasePairsInFiber, nBasePairsInVoxel, nBasePairsInNucleus;
+	// fBasePairsInFiber, fBasePairsInVoxel (in header) 
+	G4int nBasePairsInNucleus;
 	G4int nVoxels, nVoxelIs3DRepeated;
 	G4double voxelSize;
 	G4double minx, miny, minz;

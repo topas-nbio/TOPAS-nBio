@@ -109,7 +109,7 @@ private:
     G4double yieldMoreComplex;
 
     // quasi-direct damage
-    G4int numSB_qdir;
+    //G4int numSB_qdir;
     G4int numSSB_qdir;
     G4int numDSB_dir1qdir;
     G4int numDSB_dir2qdir;
