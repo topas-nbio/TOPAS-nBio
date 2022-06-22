@@ -134,7 +134,7 @@ protected:
 	std::vector<G4ThreeVector> fDSBPositionsInRun;
 
 	// Yields
-	G4double fYBaseDam;;
+	G4double fYBaseDam;
 	G4double fYSB;
 	G4double fYSSB;
 	G4double fYDSB;
