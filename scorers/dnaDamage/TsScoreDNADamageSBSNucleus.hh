@@ -39,6 +39,6 @@ private:
 
 	std::vector<G4int> fChromosomeIDForEachVoxel;
 	std::vector<G4int> fVoxelIDs;
-};
+}
 
 #endif
