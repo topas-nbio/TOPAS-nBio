@@ -30,13 +30,14 @@ DrDefinitions* DrDefinitions::Instance(){
     return definitionsInstance;
 }
 
-DrDefinitions::DrDefinitions():
-        fVerbose(1), fPm(nullptr), fCurrentExplicitBinNuber(-1), fExplicitBinning("Null"), fDSBPattern({0}),
-        fName("Default"), fObserveDurationForMSD(300*s),fObserveStepSizeForMSD(1*s), fTurnOffTime(true),
-        fDSBOriginNumber(-1), fDSBOffset(0.0), fDSBColumnNumber(-1), fDSBColumnRadius(0), fDSBSeparation(-1.0),
-        fDSBTimeDelay(0.0), fBiologyEndTime(-1.0), fIsSubDiffusion(true), fDiffusionCoefficientForJump(2.4e11*nm*nm/s),
-        fDiffusionCoefficientForTrapped(0.0), fMinWaitingTime(1e9*ps), fIsReadFromFile(false), fSelectFromExposure(-1),
-        fAlternativeRunID(1), fBiologyRepeatNumber(30), fBoundingRadius(-1.0){
+DrDefinitions::DrDefinitions() :
+    fIsSubDiffusion(true), fDiffusionCoefficientForJump(2.4e11*nm*nm/s), fDiffusionCoefficientForTrapped(0.0),
+    fMinWaitingTime(1e9*ps), fObserveDurationForMSD(300*s), fObserveStepSizeForMSD(1*s), fPm(nullptr), fName("Default"),
+    fAlternativeRunID(1), fBiologyRepeatNumber(30), fVerbose(1), fBiologyEndTime(-1.0), fTurnOffTime(true),
+    fExplicitBinning("Null"), fCurrentExplicitBinNuber(-1), fBoundingRadius(-1.0), fSelectFromExposure(-1),
+    fIsReadFromFile(false), fDamageFileName(""), fDSBSeparation(-1.0), fDSBTimeDelay(0.0), fDSBPattern({0}),
+    fDSBOffset(0.0), fDSBOriginNumber(-1), fDSBColumnNumber(-1), fDSBColumnRadius(0), fCurrentBiologyRepeatNumber(-1),
+    fInitialBreakNumber(-1) {
 
     // Define which molecule names has which proteins attached.
     fHasPKcs = {"DSBEnd_PKcs",

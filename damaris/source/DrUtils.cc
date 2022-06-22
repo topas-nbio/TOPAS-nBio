@@ -22,7 +22,7 @@
 
 using namespace std;
 
-DrUtils::DrUtils(): fVerbose(0) {}
+DrUtils::DrUtils() {}
 
 DrUtils::~DrUtils() {}
 
