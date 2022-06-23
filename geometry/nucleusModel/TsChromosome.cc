@@ -12,7 +12,6 @@
 // Authors: Hongyu Zhu, Jan Schuemann
 
 #include "TsChromosome.hh"
-#include "TsHitsRecord.hh"
 
  TsChromosome:: TsChromosome()
 {
@@ -40,7 +39,7 @@ TsChromosome::~ TsChromosome()
 {}
 
 
-std::vector<std::vector<G4int> > TsChromosome::SplitChromosome(std::vector <std::pair <TsHitsRecord*, TsHitsRecord*>> DSB_pairs)
+std::vector<std::vector<G4int> > TsChromosome::SplitChromosome(std::vector <std::pair <TsHitInDNA*, TsHitInDNA*>> DSB_pairs)
 {
     std::vector<std::vector<G4int> > SplitChromo = GetChromosomeMatrix();
     for(unsigned i =0; i<SplitChromo.size(); i++)
