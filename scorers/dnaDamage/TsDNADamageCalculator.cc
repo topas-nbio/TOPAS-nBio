@@ -388,9 +388,9 @@ std::map<G4int, std::vector<G4int>> TsDNADamageCalculator::GetDamageSites()
 		for (auto& bpMap : fDSBMap[iChr])
 		{
 			G4int iBp = bpMap.first;
-			for (auto& ssbmap : fDSBMap[iChr][iBp])
+			for (auto& dsbmap : fDSBMap[iChr][iBp])
 			{
-				G4int strand = ssbmap.first;
+				G4int strand = dsbmap.first;
 				if (fDSBMap[iChr][iBp][strand] > 0)	damageScore[iChr][iBp][strand] += 5.0;
 			}
 		}
@@ -436,7 +436,6 @@ std::map<G4int, std::vector<G4int>> TsDNADamageCalculator::GetDamageSites()
 			if (maxDamage >= 0.2 && maxDamage < 10) fNumSSBPlus++;
 			if (maxDamage >= 20 && maxDamage < 30) fNumDSBPlus++;
 			if (maxDamage >= 30) fNumDSBComplex++;
-			if (maxDamage < minDamage) break;
 			// Populates a new vector sorted by maximum damage
 			startingBpIdForDamageSites.push_back(index);
 			// Excludes this damage site for next steps
@@ -621,10 +620,10 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 				if ((fSSBMap[iChr][initialBpId + j][2] == direct || fSSBMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; sb++; }
 				if (fSSBMap[iChr][initialBpId + j][1] == indirect)														{ indir++; sb++; }
 				if (fSSBMap[iChr][initialBpId + j][2] == indirect)														{ indir++; sb++; }
-				if ((fDSBMap[iChr][initialBpId + j][1] == direct || fDSBMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; sb++; dsb += 0.5; }
-				if ((fDSBMap[iChr][initialBpId + j][2] == direct || fDSBMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; sb++; dsb += 0.5; }
-				if (fDSBMap[iChr][initialBpId + j][1] == indirect)														{ indir++; sb++; dsb += 0.5; }
-				if (fDSBMap[iChr][initialBpId + j][2] == indirect)														{ indir++; sb++; dsb += 0.5; }
+				if ((fDSBMap[iChr][initialBpId + j][1] == direct || fDSBMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; sb++; dsb++; }
+				if ((fDSBMap[iChr][initialBpId + j][2] == direct || fDSBMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; sb++; }
+				if (fDSBMap[iChr][initialBpId + j][1] == indirect)														{ indir++; sb++; dsb++; }
+				if (fDSBMap[iChr][initialBpId + j][2] == indirect)														{ indir++; sb++; }
 				if ((fBDMap[iChr][initialBpId + j][1] == direct || fBDMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; bd++; }
 				if ((fBDMap[iChr][initialBpId + j][2] == direct || fBDMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; bd++; }
 				if (fBDMap[iChr][initialBpId + j][1] == indirect)														{ indir++; bd++; }
