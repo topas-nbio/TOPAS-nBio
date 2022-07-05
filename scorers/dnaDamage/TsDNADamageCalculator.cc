@@ -184,9 +184,9 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 								break;
 							}
 							// ... and decreasing one base pair alternatively (avoiding index < 0)
+							typeDamageInStrand1 = fDamageMap[iChr][iBp+i2-i1][2];
 							if (iBp+i2-i1 >= 0 && i1 > 0 && typeDamageInStrand1 > 0 && fDSBMap[iChr][iBp+i2-i1][1] == 0)
 							{
-								typeDamageInStrand1 = fDamageMap[iChr][iBp+i2-i1][2];
 								closestPosInStrand1 = iBp + i2 - i1;
 								if (typeDamageInStrand1 == direct || typeDamageInStrand1 == quasidirect) adjustedTypeDamageInStrand1 = typeDamageInStrand1;
 								if (typeDamageInStrand1 == multiple) adjustedTypeDamageInStrand1 = direct;
@@ -205,10 +205,10 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 						fDSB3DPositions.push_back(center);
 						dsbFound = true;
 					}
+					typeDamageInStrand2 = fDamageMap[iChr][iBp-i2][3];
 					// Goes from iBp to iBp-10 to find damage in backbone 2 (alternatively, if dsb is found then breaks) (avoiding index < 0)
-					if (iBp - i2 >= 0 && i2 > 0 && fDamageMap[iChr][iBp-i2][3] > 0 && fDSBMap[iChr][iBp-i2][2] == 0)
+					if (iBp - i2 >= 0 && i2 > 0 && typeDamageInStrand2 > 0 && fDSBMap[iChr][iBp-i2][2] == 0)
 					{
-						typeDamageInStrand2 = fDamageMap[iChr][iBp-i2][3];
 						G4int adjustedTypeDamageInStrand2 = indirect; // To convert multiple in direct or quasi-direct. Indirect if no direct or multiple effects are found
 						// Checks if damage in backbone 2 is direct or quasi-direct and keeps it in that case
 						if (typeDamageInStrand2 == direct || typeDamageInStrand2 == quasidirect) adjustedTypeDamageInStrand2 = typeDamageInStrand2;
@@ -232,9 +232,9 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 								break;
 							}
 							// ... and decreasing one base pair alternatively (avoiding index < 0)
-							if (iBp-i2-i1 >= 0 && i1 > 0 && fDamageMap[iChr][iBp-i2-i1][2] > 0 && fDSBMap[iChr][iBp-i2-i1][1] == 0)
+							typeDamageInStrand1 = fDamageMap[iChr][iBp-i2-i1][2];
+							if (iBp-i2-i1 >= 0 && i1 > 0 && typeDamageInStrand1 > 0 && fDSBMap[iChr][iBp-i2-i1][1] == 0)
 							{
-								typeDamageInStrand1 = fDamageMap[iChr][iBp-i2-i1][2];
 								closestPosInStrand1 = iBp - i2 - i1;
 								if (typeDamageInStrand1 == direct || typeDamageInStrand1 == quasidirect) adjustedTypeDamageInStrand1 = typeDamageInStrand1;
 								if (typeDamageInStrand1 == multiple) adjustedTypeDamageInStrand1 = direct;
