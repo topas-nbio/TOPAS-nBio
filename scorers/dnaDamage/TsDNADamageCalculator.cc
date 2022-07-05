@@ -436,6 +436,7 @@ std::map<G4int, std::vector<G4int>> TsDNADamageCalculator::GetDamageSites()
 			if (maxDamage >= 0.2 && maxDamage < 10) fNumSSBPlus++;
 			if (maxDamage >= 20 && maxDamage < 30) fNumDSBPlus++;
 			if (maxDamage >= 30) fNumDSBComplex++;
+			if (maxDamage < minDamage) break;
 			// Populates a new vector sorted by maximum damage
 			startingBpIdForDamageSites.push_back(index);
 			// Excludes this damage site for next steps
@@ -647,16 +648,21 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 				if (fDamageMap[iChr][initialBpId + j][2] > 0)	damagePositions.push_back(fDamagePositions[iChr][initialBpId + j][2]);
 				if (fDamageMap[iChr][initialBpId + j][3] > 0)	damagePositions.push_back(fDamagePositions[iChr][initialBpId + j][3]);
 			}
-			std::vector<G4ThreeVector> damageCenterMaxMin = GetDamageCenterAndBoundaries(damagePositions);
-			G4ThreeVector center = damageCenterMaxMin[0];
-			outFile << center.x() / um << ", " << center.y() / um << ", " << center.z() / um;
-			if (!fMinimalModeForSDD)
+			G4ThreeVector center;
+			if (damagePositions.size() > 0)
 			{
-				 G4ThreeVector max = damageCenterMaxMin[1];
-				 G4ThreeVector min = damageCenterMaxMin[2];
-				 outFile << " / " << max.x() / um << ", " << max.y() / um << ", " << max.z() / um;
-				 outFile << " / " << min.x() / um << ", " << min.y() / um << ", " << min.z() / um;
+				std::vector<G4ThreeVector> damageCenterMaxMin = GetDamageCenterAndBoundaries(damagePositions);
+				center = damageCenterMaxMin[0];
+				outFile << center.x() / um << ", " << center.y() / um << ", " << center.z() / um;
+				if (!fMinimalModeForSDD)
+				{
+					G4ThreeVector max = damageCenterMaxMin[1];
+					G4ThreeVector min = damageCenterMaxMin[2];
+					outFile << " / " << max.x() / um << ", " << max.y() / um << ", " << max.z() / um;
+					outFile << " / " << min.x() / um << ", " << min.y() / um << ", " << min.z() / um;
+				}
 			}
+
 			outFile << "; ";
 			if (!fMinimalModeForSDD)
 			{
