@@ -612,9 +612,9 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			G4bool isHydElectron =  (speciesName == "e^aq^-1");
 			//G4cout << "Species: " << speciesName << " in " << volumeName << " with trackID: " << trackID << " at time " << aStep->GetTrack()->GetLocalTime() << G4endl;
 			// Kills all species generated inside DNA volumes except for the hydration shell
-			if (fTrackSteps[trackID] == 1 && componentID != hydrationshell && isSpeciesToKill)
+			if (fTrackSteps[trackID] == 1 && componentID != hydrationshell)
 			{
-				aStep->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
+				aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 				delete hit;
 				return false;
 			}
@@ -629,19 +629,16 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 					if (G4UniformRand() < fProbabilityOfScavengingInBase) scavenged = true;
 				if (scavenged)
 				{
-					aStep->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
+					aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 					if (G4UniformRand() < fProbabilityOfDamageInBase)
 					{
 						hit->SetDamageType(indirect);
 						fHits.push_back(hit);
 						return true;
 					}
-					else
-					{
-						delete hit;
-						return false;
-					}
 				}
+				delete hit;
+				return false;
 			}
 			// Makes damage to backbones. Only OH induces damage to backbones. Only one step per species is considered (otherwise all would end up reacting), so we use the enteringInNewVolume flag
 			else if (isHydroxil && componentID == backbone && enteringInNewVolume && fScoreOnBackbones)
@@ -654,24 +651,21 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 					if (G4UniformRand() < fProbabilityOfScavengingInBackbone) scavenged = true;
 				if (scavenged)
 				{
-					aStep->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
+					aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 					if (G4UniformRand() < fProbabilityOfDamageInBackbone)
 					{
 						hit->SetDamageType(indirect);
 						fHits.push_back(hit);
 						return true;
 					}
-					else
-					{
-						delete hit;
-						return false;
-					}
 				}
+				delete hit;
+				return false;
 			}
 			// Scavenge species by histones
 			else if (isSpeciesToKill && fScavengeInHistones && componentID == histone)
 			{
-				aStep->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
+				aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 				delete hit;
 				return false;
 			}
@@ -729,6 +723,7 @@ G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
 	fDamageCalculator->ComputeStrandBreaks(hits);
 	std::map<G4int, std::vector<G4int>> initialPosDamageSites = fDamageCalculator->GetDamageSites();
 	numberOfLesions = fDamageCalculator->OutputSDDFile(initialPosDamageSites, eventID, fExposureID, fChromosomeContents);
+	G4cout << "DONE" << G4endl;
 
 	fNumSB = fDamageCalculator->GetSB();
 	fNumSBDirect = fDamageCalculator->GetSBDirect();

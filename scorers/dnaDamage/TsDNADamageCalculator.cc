@@ -388,9 +388,9 @@ std::map<G4int, std::vector<G4int>> TsDNADamageCalculator::GetDamageSites()
 		for (auto& bpMap : fDSBMap[iChr])
 		{
 			G4int iBp = bpMap.first;
-			for (auto& ssbmap : fDSBMap[iChr][iBp])
+			for (auto& dsbmap : fDSBMap[iChr][iBp])
 			{
-				G4int strand = ssbmap.first;
+				G4int strand = dsbmap.first;
 				if (fDSBMap[iChr][iBp][strand] > 0)	damageScore[iChr][iBp][strand] += 5.0;
 			}
 		}
@@ -621,10 +621,10 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 				if ((fSSBMap[iChr][initialBpId + j][2] == direct || fSSBMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; sb++; }
 				if (fSSBMap[iChr][initialBpId + j][1] == indirect)														{ indir++; sb++; }
 				if (fSSBMap[iChr][initialBpId + j][2] == indirect)														{ indir++; sb++; }
-				if ((fDSBMap[iChr][initialBpId + j][1] == direct || fDSBMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; sb++; dsb += 0.5; }
-				if ((fDSBMap[iChr][initialBpId + j][2] == direct || fDSBMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; sb++; dsb += 0.5; }
-				if (fDSBMap[iChr][initialBpId + j][1] == indirect)														{ indir++; sb++; dsb += 0.5; }
-				if (fDSBMap[iChr][initialBpId + j][2] == indirect)														{ indir++; sb++; dsb += 0.5; }
+				if ((fDSBMap[iChr][initialBpId + j][1] == direct || fDSBMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; sb++; dsb++; }
+				if ((fDSBMap[iChr][initialBpId + j][2] == direct || fDSBMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; sb++; }
+				if (fDSBMap[iChr][initialBpId + j][1] == indirect)														{ indir++; sb++; dsb++; }
+				if (fDSBMap[iChr][initialBpId + j][2] == indirect)														{ indir++; sb++; }
 				if ((fBDMap[iChr][initialBpId + j][1] == direct || fBDMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; bd++; }
 				if ((fBDMap[iChr][initialBpId + j][2] == direct || fBDMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; bd++; }
 				if (fBDMap[iChr][initialBpId + j][1] == indirect)														{ indir++; bd++; }
@@ -648,16 +648,21 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 				if (fDamageMap[iChr][initialBpId + j][2] > 0)	damagePositions.push_back(fDamagePositions[iChr][initialBpId + j][2]);
 				if (fDamageMap[iChr][initialBpId + j][3] > 0)	damagePositions.push_back(fDamagePositions[iChr][initialBpId + j][3]);
 			}
-			std::vector<G4ThreeVector> damageCenterMaxMin = GetDamageCenterAndBoundaries(damagePositions);
-			G4ThreeVector center = damageCenterMaxMin[0];
-			outFile << center.x() / um << ", " << center.y() / um << ", " << center.z() / um;
-			if (!fMinimalModeForSDD)
+			G4ThreeVector center;
+			if (damagePositions.size() > 0)
 			{
-				 G4ThreeVector max = damageCenterMaxMin[1];
-				 G4ThreeVector min = damageCenterMaxMin[2];
-				 outFile << " / " << max.x() / um << ", " << max.y() / um << ", " << max.z() / um;
-				 outFile << " / " << min.x() / um << ", " << min.y() / um << ", " << min.z() / um;
+				std::vector<G4ThreeVector> damageCenterMaxMin = GetDamageCenterAndBoundaries(damagePositions);
+				center = damageCenterMaxMin[0];
+				outFile << center.x() / um << ", " << center.y() / um << ", " << center.z() / um;
+				if (!fMinimalModeForSDD)
+				{
+					G4ThreeVector max = damageCenterMaxMin[1];
+					G4ThreeVector min = damageCenterMaxMin[2];
+					outFile << " / " << max.x() / um << ", " << max.y() / um << ", " << max.z() / um;
+					outFile << " / " << min.x() / um << ", " << min.y() / um << ", " << min.z() / um;
+				}
 			}
+
 			outFile << "; ";
 			if (!fMinimalModeForSDD)
 			{
