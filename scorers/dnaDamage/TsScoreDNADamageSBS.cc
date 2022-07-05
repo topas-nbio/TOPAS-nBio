@@ -82,6 +82,10 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 	for (G4int i = 0; i < strand2Length; i++)
 		fStrand2Materials.push_back(GetMaterial(strand2Materials[i]));
 
+	fScoringRadius = 0;
+	if (fPm->ParameterExists(GetFullParmName("ScoringRadius")))
+		fScoringRadius = fPm->GetDoubleParameter(GetFullParmName("ScoringRadius"), "Length");
+
 	// Options for direct damage
 	fDirectDamageThreshold = 11.75 * eV; // 17,5 eV for half-cylinder
 	if (fPm->ParameterExists(GetFullParmName("DirectDamageThreshold")))
@@ -288,7 +292,7 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 		fWriteMinimalSDDOutput = fPm->GetBooleanParameter(GetFullParmName("WriteMinimalSDDOutput"));
 	fPrimaryParticle = "proton";
 	if (fPm->ParameterExists(GetFullParmName("PrimaryParticle")))
-		fWriteMinimalSDDOutput = fPm->GetStringParameter(GetFullParmName("PrimaryParticle"));
+		fPrimaryParticle = fPm->GetStringParameter(GetFullParmName("PrimaryParticle"));
 
 	// Parameters for the SDD header
 	fAuthor = "@";
@@ -489,6 +493,14 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 	// Gets position
 	G4ThreeVector pos = aStep->GetPreStepPoint()->GetPosition();
+
+	// Checks with respect to the scoring radius
+	if (fScoringRadius > 0)
+	{
+		G4bool withinScoringRadius = ((pow(pos.x(), 2)+pow(pos.y(), 2)+pow(pos.z(), 2)) < pow(fScoringRadius, 2));
+		if (!withinScoringRadius)
+			return false;
+	}
 
 	// Accumulates energy for this event
 	G4double edep = aStep->GetTotalEnergyDeposit();

@@ -45,6 +45,9 @@ protected:
 	std::vector<G4Material*> fStrand1Materials;
 	std::vector<G4Material*> fStrand2Materials;
 
+	// For creating a scoring radius
+	G4double fScoringRadius;
+
 	// For direct damage
 	G4double fDirectDamageThreshold;
 	G4bool fUseLinearProbabilityForDirectDamage;
