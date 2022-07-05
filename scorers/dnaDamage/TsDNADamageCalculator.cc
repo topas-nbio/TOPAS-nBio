@@ -184,7 +184,7 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 								break;
 							}
 							// ... and decreasing one base pair alternatively (avoiding index < 0)
-							if (iBp+i2-i1 >= 0 && typeDamageInStrand1 > 0 && fDSBMap[iChr][iBp+i2-i1][1] == 0)
+							if (iBp+i2-i1 >= 0 && i1 > 0 && typeDamageInStrand1 > 0 && fDSBMap[iChr][iBp+i2-i1][1] == 0)
 							{
 								typeDamageInStrand1 = fDamageMap[iChr][iBp+i2-i1][2];
 								closestPosInStrand1 = iBp + i2 - i1;
@@ -206,7 +206,7 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 						dsbFound = true;
 					}
 					// Goes from iBp to iBp-10 to find damage in backbone 2 (alternatively, if dsb is found then breaks) (avoiding index < 0)
-					if (iBp - i2 >= 0 && fDamageMap[iChr][iBp-i2][3] > 0 && fDSBMap[iChr][iBp-i2][2] == 0)
+					if (iBp - i2 >= 0 && i2 > 0 && fDamageMap[iChr][iBp-i2][3] > 0 && fDSBMap[iChr][iBp-i2][2] == 0)
 					{
 						typeDamageInStrand2 = fDamageMap[iChr][iBp-i2][3];
 						G4int adjustedTypeDamageInStrand2 = indirect; // To convert multiple in direct or quasi-direct. Indirect if no direct or multiple effects are found
@@ -232,7 +232,7 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 								break;
 							}
 							// ... and decreasing one base pair alternatively (avoiding index < 0)
-							if (iBp-i2-i1 >= 0 && fDamageMap[iChr][iBp-i2-i1][2] > 0 && fDSBMap[iChr][iBp-i2-i1][1] == 0)
+							if (iBp-i2-i1 >= 0 && i1 > 0 && fDamageMap[iChr][iBp-i2-i1][2] > 0 && fDSBMap[iChr][iBp-i2-i1][1] == 0)
 							{
 								typeDamageInStrand1 = fDamageMap[iChr][iBp-i2-i1][2];
 								closestPosInStrand1 = iBp - i2 - i1;
