@@ -372,7 +372,7 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 	// Register variables in nTuple
 	fNtuple->RegisterColumnD(&fEdep, "Energy_imparted_per_event", "keV");
 	fNtuple->RegisterColumnD(&fDoseInThisExposure, "Dose_per_event_Gy", "");
-	fNtuple->RegisterColumnD(&fTrackAveragedLET, "LET_kev/um", "");
+	//fNtuple->RegisterColumnD(&fTrackAveragedLET, "LET_kev/um", "");
 
 	if (fScoreOnBackbones)
 	{
@@ -529,7 +529,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			break;
 		}
 	}
-	if (materialMatched == 0)
+	if (!materialMatched)
 	{
 		for (G4int i = 0; i < fStrand2Materials.size(); i++)
 		{

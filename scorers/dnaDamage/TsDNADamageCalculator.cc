@@ -98,8 +98,7 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 			for (auto& energyMap : fMapEdep[iChr][iBp])
 			{
 				G4int iComp = energyMap.first;
-				G4double edep = energyMap.second;
-				if (CauseDirectDamage(edep))
+				if (CauseDirectDamage(fMapEdep[iChr][iBp][iComp]))
 					fDamageMap[iChr][iBp][iComp] = direct;
 				else
 					fDamageMap[iChr][iBp][iComp] = nodamage;
