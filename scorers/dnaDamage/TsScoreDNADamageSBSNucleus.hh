@@ -33,6 +33,7 @@ private:
 
 	G4int fBasePairsInAVoxel;
 	G4int fBasePairsInAFiber;
+	G4int fnVoxelIs3DRepeated;
 
 	std::vector<G4int> fVoxelIDsInWorld;
 	std::vector<G4int> fVoxelIDsInNucleus;

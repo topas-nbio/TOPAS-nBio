@@ -545,8 +545,9 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	{
 		std::vector<G4int> hierarchicalIDs;
 		// Gets IDs in the different hierarchical levels
-		for (G4int i = 0; i < fHierarchicalLevels.size(); i++)
-			hierarchicalIDs.push_back(touchable->GetVolume(fBasePairDepth + i)->GetCopyNo());
+		hierarchicalIDs.push_back(touchable->GetVolume(fBasePairDepth)->GetCopyNo());
+		for (G4int i = 1; i < fHierarchicalLevels.size(); i++)
+			hierarchicalIDs.push_back(touchable->GetCopyNumber(fBasePairDepth + i));
 
 		// Sets base pair ID to -1 if histone is touched
 		if (strstr(volumeName, "Histone") != NULL)
@@ -723,7 +724,6 @@ G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
 	fDamageCalculator->ComputeStrandBreaks(hits);
 	std::map<G4int, std::vector<G4int>> initialPosDamageSites = fDamageCalculator->GetDamageSites();
 	numberOfLesions = fDamageCalculator->OutputSDDFile(initialPosDamageSites, eventID, fExposureID, fChromosomeContents);
-	G4cout << "DONE" << G4endl;
 
 	fNumSB = fDamageCalculator->GetSB();
 	fNumSBDirect = fDamageCalculator->GetSBDirect();
