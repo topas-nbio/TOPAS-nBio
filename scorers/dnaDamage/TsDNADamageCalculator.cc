@@ -611,6 +611,7 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 	for (auto& chrMap : damageSites)
 	{
 		G4int iChr = chrMap.first;
+		std::vector<G4int> ibpsTakenForThisChromosome;
 		for (G4int i = 0; i < damageSites[iChr].size(); i++)
 		{
 			G4int initialBpId = damageSites[iChr][i];
@@ -619,22 +620,25 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 			G4int bd = 0; G4int sb = 0; G4double dsb = 0;
 			for (G4int j = 0; j < fNumberOfBasePairForDSB; j++)
 			{
-				if ((fSSBMap[iChr][initialBpId + j][1] == direct || fSSBMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; sb++; }
-				if ((fSSBMap[iChr][initialBpId + j][2] == direct || fSSBMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; sb++; }
-				if (fSSBMap[iChr][initialBpId + j][1] == indirect)														{ indir++; sb++; }
-				if (fSSBMap[iChr][initialBpId + j][2] == indirect)														{ indir++; sb++; }
-				if ((fDSBMap[iChr][initialBpId + j][1] == direct || fDSBMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; sb++; dsb++; }
-				if ((fDSBMap[iChr][initialBpId + j][2] == direct || fDSBMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; sb++; }
-				if (fDSBMap[iChr][initialBpId + j][1] == indirect)														{ indir++; sb++; dsb++; }
-				if (fDSBMap[iChr][initialBpId + j][2] == indirect)														{ indir++; sb++; }
-				if ((fBDMap[iChr][initialBpId + j][1] == direct || fBDMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; bd++; }
-				if ((fBDMap[iChr][initialBpId + j][2] == direct || fBDMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; bd++; }
-				if (fBDMap[iChr][initialBpId + j][1] == indirect)														{ indir++; bd++; }
-				if (fBDMap[iChr][initialBpId + j][2] == indirect)														{ indir++; bd++; }
-
+				 // Avoiding using same damage in two sites
+				if (std::find(ibpsTakenForThisChromosome.begin(), ibpsTakenForThisChromosome.end(), initialBpId + j) == ibpsTakenForThisChromosome.end())
+				{
+						if ((fSSBMap[iChr][initialBpId + j][1] == direct || fSSBMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; sb++; }
+						if ((fSSBMap[iChr][initialBpId + j][2] == direct || fSSBMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; sb++; }
+						if (fSSBMap[iChr][initialBpId + j][1] == indirect)														{ indir++; sb++; }
+						if (fSSBMap[iChr][initialBpId + j][2] == indirect)														{ indir++; sb++; }
+						if ((fDSBMap[iChr][initialBpId + j][1] == direct || fDSBMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; sb++; dsb++; }
+						if ((fDSBMap[iChr][initialBpId + j][2] == direct || fDSBMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; sb++; }
+						if (fDSBMap[iChr][initialBpId + j][1] == indirect)														{ indir++; sb++; dsb++; }
+						if (fDSBMap[iChr][initialBpId + j][2] == indirect)														{ indir++; sb++; }
+						if ((fBDMap[iChr][initialBpId + j][1] == direct || fBDMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; bd++; }
+						if ((fBDMap[iChr][initialBpId + j][2] == direct || fBDMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; bd++; }
+						if (fBDMap[iChr][initialBpId + j][1] == indirect)														{ indir++; bd++; }
+						if (fBDMap[iChr][initialBpId + j][2] == indirect)														{ indir++; bd++; }
+				}
+				ibpsTakenForThisChromosome.push_back(initialBpId+j);
 			}
 			numSites++;
-
 			// Field 1: Determines exposure status
 			G4int newExposureFlag = 0;
 			if (lastEventID != eventID)			{ lastEventID = eventID; newExposureFlag = 1; }
