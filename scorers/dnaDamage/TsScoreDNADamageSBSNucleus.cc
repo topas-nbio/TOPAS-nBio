@@ -21,14 +21,14 @@ TsScoreDNADamageSBSNucleus::TsScoreDNADamageSBSNucleus(TsParameterManager* pM, T
 	fHierarchicalLevels.push_back("Voxel");
 
 	// Push back the total number of base pairs to the vector fChromosomeContents.
-    fChromosomeContents = {252823200,  252823200,  248157000,  248157000,  204040200,  204040200,
+	fChromosomeContents = {252823200,  252823200,  248157000,  248157000,  204040200,  204040200,
                           195556200,  195556200,  184951200,  184951200,  174770400,  174770400,
-						  162468600,  162468600,  149318400,  149318400,  143379600,  143379600,
-						  138289200,  138289200,  137440800,  137440800,  135319800,  135319800,
-						  116655000,  116655000,  108595200,  108595200,  102656400,  102656400,
-						  90778800, 90778800,  80173800,  80173800,  77628600,  77628600,
-						  65326800,  65326800,  63630000,  63630000,  47934600,  47934600,
-						  50479800,  50479800,  58963800,  158226600};
+                          162468600,  162468600,  149318400,  149318400,  143379600,  143379600,
+                          138289200,  138289200,  137440800,  137440800,  135319800,  135319800,
+                          116655000,  116655000,  108595200,  108595200,  102656400,  102656400,
+                          90778800, 90778800,  80173800,  80173800,  77628600,  77628600,
+                          65326800,  65326800,  63630000,  63630000,  47934600,  47934600,
+                          50479800,  50479800,  58963800,  158226600};
 
     // To have this info updated in the SDD header, rerun:
 	fDamageCalculator->OutputSDDHeader(fWriteMinimalSDDOutput, fPrimaryParticle, fMeanEnergy, fDosePerExposure, fChromosomeContents, fScoreIndirectDamage, fScoreOnBases,
@@ -92,9 +92,17 @@ std::pair<G4int, G4int> TsScoreDNADamageSBSNucleus::CalculateChromosomeAndBasePa
 	if (fVoxelIDsInNucleus.size() > 0)
 	{
 		G4int voxelIDInNucleus = fVoxelIDsInNucleus[voxelIdInWorld];
-		G4int voxelIDInChromosome = fVoxelIDs[voxelIDInNucleus];
-		chromosomeID = fChromosomeIDForEachVoxel[voxelIDInNucleus];
-		basePairIDInChromosome = voxelIDInChromosome * fBasePairsInAVoxel + fiberIdInVoxel * fBasePairsInAFiber + basePairIDInFiber;
+		if (voxelIDInNucleus == -1 || voxelIdInWorld >= pow(fnVoxelIs3DRepeated, 3)) // Disregard voxels outside spherical shape of nucleus
+		{
+			chromosomeID = -1;
+			basePairIDInChromosome = -1;
+		}
+		else
+		{
+			G4int voxelIDInChromosome = fVoxelIDs[voxelIDInNucleus];
+			chromosomeID = fChromosomeIDForEachVoxel[voxelIDInNucleus];
+			basePairIDInChromosome = voxelIDInChromosome * fBasePairsInAVoxel + fiberIdInVoxel * fBasePairsInAFiber + basePairIDInFiber;
+		}
 	}
 	else
 	{
@@ -113,7 +121,7 @@ void TsScoreDNADamageSBSNucleus::ReadGeometryAndCopyNumberMaps()
 	// Reads geometry information file. Contains the following components
 	// fBasePairsInFiber, fBasePairsInVoxel (in header) 
 	G4int nBasePairsInNucleus;
-	G4int nVoxels, nVoxelIs3DRepeated;
+	G4int nVoxels;
 	G4double voxelSize;
 	G4double minx, miny, minz;
 
@@ -132,12 +140,12 @@ void TsScoreDNADamageSBSNucleus::ReadGeometryAndCopyNumberMaps()
 		if (input == "DNAContentperVoxel(bp):")			infile >> fBasePairsInAVoxel;
 		if (input == "DNAContentinTotal(bp):")			infile >> nBasePairsInNucleus;
 		if (input == "NumberofVoxels(subdomains)")		infile >> nVoxels;
-		if (input == "Voxel3DrepeatTimes:")				infile >> nVoxelIs3DRepeated;
+		if (input == "Voxel3DrepeatTimes:")				infile >> fnVoxelIs3DRepeated;
 		if (input == "VoxelSize(um):")					infile >> voxelSize;
 		voxelSize *= um;
-		minx = -voxelSize * nVoxelIs3DRepeated / 2;
-		miny = -voxelSize * nVoxelIs3DRepeated / 2;
-		minz = -voxelSize * nVoxelIs3DRepeated / 2;
+		minx = -voxelSize * fnVoxelIs3DRepeated / 2;
+		miny = -voxelSize * fnVoxelIs3DRepeated / 2;
+		minz = -voxelSize * fnVoxelIs3DRepeated / 2;
 	}
 	infile.close();
 

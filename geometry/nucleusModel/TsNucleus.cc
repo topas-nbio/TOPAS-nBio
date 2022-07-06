@@ -153,6 +153,15 @@ G4VPhysicalVolume* TsNucleus::Construct()
 	if (fPm->ParameterExists(GetFullParmName("RotateNucleusForEachRun")))
 		fRotateNucleusForEachRun = fPm->GetBooleanParameter(GetFullParmName("RotateNucleusForEachRun"));
 
+	// Nucleus Orb
+	G4Orb * Nucleus_solid = new G4Orb("Nucleus", fNucleusRadius);
+	fEnvelopeLog		   = CreateLogicalVolume(Nucleus_solid);
+	fEnvelopePhys		  = CreatePhysicalVolume(fEnvelopeLog);
+	G4Colour blue (0.0, 0.0, 1.0) ;
+	G4VisAttributes* Vis   = new G4VisAttributes( blue );
+	Vis->SetVisibility(fShowNucleus);
+	fEnvelopeLog->SetVisAttributes(Vis);
+
 	//****************************************************************************
 	//					 Read  Hilbert space filling  data					//
 	//****************************************************************************
@@ -220,15 +229,6 @@ G4VPhysicalVolume* TsNucleus::Construct()
 	//****************************************************************************
 	//							 Build basic geometry						 //
 	//****************************************************************************
-	// Nucleus box
-	G4Orb * Nucleus_solid = new G4Orb("Nucleus", fNucleusRadius);
-	fEnvelopeLog		   = CreateLogicalVolume(Nucleus_solid);
-	fEnvelopePhys		  = CreatePhysicalVolume(fEnvelopeLog);
-	G4Colour blue (0.0, 0.0, 1.0) ;
-	G4VisAttributes* Vis   = new G4VisAttributes( blue );
-	Vis->SetVisibility(fShowNucleus);
-	fEnvelopeLog->SetVisAttributes(Vis);
-
 	// Fiber Envelope
 	G4double length = std::sqrt( pow(fiberPosX[2]-fiberPosX[1],2) + pow(fiberPosY[2]-fiberPosY[1],2) + pow(fiberPosZ[2]-fiberPosZ[1],2));
 	G4double scaleFactor = HilbertPointDistance/length; // scaleFactor used to get fiber lengths

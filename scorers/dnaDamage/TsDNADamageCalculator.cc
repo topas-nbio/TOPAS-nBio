@@ -79,13 +79,16 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 		G4int basePairID = hits[i]->GetBasePairID();
 		G4double edep = hits[i]->GetEdep();
 		G4int chromosomeID = hits[i]->GetChromosomeID();
-		G4int strand = hits[i]->GetStrandNumber();
-		G4int dnacomp = hits[i]->GetDNAComponentID();
-		G4int iComp = dnacomp * 2 + (strand - 1); // This formula assigns 0 to base1, 1 to base2, 2 to backbone1, 3 to backbone2
-		if (hits[i]->GetDamageType() == direct) fMapEdep[chromosomeID][basePairID][iComp] += edep;
-		else if (hits[i]->GetDamageType() == indirect) fIsThereIndirectDamage[chromosomeID][basePairID][iComp] = true;
-		else if (hits[i]->GetDamageType() == quasidirect) fIsThereQuasiDirectDamage[chromosomeID][basePairID][iComp] = true;
-		fDamagePositions[chromosomeID][basePairID][iComp] = hits[i]->GetPosition();
+		if (chromosomeID >= 0)
+		{
+			G4int strand = hits[i]->GetStrandNumber();
+			G4int dnacomp = hits[i]->GetDNAComponentID();
+			G4int iComp = dnacomp * 2 + (strand - 1); // This formula assigns 0 to base1, 1 to base2, 2 to backbone1, 3 to backbone2
+			if (hits[i]->GetDamageType() == direct) fMapEdep[chromosomeID][basePairID][iComp] += edep;
+			else if (hits[i]->GetDamageType() == indirect) fIsThereIndirectDamage[chromosomeID][basePairID][iComp] = true;
+			else if (hits[i]->GetDamageType() == quasidirect) fIsThereQuasiDirectDamage[chromosomeID][basePairID][iComp] = true;
+			fDamagePositions[chromosomeID][basePairID][iComp] = hits[i]->GetPosition();
+		}
 	}
 
 	// Classifies damages. First loop through direct damage
@@ -98,8 +101,7 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 			for (auto& energyMap : fMapEdep[iChr][iBp])
 			{
 				G4int iComp = energyMap.first;
-				G4double edep = energyMap.second;
-				if (CauseDirectDamage(edep))
+				if (CauseDirectDamage(fMapEdep[iChr][iBp][iComp]))
 					fDamageMap[iChr][iBp][iComp] = direct;
 				else
 					fDamageMap[iChr][iBp][iComp] = nodamage;
