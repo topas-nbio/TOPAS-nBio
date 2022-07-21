@@ -610,7 +610,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			G4String speciesName = GetMolecule(aStep->GetTrack())->GetName();
 			G4bool isSpeciesToKill = (speciesName == "OH^0" || speciesName == "e_aq^-1" || speciesName == "H^0");
 			G4bool isHydroxil = (speciesName == "OH^0");
-			G4bool isHydElectron =  (speciesName == "e^aq^-1");
+			G4bool isHydElectron =  (speciesName == "e_aq^-1");
 			//G4cout << "Species: " << speciesName << " in " << volumeName << " with trackID: " << trackID << " at time " << aStep->GetTrack()->GetLocalTime() << G4endl;
 			// Kills all species generated inside DNA volumes except for the hydration shell
 			if (fTrackSteps[trackID] == 1 && componentID != hydrationshell)
