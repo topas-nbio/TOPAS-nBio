@@ -42,7 +42,8 @@ public:
     DrDNAMoleculeEncounterStepper& operator=(const DrDNAMoleculeEncounterStepper&) = delete;
 
     void Prepare() override ;
-    G4double CalculateStep(const G4Track&, const G4double&) override ;
+    G4double CalculateStep(const G4Track&, const G4double&) override;
+    G4double CalculateMinTimeStep(G4double, G4double) override;
 
     void SetReactionModel(G4VDNAReactionModel*);
     G4VDNAReactionModel* GetReactionModel();
@@ -64,6 +65,8 @@ private:
   G4bool fHasAlreadyReachedNullTime;
   const G4DNAMolecularReactionTable*& fMolecularReactionTable;
   G4VDNAReactionModel* fReactionModel;
+    G4ITTrackHolder* fpTrackContainer;
+    G4ITReactionSet* fReactionSet;
   G4int fVerbose;
 
 

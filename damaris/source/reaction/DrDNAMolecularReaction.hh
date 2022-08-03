@@ -41,6 +41,7 @@ class DrDNAMolecularReaction : public G4VITReactionProcess
                             double currentStepTime,
                             bool userStepTimeLimit) override;
 
+    std::vector<std::unique_ptr<G4ITReactionChange>> FindReaction(G4ITReactionSet*, const double, const double, const bool) override;
     std::unique_ptr<G4ITReactionChange> MakeReaction(const G4Track&, const G4Track&) override;
 
     void SetReactionModel(G4VDNAReactionModel*);

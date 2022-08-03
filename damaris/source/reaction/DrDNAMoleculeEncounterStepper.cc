@@ -496,3 +496,55 @@ void DrDNAMoleculeEncounterStepper::SetVerbose(int flag)
 {
     fVerbose = flag;
 }
+
+G4double DrDNAMoleculeEncounterStepper::CalculateMinTimeStep(G4double /*currentGlobalTime*/, G4double definedMinTimeStep){
+
+    G4double fTSTimeStep = DBL_MAX;
+
+    for (auto pTrack : *fpTrackContainer->GetMainList())
+    {
+        if (pTrack == nullptr)
+        {
+            G4ExceptionDescription exceptionDescription;
+            exceptionDescription << "No track found.";
+            G4Exception("G4Scheduler::CalculateMinStep", "ITScheduler006",
+                        FatalErrorInArgument, exceptionDescription);
+            continue;
+        }
+
+        G4TrackStatus trackStatus = pTrack->GetTrackStatus();
+        if (trackStatus == fStopAndKill || trackStatus == fStopButAlive)
+        {
+            continue;
+        }
+
+        G4double sampledMinTimeStep = CalculateStep(*pTrack, definedMinTimeStep);
+        G4TrackVectorHandle reactants = GetReactants();
+
+        if (sampledMinTimeStep < fTSTimeStep)
+        {
+            fTSTimeStep = sampledMinTimeStep;
+            fReactionSet->CleanAllReaction();
+            if (reactants)
+            {
+                fReactionSet->AddReactions(fTSTimeStep,
+                                           const_cast<G4Track*>(pTrack),
+                                           reactants);
+                ResetReactants();
+            }
+        }
+        else if (fTSTimeStep == sampledMinTimeStep && bool(reactants))
+        {
+            fReactionSet->AddReactions(fTSTimeStep,
+                                       const_cast<G4Track*>(pTrack),
+                                       reactants);
+            ResetReactants();
+        }
+        else if (reactants)
+        {
+            ResetReactants();
+        }
+    }
+
+    return fTSTimeStep;
+}
