@@ -79,13 +79,16 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 		G4int basePairID = hits[i]->GetBasePairID();
 		G4double edep = hits[i]->GetEdep();
 		G4int chromosomeID = hits[i]->GetChromosomeID();
-		G4int strand = hits[i]->GetStrandNumber();
-		G4int dnacomp = hits[i]->GetDNAComponentID();
-		G4int iComp = dnacomp * 2 + (strand - 1); // This formula assigns 0 to base1, 1 to base2, 2 to backbone1, 3 to backbone2
-		if (hits[i]->GetDamageType() == direct) fMapEdep[chromosomeID][basePairID][iComp] += edep;
-		else if (hits[i]->GetDamageType() == indirect) fIsThereIndirectDamage[chromosomeID][basePairID][iComp] = true;
-		else if (hits[i]->GetDamageType() == quasidirect) fIsThereQuasiDirectDamage[chromosomeID][basePairID][iComp] = true;
-		fDamagePositions[chromosomeID][basePairID][iComp] = hits[i]->GetPosition();
+		if (chromosomeID >= 0)
+		{
+			G4int strand = hits[i]->GetStrandNumber();
+			G4int dnacomp = hits[i]->GetDNAComponentID();
+			G4int iComp = dnacomp * 2 + (strand - 1); // This formula assigns 0 to base1, 1 to base2, 2 to backbone1, 3 to backbone2
+			if (hits[i]->GetDamageType() == direct) fMapEdep[chromosomeID][basePairID][iComp] += edep;
+			else if (hits[i]->GetDamageType() == indirect) fIsThereIndirectDamage[chromosomeID][basePairID][iComp] = true;
+			else if (hits[i]->GetDamageType() == quasidirect) fIsThereQuasiDirectDamage[chromosomeID][basePairID][iComp] = true;
+			fDamagePositions[chromosomeID][basePairID][iComp] = hits[i]->GetPosition();
+		}
 	}
 
 	// Classifies damages. First loop through direct damage
@@ -98,8 +101,7 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 			for (auto& energyMap : fMapEdep[iChr][iBp])
 			{
 				G4int iComp = energyMap.first;
-				G4double edep = energyMap.second;
-				if (CauseDirectDamage(edep))
+				if (CauseDirectDamage(fMapEdep[iChr][iBp][iComp]))
 					fDamageMap[iChr][iBp][iComp] = direct;
 				else
 					fDamageMap[iChr][iBp][iComp] = nodamage;
@@ -184,9 +186,9 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 								break;
 							}
 							// ... and decreasing one base pair alternatively (avoiding index < 0)
-							if (iBp+i2-i1 >= 0 && typeDamageInStrand1 > 0 && fDSBMap[iChr][iBp+i2-i1][1] == 0)
+							typeDamageInStrand1 = fDamageMap[iChr][iBp+i2-i1][2];
+							if (iBp+i2-i1 >= 0 && i1 > 0 && typeDamageInStrand1 > 0 && fDSBMap[iChr][iBp+i2-i1][1] == 0)
 							{
-								typeDamageInStrand1 = fDamageMap[iChr][iBp+i2-i1][2];
 								closestPosInStrand1 = iBp + i2 - i1;
 								if (typeDamageInStrand1 == direct || typeDamageInStrand1 == quasidirect) adjustedTypeDamageInStrand1 = typeDamageInStrand1;
 								if (typeDamageInStrand1 == multiple) adjustedTypeDamageInStrand1 = direct;
@@ -205,10 +207,10 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 						fDSB3DPositions.push_back(center);
 						dsbFound = true;
 					}
+					typeDamageInStrand2 = fDamageMap[iChr][iBp-i2][3];
 					// Goes from iBp to iBp-10 to find damage in backbone 2 (alternatively, if dsb is found then breaks) (avoiding index < 0)
-					if (iBp - i2 >= 0 && fDamageMap[iChr][iBp-i2][3] > 0 && fDSBMap[iChr][iBp-i2][2] == 0)
+					if (iBp - i2 >= 0 && i2 > 0 && typeDamageInStrand2 > 0 && fDSBMap[iChr][iBp-i2][2] == 0)
 					{
-						typeDamageInStrand2 = fDamageMap[iChr][iBp-i2][3];
 						G4int adjustedTypeDamageInStrand2 = indirect; // To convert multiple in direct or quasi-direct. Indirect if no direct or multiple effects are found
 						// Checks if damage in backbone 2 is direct or quasi-direct and keeps it in that case
 						if (typeDamageInStrand2 == direct || typeDamageInStrand2 == quasidirect) adjustedTypeDamageInStrand2 = typeDamageInStrand2;
@@ -232,9 +234,9 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 								break;
 							}
 							// ... and decreasing one base pair alternatively (avoiding index < 0)
-							if (iBp-i2-i1 >= 0 && fDamageMap[iChr][iBp-i2-i1][2] > 0 && fDSBMap[iChr][iBp-i2-i1][1] == 0)
+							typeDamageInStrand1 = fDamageMap[iChr][iBp-i2-i1][2];
+							if (iBp-i2-i1 >= 0 && i1 > 0 && typeDamageInStrand1 > 0 && fDSBMap[iChr][iBp-i2-i1][1] == 0)
 							{
-								typeDamageInStrand1 = fDamageMap[iChr][iBp-i2-i1][2];
 								closestPosInStrand1 = iBp - i2 - i1;
 								if (typeDamageInStrand1 == direct || typeDamageInStrand1 == quasidirect) adjustedTypeDamageInStrand1 = typeDamageInStrand1;
 								if (typeDamageInStrand1 == multiple) adjustedTypeDamageInStrand1 = direct;
@@ -388,9 +390,9 @@ std::map<G4int, std::vector<G4int>> TsDNADamageCalculator::GetDamageSites()
 		for (auto& bpMap : fDSBMap[iChr])
 		{
 			G4int iBp = bpMap.first;
-			for (auto& ssbmap : fDSBMap[iChr][iBp])
+			for (auto& dsbmap : fDSBMap[iChr][iBp])
 			{
-				G4int strand = ssbmap.first;
+				G4int strand = dsbmap.first;
 				if (fDSBMap[iChr][iBp][strand] > 0)	damageScore[iChr][iBp][strand] += 5.0;
 			}
 		}
@@ -609,6 +611,7 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 	for (auto& chrMap : damageSites)
 	{
 		G4int iChr = chrMap.first;
+		std::vector<G4int> ibpsTakenForThisChromosome;
 		for (G4int i = 0; i < damageSites[iChr].size(); i++)
 		{
 			G4int initialBpId = damageSites[iChr][i];
@@ -617,22 +620,25 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 			G4int bd = 0; G4int sb = 0; G4double dsb = 0;
 			for (G4int j = 0; j < fNumberOfBasePairForDSB; j++)
 			{
-				if ((fSSBMap[iChr][initialBpId + j][1] == direct || fSSBMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; sb++; }
-				if ((fSSBMap[iChr][initialBpId + j][2] == direct || fSSBMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; sb++; }
-				if (fSSBMap[iChr][initialBpId + j][1] == indirect)														{ indir++; sb++; }
-				if (fSSBMap[iChr][initialBpId + j][2] == indirect)														{ indir++; sb++; }
-				if ((fDSBMap[iChr][initialBpId + j][1] == direct || fDSBMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; sb++; dsb += 0.5; }
-				if ((fDSBMap[iChr][initialBpId + j][2] == direct || fDSBMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; sb++; dsb += 0.5; }
-				if (fDSBMap[iChr][initialBpId + j][1] == indirect)														{ indir++; sb++; dsb += 0.5; }
-				if (fDSBMap[iChr][initialBpId + j][2] == indirect)														{ indir++; sb++; dsb += 0.5; }
-				if ((fBDMap[iChr][initialBpId + j][1] == direct || fBDMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; bd++; }
-				if ((fBDMap[iChr][initialBpId + j][2] == direct || fBDMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; bd++; }
-				if (fBDMap[iChr][initialBpId + j][1] == indirect)														{ indir++; bd++; }
-				if (fBDMap[iChr][initialBpId + j][2] == indirect)														{ indir++; bd++; }
-
+				 // Avoiding using same damage in two sites
+				if (std::find(ibpsTakenForThisChromosome.begin(), ibpsTakenForThisChromosome.end(), initialBpId + j) == ibpsTakenForThisChromosome.end())
+				{
+						if ((fSSBMap[iChr][initialBpId + j][1] == direct || fSSBMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; sb++; }
+						if ((fSSBMap[iChr][initialBpId + j][2] == direct || fSSBMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; sb++; }
+						if (fSSBMap[iChr][initialBpId + j][1] == indirect)														{ indir++; sb++; }
+						if (fSSBMap[iChr][initialBpId + j][2] == indirect)														{ indir++; sb++; }
+						if ((fDSBMap[iChr][initialBpId + j][1] == direct || fDSBMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; sb++; dsb++; }
+						if ((fDSBMap[iChr][initialBpId + j][2] == direct || fDSBMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; sb++; }
+						if (fDSBMap[iChr][initialBpId + j][1] == indirect)														{ indir++; sb++; dsb++; }
+						if (fDSBMap[iChr][initialBpId + j][2] == indirect)														{ indir++; sb++; }
+						if ((fBDMap[iChr][initialBpId + j][1] == direct || fBDMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; bd++; }
+						if ((fBDMap[iChr][initialBpId + j][2] == direct || fBDMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; bd++; }
+						if (fBDMap[iChr][initialBpId + j][1] == indirect)														{ indir++; bd++; }
+						if (fBDMap[iChr][initialBpId + j][2] == indirect)														{ indir++; bd++; }
+				}
+				ibpsTakenForThisChromosome.push_back(initialBpId+j);
 			}
 			numSites++;
-
 			// Field 1: Determines exposure status
 			G4int newExposureFlag = 0;
 			if (lastEventID != eventID)			{ lastEventID = eventID; newExposureFlag = 1; }
@@ -648,21 +654,26 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 				if (fDamageMap[iChr][initialBpId + j][2] > 0)	damagePositions.push_back(fDamagePositions[iChr][initialBpId + j][2]);
 				if (fDamageMap[iChr][initialBpId + j][3] > 0)	damagePositions.push_back(fDamagePositions[iChr][initialBpId + j][3]);
 			}
-			std::vector<G4ThreeVector> damageCenterMaxMin = GetDamageCenterAndBoundaries(damagePositions);
-			G4ThreeVector center = damageCenterMaxMin[0];
-			outFile << center.x() / um << ", " << center.y() / um << ", " << center.z() / um;
-			if (!fMinimalModeForSDD)
+			G4ThreeVector center;
+			if (damagePositions.size() > 0)
 			{
-				 G4ThreeVector max = damageCenterMaxMin[1];
-				 G4ThreeVector min = damageCenterMaxMin[2];
-				 outFile << " / " << max.x() / um << ", " << max.y() / um << ", " << max.z() / um;
-				 outFile << " / " << min.x() / um << ", " << min.y() / um << ", " << min.z() / um;
+				std::vector<G4ThreeVector> damageCenterMaxMin = GetDamageCenterAndBoundaries(damagePositions);
+				center = damageCenterMaxMin[0];
+				outFile << center.x() / um << ", " << center.y() / um << ", " << center.z() / um;
+				if (!fMinimalModeForSDD)
+				{
+					G4ThreeVector max = damageCenterMaxMin[1];
+					G4ThreeVector min = damageCenterMaxMin[2];
+					outFile << " / " << max.x() / um << ", " << max.y() / um << ", " << max.z() / um;
+					outFile << " / " << min.x() / um << ", " << min.y() / um << ", " << min.z() / um;
+				}
 			}
+
 			outFile << "; ";
 			if (!fMinimalModeForSDD)
 			{
 				// Field 3: Nucleus considered as heterochromatin. Chromatied number set to 1 (unduplicated), chromosme arm set to 0 (short)
-				outFile << "1, " << iChr - 1 << ", 1, 0; ";
+				outFile << "1, " << iChr + 1 << ", 1, 0; ";
 
 				// Field 4: Chromosome length
 				G4int chromosomeLength = chromosomeContents[iChr-1];

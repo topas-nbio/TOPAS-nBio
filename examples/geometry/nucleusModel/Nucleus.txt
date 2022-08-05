@@ -73,64 +73,23 @@ b:Ge/Nucleus/RotateNucleusForEachRun				= "false"
 #i:Tf/NumberOfSequentialTimes 						= 5 # Number of runs
 
 # -- Scorer --
-s:Sc/DNAScorer/Quantity                                 = "NucleusDNADamage"
-s:Sc/DNAScorer/Component                                = "Nucleus"
-b:Sc/DNAScorer/PropagateToChildren                      = "true"
-s:Sc/DNAScorer/OutputType                               = "root"
-s:Sc/DNAScorer/OutputFile                               = "NucleusDNADamage"
-s:Sc/RootFileName										= Sc/DNAScorer/OutputFile
-s:Sc/DNAScorer/IfOutputFileAlreadyExists                = "overwrite"
-b:Sc/DNAScorer/WriteCSVOutputWithAllDamageSpecification = "true"
-b:Sc/DNAScorer/MinimalSDDOutput                         = "false"
-b:Sc/DNAScorer/IncludeDSBDamageSitesOnlyinSDD           = "false"
-i:Sc/DNAScorer/DSBSeparation                            = 10
-d:Sc/DNAScorer/DamageThreshold                          = 11.75 eV
-b:Sc/DNAScorer/UseLinearProbabilityThreshold            = "false"
-#d:Sc/DNAScorer/LinearProbability_lower_limit            = 5 eV
-#d:Sc/DNAScorer/LinearProbability_upper_limit            = 37.5 eV
-b:Sc/DNAScorer/UseSeparateProbabilitiesForInteractionAndDamage = "true"
-#u:Sc/DNAScorer/ProbabilityForOHToCauseDamage            = 0.4
-u:Sc/DNAScorer/ProbabilityForOHToInteractWithBackbone	= 0.25
-u:Sc/DNAScorer/ProbabilityForOHToCauseDamageInBase		= 1.0
-u:Sc/DNAScorer/ProbabilityForOHToCauseDamageInBackbone  = 0.55
-u:Sc/DNAScorer/ProbabilityOfTransferFromHydrationShellToBackbone = 0.3333333
-b:Sc/DNAScorer/ExcludeShortFragment                     = "false"
-i:Sc/DNAScorer/LowerFragmentDetectionThreshold          = 250
-i:Sc/DNAScorer/UpperFragmentDetectionThreshold          = 300000000
-b:Sc/DNAScorer/ScoreDirectDamages                       = "true"
-b:Sc/DNAScorer/ScoreIndirectDamages                     = "true"
-b:Sc/DNAScorer/ScoreQuasiDirectDamages					= "true"
-d:Sc/DNAScorer/ScoringRadius                            = Ge/Nucleus/NucleusRadius um
-b:Sc/DNAScorer/HistoneAsScavenger                       = Ge/Nucleus/HistoneAsScavenger
-i:Sc/DNAScorer/NumberOfHistoriesInRun                   = So/ParticleGun/NumberOfHistoriesInRun
-d:Sc/DNAScorer/DosePerExposure                          = 1 Gy
-s:Sc/DNAScorer/PrimaryParticle                          = So/ParticleGun/BeamParticle
-i:Sc/DNAScorer/BasePairPositionAtGeometricHierarchy     = 0
-
-# Materials to score
-sv:Sc/DNAScorer/Strand1MaterialNames                    = 4 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial" "G4_HistoneMaterial"
-sv:Sc/DNAScorer/Strand2MaterialNames                    = 3 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial"
-
-# Info about nucleus geometry for scorer
-s:Sc/DNAScorer/GeometryInfo                            = "supportFiles/Geoinfo.txt"
-s:Sc/DNAScorer/CopyNoTable                             = "supportFiles/CopyNoTable.txt"
-s:Sc/DNAScorer/signedCHVoxel                           = "supportFiles/signedCHVoxel.txt"
-
-# SDD header - See Schuemann et al. (2019). A New Standard DNA Damage (SDD) Data Format. Rad Res, 191(1), 76
-s:Sc/DNAScorer/AuthorName							   = "Name"
-s:Sc/DNAScorer/SimulationDetails					   = "Nucleus simulation" 
-s:Sc/DNAScorer/SourceDetails					   	   = "Monoenergetic source"
-i:Sc/DNAScorer/SourceType					   		   = 1
-d:Sc/DNAScorer/MeanEnergy					   		   = So/ParticleGun/BeamEnergy MeV
-s:Sc/DNAScorer/EnergyDistribution					   = "M, 0"
-s:Sc/DNAScorer/IrradiationTarget					   = "Nucleus"
-s:Sc/DNAScorer/CellCycleStage					       = "0"
-s:Sc/DNAScorer/DNAStructure					           = "0, 1"
-i:Sc/DNAScorer/InVitroOrInVivo						   = 0
-s:Sc/DNAScorer/ProliferationStatus					   = "1"
-s:Sc/DNAScorer/Microenvironment					       = "20, 0.01"
-d:Sc/DNAScorer/Time					  				   = 0 s
-s:Sc/DNAScorer/AdditionalInfo					       = ""
+includeFile									= ../../scorers/DNAScorerStepByStep.txt
+s:Sc/DNADamageScorer/Quantity				= "DNADamageNucleusStepByStep"
+s:Sc/DNADamageScorer/Component 				= "Nucleus"
+i:Sc/DNADamageScorer/NumberOfHistoriesInRun = So/ParticleGun/NumberOfHistoriesInRun
+d:Sc/DNADamageScorer/ScoringRadius			= Ge/Nucleus/NucleusRadius um
+i:Sc/DNADamageScorer/BasePairPositionAtGeometricHierarchy = 0
+sv:Sc/DNADamageScorer/Strand1MaterialNames  = 4 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial" "G4_HistoneMaterial"
+sv:Sc/DNADamageScorer/Strand2MaterialNames  = 3 "G4_WATER_MODIFIED" "G4_BackboneMaterial" "G4_BaseMaterial"
+s:Sc/DNADamageScorer/PrimaryParticle		= So/ParticleGun/BeamParticle
+d:Sc/DNADamageScorer/MeanEnergy				= So/ParticleGun/BeamEnergy MeV
+#d:Sc/DNADamageScorer/StopTrackingAtDose		= 0.5 gray
+d:Sc/DNADamageScorer/ImageXMinPosition		= 0 um - Ge/Nucleus/NucleusRadius
+d:Sc/DNADamageScorer/ImageXMaxPosition		= Ge/Nucleus/NucleusRadius um
+d:Sc/DNADamageScorer/ImageYMinPosition		= 0 um - Ge/Nucleus/NucleusRadius
+d:Sc/DNADamageScorer/ImageYMaxPosition		= Ge/Nucleus/NucleusRadius um
+d:Sc/DNADamageScorer/ImageZMinPosition		= 0 um - Ge/Nucleus/NucleusRadius
+d:Sc/DNADamageScorer/ImageZMaxPosition		= Ge/Nucleus/NucleusRadius um
 
 Ts/ShowHistoryCountAtInterval                       = 1
 

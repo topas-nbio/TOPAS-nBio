@@ -82,6 +82,10 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 	for (G4int i = 0; i < strand2Length; i++)
 		fStrand2Materials.push_back(GetMaterial(strand2Materials[i]));
 
+	fScoringRadius = 0;
+	if (fPm->ParameterExists(GetFullParmName("ScoringRadius")))
+		fScoringRadius = fPm->GetDoubleParameter(GetFullParmName("ScoringRadius"), "Length");
+
 	// Options for direct damage
 	fDirectDamageThreshold = 11.75 * eV; // 17,5 eV for half-cylinder
 	if (fPm->ParameterExists(GetFullParmName("DirectDamageThreshold")))
@@ -288,7 +292,7 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 		fWriteMinimalSDDOutput = fPm->GetBooleanParameter(GetFullParmName("WriteMinimalSDDOutput"));
 	fPrimaryParticle = "proton";
 	if (fPm->ParameterExists(GetFullParmName("PrimaryParticle")))
-		fWriteMinimalSDDOutput = fPm->GetStringParameter(GetFullParmName("PrimaryParticle"));
+		fPrimaryParticle = fPm->GetStringParameter(GetFullParmName("PrimaryParticle"));
 
 	// Parameters for the SDD header
 	fAuthor = "@";
@@ -368,7 +372,7 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 	// Register variables in nTuple
 	fNtuple->RegisterColumnD(&fEdep, "Energy_imparted_per_event", "keV");
 	fNtuple->RegisterColumnD(&fDoseInThisExposure, "Dose_per_event_Gy", "");
-	fNtuple->RegisterColumnD(&fTrackAveragedLET, "LET_kev/um", "");
+	//fNtuple->RegisterColumnD(&fTrackAveragedLET, "LET_kev/um", "");
 
 	if (fScoreOnBackbones)
 	{
@@ -490,6 +494,14 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	// Gets position
 	G4ThreeVector pos = aStep->GetPreStepPoint()->GetPosition();
 
+	// Checks with respect to the scoring radius
+	if (fScoringRadius > 0)
+	{
+		G4bool withinScoringRadius = ((pow(pos.x(), 2)+pow(pos.y(), 2)+pow(pos.z(), 2)) < pow(fScoringRadius, 2));
+		if (!withinScoringRadius)
+			return false;
+	}
+
 	// Accumulates energy for this event
 	G4double edep = aStep->GetTotalEnergyDeposit();
 	fEdep += edep;
@@ -517,7 +529,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			break;
 		}
 	}
-	if (materialMatched == 0)
+	if (!materialMatched)
 	{
 		for (G4int i = 0; i < fStrand2Materials.size(); i++)
 		{
@@ -533,8 +545,9 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	{
 		std::vector<G4int> hierarchicalIDs;
 		// Gets IDs in the different hierarchical levels
-		for (G4int i = 0; i < fHierarchicalLevels.size(); i++)
-			hierarchicalIDs.push_back(touchable->GetVolume(fBasePairDepth + i)->GetCopyNo());
+		hierarchicalIDs.push_back(touchable->GetVolume(fBasePairDepth)->GetCopyNo());
+		for (G4int i = 1; i < fHierarchicalLevels.size(); i++)
+			hierarchicalIDs.push_back(touchable->GetCopyNumber(fBasePairDepth + i));
 
 		// Sets base pair ID to -1 if histone is touched
 		if (strstr(volumeName, "Histone") != NULL)
@@ -597,12 +610,12 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			G4String speciesName = GetMolecule(aStep->GetTrack())->GetName();
 			G4bool isSpeciesToKill = (speciesName == "OH^0" || speciesName == "e_aq^-1" || speciesName == "H^0");
 			G4bool isHydroxil = (speciesName == "OH^0");
-			G4bool isHydElectron =  (speciesName == "e^aq^-1");
+			G4bool isHydElectron =  (speciesName == "e_aq^-1");
 			//G4cout << "Species: " << speciesName << " in " << volumeName << " with trackID: " << trackID << " at time " << aStep->GetTrack()->GetLocalTime() << G4endl;
 			// Kills all species generated inside DNA volumes except for the hydration shell
-			if (fTrackSteps[trackID] == 1 && componentID != hydrationshell && isSpeciesToKill)
+			if (fTrackSteps[trackID] == 1 && componentID != hydrationshell)
 			{
-				aStep->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
+				aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 				delete hit;
 				return false;
 			}
@@ -617,19 +630,16 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 					if (G4UniformRand() < fProbabilityOfScavengingInBase) scavenged = true;
 				if (scavenged)
 				{
-					aStep->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
+					aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 					if (G4UniformRand() < fProbabilityOfDamageInBase)
 					{
 						hit->SetDamageType(indirect);
 						fHits.push_back(hit);
 						return true;
 					}
-					else
-					{
-						delete hit;
-						return false;
-					}
 				}
+				delete hit;
+				return false;
 			}
 			// Makes damage to backbones. Only OH induces damage to backbones. Only one step per species is considered (otherwise all would end up reacting), so we use the enteringInNewVolume flag
 			else if (isHydroxil && componentID == backbone && enteringInNewVolume && fScoreOnBackbones)
@@ -642,24 +652,21 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 					if (G4UniformRand() < fProbabilityOfScavengingInBackbone) scavenged = true;
 				if (scavenged)
 				{
-					aStep->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
+					aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 					if (G4UniformRand() < fProbabilityOfDamageInBackbone)
 					{
 						hit->SetDamageType(indirect);
 						fHits.push_back(hit);
 						return true;
 					}
-					else
-					{
-						delete hit;
-						return false;
-					}
 				}
+				delete hit;
+				return false;
 			}
 			// Scavenge species by histones
 			else if (isSpeciesToKill && fScavengeInHistones && componentID == histone)
 			{
-				aStep->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
+				aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 				delete hit;
 				return false;
 			}
