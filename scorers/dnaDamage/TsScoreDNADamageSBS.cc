@@ -512,13 +512,13 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 	// Gets current volume and last volume for this track. Updates new volume for this track
 	G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
-	G4String volumeName = touchable->GetVolume(fBasePairDepth)->GetName();
+	G4String volID = touchable->GetVolume(fBasePairDepth)->GetName() + std::to_string(touchable->GetVolume(fBasePairDepth)->GetCopyNo());
 	G4bool enteringInNewVolume = false;
-	if (volumeName != fTrackLastVolume[trackID])
+	if (volID != fTrackLastVolume[trackID])
 		enteringInNewVolume = true;
-	fTrackLastVolume[trackID] = volumeName;
+	fTrackLastVolume[trackID] = volID;
 
-	// Checks materials for determining if step is happening in DNA componets
+	// Checks materials for determining if step is happening in DNA components
 	G4Material* material = aStep->GetPreStepPoint()->GetMaterial();
 	G4bool materialMatched = false;
 	for (G4int i = 0; i < fStrand1Materials.size(); i++)
@@ -549,19 +549,11 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 		for (G4int i = 1; i < fHierarchicalLevels.size(); i++)
 			hierarchicalIDs.push_back(touchable->GetCopyNumber(fBasePairDepth + i));
 
+		std::pair<G4int, G4int> compAndStrandID = GetDNAComponentAndStrandID(touchable);
+		G4int componentID = compAndStrandID.first;
+		G4int strandID = compAndStrandID.second;
 		// Sets base pair ID to -1 if histone is touched
-		if (strstr(volumeName, "Histone") != NULL)
-			hierarchicalIDs[0] = -1;
-
-		// Gets strand number and DNA component ID (see header file for component IDs)
-		G4int componentID = -1; G4int strandID = -1;
-		if (strstr(volumeName, "Base1") != NULL || strstr(volumeName, "BasePair") != NULL) { componentID = base; strandID = 1; }
-		else if (strstr(volumeName, "Base2") != NULL) { componentID = base; strandID = 2; }
-		else if (strstr(volumeName, "Backbone1") != NULL) { componentID = backbone; strandID = 1; }
-		else if (strstr(volumeName, "Backbone2") != NULL) { componentID = backbone; strandID = 2; }
-		else if (strstr(volumeName, "HydrationShell1") != NULL) { componentID = hydrationshell; strandID = 1; }
-		else if (strstr(volumeName, "HydrationShell2") != NULL) { componentID = hydrationshell; strandID = 2; }
-		else if (strstr(volumeName, "Histone") != NULL) { componentID = histone; }
+		if (componentID == -1) hierarchicalIDs[0] = -1;
 
 		// Gets particle and process info
 		const G4ParticleDefinition* particle = aStep->GetTrack()->GetParticleDefinition();
@@ -675,6 +667,21 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	}
 
 	return false;
+}
+
+std::pair<G4int,G4int> TsScoreDNADamageSBS::GetDNAComponentAndStrandID(G4TouchableHistory* touchable)
+{
+	G4String volumeName = touchable->GetVolume(fBasePairDepth)->GetName();
+	// Gets strand number and DNA component ID (see header file for component IDs)
+	std::pair<G4int, G4int> compAndStandId;
+	if (strstr(volumeName, "Base1") != NULL || strstr(volumeName, "BasePair") != NULL) { compAndStandId.first = base; compAndStandId.second = 1; }
+	else if (strstr(volumeName, "Base2") != NULL) { compAndStandId.first = base; compAndStandId.second = 2; }
+	else if (strstr(volumeName, "Backbone1") != NULL) { compAndStandId.first = backbone; compAndStandId.second = 1; }
+	else if (strstr(volumeName, "Backbone2") != NULL) { compAndStandId.first = backbone; compAndStandId.second = 2; }
+	else if (strstr(volumeName, "HydrationShell1") != NULL) { compAndStandId.first = hydrationshell; compAndStandId.second = 1; }
+	else if (strstr(volumeName, "HydrationShell2") != NULL) { compAndStandId.first = hydrationshell; compAndStandId.second = 2; }
+	else if (strstr(volumeName, "Histone") != NULL) { compAndStandId.first = histone; }
+	return compAndStandId;
 }
 
 void TsScoreDNADamageSBS::AccumulateEvent()
