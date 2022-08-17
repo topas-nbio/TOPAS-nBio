@@ -596,7 +596,7 @@ void TsDNADamageCalculator::OutputSDDHeader(G4bool minimalSDD, G4String primaryP
 	outFile << "Damage and primary count, ;\n";
 	outFile << "Data entries, " << dataEntries << ";\n";
 	outFile << "Additional information, " << addInfo << ";\n";
-	outFile << "***EndOfHeader***;\n\n";
+	outFile << "***EndOfHeader***;\n";
 	outFile.close();
 }
 
@@ -673,7 +673,7 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 			if (!fMinimalModeForSDD)
 			{
 				// Field 3: Nucleus considered as heterochromatin. Chromatied number set to 1 (unduplicated), chromosme arm set to 0 (short)
-				outFile << "1, " << iChr + 1 << ", 1, 0; ";
+				outFile << "1, " << iChr << ", 1, 0; ";
 
 				// Field 4: Chromosome length
 				G4int chromosomeLength = chromosomeContents[iChr-1];
