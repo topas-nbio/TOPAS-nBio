@@ -572,6 +572,7 @@ void TsDNADamageCalculator::OutputSDDHeader(G4bool minimalSDD, G4String primaryP
 	outFile << "Energy distribution, " << energyDist << ";\n";
 	outFile << "Particle fraction, 1.0;\n";
 	outFile << "Dose or fluence, 1, " << dosePerExposure << ";\n";
+	outFile << "Dose rate, 0.0" << ";\n";
 	outFile << "Irradiation target, " << irrTarget << ";\n";
 	outFile << "Volumes, 0,5,5,5,0,0,0,1,4.65,4.65,4.65,0,0,0;\n";
 	outFile << "Chromosome sizes, " << chromosomeContents.size() << ",";
@@ -701,6 +702,8 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 					{
 						G4int typeDamage = fDamageMap[iChr][initialBpId + j][0];
 						if (typeDamage == nodamage) typeDamage = 0;
+						if (typeDamage == 4) typeDamage = 1;
+						if (typeDamage == 5) typeDamage = 3;
 						damageSpec += "1, " + (G4String)std::to_string(j+1) + ", " + (G4String)std::to_string(typeDamage) + " / ";
 					}
 				}
@@ -711,6 +714,8 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 					{
 						G4int typeDamage = fDamageMap[iChr][initialBpId + j][2];
 						if (typeDamage == nodamage) typeDamage = 0;
+						if (typeDamage == 4) typeDamage = 1;
+						if (typeDamage == 5) typeDamage = 3;
 						damageSpec += "2, " + (G4String)std::to_string(j+1) + ", " + (G4String)std::to_string(typeDamage) + " / ";
 					}
 				}
@@ -721,6 +726,8 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 					{
 						G4int typeDamage = fDamageMap[iChr][initialBpId + j][3];
 						if (typeDamage == nodamage) typeDamage = 0;
+						if (typeDamage == 4) typeDamage = 1;
+						if (typeDamage == 5) typeDamage = 3;
 						damageSpec += "3, " + (G4String)std::to_string(j+1) + ", " + (G4String)std::to_string(typeDamage) + " / ";
 					}
 				}
@@ -731,6 +738,8 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 					{
 						G4int typeDamage = fDamageMap[iChr][initialBpId + j][1];
 						if (typeDamage == nodamage) typeDamage = 0;
+						if (typeDamage == 4) typeDamage = 1;
+						if (typeDamage == 5) typeDamage = 3;
 						damageSpec += "4, " + (G4String)std::to_string(j+1) + ", " + (G4String)std::to_string(typeDamage) + " / ";
 					}
 				}
