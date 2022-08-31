@@ -572,6 +572,7 @@ void TsDNADamageCalculator::OutputSDDHeader(G4bool minimalSDD, G4String primaryP
 	outFile << "Energy distribution, " << energyDist << ";\n";
 	outFile << "Particle fraction, 1.0;\n";
 	outFile << "Dose or fluence, 1, " << dosePerExposure << ";\n";
+	outFile << "Dose rate, 0.0" << ";\n";
 	outFile << "Irradiation target, " << irrTarget << ";\n";
 	outFile << "Volumes, 0,5,5,5,0,0,0,1,4.65,4.65,4.65,0,0,0;\n";
 	outFile << "Chromosome sizes, " << chromosomeContents.size() << ",";
