@@ -552,6 +552,7 @@ void TsDNADamageCalculator::OutputSDDHeader(G4bool minimalSDD, G4String primaryP
 	G4String incParticle;
 	if (primaryParticle == "proton") incParticle = "2212";
 	else if (primaryParticle == "alpha") incParticle = "100002004";
+	else if (primaryParticle == "gamma") incParticle = "22";
 	G4String meanEnergy = (G4String)std::to_string(energy) + " MeV";
 
 	G4String scoringIndirect = "0";
