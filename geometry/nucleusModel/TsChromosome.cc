@@ -61,11 +61,11 @@ std::vector<std::vector<G4int> > TsChromosome::SplitChromosome(std::vector <std:
 std::vector<std::vector<G4int>> TsChromosome::SplitChromosome(std::map<G4int, std::map<std::pair<G4int, G4int>, G4int>> DSBPairs)
 {
 	std::vector<std::vector<G4int> > SplitChromo = GetChromosomeMatrix();
-	for (G4int i = 0; i < SplitChromo.size(); i++)
+	for (unsigned int i = 0; i < SplitChromo.size(); i++)
 	{
 		for (auto& chrom : DSBPairs)
 		{
-			G4int iChr = chrom.first;
+			unsigned int iChr = chrom.first;
 			for (auto& pairOfBPDSB : DSBPairs[iChr])
 			{
 				G4int initialDamagedBp = pairOfBPDSB.first.first;

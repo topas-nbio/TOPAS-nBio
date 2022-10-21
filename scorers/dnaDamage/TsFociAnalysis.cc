@@ -36,21 +36,21 @@ TsFociAnalysis::~TsFociAnalysis() { }
 std::vector<G4int> TsFociAnalysis::GetNumberOfFoci(std::vector<G4ThreeVector> dsbPositions)
 {
 	std::vector<G4int> numFoci;
-	for (G4int iSize = 0; iSize < fFociSizes.size(); iSize++)
+	for (unsigned int iSize = 0; iSize < fFociSizes.size(); iSize++)
 	{
 		std::vector<G4bool> indexIsAvailable;
-		for (G4int i = 0; i < dsbPositions.size(); i++)
+		for (unsigned int i = 0; i < dsbPositions.size(); i++)
 			indexIsAvailable.push_back(true);
 
 		std::vector<std::vector<G4int>> vectorOfDSBsInEachFocus;
 		std::vector<G4int> dsbIdsInThisFocus;
-		for (G4int i = 0; i < dsbPositions.size(); i++)
+		for (unsigned int i = 0; i < dsbPositions.size(); i++)
 		{
 			if (indexIsAvailable[i])
 			{
 				indexIsAvailable[i] = false;
 				dsbIdsInThisFocus.push_back(i);
-				for (G4int j = 0; j < dsbPositions.size(); j++)
+				for (unsigned int j = 0; j < dsbPositions.size(); j++)
 				{
 					if (indexIsAvailable[j] && GetDistance(dsbPositions[i], dsbPositions[j]) < fFociSizes[iSize] / 2)
 					{
@@ -122,7 +122,7 @@ void TsFociAnalysis::Produce3DImage(std::vector<G4ThreeVector> dsbPositions)
 			}
 		}
 		// Convolves PSF for each DSB position
-		for (G4int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
+		for (unsigned int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
 		{
 			G4int idx = std::floor((dsbPositions[iDsb].x() - fxmin) / dx + 1e-14);
 			G4int idy = std::floor((dsbPositions[iDsb].y() - fymin) / dy + 1e-14);
@@ -164,9 +164,9 @@ void TsFociAnalysis::Produce3DImage(std::vector<G4ThreeVector> dsbPositions)
 
 void TsFociAnalysis::Produce2DImages(std::vector<G4ThreeVector> dsbPositions)
 {
-	for (G4int iRes = 0; iRes < f2DResolutions.size(); iRes++)
+	for (unsigned int iRes = 0; iRes < f2DResolutions.size(); iRes++)
 	{
-		for (G4int iPlane = 0; iPlane < f2DPlanesForFociImage.size(); iPlane++)
+		for (unsigned int iPlane = 0; iPlane < f2DPlanesForFociImage.size(); iPlane++)
 		{
 			// Gets the PSF (Gaussian)
 			G4int halfsize = std::floor(3 * fMicroscopePSFWidth / f2DResolutions[iRes]);
@@ -214,7 +214,7 @@ void TsFociAnalysis::Produce2DImages(std::vector<G4ThreeVector> dsbPositions)
 				}
 
 				// Convolves PSF for each DSB position
-				for (G4int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
+				for (unsigned int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
 				{
 					G4int idx = std::floor((dsbPositions[iDsb].x() - fxmin) / dx + 1e-14);
 					G4int idy = std::floor((dsbPositions[iDsb].y() - fymin) / dy + 1e-14);
@@ -260,7 +260,7 @@ void TsFociAnalysis::Produce2DImages(std::vector<G4ThreeVector> dsbPositions)
 				}
 
 				// Convolves PSF for each DSB position
-				for (G4int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
+				for (unsigned int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
 				{
 					G4int idx = std::floor((dsbPositions[iDsb].x() - fxmin) / dx + 1e-14);
 					G4int idz = std::floor((dsbPositions[iDsb].z() - fzmin) / dz + 1e-14);
@@ -306,7 +306,7 @@ void TsFociAnalysis::Produce2DImages(std::vector<G4ThreeVector> dsbPositions)
 				}
 
 				// Convolves PSF for each DSB position
-				for (G4int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
+				for (unsigned int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
 				{
 					G4int idy = std::floor((dsbPositions[iDsb].y() - fymin) / dy + 1e-14);
 					G4int idz = std::floor((dsbPositions[iDsb].z() - fzmin) / dz + 1e-14);

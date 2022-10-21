@@ -106,9 +106,12 @@ G4VPhysicalVolume* TsLinearDNA::Construct()
         G4RotationMatrix* rot = new G4RotationMatrix();
         rot ->rotateZ(theta);
         
-        G4VPhysicalVolume* pBP = CreatePhysicalVolume(Subcomponent1, j, true, lBp, rot, position, fEnvelopePhys);
-        G4VPhysicalVolume* pSugar1 = CreatePhysicalVolume(Subcomponent2, j, true, lSugarPhosphate1, rot, position, fEnvelopePhys);
-        G4VPhysicalVolume* pSugar2 = CreatePhysicalVolume(Subcomponent3, j, true, lSugarPhosphate2, rot, position, fEnvelopePhys);
+        //G4VPhysicalVolume* pBP = 
+        CreatePhysicalVolume(Subcomponent1, j, true, lBp, rot, position, fEnvelopePhys);
+        //G4VPhysicalVolume* pSugar1 = 
+        CreatePhysicalVolume(Subcomponent2, j, true, lSugarPhosphate1, rot, position, fEnvelopePhys);
+        //G4VPhysicalVolume* pSugar2 = 
+        CreatePhysicalVolume(Subcomponent3, j, true, lSugarPhosphate2, rot, position, fEnvelopePhys);
         
     }
     

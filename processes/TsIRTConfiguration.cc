@@ -758,74 +758,6 @@ void TsIRTConfiguration::PrintReactionsInformation() {
 		for (int k = 0; k < 120; k++ )
 			G4cout << "=";
 		G4cout << G4endl;
-		
-		for ( auto& reactions : temporal[i] ) {
-			if ( i == 1 ) {
-				G4cout << std::setw(7) << " I "
-				<< std::setw(maxLengthOutputReactionParentA) << std::left << outputReactionParentA[n] << " + "
-				<< std::setw(maxLengthOutputReactionParentB) << std::left << outputReactionParentB[n] << " -> "
-				<< std::setw(maxLengthOutputReactionProducts) << std::left << outputReactionProducts[n]
-				<< std::setw(maxLengthOutputKobs) << std::left << outputKobs[n]
-				<< std::setw(maxLengthOutputReactionRadius) << std::left << outputReactionRadius[n]
-				<< std::setw(maxLengthOutputProbability) << std::left << outputProbability[n] <<
-				G4endl;
-			} else if ( i == 2 ) {
-				G4cout << std::setw(7) << " II "
-				<< std::setw(maxLengthOutputReactionParentA) << std::left << outputReactionParentA[n] << " + "
-				<< std::setw(maxLengthOutputReactionParentB) << std::left << outputReactionParentB[n] << " -> "
-				<< std::setw(maxLengthOutputReactionProducts) << std::left << outputReactionProducts[n]
-				<< std::setw(maxLengthOutputKobs) << std::left << outputKobs[n]
-				<< std::setw(maxLengthOutputKdif) << std::left << outputKdif[n]
-				<< std::setw(maxLengthOutputKact) << std::left << outputKact[n]
-				<< std::setw(maxLengthOutputReactionRadius) << std::left << outputReactionRadius[n]
-				<< std::setw(maxLengthOutputProbability) << std::left << outputProbability[n]
-				<< std::setw(maxLengthOutputAlpha) << std::left << outputAlpha[n] <<
-				G4endl;
-			} else if ( i == 3 ) {
-				G4cout << std::setw(7) << " III "
-				<< std::setw(maxLengthOutputReactionParentA) << std::left << outputReactionParentA[n] << " + "
-				<< std::setw(maxLengthOutputReactionParentB) << std::left << outputReactionParentB[n] << " -> "
-				<< std::setw(maxLengthOutputReactionProducts) << std::left << outputReactionProducts[n]
-				<< std::setw(maxLengthOutputKobs) << std::left << outputKobs[n]
-				<< std::setw(maxLengthOutputReactionRadius+3) << std::left << outputReactionRadius[n]
-				<< std::setw(maxLengthOutputReactionRadiusEff+3) << std::left << outputReactionRadiusEff[n]
-				<< std::setw(maxLengthOutputProbability+3) << std::left << outputProbability[n] <<
-				G4endl;
-			} else if ( i == 4 ) {
-				G4cout << std::setw(7) << " IV "
-				<< std::setw(maxLengthOutputReactionParentA) << std::left << outputReactionParentA[n] << " + "
-				<< std::setw(maxLengthOutputReactionParentB) << std::left << outputReactionParentB[n] << " -> "
-				<< std::setw(maxLengthOutputReactionProducts) << std::left << outputReactionProducts[n]
-				<< std::setw(maxLengthOutputKobs) << std::left << outputKobs[n]
-				<< std::setw(maxLengthOutputKdif) << std::left << outputKdif[n]
-				<< std::setw(maxLengthOutputKact) << std::left << outputKact[n]
-				<< std::setw(maxLengthOutputReactionRadius) << std::left << outputReactionRadius[n]
-				<< std::setw(maxLengthOutputReactionRadiusEff) << std::left << outputReactionRadiusEff[n]
-				<< std::setw(maxLengthOutputReactionRadiusEff1) << std::left << outputReactionRadiusEff1[n]
-				<< std::setw(maxLengthOutputProbability) << std::left << outputProbability[n] <<
-				G4endl;
-			} else if ( i == 5 ) {
-				G4cout << std::setw(7) << " V "
-				<< std::setw(maxLengthOutputReactionParentA) << std::left << outputReactionParentA[n] << " + "
-				<< std::setw(maxLengthOutputReactionParentB) << std::left << outputReactionParentB[n] << " -> "
-				<< std::setw(maxLengthOutputReactionProducts) << std::left << outputReactionProducts[n]
-				<< std::setw(maxLengthOutputKobs) << std::left << outputKobs[n]
-				<< std::setw(maxLengthOutputReactionRadius) << std::left << outputReactionRadius[n]
-				<< std::setw(maxLengthOutputReactionRadiusEff) << std::left << outputReactionRadiusEff[n]
-				<< std::setw(maxLengthOutputProbability) << std::left << outputProbability[n] <<
-				G4endl;
-			} else if ( i == 6 ) {
-				G4String scavModel = outputModel[n] == "false" ? " Single factor " : " Double factor ";
-				G4cout << std::setw(7) << " VI "
-				<< std::setw(maxLengthOutputReactionParentA) << std::left << outputReactionParentA[n] << " + "
-				<< std::setw(maxLengthOutputReactionParentB) << std::left << outputReactionParentB[n] << " -> "
-				<< std::setw(maxLengthOutputReactionProducts) << std::left << outputReactionProducts[n]
-				<< std::setw(maxLengthOutputKobs) << std::left << outputScav[n] << std::setw(15) << scavModel <<
-				G4endl;
-			}
-			n++;
-		}
-		G4cout << G4endl;
 	}
 	
 	delete[] title;
@@ -1377,12 +1309,12 @@ void TsIRTConfiguration::AdjustReactionRateForTemperature(G4double temperatureIn
 	for (size_t i = 0 ; i < fReactions.size() ; i++) {
 		G4String ReactA = fMoleculesName[fReactions[i].reactorA];
 		G4String ReactB = fMoleculesName[fReactions[i].reactorB];
-		G4bool isReaction = false;
+		//G4bool isReaction = false;
 		
 		for (size_t j = 0 ; j < reactions.size() ; j++) {
 			if (((ReactA == reactions[j][1]) && (ReactB == reactions[j][2]))
 				||  ((ReactA == reactions[j][2]) && (ReactB == reactions[j][1]))) {
-				isReaction = true;
+				//isReaction = true;
 				fReactions[i].kobs /= fPm->GetUnitValue("/M/s");
 				fReactions[i].kact /= fPm->GetUnitValue("/M/s");
 				fReactions[i].kdif /= fPm->GetUnitValue("/M/s");
@@ -2117,7 +2049,8 @@ void TsIRTConfiguration::TestSampling(G4int indexOfReaction, G4int nHistories) {
 G4double TsIRTConfiguration::SampleIRTPartiallyDiffusionControlled(TsMolecule molA, TsMolecule molB, G4int indexOfReaction) {
 	G4double r0 = (molA.position-molB.position).mag();
 	
-	G4double irt, prob = 0.0;
+	G4double irt = 0.0;
+	//G4double prob = 0.0;
 	if ( fReactions[indexOfReaction].reactionType == 2 ) {
 		// From paper Plante 2017, Considerations for ...
 		G4double alpha = -(fReactions[indexOfReaction]).alpha;
@@ -2134,7 +2067,7 @@ G4double TsIRTConfiguration::SampleIRTPartiallyDiffusionControlled(TsMolecule mo
 		G4double W = G4UniformRand();
 		if ( W < Winf ) {
 			irt = brents_fun(molA, molB, indexOfReaction, -W);
-			prob = W;
+			//prob = W;
 		} else {
 			irt = -1.0*ps;
 		}
@@ -2814,7 +2747,7 @@ G4double TsIRTConfiguration::IonicRate(G4double IonicStrength, TsMolecularReacti
 }
 
 
-G4int TsIRTConfiguration::roots(double *a,int n,double *wr,double *wi) {
+void TsIRTConfiguration::roots(double *a,int n,double *wr,double *wi) {
 	double sq,b2,c,disc;
 	int i,numroots;
 	
@@ -2852,7 +2785,6 @@ G4int TsIRTConfiguration::roots(double *a,int n,double *wr,double *wi) {
 		wi[0] = 0.0;
 		numroots++;
 	}
-	return numroots;
 }
 
 
@@ -3044,7 +2976,7 @@ void TsIRTConfiguration::get_quads(double *a,int n,double *quad,double *x) {
 std::vector<double> TsIRTConfiguration::GetRoots(int Order, std::vector<double> Exponents) {
 	
 	double a[21],x[21],wr[21],wi[21],quad[2];
-	int n,i,numr;
+	int n,i;
 	
 	n = Order;
 	if ((n < 1) || (n > 20)) {
@@ -3068,7 +3000,7 @@ std::vector<double> TsIRTConfiguration::GetRoots(int Order, std::vector<double> 
 	quad[1] = 3.14159e-1;
 	
 	get_quads(a,n,quad,x);
-	numr = roots(x,n,wr,wi);
+	roots(x,n,wr,wi);
 	std::vector<double> Results;
 	
 	for (i=0;i<n;i++) {

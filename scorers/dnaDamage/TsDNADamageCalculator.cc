@@ -74,7 +74,7 @@ void TsDNADamageCalculator::ComputeStrandBreaks(std::vector<TsHitInDNA*> hits)
 	fDSB3DPositions.clear();
 
 	// Gets types of damage from the hits vector
-	for (G4int i = 0; i < hits.size(); i++)
+	for (unsigned int i = 0; i < hits.size(); i++)
 	{
 		G4int basePairID = hits[i]->GetBasePairID();
 		G4double edep = hits[i]->GetEdep();
@@ -426,7 +426,7 @@ std::map<G4int, std::vector<G4int>> TsDNADamageCalculator::GetDamageSites()
 			// Gets maximum damage and its bp index
 			G4double m = 0;
 			G4int index = 0;
-			for (G4int i = 0; i < linearAccumulatedDamage.size(); i++)
+			for (unsigned int i = 0; i < linearAccumulatedDamage.size(); i++)
 			{
 				if (m < linearAccumulatedDamage[i])
 				{
@@ -481,7 +481,7 @@ void TsDNADamageCalculator::ExcludeShortDNAFragments(std::map<G4int, std::map<st
 
 		G4int inviableFragments = 0;
 		std::vector<G4int> allFreeEndsOfThisChromosome = initialBasePairsInEachChromosome[iChr];
-		for (G4int i = 1; i < allFreeEndsOfThisChromosome.size(); i++)
+		for (unsigned int i = 1; i < allFreeEndsOfThisChromosome.size(); i++)
 		{
 			G4int fragmentSize = std::min(maxBp, allFreeEndsOfThisChromosome[i] - allFreeEndsOfThisChromosome[i-1]);
 			G4bool isInviableFragment = (fragmentSize < fLowerThresholdForFragmentDetection || fragmentSize > fUpperThresholdForFragmentDetection);
@@ -577,7 +577,7 @@ void TsDNADamageCalculator::OutputSDDHeader(G4bool minimalSDD, G4String primaryP
 	outFile << "Volumes, 0,5,5,5,0,0,0,1,4.65,4.65,4.65,0,0,0;\n";
 	outFile << "Chromosome sizes, " << chromosomeContents.size() << ",";
 	G4double totalDNAContent = 0;
-	for (G4int i = 0; i < chromosomeContents.size(); i++)
+	for (unsigned int i = 0; i < chromosomeContents.size(); i++)
 	{
 		outFile << (G4double)chromosomeContents[i] / 1e6;
 		totalDNAContent += chromosomeContents[i];
@@ -613,7 +613,7 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 	{
 		G4int iChr = chrMap.first;
 		std::vector<G4int> ibpsTakenForThisChromosome;
-		for (G4int i = 0; i < damageSites[iChr].size(); i++)
+		for (unsigned int i = 0; i < damageSites[iChr].size(); i++)
 		{
 			G4int initialBpId = damageSites[iChr][i];
 			// Determines number and type of damages in block

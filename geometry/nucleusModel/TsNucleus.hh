@@ -97,7 +97,7 @@ private:
 	G4String fHistoneMaterialName;
 
 	// Selecting Scoring components
-	G4bool fScoreOnBases, fScoreOnBackbones, fScoreOnHydrationShell, fScoreOnHistones;
+	//G4bool fScoreOnBases, fScoreOnBackbones, fScoreOnHydrationShell, fScoreOnHistones;
 };
 
 #endif

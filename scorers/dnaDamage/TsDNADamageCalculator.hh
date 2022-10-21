@@ -145,8 +145,8 @@ private:
 	G4int multiplewithquasidirect = 5;
 
 	// Codes for components ID
-	G4int base = 0;
-	G4int backbone = 1;
+//	G4int base = 0;
+//	G4int backbone = 1;
 };
 
 #endif

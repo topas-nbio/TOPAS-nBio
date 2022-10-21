@@ -123,7 +123,7 @@ void TsScoreDNADamageSBSNucleus::ReadGeometryAndCopyNumberMaps()
 	G4int nBasePairsInNucleus;
 	G4int nVoxels;
 	G4double voxelSize;
-	G4double minx, miny, minz;
+	//G4double minx, miny, minz;
 
 	std::ifstream infile;
 	infile.open(fGeometryInfoFile);
@@ -143,9 +143,9 @@ void TsScoreDNADamageSBSNucleus::ReadGeometryAndCopyNumberMaps()
 		if (input == "Voxel3DrepeatTimes:")				infile >> fnVoxelIs3DRepeated;
 		if (input == "VoxelSize(um):")					infile >> voxelSize;
 		voxelSize *= um;
-		minx = -voxelSize * fnVoxelIs3DRepeated / 2;
-		miny = -voxelSize * fnVoxelIs3DRepeated / 2;
-		minz = -voxelSize * fnVoxelIs3DRepeated / 2;
+	//	minx = -voxelSize * fnVoxelIs3DRepeated / 2;
+	//	miny = -voxelSize * fnVoxelIs3DRepeated / 2;
+	//	minz = -voxelSize * fnVoxelIs3DRepeated / 2;
 	}
 	infile.close();
 
