@@ -36,21 +36,21 @@ TsFociAnalysis::~TsFociAnalysis() { }
 std::vector<G4int> TsFociAnalysis::GetNumberOfFoci(std::vector<G4ThreeVector> dsbPositions)
 {
 	std::vector<G4int> numFoci;
-	for (G4int iSize = 0; iSize < fFociSizes.size(); iSize++)
+	for (unsigned int iSize = 0; iSize < fFociSizes.size(); iSize++)
 	{
 		std::vector<G4bool> indexIsAvailable;
-		for (G4int i = 0; i < dsbPositions.size(); i++)
+		for (unsigned int i = 0; i < dsbPositions.size(); i++)
 			indexIsAvailable.push_back(true);
 
 		std::vector<std::vector<G4int>> vectorOfDSBsInEachFocus;
 		std::vector<G4int> dsbIdsInThisFocus;
-		for (G4int i = 0; i < dsbPositions.size(); i++)
+		for (unsigned int i = 0; i < dsbPositions.size(); i++)
 		{
 			if (indexIsAvailable[i])
 			{
 				indexIsAvailable[i] = false;
 				dsbIdsInThisFocus.push_back(i);
-				for (G4int j = 0; j < dsbPositions.size(); j++)
+				for (unsigned int j = 0; j < dsbPositions.size(); j++)
 				{
 					if (indexIsAvailable[j] && GetDistance(dsbPositions[i], dsbPositions[j]) < fFociSizes[iSize] / 2)
 					{
@@ -77,24 +77,15 @@ void TsFociAnalysis::Produce3DImage(std::vector<G4ThreeVector> dsbPositions)
 	G4int nx = std::floor((fxmax-fxmin) / dx + 1e-14) + 1;
 	G4int ny = std::floor((fymax-fymin) / dy + 1e-14) + 1;
 	G4int nz = std::floor((fzmax-fzmin) / dz + 1e-14) + 1;
-	G4float image3d[nx][ny][nz];
+	std::vector<std::vector<std::vector<G4float> > > image3d(nx, std::vector<std::vector<G4float>>(ny, std::vector<G4float>(nz, 0.0)));
 
-	// Initialization
-	for (G4int i = 0; i < nx; i++)
-	{
-		for (G4int j = 0; j < ny; j++)
-		{
-			for (G4int k = 0; k < nz; k++)
-				image3d[i][j][k] = 0.0;
-		}
-	}
 	// Gets the PSF (Gaussian)
 	if (strstr(fMicroscopePSFShape, "Gaussian") != NULL)
 	{
 		G4int halfsize = std::floor(3 * fMicroscopePSFWidth / (G4float)f3DResolution);
 		if (halfsize < 3) halfsize = 3;
 		G4int nkernel = 2 * halfsize + 1;
-		G4float psf[nkernel][nkernel][nkernel];
+		std::vector<std::vector<std::vector<G4float>>> psf(nkernel, std::vector<std::vector<G4float>>(nkernel, std::vector<G4float>(nkernel, 0.0)));
 		G4float minkernel = -halfsize * (G4float)f3DResolution;
 		G4float sum = 0;
 		for (G4int ix = 0; ix < nkernel; ix++)
@@ -122,7 +113,7 @@ void TsFociAnalysis::Produce3DImage(std::vector<G4ThreeVector> dsbPositions)
 			}
 		}
 		// Convolves PSF for each DSB position
-		for (G4int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
+		for (unsigned int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
 		{
 			G4int idx = std::floor((dsbPositions[iDsb].x() - fxmin) / dx + 1e-14);
 			G4int idy = std::floor((dsbPositions[iDsb].y() - fymin) / dy + 1e-14);
@@ -164,15 +155,15 @@ void TsFociAnalysis::Produce3DImage(std::vector<G4ThreeVector> dsbPositions)
 
 void TsFociAnalysis::Produce2DImages(std::vector<G4ThreeVector> dsbPositions)
 {
-	for (G4int iRes = 0; iRes < f2DResolutions.size(); iRes++)
+	for (unsigned int iRes = 0; iRes < f2DResolutions.size(); iRes++)
 	{
-		for (G4int iPlane = 0; iPlane < f2DPlanesForFociImage.size(); iPlane++)
+		for (unsigned int iPlane = 0; iPlane < f2DPlanesForFociImage.size(); iPlane++)
 		{
 			// Gets the PSF (Gaussian)
 			G4int halfsize = std::floor(3 * fMicroscopePSFWidth / f2DResolutions[iRes]);
 			if (halfsize < 3) halfsize = 3;
 			G4int nkernel = 2 * halfsize + 1;
-			G4double psf[nkernel][nkernel];
+			std::vector<std::vector<G4float>> psf(nkernel, std::vector<G4float>(nkernel, 0.0));
 
 			if (strstr(fMicroscopePSFShape, "Gaussian") != NULL)
 			{
@@ -205,16 +196,10 @@ void TsFociAnalysis::Produce2DImages(std::vector<G4ThreeVector> dsbPositions)
 				G4int nx = std::floor((fxmax-fxmin) / dx + 1e-14) + 1;
 				G4int ny = std::floor((fymax-fymin) / dy + 1e-14) + 1;
 
-				G4double image2d[nx][ny];
-				// Initialization
-				for (G4int i = 0; i < nx; i++)
-				{
-					for (G4int j = 0; j < ny; j++)
-						image2d[i][j] = 0.0;
-				}
+				std::vector<std::vector<G4double>> image2d(nx, std::vector<G4double>(ny, 0.0));
 
 				// Convolves PSF for each DSB position
-				for (G4int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
+				for (unsigned int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
 				{
 					G4int idx = std::floor((dsbPositions[iDsb].x() - fxmin) / dx + 1e-14);
 					G4int idy = std::floor((dsbPositions[iDsb].y() - fymin) / dy + 1e-14);
@@ -251,16 +236,10 @@ void TsFociAnalysis::Produce2DImages(std::vector<G4ThreeVector> dsbPositions)
 				G4int nx = std::floor((fxmax-fxmin) / dx + 1e-14) + 1;
 				G4int nz = std::floor((fzmax-fzmin) / dz + 1e-14) + 1;
 
-				G4double image2d[nx][nz];
-				// Initialization
-				for (G4int i = 0; i < nx; i++)
-				{
-					for (G4int j = 0; j < nz; j++)
-						image2d[i][j] = 0;
-				}
+				std::vector<std::vector<G4double>> image2d(nx, std::vector<G4double>(nz, 0.0));
 
 				// Convolves PSF for each DSB position
-				for (G4int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
+				for (unsigned int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
 				{
 					G4int idx = std::floor((dsbPositions[iDsb].x() - fxmin) / dx + 1e-14);
 					G4int idz = std::floor((dsbPositions[iDsb].z() - fzmin) / dz + 1e-14);
@@ -297,16 +276,10 @@ void TsFociAnalysis::Produce2DImages(std::vector<G4ThreeVector> dsbPositions)
 				G4int ny = std::floor((fymax-fymin) / dy + 1e-14) + 1;
 				G4int nz = std::floor((fzmax-fzmin) / dz + 1e-14) + 1;
 
-				G4double image2d[ny][nz];
-				// Initialization
-				for (G4int i = 0; i < ny; i++)
-				{
-					for (G4int j = 0; j < nz; j++)
-						image2d[i][j] = 0;
-				}
+				std::vector<std::vector<G4double>> image2d(ny, std::vector<G4double>(nz, 0.0));
 
 				// Convolves PSF for each DSB position
-				for (G4int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
+				for (unsigned int iDsb = 0; iDsb < dsbPositions.size(); iDsb++)
 				{
 					G4int idy = std::floor((dsbPositions[iDsb].y() - fymin) / dy + 1e-14);
 					G4int idz = std::floor((dsbPositions[iDsb].z() - fzmin) / dz + 1e-14);

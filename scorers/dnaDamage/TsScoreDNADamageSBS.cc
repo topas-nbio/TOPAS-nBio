@@ -60,9 +60,10 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 	fBasePairDepth = 0;
 	if (fPm->ParameterExists(GetFullParmName("BasePairPositionAtGeometricHierarchy")))
 		fBasePairDepth = fPm->GetIntegerParameter(GetFullParmName("BasePairPositionAtGeometricHierarchy"));
-	G4String* strand1Materials;
-	G4String* strand2Materials;
-	G4int strand1Length, strand2Length;
+	G4String* strand1Materials = NULL;
+	G4String* strand2Materials = NULL;
+	G4int strand1Length = 0;
+	G4int strand2Length = 0;
 	if (fPm->ParameterExists(GetFullParmName("Strand1MaterialNames")))
 	{
 		strand1Materials = fPm->GetStringVector(GetFullParmName("Strand1MaterialNames"));
@@ -185,7 +186,7 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 		if (fGet2DFociImage)
 		{
 			G4String* planes;
-			G4int vectorLength, strand2Length;
+			G4int vectorLength = 0;
 			if (fPm->ParameterExists(GetFullParmName("2DFociImagePlanes")))
 			{
 				planes = fPm->GetStringVector(GetFullParmName("2DFociImagePlanes"));
@@ -521,7 +522,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	// Checks materials for determining if step is happening in DNA components
 	G4Material* material = aStep->GetPreStepPoint()->GetMaterial();
 	G4bool materialMatched = false;
-	for (G4int i = 0; i < fStrand1Materials.size(); i++)
+	for (unsigned int i = 0; i < fStrand1Materials.size(); i++)
 	{
 		if (material == fStrand1Materials[i])
 		{
@@ -531,7 +532,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	}
 	if (!materialMatched)
 	{
-		for (G4int i = 0; i < fStrand2Materials.size(); i++)
+		for (unsigned int i = 0; i < fStrand2Materials.size(); i++)
 		{
 			if (material == fStrand2Materials[i])
 			{
@@ -546,7 +547,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 		std::vector<G4int> hierarchicalIDs;
 		// Gets IDs in the different hierarchical levels
 		hierarchicalIDs.push_back(touchable->GetVolume(fBasePairDepth)->GetCopyNo());
-		for (G4int i = 1; i < fHierarchicalLevels.size(); i++)
+		for (unsigned int i = 1; i < fHierarchicalLevels.size(); i++)
 			hierarchicalIDs.push_back(touchable->GetCopyNumber(fBasePairDepth + i));
 
 		std::pair<G4int, G4int> compAndStrandID = GetDNAComponentAndStrandID(touchable);
@@ -700,7 +701,7 @@ void TsScoreDNADamageSBS::UserHookForEndOfRun()
 	G4cout << "--------------------" << G4endl;
 	G4cout << "Number of events comprised in Run: " << fCollectionsOfHits.size() << G4endl;
 	G4int numberOfLesions = 0;
-	for (G4int i = 0; i < fCollectionsOfHits.size(); i++)
+	for (unsigned int i = 0; i < fCollectionsOfHits.size(); i++)
 	{
 		G4int lesionsThisEvent = Analyze(fCollectionsOfHits[i], i);
 		numberOfLesions += lesionsThisEvent;
@@ -712,6 +713,7 @@ void TsScoreDNADamageSBS::UserHookForEndOfRun()
 		if (fGet3DFociImage) fFociAnalyzer->Produce3DImage(fDSBPositionsInRun);
 		if (fGet2DFociImage) fFociAnalyzer->Produce2DImages(fDSBPositionsInRun);
 	}
+	G4cout << "Number of lesions in Run: " << numberOfLesions << G4endl;
 	fCollectionsOfHits.clear();
 	fEventsEdep.clear();
 }
@@ -760,7 +762,7 @@ G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
 	if (fScoreFoci)
 	{
 		std::vector<G4ThreeVector> dsbPosInEvent = fDamageCalculator->GetDSB3DPositions();
-		for (G4int i = 0; i < dsbPosInEvent.size(); i++)
+		for (unsigned int i = 0; i < dsbPosInEvent.size(); i++)
 			fDSBPositionsInRun.push_back(dsbPosInEvent[i]);
 		std::vector<G4int> numFoci = fFociAnalyzer->GetNumberOfFoci(fDSBPositionsInRun);
 		if (numFoci.size() >= 1) fNumFoci1 = numFoci[0];
@@ -776,7 +778,7 @@ G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
 void TsScoreDNADamageSBS::CalculateYields()
 {
 	G4double totalContentOfDNA = 0;
-	for (G4int i = 0; i < fChromosomeContents.size(); i++)
+	for (unsigned int i = 0; i < fChromosomeContents.size(); i++)
 		totalContentOfDNA += fChromosomeContents[i];
 
 	fYBaseDam = (G4double)fNumBaseDamage / fDoseInThisExposure / totalContentOfDNA * 1e9;
@@ -802,11 +804,11 @@ void TsScoreDNADamageSBS::AbsorbResultsFromWorkerScorer(TsVScorer* workerScorer)
 	TsVNtupleScorer::AbsorbResultsFromWorkerScorer(workerScorer);
 	TsScoreDNADamageSBS* workerMTScorer = dynamic_cast<TsScoreDNADamageSBS*>(workerScorer);
 
-	for(G4int i=0; i < workerMTScorer->fCollectionsOfHits.size(); i++)
+	for(unsigned int i=0; i < workerMTScorer->fCollectionsOfHits.size(); i++)
 		fCollectionsOfHits.push_back(workerMTScorer->fCollectionsOfHits[i]);
 	workerMTScorer->fCollectionsOfHits.clear();
 
-	for(G4int i=0; i < workerMTScorer->fEventsEdep.size(); i++)
+	for(unsigned int i=0; i < workerMTScorer->fEventsEdep.size(); i++)
 		fEventsEdep.push_back(workerMTScorer->fEventsEdep[i]);
 	workerMTScorer->fEventsEdep.clear();
 }

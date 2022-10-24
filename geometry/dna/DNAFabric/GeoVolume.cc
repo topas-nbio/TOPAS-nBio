@@ -211,14 +211,14 @@ G4LogicalVolume* GeoVolume::BuildLogicFiber(std::vector<std::vector<DNAPlacement
             posSugarTMP2 += minusForFiber;
 
             // Placements
-            G4PVPlacement* sTMP1 = new G4PVPlacement(0,G4ThreeVector(),volMap->at("sugarTMP1")[j],"backboneTMP1",volMap->at("sugarTMP1Water")[j],false,count);
+            new G4PVPlacement(0,G4ThreeVector(),volMap->at("sugarTMP1")[j],"backboneTMP1",volMap->at("sugarTMP1Water")[j],false,count);
             (*fpDnaMoleculePositions)["Phosphate"].push_back(std::vector<double>());
             (*fpDnaMoleculePositions)["Phosphate"].back().push_back(posSugarTMP1.getX());
             (*fpDnaMoleculePositions)["Phosphate"].back().push_back(posSugarTMP1.getY());
             (*fpDnaMoleculePositions)["Phosphate"].back().push_back(posSugarTMP1.getZ());
             (*fpDnaMoleculePositions)["Phosphate"].back().push_back(count);
             (*fpDnaMoleculePositions)["Phosphate"].back().push_back(1);
-            G4PVPlacement* sTHF1 = new G4PVPlacement(0,G4ThreeVector(),volMap->at("sugarTHF1")[j],"backboneTHF1",volMap->at("sugarTHF1Water")[j],false,count);
+            new G4PVPlacement(0,G4ThreeVector(),volMap->at("sugarTHF1")[j],"backboneTHF1",volMap->at("sugarTHF1Water")[j],false,count);
             (*fpDnaMoleculePositions)["Desoxyribose"].push_back(std::vector<double>());
             (*fpDnaMoleculePositions)["Desoxyribose"].back().push_back(posSugarTHF1.getX());
             (*fpDnaMoleculePositions)["Desoxyribose"].back().push_back(posSugarTHF1.getY());
@@ -226,20 +226,16 @@ G4LogicalVolume* GeoVolume::BuildLogicFiber(std::vector<std::vector<DNAPlacement
             (*fpDnaMoleculePositions)["Desoxyribose"].back().push_back(count);
             (*fpDnaMoleculePositions)["Desoxyribose"].back().push_back(1);
 
-            G4PVPlacement* b1C;
-            G4PVPlacement* b2G;
-            G4PVPlacement* b1T;
-            G4PVPlacement* b2A;
             if(j%2) // odd
             {
-                b1C = new G4PVPlacement(0,G4ThreeVector(),volMap->at("base1")[j],"base_cytosine",volMap->at("base1Water")[j],false,count);
+                new G4PVPlacement(0,G4ThreeVector(),volMap->at("base1")[j],"base_cytosine",volMap->at("base1Water")[j],false,count);
                 (*fpDnaMoleculePositions)["Cytosine"].push_back(std::vector<double>());
                 (*fpDnaMoleculePositions)["Cytosine"].back().push_back(posBase1.getX());
                 (*fpDnaMoleculePositions)["Cytosine"].back().push_back(posBase1.getY());
                 (*fpDnaMoleculePositions)["Cytosine"].back().push_back(posBase1.getZ());
                 (*fpDnaMoleculePositions)["Cytosine"].back().push_back(count);
                 (*fpDnaMoleculePositions)["Cytosine"].back().push_back(1);
-                b2G = new G4PVPlacement(0,G4ThreeVector(),volMap->at("base2")[j],"base_guanine",volMap->at("base2Water")[j],false,count);
+                new G4PVPlacement(0,G4ThreeVector(),volMap->at("base2")[j],"base_guanine",volMap->at("base2Water")[j],false,count);
                 (*fpDnaMoleculePositions)["Guanine"].push_back(std::vector<double>());
                 (*fpDnaMoleculePositions)["Guanine"].back().push_back(posBase2.getX());
                 (*fpDnaMoleculePositions)["Guanine"].back().push_back(posBase2.getY());
@@ -249,14 +245,14 @@ G4LogicalVolume* GeoVolume::BuildLogicFiber(std::vector<std::vector<DNAPlacement
             }
             else // even
             {
-                b1T = new G4PVPlacement(0,G4ThreeVector(),volMap->at("base1")[j],"base_thymine",volMap->at("base1Water")[j],false,count);
+                new G4PVPlacement(0,G4ThreeVector(),volMap->at("base1")[j],"base_thymine",volMap->at("base1Water")[j],false,count);
                 (*fpDnaMoleculePositions)["Thymine"].push_back(std::vector<double>());
                 (*fpDnaMoleculePositions)["Thymine"].back().push_back(posBase1.getX());
                 (*fpDnaMoleculePositions)["Thymine"].back().push_back(posBase1.getY());
                 (*fpDnaMoleculePositions)["Thymine"].back().push_back(posBase1.getZ());
                 (*fpDnaMoleculePositions)["Thymine"].back().push_back(count);
                 (*fpDnaMoleculePositions)["Thymine"].back().push_back(1);
-                b2A = new G4PVPlacement(0,G4ThreeVector(),volMap->at("base2")[j],"base_adenine",volMap->at("base2Water")[j],false,count);
+                new G4PVPlacement(0,G4ThreeVector(),volMap->at("base2")[j],"base_adenine",volMap->at("base2Water")[j],false,count);
                 (*fpDnaMoleculePositions)["Adenine"].push_back(std::vector<double>());
                 (*fpDnaMoleculePositions)["Adenine"].back().push_back(posBase2.getX());
                 (*fpDnaMoleculePositions)["Adenine"].back().push_back(posBase2.getY());
@@ -265,14 +261,14 @@ G4LogicalVolume* GeoVolume::BuildLogicFiber(std::vector<std::vector<DNAPlacement
                 (*fpDnaMoleculePositions)["Adenine"].back().push_back(2);
             }
 
-            G4PVPlacement* sTHF2 = new G4PVPlacement(0,G4ThreeVector(),volMap->at("sugarTHF2")[j],"backboneTHF2",volMap->at("sugarTHF2Water")[j],false,count);
+            new G4PVPlacement(0,G4ThreeVector(),volMap->at("sugarTHF2")[j],"backboneTHF2",volMap->at("sugarTHF2Water")[j],false,count);
             (*fpDnaMoleculePositions)["Desoxyribose"].push_back(std::vector<double>());
             (*fpDnaMoleculePositions)["Desoxyribose"].back().push_back(posSugarTHF2.getX());
             (*fpDnaMoleculePositions)["Desoxyribose"].back().push_back(posSugarTHF2.getY());
             (*fpDnaMoleculePositions)["Desoxyribose"].back().push_back(posSugarTHF2.getZ());
             (*fpDnaMoleculePositions)["Desoxyribose"].back().push_back(count);
             (*fpDnaMoleculePositions)["Desoxyribose"].back().push_back(2);
-            G4PVPlacement* sTMP2 = new G4PVPlacement(0,G4ThreeVector(),volMap->at("sugarTMP2")[j],"backboneTMP2",volMap->at("sugarTMP2Water")[j],false,count);
+            new G4PVPlacement(0,G4ThreeVector(),volMap->at("sugarTMP2")[j],"backboneTMP2",volMap->at("sugarTMP2Water")[j],false,count);
             (*fpDnaMoleculePositions)["Phosphate"].push_back(std::vector<double>());
             (*fpDnaMoleculePositions)["Phosphate"].back().push_back(posSugarTMP2.getX());
             (*fpDnaMoleculePositions)["Phosphate"].back().push_back(posSugarTMP2.getY());
@@ -280,12 +276,12 @@ G4LogicalVolume* GeoVolume::BuildLogicFiber(std::vector<std::vector<DNAPlacement
             (*fpDnaMoleculePositions)["Phosphate"].back().push_back(count);
             (*fpDnaMoleculePositions)["Phosphate"].back().push_back(2);
 
-            G4PVPlacement* sTMP1W = new G4PVPlacement(0,posSugarTMP1,volMap->at("sugarTMP1Water")[j],"sugarTMP1Hydra",logicFiber,false,count);
-            G4PVPlacement* sTHF1W = new G4PVPlacement(0,posSugarTHF1,volMap->at("sugarTHF1Water")[j],"sugarTHF1Hydra",logicFiber,false,count);
-            G4PVPlacement* b1W = new G4PVPlacement(0,posBase1,volMap->at("base1Water")[j],"base1Hydra",logicFiber,false,count);
-            G4PVPlacement* b2W = new G4PVPlacement(0,posBase2,volMap->at("base2Water")[j],"base2Hydra",logicFiber,false,count);
-            G4PVPlacement* sTHF2W = new G4PVPlacement(0,posSugarTHF2,volMap->at("sugarTHF2Water")[j],"sugarTHF2Hydra",logicFiber,false,count);
-            G4PVPlacement* sTMP2W = new G4PVPlacement(0,posSugarTMP2,volMap->at("sugarTMP2Water")[j],"sugarTMP2Hydra",logicFiber,false,count);
+            new G4PVPlacement(0,posSugarTMP1,volMap->at("sugarTMP1Water")[j],"sugarTMP1Hydra",logicFiber,false,count);
+            new G4PVPlacement(0,posSugarTHF1,volMap->at("sugarTHF1Water")[j],"sugarTHF1Hydra",logicFiber,false,count);
+            new G4PVPlacement(0,posBase1,volMap->at("base1Water")[j],"base1Hydra",logicFiber,false,count);
+            new G4PVPlacement(0,posBase2,volMap->at("base2Water")[j],"base2Hydra",logicFiber,false,count);
+            new G4PVPlacement(0,posSugarTHF2,volMap->at("sugarTHF2Water")[j],"sugarTHF2Hydra",logicFiber,false,count);
+            new G4PVPlacement(0,posSugarTMP2,volMap->at("sugarTMP2Water")[j],"sugarTMP2Hydra",logicFiber,false,count);
 
             ++count;
         }

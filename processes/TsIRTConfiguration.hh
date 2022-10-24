@@ -88,7 +88,7 @@ public:
 	
 	G4double GetIonicStrength(std::vector<G4double>);
 	
-	G4int roots(double*,int, double*, double*);
+	void roots(double*,int, double*, double*);
 	
 	void deflate(double*,int, double*,double*, double *);
 	

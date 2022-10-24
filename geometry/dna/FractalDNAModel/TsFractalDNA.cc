@@ -142,7 +142,8 @@ G4VPhysicalVolume* TsFractalDNA::Construct()
     pLoop.resize(TP);
 
     G4cout << "Number of Fibers " << TP << G4endl;
-    G4double xshift = 0, yshift = 0, zshift = 0;
+    //G4double xshift = 0, yshift = 0;
+    G4double zshift = 0;
     
     // Full genome model of 172032 fibers with ~6 billion BPs
 
@@ -530,7 +531,7 @@ G4VPhysicalVolume* TsFractalDNA::Construct()
             
                 G4LogicalVolume* lFiber = fGeoManager->BuildLogicFiber(true);
             
-                G4VPhysicalVolume* pFiber = CreatePhysicalVolume("Fiber", lFiber, pLoop[i]);
+                CreatePhysicalVolume("Fiber", lFiber, pLoop[i]);
             }
         
         }

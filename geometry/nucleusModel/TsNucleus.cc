@@ -1076,6 +1076,9 @@ void TsNucleus::PlaceDNA(vector<G4ThreeVector> &newPath, G4VPhysicalVolume* phys
 
 void TsNucleus::UpdateForNewRun(G4bool force = true)
 {
+	if (force == false) 
+		return;
+
 	if (fRotateNucleusForEachRun)
 	{
 		G4cout << "TsVGeometryComponent::UpdateForNewRun called for component: " << GetNameWithCopyId() << " - nucleus rotated." << G4endl;
