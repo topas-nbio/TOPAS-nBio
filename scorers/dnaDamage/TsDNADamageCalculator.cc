@@ -552,6 +552,7 @@ void TsDNADamageCalculator::OutputSDDHeader(G4bool minimalSDD, G4String primaryP
 	G4String incParticle;
 	if (primaryParticle == "proton") incParticle = "2212";
 	else if (primaryParticle == "alpha") incParticle = "100002004";
+	else if (primaryParticle == "gamma") incParticle = "22";
 	G4String meanEnergy = (G4String)std::to_string(energy) + " MeV";
 
 	G4String scoringIndirect = "0";
@@ -697,10 +698,10 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 				// Field 7. Damage specification
 				for (G4int j = 0; j < fNumberOfBasePairForDSB; j++)
 				{
-					// Starting with bases of strand 1
+					// Starting with backbones of strand 1
 					if (fDamageMap[iChr][initialBpId + j][0] != 0)
 					{
-						G4int typeDamage = fDamageMap[iChr][initialBpId + j][0];
+						G4int typeDamage = fDamageMap[iChr][initialBpId + j][2];
 						if (typeDamage == nodamage) typeDamage = 0;
 						if (typeDamage == 4) typeDamage = 1;
 						if (typeDamage == 5) typeDamage = 3;
@@ -709,10 +710,10 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 				}
 				for (G4int j = 0; j < fNumberOfBasePairForDSB; j++)
 				{
-					// Backbones of strand 1
+					// Bases of strand 1
 					if (fDamageMap[iChr][initialBpId + j][2] != 0)
 					{
-						G4int typeDamage = fDamageMap[iChr][initialBpId + j][2];
+						G4int typeDamage = fDamageMap[iChr][initialBpId + j][0];
 						if (typeDamage == nodamage) typeDamage = 0;
 						if (typeDamage == 4) typeDamage = 1;
 						if (typeDamage == 5) typeDamage = 3;
@@ -721,10 +722,10 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 				}
 				for (G4int j = 0; j < fNumberOfBasePairForDSB; j++)
 				{
-					// Backbones of strand 2
+					// Bases of strand 2
 					if (fDamageMap[iChr][initialBpId + j][3] != 0)
 					{
-						G4int typeDamage = fDamageMap[iChr][initialBpId + j][3];
+						G4int typeDamage = fDamageMap[iChr][initialBpId + j][1];
 						if (typeDamage == nodamage) typeDamage = 0;
 						if (typeDamage == 4) typeDamage = 1;
 						if (typeDamage == 5) typeDamage = 3;
@@ -733,10 +734,10 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 				}
 				for (G4int j = 0; j < fNumberOfBasePairForDSB; j++)
 				{
-					// Bases of strand 2
+					// Backbones of strand 2
 					if (fDamageMap[iChr][initialBpId + j][1] != 0)
 					{
-						G4int typeDamage = fDamageMap[iChr][initialBpId + j][1];
+						G4int typeDamage = fDamageMap[iChr][initialBpId + j][3];
 						if (typeDamage == nodamage) typeDamage = 0;
 						if (typeDamage == 4) typeDamage = 1;
 						if (typeDamage == 5) typeDamage = 3;
