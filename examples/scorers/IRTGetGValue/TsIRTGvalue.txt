@@ -5,7 +5,7 @@
 i:Ts/Verbosity = 0
 i:Ts/ShowHistoryCountAtInterval = 300
 i:Ts/MaxInterruptedHistories  = So/Demo/NumberOfHistoriesInRun
-Ts/NumberOfThreads = 1
+Ts/NumberOfThreads = 10
 b:Ts/ShowCPUTime = "True"
 
 ##########################
@@ -16,13 +16,14 @@ sv:Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry"
 s:Ph/Default/Electron/SetElasticScatteringModel = "ELSEPA" 
 s:Ph/Default/SolvatedElectronThermalizationModel =  "Ritchie"
 
-includeFile = TOPASDefaultReactions.txt 
+includeFile = TOPAS-DefaultReactions.txt 
 
 s:Ch/ChemistryName = "TOPASChemistry"
 b:Ch/TOPASChemistry/ChemicalStageTransportActive = "True"
 d:Ch/TOPASChemistry/ChemicalStageTimeEnd = 1.00001 ps
 dv:Ch/TOPASChemistry/ChemicalStageTimeStepsHighEdges = 1 999999 ps
 dv:Ch/TOPASChemistry/ChemicalStageTimeStepsResolutions = 1 0.5 ps
+b:Ch/TOPASChemistry/TestForContactReactions = "True"
 
 ##########################
 ######## Geometry ########
