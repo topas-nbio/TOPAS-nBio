@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 class TsParameterManager;
 class TsIRTUtils;
@@ -23,19 +24,9 @@ public:
 	
 	void AddMolecule(G4String name);
 	
-	void AdjustDiffusionCoefficientyForTemperature(G4double);
-	
-	void AdjustDiffusionCoefficientyForTemperatureArrehniusFit(G4double);
-	
-	void AdjustReactionRateForTemperature(G4double);
-	
 	void AdjustReactionRateForPH(G4String);
-	
-	G4double Arrhenius(G4double A, G4double T, G4double E);
-	
-	G4double Noyes(G4double kobs, G4double kact, G4double kdiff);
-	
-	G4double DebyeFactor(G4double T, G4int molA, G4int molB, G4double r);
+
+	void AdjustReactionAndDiffusionRateForTemperature();
 	
 	G4bool MoleculeExists(G4String name);
 	
@@ -56,14 +47,23 @@ public:
 	
 	void InsertReaction(G4String A, G4String B, G4String p1, G4String p2, G4String p3,
 						G4double kobs, G4int reactionType);
+
+	void InsertReaction(G4String A, G4String B, std::vector<G4String> p,
+						G4double kobs, G4int reactionType);
 	
 	void InsertReaction(G4int molA, G4int molB, std::vector<G4int> products,
 						G4double kobs, G4int reactionType);
 	
 	void InsertBackgroundReaction(G4String A, G4String B, G4String p1, G4String p2, G4String p3,
 								  G4double kobs, G4double concentration, G4bool sampleExponential);
+
+	void InsertBackgroundReaction(G4String A, G4String B, std::vector<G4String> p,
+								  G4double kobs, G4double concentration, G4bool sampleExponential);
 	
 	void InsertBackgroundReaction(G4String A, G4String B, G4String p1, G4String p2, G4String p3,
+								  G4double scavengingCapacity, G4bool sampleExponential);
+
+	void InsertBackgroundReaction(G4String A, G4String B, std::vector<G4String> p,
 								  G4double scavengingCapacity, G4bool sampleExponential);
 	
 	void QuitIfMoleculeNotFound(G4String mol);
@@ -87,56 +87,23 @@ public:
 	G4double IonicRate(G4double, G4double, G4int, G4int);
 	
 	G4double GetIonicStrength(std::vector<G4double>);
+
+	inline std::map<G4String, G4int> GetMoleculeIDs() {return fMoleculesID;};
 	
-	void roots(double*,int, double*, double*);
-	
-	void deflate(double*,int, double*,double*, double *);
-	
-	void find_quad(double*, int, double*, double*, double*, int*);
-	
-	void diff_poly(double *, int, double*);
-	
-	void recurse(double *, int, double *, int, double*, double *, int *);
-	
-	void get_quads(double*, int, double*, double*);
-	
-	std::vector<double> GetRoots(int, std::vector<double>);
-	
-	// Temperature adjust functions
-	
-	G4double K_H(G4double);
-	
-	G4double K_OH(G4double);
-	
-	G4double K_water(G4double);
-	
-	G4double K_H2O2(G4double);
-	
-	G4double lH2Ol(G4double);
-	
-	G4double k23_inverse(G4double);
-	
-	G4double k26_inverse(G4double);
-	
-	G4double k27_inverse(G4double);
-	
-	G4double k29_inverse(G4double);
-	
-	G4double k30_inverse(G4double);
-	
-	G4double k_26(G4double);
-	
-	G4double k_28(G4double);
-	
-	G4double k_29(G4double);
-	
-	G4double k_30(G4double);
+	inline std::map<G4int, G4String> GetMoleculeNames() { return fMoleculesName;};
 	
 private:
 	TsParameterManager* fPm;
 	TsIRTUtils* fUtils;
 	G4String fName;
 	
+	struct TsMoleculeDefinition {
+		G4double diffusionCoefficient;
+		G4double charge;
+		G4double radius;
+	};
+	
+public:
 	struct TsMolecularReaction {
 		G4int    index;
 		
@@ -158,28 +125,20 @@ private:
 		G4double concentration;
 		G4double scavengingCapacity;
 	};
-	
-	struct TsMoleculeDefinition {
-		G4double diffusionCoefficient;
-		G4double charge;
-		G4double radius;
-	};
-	
-public:
+
 	struct TsMolecule {
-		G4int    id;
-		G4double time;
-		G4ThreeVector position;
-		G4bool reacted;
-		G4int trackID;
-		G4int spin;
-		G4bool isDNA;
-		std::vector<G4int> tested;
+		G4int id = -1;
+		G4int trackID = -1;
+		G4int spin = -1;
+
+		G4double time = 0;
+		G4ThreeVector position = G4ThreeVector();
+
+		G4bool reacted = false;
+		G4bool isDNA = false;
+		G4bool isNew = true;
+		//std::vector<G4int> tested;
 	};
-	
-	inline std::map<G4String, G4int> GetMoleculeIDs() {return fMoleculesID;};
-	
-	inline std::map<G4int, G4String> GetMoleculeNames() { return fMoleculesName;};
 	
 private:
 	std::map<G4int, TsMolecule> fMolecules;
@@ -198,29 +157,14 @@ private:
 	G4int fReactionID;
 	G4int fTotalBinaryReaction;
 	G4int fLastMoleculeID;
-	G4bool fUseSimpleScavengerModel;
 	
 	G4double fTemperature;
 	G4bool fScaleForTemperature;
 	G4bool fKick;
-	//G4double fH2SO4Concentration;
 	
 	G4String fpHSolvent;
 	G4double fpHSolventConcentration;
 	G4double fpHValue;
-	
-	G4double fFeSO4;
-	G4bool   fSampleExponential;
-	
-	G4double fObservedReactionRate;
-	G4double fDiffusionReactionRate;
-	G4double fActivationReactionRate;
-	G4double fProbability;
-	G4double fAlpha;
-	G4double fReactionRadius;
-	G4double fEffectiveReactionRadius;
-	G4double fEffectiveTildeReactionRadius;
-	G4double fOnsagerRadius;
 	
 	G4bool fQualityAssurance;
 	
@@ -248,28 +192,25 @@ public:
 	std::vector<G4ThreeVector> GetPositionOfProducts(TsMolecule molA, TsMolecule molB, G4int index);
 	G4double GetRCutOff(G4double tCutOff);
 	
-	G4bool MakeReaction(std::vector<TsMolecule> &initialSpecies,
-						std::map<G4int, std::map<G4int, std::map<G4int, std::vector<G4int>>>> &spaceBinned,
+	G4bool MakeReaction(std::unordered_map<G4int,TsMolecule> &initialSpecies, G4int& speciesIndex,
+						std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int,G4bool>>>> &spaceBinned,
+						G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin, G4double YMax, G4double ZMin, G4double ZMax,
+						std::map<G4int, std::map<G4int, G4int>> &theGvalue, std::vector<G4double> timeSteps,
+						G4int iM, G4int indexOfReaction, G4double irt, std::unordered_map<G4int,G4bool> &used, std::vector<G4int>& prods);
+	
+	G4bool MakeReaction(std::unordered_map<G4int,TsMolecule> &initialSpecies, G4int& speciesIndex,
+						std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int,G4bool>>>> &spaceBinned,
+						G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin, G4double YMax, G4double ZMin, G4double ZMax,
+						std::map<G4int, std::map<G4int, G4int>> &theGvalue, std::vector<G4double> timeSteps,
+						G4int iM, G4int jM, G4int indexOfReaction, G4double irt, G4double probabilityOfReaction, std::unordered_map<G4int,G4bool> &used, std::vector<G4int>& prods);
+	
+	G4bool MakeReaction(std::unordered_map<G4int,TsMolecule> &initialSpecies, G4int& speciesIndex,
+						std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int,G4bool>>>> &spaceBinned,
 						G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin, G4double YMax, G4double ZMin, G4double ZMax,
 						std::map<G4int, std::map<G4int, G4int>> &theGvalue,
-						std::vector<G4double> timeSteps,
-						G4int iM, G4int indexOfReaction, G4double irt, std::vector<G4bool> &used);
-	
-	G4bool MakeReaction(std::vector<TsMolecule> &initialSpecies,
-						std::map<G4int, std::map<G4int, std::map<G4int, std::vector<G4int>>>> &spaceBinned,
-						G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin, G4double YMax, G4double ZMin, G4double ZMax,
-						std::map<G4int, std::map<G4int, G4int>> &theGvalue,
-						std::vector<G4double> timeSteps,
-						G4int iM, G4int jM, G4int indexOfReaction, G4double irt, G4double probabilityOfReaction, std::vector<G4bool> &used);
-	
-	G4bool MakeReaction(std::vector<TsMolecule> &initialSpecies,
-						std::map<G4int, std::map<G4int, std::map<G4int, std::vector<G4int>>>> &spaceBinned,
-						G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin, G4double YMax, G4double ZMin, G4double ZMax,
-						std::map<G4int, std::map<G4int, G4int>> &theGvalue,
-						std::map<G4int, std::map<G4int, G4int>> &theGvalueInVolume,
-						std::vector<G4double> timeSteps,
-						G4int iM, G4int jM, G4int indexOfReaction, G4double irt, G4double probabilityOfReaction, std::vector<G4bool> &used);
-	
+						std::map<G4int, std::map<G4int, G4int>> &theGvalueInVolume, std::vector<G4double> timeSteps,
+						G4int iM, G4int jM, G4int indexOfReaction, G4double irt, G4double probabilityOfReaction, std::unordered_map<G4int,G4bool> &used, std::vector<G4int>& prods);
+
 	G4bool Inside(G4ThreeVector p);
 	
 	void ScoreGvalue(std::vector<TsMolecule> &initialSpecies,
@@ -277,7 +218,9 @@ public:
 					 std::vector<G4double> timeSteps,
 					 G4int iM, G4int jM, G4int indexOfReaction, G4double irt);
 	
-	inline TsMolecularReaction GetReaction(G4int index) { return fReactions[index];};
+	TsMolecularReaction GetReaction(G4int index);
+	std::map<G4int, G4String> GetMoleculeName() {return fMoleculesName;}
+	std::map<G4int, TsIRTConfiguration::TsMolecularReaction> GetReactions() {return fReactions;}
 	
 	void Diffuse(TsMolecule& mol, G4double dt);
 	
@@ -287,16 +230,8 @@ public:
 	void PrintMoleculesInformation();
 	void PrintReactionsInformation();
 	
-	inline G4int GetLastMoleculeID() { return fLastMoleculeID; };
-	inline G4int GetLastReactionID() { return fReactionID-1; };
-	
-	G4double Smoluchowski(G4double Beta, TsMolecularReaction Reaction);
-	
-	G4double Debye(G4double Beta, TsMolecularReaction Reaction, G4double T);
-	
-	G4double ProbabilityOfReactionT(TsMolecularReaction Reaction, G4double temperatureInKelvin, G4double Xi);
-	
-	G4double OnsagerRadius(G4double temperatureInKelvin);
+	G4int GetLastMoleculeID() { return fLastMoleculeID; };
+	G4int GetLastReactionID() { return fReactionID-1; };
 	
 	G4double IonicRate(G4double, TsMolecularReaction);
 	

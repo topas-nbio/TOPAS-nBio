@@ -564,10 +564,14 @@ G4int TsIRTUtils::FindBin(G4int n, G4double xmin, G4double xmax, G4double value)
     else
         bin = G4int( n * ( value - xmin )/( xmax - xmin ) ); //bin = 1 + G4int( n * ( value - xmin )/( xmax - xmin ) );
     
-    if ( bin < 0 )
+    if ( bin < 0 ) {
+        bin = 0;
         std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@ warning negative bin " << n << " bins [" << xmin/nm << ", " << xmax/nm << "] " << value/nm << std::endl;
-    if ( bin >= n )
-        std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@ warning bin " << bin << " outside number of bins " << n << std::endl;
+    }
+    if ( bin >= n ) {
+        bin = n-1;
+        std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@ warning outside bin " << n << " bins [" << xmin/nm << ", " << xmax/nm << "] " << value/nm << std::endl;
+    }
     
     return bin; 
 }
@@ -615,10 +619,10 @@ G4double TsIRTUtils::SampleTypeII(G4double alpha, G4double sigma, G4double r0, G
     
     G4double W = G4UniformRand();
     G4double Winf = (sigma*alphatilde - 1.0)/(r0 * alphatilde);
+
     G4double X, V, U, u, lambdax;
 
     if ( W < Winf ) {
-        //
         G4int ntrials = 0;
         while(1) {
             // Generate X
@@ -655,3 +659,349 @@ G4double TsIRTUtils::erfcInv(G4double x) {
     return - 0.70710678118654752440 * NormQuantile( 0.5 * x);
 }
 
+
+G4double TsIRTUtils::WaterDielectricConstant(G4double TKelvin) {
+    return   (5321.0 * std::pow(TKelvin,-1)) 
+           + (233.76 * std::pow(TKelvin,+0)) 
+           - (0.9297 * std::pow(TKelvin,+1)) 
+           + (0.001417*std::pow(TKelvin,+2)) 
+           - (8.292E-7*std::pow(TKelvin,+3));
+}
+
+
+G4double TsIRTUtils::OnsagerRadius(G4double TKelvin) {
+    G4double epsilon = WaterDielectricConstant(TKelvin);
+    G4double electronCharge = 1.60217662e-19;
+    return std::pow(electronCharge,2) / (4 * CLHEP::pi * epsilon * 8.85418781762037E-12 * 1.3806488E-23 * TKelvin);
+}
+
+
+G4double TsIRTUtils::DebyeFactor(G4double TKelvin, G4double ChargeA, G4double ChargeB, G4double Radius) {
+    G4double Onsager = OnsagerRadius(TKelvin);
+    G4double D       = Onsager * ChargeA * ChargeB / (8.85418781762037E-12 * Radius);
+    return D / (std::exp(D)-1);
+}
+
+
+G4double TsIRTUtils::WaterDensity(G4double TCelsius) {
+    return 0.999 + (1.094e-4 * TCelsius) - (7.397e-6 * std::pow(TCelsius,2)) + (2.693e-8 * std::pow(TCelsius,3)) - (4.714e-11 * std::pow(TCelsius,4));
+}
+
+
+G4double TsIRTUtils::NoyesRelationship(G4double Kobs, G4double Kact, G4double Kdiff) {
+    if (Kobs == 0) {
+        return (Kdiff * Kact) / (Kact + Kdiff);
+    } else if (Kact == 0) {
+        return (Kobs * Kdiff) / (Kdiff - Kobs);
+    } else if (Kdiff == 0) {
+        return (Kobs * Kact ) / (Kact - Kobs);
+    }
+    return 0;
+}
+
+
+G4double TsIRTUtils::ArrheniusFunction(G4double A, G4double T, G4double E) {
+    G4double den = 0.0083146*T;
+    return A * std::exp(-E/den);
+}
+
+
+G4double TsIRTUtils::SmoluchowskiFunction(G4double Beta, G4double Radius, G4double Diffusion) {
+    return 4 * CLHEP::pi * Beta * 6.022E23 * Diffusion * Radius * 1E3;
+}
+
+G4double TsIRTUtils::DebyeFunction(G4double Beta, G4double Radius, G4double Diffusion, G4double TCelsius, G4double ChargeA, G4double ChargeB){
+    G4double Dfactor = DebyeFactor(TCelsius+273.15, ChargeA, ChargeB,Radius);
+    return 4 * CLHEP::pi * Beta * 6.022E23 * Diffusion * Radius * Dfactor * 1E-8;
+}
+
+
+G4double TsIRTUtils::ElectronDiffusionRate(G4double TCelsius) {
+    return (1.97e-5 + (1.05e-6*TCelsius) + (2.11e-9*std::pow(TCelsius,2)) + (1.07e-10*std::pow(TCelsius,3))) / 10000;
+}
+
+
+G4double TsIRTUtils::H3ODiffusionRate(G4double TKelvin) {
+    return std::pow(10.,2.672 - (9.847e2/TKelvin) + (3.306e5/std::pow(TKelvin,2)) - (5.621e7/std::pow(TKelvin,3))) * 1e-9;
+}
+
+
+G4double TsIRTUtils::OHmDiffusionRate(G4double TKelvin) {
+    return std::pow(10.,3.324 - (1.719e3/TKelvin) + (5.890e5/std::pow(TKelvin,2)) - (9.188e7/std::pow(TKelvin,3))) * 1e-9;
+}
+
+
+G4double TsIRTUtils::WaterDiffusionRate(G4double TKelvin, G4double Diff) {
+    G4double T20 = 20 + 273.15;
+    G4double Ts  = TKelvin;
+    G4double DH2O_20C  = std::pow(10.,4.311 - (2.722e3/T20) + 8.565e5/std::pow(T20,2) - 1.181e8/std::pow(T20,3)) * 1e-9;
+    G4double DH2O_T    = std::pow(10.,4.311 - (2.722e3/Ts)  + 8.565e5/std::pow(Ts,2)  - 1.181e8/std::pow(Ts,3))  * 1e-9;
+    return Diff * DH2O_T / DH2O_20C;
+}
+
+
+G4int TsIRTUtils::roots(double *a,int n,double *wr,double *wi) {
+    double sq,b2,c,disc;
+    int i,numroots;
+    
+    i = n;
+    numroots = 0;
+    while (i > 1) {
+        b2 = -0.5*a[i-2];
+        c = a[i-1];
+        disc = b2*b2-c;
+        if (disc < 0.0) {                   // complex roots
+            sq = sqrt(-disc);
+            wr[i-2] = b2;
+            wi[i-2] = sq;
+            wr[i-1] = b2;
+            wi[i-1] = -sq;
+            numroots+=2;
+        }
+        else {                              // real roots
+            sq = sqrt(disc);
+            wr[i-2] = fabs(b2)+sq;
+            if (b2 < 0.0) wr[i-2] = -wr[i-2];
+            if (wr[i-2] == 0)
+                wr[i-1] = 0;
+            else {
+                wr[i-1] = c/wr[i-2];
+                numroots+=2;
+            }
+            wi[i-2] = 0.0;
+            wi[i-1] = 0.0;
+        }
+        i -= 2;
+    }
+    if (i == 1) {
+        wr[0] = -a[0];
+        wi[0] = 0.0;
+        numroots++;
+    }
+    return numroots;
+}
+
+
+void TsIRTUtils::deflate(double *a,int n,double *b,double *quad,double *err) {
+    double r,z;
+    int i;
+    
+    r = quad[1];
+    z = quad[0];
+    
+    b[1] = a[1] - r;
+    
+    for (i=2;i<=n;i++){
+        b[i] = a[i] - r * b[i-1] - z * b[i-2];
+    }
+    *err = fabs(b[n])+fabs(b[n-1]);
+}
+
+
+void TsIRTUtils::find_quad(double *a,int n,double *b,double *quad,double *err, int *iter) {
+    double maxiter = 500;
+    double *c,dn,dr,ds,drn,dsn,eps,r,z;
+    int i;
+    
+    c = new double [n+1];
+    c[0] = 1.0;
+    r = quad[1];
+    z = quad[0];
+    eps = 1e-15;
+    *iter = 1;
+    
+    do {
+        if (*iter > maxiter) break;
+        if (((*iter) % 200) == 0) {
+            eps *= 10.0;
+        }
+        b[1] = a[1] - r;
+        c[1] = b[1] - r;
+        
+        for (i=2;i<=n;i++){
+            b[i] = a[i] - r * b[i-1] - z * b[i-2];
+            c[i] = b[i] - r * c[i-1] - z * c[i-2];
+        }
+        dn=c[n-1] * c[n-3] - c[n-2] * c[n-2];
+        drn=b[n] * c[n-3] - b[n-1] * c[n-2];
+        dsn=b[n-1] * c[n-1] - b[n] * c[n-2];
+        
+        if (fabs(dn) < 1e-10) {
+            if (dn < 0.0) dn = -1e-8;
+            else dn = 1e-8;
+        }
+        dr = drn / dn;
+        ds = dsn / dn;
+        r += dr;
+        z += ds;
+        (*iter)++;
+    } while ((fabs(dr)+fabs(ds)) > eps);
+    quad[0] = z;
+    quad[1] = r;
+    *err = fabs(ds)+fabs(dr);
+    delete [] c;
+}
+
+
+void TsIRTUtils::diff_poly(double *a,int n,double *b) {
+    double coef;
+    int i;
+    
+    coef = (double)n;
+    b[0] = 1.0;
+    for (i=1;i<n;i++) {
+        b[i] = a[i]*((double)(n-i))/coef;
+    }
+}
+
+
+void TsIRTUtils::recurse(double *a,int n,double *b,int p,double *quad,
+                                 double *err,int *iter) {
+    double *c,*x,rs[2],tst;
+    
+    if (fabs(b[p]) < 1e-16) p--;    // this bypasses roots at zero
+    if (p == 2) {
+        quad[0] = b[2];
+        quad[1] = b[1];
+        *err = 0;
+        *iter = 0;
+        return;
+    }
+    c = new double [p+1];
+    x = new double [n+1];
+    c[0] = x[0] = 1.0;
+    rs[0] = quad[0];
+    rs[1] = quad[1];
+    *iter = 0;
+    find_quad(b,p,c,rs,err,iter);
+    tst = fabs(rs[0]-quad[0])+fabs(rs[1]-quad[1]);
+    if (*err < 1e-12) {
+        quad[0] = rs[0];
+        quad[1] = rs[1];
+    }
+    
+    if (((*iter > 5) && (tst < 1e-4)) || ((*iter > 20) && (tst < 1e-1))) {
+        diff_poly(b,p,c);
+        recurse(a,n,c,p-1,rs,err,iter);
+        quad[0] = rs[0];
+        quad[1] = rs[1];
+    }
+    delete [] x;
+    delete [] c;
+}
+
+
+void TsIRTUtils::get_quads(double *a,int n,double *quad,double *x) {
+    double maxiter = 500;
+    double *b,*z,err,tmp;
+    int iter,i,p;
+    
+    if ((tmp = a[0]) != 1.0) {
+        a[0] = 1.0;
+        for (i=1;i<=n;i++) {
+            a[i] /= tmp;
+        }
+    }
+    if (n == 2) {
+        x[0] = a[1];
+        x[1] = a[2];
+        return;
+    }
+    else if (n == 1) {
+        x[0] = a[1];
+        return;
+    }
+    p = n;
+    b = new double [n+1];
+    z = new double [n+1];
+    b[0] = 1.0;
+    for (i=0;i<=n;i++) {
+        z[i] = a[i];
+        x[i] = 0.0;
+    }
+    do {
+        if (n > p) {
+            quad[0] = 3.14159e-1;
+            quad[1] = 2.78127e-1;
+        }
+        do {
+            for (i=0;i<5;i++) {
+                find_quad(z,p,b,quad,&err,&iter);
+                if ((err > 1e-7) || (iter > maxiter)) {
+                    diff_poly(z,p,b);
+                    recurse(z,p,b,p-1,quad,&err,&iter);
+                }
+                deflate(z,p,b,quad,&err);
+                if (err < 0.001) break;
+                //quad[0] = random(8) - 4.0;
+                //quad[1] = random(8) - 4.0;
+                quad[0] = (rand() % 8) - 4;
+                quad[i] = (rand() % 8) - 4;
+            }
+            if (err > 0.01) {
+                std::cout << "Error! Convergence failure in quadratic x^2 + r*x + s." << std::endl;
+                std::cout << "Enter new trial value for 'r': ";
+                std::cin >> quad[1];
+                std::cout << "Enter new trial value for 's' ( 0 to exit): ";
+                std::cin >> quad[0];
+                if (quad[0] == 0) {
+                    G4cerr << "TOPAS is exiting due to fatal error en IRT Chemistry setup!" << G4endl;
+                    G4cerr << "--- No valid solution to the pH scaling system found!" << G4endl;
+                    exit(1);
+                }
+            }
+        } while (err > 0.01);
+        x[p-2] = quad[1];
+        x[p-1] = quad[0];
+        p -= 2;
+        for (i=0;i<=p;i++) {
+            z[i] = b[i];
+        }
+    } while (p > 2);
+    if (p == 2) {
+        x[0] = b[1];
+        x[1] = b[2];
+    }
+    else x[0] = b[1];
+    delete [] z;
+    delete [] b;
+}
+
+std::vector<double> TsIRTUtils::GetRoots(int Order, std::vector<double> Exponents) {
+    
+    double a[21],x[21],wr[21],wi[21],quad[2];
+    int n,i,numr;
+    
+    n = Order;
+    if ((n < 1) || (n > 20)) {
+        std::cout << "Error! Invalid order: n = " << n << std::endl;
+        return {0};
+    }
+    
+    for (i = 0; i <= n; i++) {
+        a[i] = Exponents[i];
+        if (a[0] == 0) {
+            std::cout << "Error! Highest coefficient cannot be 0." << std::endl;
+            return {0};
+        }
+    }
+    if (a[n] == 0) {
+        std::cout << "Error! Lowest coefficient (constant term) cannot be 0." << std::endl;
+        return {0};
+    }
+    
+    quad[0] = 2.71828e-1;
+    quad[1] = 3.14159e-1;
+    
+    get_quads(a,n,quad,x);
+    numr = roots(x,n,wr,wi);
+    std::vector<double> Results;
+    
+    for (i=0;i<n;i++) {
+        if ((wr[i] != 0.0) || (wi[i] != 0.0)){
+            Results.push_back(wr[i]);
+            Results.push_back(wi[i]);
+        }
+    }
+    return Results;
+}
