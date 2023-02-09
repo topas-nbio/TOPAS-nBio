@@ -136,7 +136,10 @@ private:
 	// Data from end of the event
 	G4double fEventID;
 
-	// Codes for types of damage
+    // Exposure ID
+    G4int fLastExposureID = -1000;
+
+    // Codes for types of damage
 	G4int nodamage = -1;
 	G4int direct = 1;
 	G4int indirect = 2;

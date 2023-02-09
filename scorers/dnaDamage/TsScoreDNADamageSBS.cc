@@ -20,6 +20,9 @@
 #include "G4VProcess.hh"
 #include "G4Molecule.hh"
 
+#include "G4Scheduler.hh"
+#include "G4ITTrackHolder.hh"
+
 TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
 										G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer)
 							: TsVNtupleScorer(pM, mM, gM, scM, eM, scorerName, quantity, outFileName, isSubScorer)
@@ -481,7 +484,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	if (!fIsActive)
 	{
 		fSkippedWhileInactive++;
-		return false;
+ 		return false;
 	}
 
 	// Stops tracking if accumulated dose is higher than specified (only for a new event! A single event is always completed)
@@ -500,7 +503,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	{
 		G4bool withinScoringRadius = ((pow(pos.x(), 2)+pow(pos.y(), 2)+pow(pos.z(), 2)) < pow(fScoringRadius, 2));
 		if (!withinScoringRadius)
-			return false;
+            return false;
 	}
 
 	// Accumulates energy for this event
@@ -541,6 +544,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			}
 		}
 	}
+
 	// Goes on only if DNA materials has been matched
 	if (materialMatched)
 	{
@@ -576,15 +580,15 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 		// Adds direct damage
 		if (trackID >= 0 && edep > 0 && fScoreDirectDamage && ((componentID == base && fScoreOnBases) || (componentID == backbone && fScoreOnBackbones)))
-		{
+        {
 			hit->SetDamageType(direct);
 			fHits.push_back(hit);
-			return true;
+            return true;
 		}
 		// Adds quasi-direct damage
 		if (componentID == hydrationshell && strstr(processName, "Ionisation") != NULL && fScoreQuasiDirectDamage)
 		{
-			if (G4UniformRand() < fProbabilityOfChargeTransferFromHydrationShellToBackbone)
+         	if (G4UniformRand() < fProbabilityOfChargeTransferFromHydrationShellToBackbone)
 			{
 				hit->SetDNAComponentID(backbone);
 				hit->SetDamageType(quasidirect);
@@ -595,7 +599,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 				hit->SetDamageType(quasidirect);
 			}
 			fHits.push_back(hit);
-			return true;
+            return true;
 		}
 		// Adds indirect damage
 		if (trackID < 0 && fScoreIndirectDamage)
@@ -608,14 +612,14 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			// Kills all species generated inside DNA volumes except for the hydration shell
 			if (fTrackSteps[trackID] == 1 && componentID != hydrationshell)
 			{
-				aStep->GetTrack()->SetTrackStatus(fStopAndKill);
-				delete hit;
-				return false;
+            	fTracksScavenged.push_back(aStep->GetTrack());
+            	delete hit;
+            	return false;
 			}
 			// Makes damage to bases. OH and e_aq induce damage to bases. Only one step per species is considered (otherwise all would end up reacting), so we use the enteringInNewVolume flag
 			else if ((isHydroxil || isHydElectron) && componentID == base && enteringInNewVolume && fScoreOnBases)
 			{
-				hit->SetEdep(-0.001 * eV);
+            	hit->SetEdep(-0.001 * eV);
 				G4bool scavenged = false;
 				if (fAlwaysScavengeSpeciesInDNAComponents)
 					scavenged = true;
@@ -623,21 +627,21 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 					if (G4UniformRand() < fProbabilityOfScavengingInBase) scavenged = true;
 				if (scavenged)
 				{
-					aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+                    fTracksScavenged.push_back(aStep->GetTrack());
 					if (G4UniformRand() < fProbabilityOfDamageInBase)
 					{
 						hit->SetDamageType(indirect);
 						fHits.push_back(hit);
-						return true;
+            			return true;
 					}
 				}
-				delete hit;
-				return false;
+            	delete hit;
+            	return false;
 			}
 			// Makes damage to backbones. Only OH induces damage to backbones. Only one step per species is considered (otherwise all would end up reacting), so we use the enteringInNewVolume flag
 			else if (isHydroxil && componentID == backbone && enteringInNewVolume && fScoreOnBackbones)
 			{
-				hit->SetEdep(-0.001 * eV);
+            	hit->SetEdep(-0.001 * eV);
 				G4bool scavenged = false;
 				if (fAlwaysScavengeSpeciesInDNAComponents)
 					scavenged = true;
@@ -645,7 +649,7 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 					if (G4UniformRand() < fProbabilityOfScavengingInBackbone) scavenged = true;
 				if (scavenged)
 				{
-					aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+                    fTracksScavenged.push_back(aStep->GetTrack());
 					if (G4UniformRand() < fProbabilityOfDamageInBackbone)
 					{
 						hit->SetDamageType(indirect);
@@ -654,20 +658,28 @@ G4bool TsScoreDNADamageSBS::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 					}
 				}
 				delete hit;
-				return false;
+                return false;
 			}
 			// Scavenge species by histones
 			else if (isSpeciesToKill && fScavengeInHistones && componentID == histone)
 			{
-				aStep->GetTrack()->SetTrackStatus(fStopAndKill);
-				delete hit;
-				return false;
+                fTracksScavenged.push_back(aStep->GetTrack());
+                delete hit;
+                return false;
 			}
 		}
 		delete hit;
 	}
+    return false;
+}
 
-	return false;
+void TsScoreDNADamageSBS::UserHookForPostTimeStepAction()
+{
+    for (G4int i = 0; i < (G4int)fTracksScavenged.size(); i++)
+    {
+        fTracksScavenged[i]->SetTrackStatus(fStopAndKill);
+    }
+    fTracksScavenged.clear();
 }
 
 std::pair<G4int,G4int> TsScoreDNADamageSBS::GetDNAComponentAndStrandID(G4TouchableHistory* touchable)
@@ -687,6 +699,7 @@ std::pair<G4int,G4int> TsScoreDNADamageSBS::GetDNAComponentAndStrandID(G4Touchab
 
 void TsScoreDNADamageSBS::AccumulateEvent()
 {
+    G4cout << "Accumulating event " << fCollectionsOfHits.size() << G4endl;
 	fCollectionsOfHits.push_back(fHits);
 	fHits.clear();
 	G4double edep = fEdep;
@@ -721,7 +734,7 @@ void TsScoreDNADamageSBS::UserHookForEndOfRun()
 G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
 {
 	fEdep = fEventsEdep[eventID];
-	fDoseInThisExposure = CalculateDoseInGray(fEventsEdep[eventID]);
+	fDoseInThisExposure += CalculateDoseInGray(fEventsEdep[eventID]);
 	fDamageCalculator->SetEventID(eventID);
 	if (fDoseInThisExposure >= fExposureID * fDosePerExposure / gray)
 	{

@@ -31,6 +31,7 @@ public:
 	void AccumulateEvent();
 	void AbsorbResultsFromWorkerScorer(TsVScorer*);
 	virtual void UserHookForEndOfRun();
+    virtual void UserHookForPostTimeStepAction();
 	G4int Analyze(std::vector<TsHitInDNA*> hits, G4int eventID);
 	void CalculateYields();
 	G4double CalculateDoseInGray(G4double edep);
@@ -181,6 +182,9 @@ protected:
 	G4String fMicroenvironment;
 	G4double fTime;
 	G4String fAddInfo;
+
+    // Tracks to be scavenged at the end of each time step
+    std::vector<G4Track*> fTracksScavenged;
 
 	// Codes for components ID
 	G4int histone = -1;
