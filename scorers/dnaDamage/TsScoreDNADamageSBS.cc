@@ -734,7 +734,7 @@ void TsScoreDNADamageSBS::UserHookForEndOfRun()
 G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
 {
 	fEdep = fEventsEdep[eventID];
-	fDoseInThisExposure = CalculateDoseInGray(fEventsEdep[eventID]);
+	fDoseInThisExposure += CalculateDoseInGray(fEventsEdep[eventID]);
 	fDamageCalculator->SetEventID(eventID);
 	if (fDoseInThisExposure >= fExposureID * fDosePerExposure / gray)
 	{
