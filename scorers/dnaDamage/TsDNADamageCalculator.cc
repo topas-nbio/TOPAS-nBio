@@ -555,6 +555,7 @@ void TsDNADamageCalculator::OutputSDDHeader(G4bool minimalSDD, G4String primaryP
 	else if (primaryParticle == "gamma") incParticle = "22";
 	else if (primaryParticle == "e-") incParticle = "11";
 	else if (primaryParticle == "neutron") incParticle = "2112";
+    else incParticle = primaryParticle;
 	G4String meanEnergy = (G4String)std::to_string(energy) + " MeV";
 
 	G4String scoringIndirect = "0";
@@ -607,7 +608,7 @@ void TsDNADamageCalculator::OutputSDDHeader(G4bool minimalSDD, G4String primaryP
 G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> damageSites, G4int eventID, G4int exposureID, std::vector<G4int> chromosomeContents)
 {
 	// Ref. Schuemann J, McNamara A L, Warmenhoven J W, et al. A New Standard DNA Damage (SDD) Data Format. Radiat. Res. 191, 76-92 (2019)
-	G4int lastExposureID = -1000; G4int lastEventID = -1000;
+	G4int lastEventID = -1000;
 
 	G4int numSites = 0;
 	std::ofstream outFile;
@@ -646,7 +647,7 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 			// Field 1: Determines exposure status
 			G4int newExposureFlag = 0;
 			if (lastEventID != eventID)			{ lastEventID = eventID; newExposureFlag = 1; }
-			if (lastExposureID != exposureID)	{ lastExposureID = exposureID; newExposureFlag = 2; }
+			if (fLastExposureID != exposureID)	{ fLastExposureID = exposureID; newExposureFlag = 2; }
 			outFile << newExposureFlag << ", " << eventID << "; ";
 
 			// Field 2: Adds damage positions (for backbone)
