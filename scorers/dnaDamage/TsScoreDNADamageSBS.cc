@@ -678,7 +678,9 @@ void TsScoreDNADamageSBS::UserHookForPostTimeStepAction()
     for (G4int i = 0; i < (G4int)fTracksScavenged.size(); i++)
     {
         fTracksScavenged[i]->SetTrackStatus(fStopAndKill);
+        //G4ITTrackHolder::Instance()->PushToKill(fTracksScavenged[i]);
     }
+    G4ITTrackHolder::Instance()->KillTracks();
     fTracksScavenged.clear();
 }
 
