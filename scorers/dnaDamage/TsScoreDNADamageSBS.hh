@@ -104,6 +104,7 @@ protected:
 	G4double fEdep;
 	G4double fTrackAveragedLET;
 	G4double fDoseInThisExposure;
+    G4double fDoseInThisEvent;
 	G4double fAccumulatedDoseInRun;
 	G4int fExposureID;
 

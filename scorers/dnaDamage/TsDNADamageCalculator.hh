@@ -33,6 +33,7 @@ public:
 	G4int OutputSDDFile(std::map<G4int, std::vector<G4int>> damageSites, G4int eventID, G4int exposureID, std::vector<G4int> chromosomeContents);
 	std::vector<G4ThreeVector> GetDamageCenterAndBoundaries(std::vector<G4ThreeVector> positions);
 	void WriteDNADamageCSV();
+    void AddDamageAndPrimaryCount(G4int nLesions, G4int nEvents);
 
 	// Set methods
 	inline void SetDistanceBasePairsForDSB(G4int v)				{ fNumberOfBasePairForDSB = v; }

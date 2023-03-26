@@ -723,6 +723,8 @@ void TsScoreDNADamageSBS::UserHookForEndOfRun()
 		// Only fill if there is any damage
 		if (lesionsThisEvent > 0) fNtuple->Fill();
 	}
+    // Adding damage and primary count at the end
+    fDamageCalculator->AddDamageAndPrimaryCount(numberOfLesions, fCollectionsOfHits.size());
 	if (fScoreFoci)
 	{
 		if (fGet3DFociImage) fFociAnalyzer->Produce3DImage(fDSBPositionsInRun);
@@ -736,13 +738,18 @@ void TsScoreDNADamageSBS::UserHookForEndOfRun()
 G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
 {
 	fEdep = fEventsEdep[eventID];
-	fDoseInThisExposure += CalculateDoseInGray(fEventsEdep[eventID]);
+	fDoseInThisEvent = CalculateDoseInGray(fEventsEdep[eventID]);
 	fDamageCalculator->SetEventID(eventID);
-	if (fDoseInThisExposure >= fExposureID * fDosePerExposure / gray)
+	if ((fDoseInThisExposure >=  fDosePerExposure / gray) || ((fDoseInThisExposure + fDoseInThisEvent >= fDosePerExposure / gray) && G4UniformRand() < 0.5))
 	{
 		fExposureID++;
 		G4cout << "Start new exposure (" << fDosePerExposure / gray << " Gy per exposure)" << " - Exposure ID: " << fExposureID << " - Event ID: " << eventID << G4endl;
+        fDoseInThisExposure = fDoseInThisEvent;
 	}
+    else
+    {
+        fDoseInThisExposure += fDoseInThisEvent;
+    }
 
 	G4int numberOfLesions = 0;
 	fDamageCalculator->ComputeStrandBreaks(hits);
