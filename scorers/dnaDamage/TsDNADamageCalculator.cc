@@ -548,13 +548,39 @@ void TsDNADamageCalculator::OutputSDDHeader(G4bool minimalSDD, G4String primaryP
 	G4String dataEntries = "1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0";
 	if (minimalSDD) dataEntries = "1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0";
 
-	G4String SDDVersion = "v1.0";
+	G4String SDDVersion = "v2.0";
 	G4String incParticle;
 	if (primaryParticle == "proton") incParticle = "2212";
 	else if (primaryParticle == "alpha") incParticle = "100002004";
 	else if (primaryParticle == "gamma") incParticle = "22";
 	else if (primaryParticle == "e-") incParticle = "11";
 	else if (primaryParticle == "neutron") incParticle = "2112";
+    else if (primaryParticle == "carbon") incParticle = "100006012";
+    else if (primaryParticle == "iron") incParticle = "100026056";
+    else if (primaryParticle == "oxygen") incParticle = "100008016";
+    else if (primaryParticle == "silicon") incParticle = "100014028";
+    else if (primaryParticle == "sodium") incParticle = "100011023";
+    else if (primaryParticle == "magnesium") incParticle = "100012024";
+    else if (primaryParticle == "aluminium") incParticle = "100013027";
+    else if (primaryParticle == "phosphorus") incParticle = "100015031";
+    else if (primaryParticle == "sulfur") incParticle = "100016032";
+    else if (primaryParticle == "chlorine") incParticle = "100017035";
+    else if (primaryParticle == "potassium") incParticle = "100019039";
+    else if (primaryParticle == "calcium") incParticle = "100020040";
+    else if (primaryParticle == "titanium") incParticle = "100022048";
+    else if (primaryParticle == "chromium") incParticle = "100024052";
+    else if (primaryParticle == "manganese") incParticle = "100025055";
+    else if (primaryParticle == "cobalt") incParticle = "100027059";
+    else if (primaryParticle == "nickel") incParticle = "100028060";
+    else if (primaryParticle == "copper") incParticle = "100029063";
+    else if (primaryParticle == "zinc") incParticle = "100030064";
+    else if (primaryParticle == "gallium") incParticle = "100031069";
+    else if (primaryParticle == "germanium") incParticle = "100032070";
+    else if (primaryParticle == "arsenic") incParticle = "100033075";
+    else if (primaryParticle == "selenium") incParticle = "100034076";
+    else if (primaryParticle == "bromine") incParticle = "100035079";
+    else if (primaryParticle == "rubidium") incParticle = "100037085";
+    else if (primaryParticle == "strontium") incParticle = "100038088";
     else incParticle = primaryParticle;
 	G4String meanEnergy = (G4String)std::to_string(energy) + " MeV";
 
@@ -610,7 +636,7 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 	// Ref. Schuemann J, McNamara A L, Warmenhoven J W, et al. A New Standard DNA Damage (SDD) Data Format. Radiat. Res. 191, 76-92 (2019)
 	G4int lastEventID = -1000;
 
-	G4int numSites = 0;
+    G4int nSites = 0;
 	std::ofstream outFile;
 	outFile.open(fOutputFileName + "_sdd.txt", std::ios::out | std::ios::app);
 	for (auto& chrMap : damageSites)
@@ -643,7 +669,7 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 				}
 				ibpsTakenForThisChromosome.push_back(initialBpId+j);
 			}
-			numSites++;
+			nSites++;
 			// Field 1: Determines exposure status
 			G4int newExposureFlag = 0;
 			if (lastEventID != eventID)			{ lastEventID = eventID; newExposureFlag = 1; }
@@ -684,7 +710,7 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 				G4int chromosomeLength = chromosomeContents[iChr-1];
 				G4double damageChromPos = (G4double) initialBpId / chromosomeLength;
 				outFile.precision(12);
-				outFile << std::ios::fixed << damageChromPos << "; ";
+				outFile << std::fixed << damageChromPos << "; ";
 				outFile.precision(6);
 
 				// Field 5. Type damage
@@ -694,7 +720,7 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 				outFile << typeDamage << ", " << dir << ", " << indir << "; ";
 			}
 			// Field 6. Number damages in site
-			outFile << bd << ", " << sb << ", " << dsb << "; ";
+			outFile << bd << ", " << sb << ", " << std::min(static_cast<G4int>(dsb), 1) << "; ";
 			if (!fMinimalModeForSDD)
 			{
 				G4String damageSpec;
@@ -702,10 +728,10 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 				for (G4int j = 0; j < fNumberOfBasePairForDSB; j++)
 				{
 					// Starting with backbones of strand 1
-					if (fDamageMap[iChr][initialBpId + j][0] != 0)
+					if (fDamageMap[iChr][initialBpId + j][2] != 0)
 					{
 						G4int typeDamage = fDamageMap[iChr][initialBpId + j][2];
-						if (typeDamage == nodamage) typeDamage = 0;
+                        if (typeDamage == nodamage) typeDamage = 0;
 						if (typeDamage == 4) typeDamage = 1;
 						if (typeDamage == 5) typeDamage = 3;
 						damageSpec += "1, " + (G4String)std::to_string(j+1) + ", " + (G4String)std::to_string(typeDamage) + " / ";
@@ -714,22 +740,22 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 				for (G4int j = 0; j < fNumberOfBasePairForDSB; j++)
 				{
 					// Bases of strand 1
-					if (fDamageMap[iChr][initialBpId + j][2] != 0)
+					if (fDamageMap[iChr][initialBpId + j][0] != 0)
 					{
 						G4int typeDamage = fDamageMap[iChr][initialBpId + j][0];
 						if (typeDamage == nodamage) typeDamage = 0;
 						if (typeDamage == 4) typeDamage = 1;
 						if (typeDamage == 5) typeDamage = 3;
-						damageSpec += "2, " + (G4String)std::to_string(j+1) + ", " + (G4String)std::to_string(typeDamage) + " / ";
+                        damageSpec += "2, " + (G4String)std::to_string(j+1) + ", " + (G4String)std::to_string(typeDamage) + " / ";
 					}
 				}
 				for (G4int j = 0; j < fNumberOfBasePairForDSB; j++)
 				{
 					// Bases of strand 2
-					if (fDamageMap[iChr][initialBpId + j][3] != 0)
+					if (fDamageMap[iChr][initialBpId + j][1] != 0)
 					{
 						G4int typeDamage = fDamageMap[iChr][initialBpId + j][1];
-						if (typeDamage == nodamage) typeDamage = 0;
+                        if (typeDamage == nodamage) typeDamage = 0;
 						if (typeDamage == 4) typeDamage = 1;
 						if (typeDamage == 5) typeDamage = 3;
 						damageSpec += "3, " + (G4String)std::to_string(j+1) + ", " + (G4String)std::to_string(typeDamage) + " / ";
@@ -738,10 +764,10 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 				for (G4int j = 0; j < fNumberOfBasePairForDSB; j++)
 				{
 					// Backbones of strand 2
-					if (fDamageMap[iChr][initialBpId + j][1] != 0)
+					if (fDamageMap[iChr][initialBpId + j][3] != 0)
 					{
 						G4int typeDamage = fDamageMap[iChr][initialBpId + j][3];
-						if (typeDamage == nodamage) typeDamage = 0;
+                        if (typeDamage == nodamage) typeDamage = 0;
 						if (typeDamage == 4) typeDamage = 1;
 						if (typeDamage == 5) typeDamage = 3;
 						damageSpec += "4, " + (G4String)std::to_string(j+1) + ", " + (G4String)std::to_string(typeDamage) + " / ";
@@ -754,7 +780,7 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 		}
 	}
 	outFile.close();
-	return numSites;
+    return nSites;
 }
 
 std::vector<G4ThreeVector> TsDNADamageCalculator::GetDamageCenterAndBoundaries(std::vector<G4ThreeVector> positions)
@@ -827,3 +853,31 @@ void TsDNADamageCalculator::WriteDNADamageCSV()
 	out.close();
 }
 
+void TsDNADamageCalculator::AddDamageAndPrimaryCount(G4int nLesions, G4int nEvents)
+{
+    // Reopen file and add damage and primary count.
+    std::fstream file(fOutputFileName + "_sdd.txt", std::ios::in | std::ios::out);
+    // Find the desired line
+    std::string line;
+    std::vector<std::string> lines;
+    bool found = false;
+    while (std::getline(file, line))
+    {
+        if (line == "Damage and primary count, ;" && !found)
+        {
+            line = "Damage and primary count, " + std::to_string(nLesions) + ", " + std::to_string(nEvents) + ";";
+            found = true;
+        }
+        lines.push_back(line);
+    }
+    // Close the file
+    file.close();
+
+    // Reopen the file for output
+    std::ofstream outFile(fOutputFileName + "_sdd.txt");
+    // Write the modified lines back to the file
+    for (auto& l : lines)
+        outFile << l << std::endl;
+    // Close the output file
+    outFile.close();
+}
