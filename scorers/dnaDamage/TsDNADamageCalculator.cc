@@ -582,7 +582,7 @@ void TsDNADamageCalculator::OutputSDDHeader(G4bool minimalSDD, G4String primaryP
     else if (primaryParticle == "rubidium") incParticle = "100037085";
     else if (primaryParticle == "strontium") incParticle = "100038088";
     else incParticle = primaryParticle;
-	G4String meanEnergy = (G4String)std::to_string(energy) + " MeV";
+	G4String meanEnergy = (G4String)std::to_string(energy);
 
 	G4String scoringIndirect = "0";
 	if (scoreIndirectDamages) scoringIndirect = "1";
@@ -620,9 +620,10 @@ void TsDNADamageCalculator::OutputSDDHeader(G4bool minimalSDD, G4String primaryP
 	outFile << "In vitro / in vivo, " << std::to_string(inVitroOrInVivo) << ";\n";
 	outFile << "Proliferation status, " << prolStatus << ";\n";
 	outFile << "Microenvironment, " << microenv << ";\n";
-	outFile << "Damage definition, " << scoringIndirect << ", 0, " << fNumberOfBasePairForDSB << ", " << scoringOnBases << ", " << fDirectDamageThreshold/eV;
-	if (fUseLinearProbabilityForDirectDamage) outFile << ", " << fUpperLimitLinearProbability;
-	outFile << ";\n";
+    outFile << "Damage definition, " << scoringIndirect << ", 0, " << fNumberOfBasePairForDSB << ", " << scoringOnBases << ", ";
+    if (fUseLinearProbabilityForDirectDamage) {outFile << fLowerLimitLinearProbability/eV << ", " << fUpperLimitLinearProbability/eV;}
+    else {outFile << fDirectDamageThreshold/eV;}
+    outFile << ";\n";
 	outFile << "Time, " << std::to_string(time) << ";\n";
 	outFile << "Damage and primary count, ;\n";
 	outFile << "Data entries, " << dataEntries << ";\n";
