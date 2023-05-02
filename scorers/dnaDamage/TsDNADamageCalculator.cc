@@ -659,14 +659,19 @@ G4int TsDNADamageCalculator::OutputSDDFile(std::map<G4int, std::vector<G4int>> d
 						if ((fSSBMap[iChr][initialBpId + j][2] == direct || fSSBMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; sb++; }
 						if (fSSBMap[iChr][initialBpId + j][1] == indirect)														{ indir++; sb++; }
 						if (fSSBMap[iChr][initialBpId + j][2] == indirect)														{ indir++; sb++; }
+                        if (fSSBMap[iChr][initialBpId + j][1] == multiple || fSSBMap[iChr][initialBpId + j][1] == multiplewithquasidirect) { sb++; }		                                                { sb++; }
 						if ((fDSBMap[iChr][initialBpId + j][1] == direct || fDSBMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; sb++; dsb++; }
 						if ((fDSBMap[iChr][initialBpId + j][2] == direct || fDSBMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; sb++; }
 						if (fDSBMap[iChr][initialBpId + j][1] == indirect)														{ indir++; sb++; dsb++; }
 						if (fDSBMap[iChr][initialBpId + j][2] == indirect)														{ indir++; sb++; }
+                        if (fDSBMap[iChr][initialBpId + j][1] == multiple || fDSBMap[iChr][initialBpId + j][1] == multiplewithquasidirect) { sb++; dsb++; }
+                        if (fDSBMap[iChr][initialBpId + j][2] == multiple || fDSBMap[iChr][initialBpId + j][2] == multiplewithquasidirect) { sb++; }
 						if ((fBDMap[iChr][initialBpId + j][1] == direct || fBDMap[iChr][initialBpId + j][1] == quasidirect))	{ dir++; bd++; }
 						if ((fBDMap[iChr][initialBpId + j][2] == direct || fBDMap[iChr][initialBpId + j][2] == quasidirect))	{ dir++; bd++; }
 						if (fBDMap[iChr][initialBpId + j][1] == indirect)														{ indir++; bd++; }
 						if (fBDMap[iChr][initialBpId + j][2] == indirect)														{ indir++; bd++; }
+                        if (fBDMap[iChr][initialBpId + j][1] == multiple || fBDMap[iChr][initialBpId + j][1] == multiplewithquasidirect) { bd++; }
+                        if (fBDMap[iChr][initialBpId + j][2] == multiple || fBDMap[iChr][initialBpId + j][2] == multiplewithquasidirect) { bd++; }
 				}
 				ibpsTakenForThisChromosome.push_back(initialBpId+j);
 			}
