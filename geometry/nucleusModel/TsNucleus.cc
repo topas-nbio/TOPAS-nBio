@@ -331,8 +331,8 @@ G4VPhysicalVolume* TsNucleus::Construct()
 		G4double rotY = G4UniformRand() * 2 * CLHEP::pi;
 		G4double rotZ = G4UniformRand() * 2 * CLHEP::pi;
 		newRotation->rotateX(rotX);
-		newRotation->rotateX(rotY);
-		newRotation->rotateX(rotZ);
+		newRotation->rotateY(rotY);
+		newRotation->rotateZ(rotZ);
 		fEnvelopePhys->SetRotation(newRotation);
 	}
 	return fEnvelopePhys;
