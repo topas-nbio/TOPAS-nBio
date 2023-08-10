@@ -1,0 +1,89 @@
+##############################################################
+#####################-TOPAS Parameters-#######################
+##############################################################
+
+i:Ts/Verbosity = 0 
+i:Ts/ShowHistoryCountAtInterval = 500
+i:Ts/MaxInterruptedHistories  = So/Demo/NumberOfHistoriesInRun
+i:Ts/NumberOfThreads = 0
+b:Ts/ShowCPUTime = "True"
+
+##############################################################
+#############-Physics And Chemistry Parameters-###############
+##############################################################
+
+sv:Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry"
+s:Ph/Default/Electron/SetElasticScatteringModel = "ELSEPA"
+s:Ph/Default/SolvatedElectronThermalizationModel = "Ritchie"
+
+s:Ch/ChemistryName = "TOPASChemistry"
+includeFile = TOPASDefaultReactionsLaVerne.txt
+
+b:Ch/TOPASChemistry/ChemicalStageTransportActive = "True"
+dv:Ch/TOPASChemistry/AddTimeStepHighEdge    = 1 999999 ps
+dv:Ch/TOPASChemistry/AddTimeStepResolution  = 1 1e-6 ps
+d:Ch/TOPASChemistry/ChemicalStageTimeEnd    = 1.00001 ps
+b:Ch/TOPASChemistry/TestForContactReactions = "True"
+d:Ch/TOPASChemistry/SpaceBinningWidth       = 100 nm
+u:Ch/TOPASChemistry/Temperature             = 20
+b:Ch/TOPASChemistry/ApplyCorrectionScalingForTemperature = "True"
+
+##############################################################
+####################-Material Parameters-#####################
+##############################################################
+
+s:Ma/G4_WATER_MODIFIED/CloneFromMaterial = "G4_WATER"
+d:Ma/G4_WATER_MODIFIED/CloneWithDensity = 0.9984371 g/cm3
+
+##############################################################
+####################-Geometry Parameters-#####################
+##############################################################
+
+Ge/World/HLX= 1 km 
+Ge/World/HLY= 1 km 
+Ge/World/HLZ= 1 km 
+Ge/World/Material ="G4_WATER"
+
+
+d:Ge/sWorld/HLX= 1 km 
+d:Ge/sWorld/HLY= 1 km 
+d:Ge/sWorld/HLZ= 1 km 
+s:Ge/sWorld/Material ="G4_WATER_MODIFIED"
+s:Ge/sWorld/Type = "TsBox"
+s:Ge/sWorld/Parent = "World"
+
+Ge/BeamPosition/TransZ = -0.0 * Ge/World/HLZ um
+Ge/BeamPosition/RotX = 0 deg
+
+##############################################################
+#####################-Source Parameters-######################
+##############################################################
+
+So/Demo/BeamPositionDistribution = "None"
+So/Demo/BeamEnergySpread = 0
+So/Demo/BeamParticle     = "e-"
+So/Demo/BeamEnergy       = 999.999 keV 
+i:So/Demo/NumberOfHistoriesInRun = 5000
+
+##############################################################
+#####################-Scorer Parameters-######################
+##############################################################
+
+u:perCent = 0.01 
+
+s:Sc/nbOfMol/Quantity  = "TsIRTGvalue" 
+s:Sc/nbOfMol/Component = "sWorld"
+s:Sc/nbOfMol/IfOutputFileAlreadyExists = "Overwrite"
+s:Sc/nbOfMol/OutputType = "ascii"
+d:Sc/nbOfMol/KillPrimaryIfEnergyLossExceeds = So/Demo/BeamEnergy keV * perCent
+d:Sc/nbOfMol/AbortEventIfPrimaryEnergyLossExceeds = 1.01 * Sc/nbOfMol/KillPrimaryIfEnergyLossExceeds keV
+b:Sc/nbOfMol/KillPrimaryBasedOnEnergyLoss = "true"
+d:Sc/nbOfMol/KillPrimaryBasedOnTrackLength = 100 km 
+i:Sc/nbOfMol/OutputBufferSize = 1
+d:Sc/nbOfMol/CutOffTime = 1 ps
+d:Sc/nbOfMol/TimeLower  = 1.0 ps
+d:Sc/nbOfMol/TimeUpper  = 1e7 ps 
+i:Sc/nbOfMol/TimeBins   = 300
+s:Sc/nbOfMol/OutputFile = "electron_Gvalue_20C"
+
+##############################################################

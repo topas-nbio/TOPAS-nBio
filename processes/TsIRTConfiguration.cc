@@ -24,30 +24,28 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 {
 	G4String chemistryList = fPm->GetStringParameter("Ch/ChemistryName");
 	
-	fUseSimpleScavengerModel = true;
-	
 	fUtils = new TsIRTUtils();
 	fLowerTime = 1.0e-13*s;
 	fUpperTime = 1.0e-6*s;
 	
 	fExistingMolecules.clear();
 	
-	fExistingMolecules["hydrogen"] = "H^0";
-	fExistingMolecules["hydroxyl"] = "OH^0";
+	fExistingMolecules["hydrogen"]         = "H^0";
+	fExistingMolecules["hydroxyl"]         = "OH^0";
 	fExistingMolecules["hydrogenperoxide"] = "H2O2^0";
-	fExistingMolecules["dyhydrogen"] = "H_2^0";
+	fExistingMolecules["dyhydrogen"]       = "H_2^0";
 	fExistingMolecules["solvatedelectron"] = "e_aq^-1";
-	fExistingMolecules["hydronium"] = "H3O^1";
-	fExistingMolecules["hydroxide"] = "OH^-1";
-	fExistingMolecules["oxygen"] = "O2^0";
-	fExistingMolecules["superoxideanion"] = "O2^-1";
-	fExistingMolecules["hydroperoxy"] = "HO2^0";
-	fExistingMolecules["dioxidanide"] = "HO2^-1";
-	fExistingMolecules["atomicoxygen"] = "O3P^0";
-	fExistingMolecules["oxyde"] = "O^-1";
-	fExistingMolecules["trioxide"] = "O3^-1";
-	fExistingMolecules["ozone"] = "O3^0";
-	fExistingMolecules["none"] = "None";
+	fExistingMolecules["hydronium"]        = "H3O^1";
+	fExistingMolecules["hydroxide"]        = "OH^-1";
+	fExistingMolecules["oxygen"]           = "O2^0";
+	fExistingMolecules["superoxideanion"]  = "O2^-1";
+	fExistingMolecules["hydroperoxy"]      = "HO2^0";
+	fExistingMolecules["dioxidanide"]      = "HO2^-1";
+	fExistingMolecules["atomicoxygen"]     = "O3P^0";
+	fExistingMolecules["oxyde"]            = "O^-1";
+	fExistingMolecules["trioxide"]         = "O3^-1";
+	fExistingMolecules["ozone"]            = "O3^0";
+	fExistingMolecules["none"]             = "None";
 	
 	AddMolecule("H^0",     7.0e9*nm*nm/s,   0, 0.19*nm);
 	AddMolecule("OH^0",    2.2e9*nm*nm/s,   0, 0.22*nm);
@@ -137,6 +135,7 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 	if ( fPm->ParameterExists(parName) )
 		fAllTotallyDiffusionControlled = fPm->GetBooleanParameter(parName);
 	
+	// Declare And Insert Binary Reactions
 	std::vector<G4String>* reactionNames = new std::vector<G4String>;
 	fPm->GetParameterNamesBracketedBy("Ch/" , "Products", reactionNames);
 	G4int numberOfReactions = reactionNames->size();
@@ -158,16 +157,18 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 		reactorB.toLower();
 		G4String* product = fPm->GetStringVector(aparName);
 		G4int nbOfProduct = fPm->GetVectorLength(aparName);
+		std::vector<G4String> vProduct;
 		
-		for ( int j = 0; j < nbOfProduct; j++ )
+		for ( int j = 0; j < nbOfProduct; j++ ) {
 			product[j].toLower();
+			vProduct.push_back(product[j]);
+		}
 		
 		reactorA.toLower();
 		reactorB.toLower();
 		
 		G4int reactionType = fPm->GetIntegerParameter(aparName.substr(0,aparName.find("Products")-1) + "/ReactionType");
-		
-		
+
 		G4double reactionRate = fPm->GetDoubleParameter(aparName.substr(0,aparName.find("Products")-1) +
 														"/ReactionRate","perMolarConcentration perTime");
 		
@@ -176,8 +177,10 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 						   product[0],"None","None",reactionRate,reactionType);
 		else if ( nbOfProduct == 2 )
 			InsertReaction(reactorA, reactorB,product[0],product[1],"None",reactionRate,reactionType);
-		else
+		else if (nbOfProduct == 3 )
 			InsertReaction(reactorA, reactorB,product[0],product[1],product[2],reactionRate,reactionType);
+		else 
+			InsertReaction(reactorA, reactorB,vProduct,reactionRate,reactionType);
 
 		if (fPm->ParameterExists(aparName.substr(0,aparName.find("Products")-1) + "/ActivationRate") ||
 			fPm->ParameterExists(aparName.substr(0,aparName.find("Products")-1) + "/DiffusionRate")){
@@ -197,6 +200,7 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 		}
 	}
 	
+	// Declare And Insert Background Reactions
 	prefixLength = G4String("Ch/" + chemistryList + "/BackgroundReaction/").length();
 	for ( int i = 0; i < numberOfReactions; i++ ) {
 		G4String aparName = (*reactionNames)[i];
@@ -214,9 +218,13 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 		reactorB.toLower();
 		G4String* product = fPm->GetStringVector(aparName);
 		G4int nbOfProduct = fPm->GetVectorLength(aparName);
+		std::vector<G4String> vProduct;
 		
-		for ( int j = 0; j < nbOfProduct; j++ )
+		for ( int j = 0; j < nbOfProduct; j++ ) {
 			product[j].toLower();
+			vProduct.push_back(product[j]);
+
+		}
 		
 		reactorA.toLower();
 		reactorB.toLower();
@@ -228,8 +236,10 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 				InsertBackgroundReaction(reactorA, reactorB,product[0],"None","None",scavengingCapacity,false);
 			else if ( nbOfProduct == 2 )
 				InsertBackgroundReaction(reactorA, reactorB,product[0],product[1],"None",scavengingCapacity,false);
-			else
+			else if (nbOfProduct == 3)
 				InsertBackgroundReaction(reactorA, reactorB,product[0],product[1],product[2],scavengingCapacity,false);
+			else
+				InsertBackgroundReaction(reactorA, reactorB,vProduct,scavengingCapacity,false);
 		} else {
 			G4double concentration = fPm->GetDoubleParameter(aparName.substr(0,aparName.find("Products")-1) +
 															 "/Concentration","molar concentration");
@@ -243,20 +253,23 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 			scavengingExponentialModel.toLower();
 			if ( scavengingExponentialModel == "exponentialsinglefactor" ) {
 				if ( nbOfProduct == 1 )
-					InsertBackgroundReaction(reactorA, reactorB,product[0],"None","None",reactionRate,concentration,false);//scavengingCapacity);
+					InsertBackgroundReaction(reactorA, reactorB,product[0],"None","None",reactionRate,concentration,false);
 				else if ( nbOfProduct == 2 )
-					InsertBackgroundReaction(reactorA, reactorB,product[0],product[1],"None",reactionRate,concentration,false);//,scavengingCapacity);
+					InsertBackgroundReaction(reactorA, reactorB,product[0],product[1],"None",reactionRate,concentration,false);
+				else if (nbOfProduct == 3)
+					InsertBackgroundReaction(reactorA, reactorB,product[0],product[1],product[2],reactionRate,concentration,false);
 				else
-					InsertBackgroundReaction(reactorA, reactorB,product[0],product[1],product[2],reactionRate,concentration,false);//scavengingCapacity);
+					InsertBackgroundReaction(reactorA, reactorB,vProduct,reactionRate,concentration,false);
 				
 			} else if (scavengingExponentialModel == "exponentialdoublefactor" ) {
 				if ( nbOfProduct == 1 )
 					InsertBackgroundReaction(reactorA, reactorB,product[0],"None","None",reactionRate,concentration,true);
 				else if ( nbOfProduct == 2 )
 					InsertBackgroundReaction(reactorA, reactorB,product[0],product[1],"None",reactionRate,concentration,true);
+				else if (nbOfProduct == 3)
+					InsertBackgroundReaction(reactorA, reactorB,product[0],product[1],product[2], reactionRate,concentration,true);
 				else
-					InsertBackgroundReaction(reactorA, reactorB,product[0],product[1],product[2],
-											 reactionRate,concentration,true);
+					InsertBackgroundReaction(reactorA, reactorB,vProduct, reactionRate,concentration,true);
 			} else {
 				Quit(aparName.substr(0,aparName.find("Products")-1) + "/ScavengingModel",
 					 "Scavenging model does not exists in TOPAS-nBio database\n Use ExponentialSingleFactor or ExponentialDoubleFactor");
@@ -298,15 +311,10 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 		if ( fPm->ParameterExists(parName) )
 			fKick = fPm->GetBooleanParameter(parName);
 		
-		//AdjustDiffusionCoefficientyForTemperature(fTemperature);
-		AdjustDiffusionCoefficientyForTemperatureArrehniusFit(fTemperature);
+		AdjustReactionAndDiffusionRateForTemperature();
 	}
 	
 	ResolveReactionRateCoefficients();
-	
-	if ( fScaleForTemperature )
-		AdjustReactionRateForTemperature(fTemperature);
-	
 	CalculateContactProbabilities();
 	ResolveRemainerReactionParameters();
 	
@@ -332,7 +340,7 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 			AdjustReactionRateForPH("PH");
 		}
 	}
-	
+
 	PrintReactionsInformation();
 }
 
@@ -403,111 +411,6 @@ void TsIRTConfiguration::AddMolecule(G4String name) {
 }
 
 
-void TsIRTConfiguration::AdjustDiffusionCoefficientyForTemperatureArrehniusFit(G4double temperatureInCelsius) {
-	G4double D = 0.0;
-	G4double A = 0., B = 0., C =0.;
-	for ( auto& aMol : fMoleculesDefinition ) {
-		G4int molID = aMol.first;
-		G4cout << "Updating diffCoeff for molecule " << std::setw(7) << fMoleculesName[molID] << ": " <<
-		std::setprecision(5) << aMol.second.diffusionCoefficient/(nm*nm/s) << " -> ";
-		
-		if ( fMoleculesName[molID] == "OH^0" ) {
-			A = -8120.0; B = 1.45065; C = 11.42870;
-		} else if (fMoleculesName[molID] == "e_aq^-1" ) {
-			A = -1387.9; B = 1.05709; C = 13.04977;
-		} else if (fMoleculesName[molID] == "H3O^1" ) {
-			A = -9560.7; B = 1.59117; C = 11.09443;
-		} else if (fMoleculesName[molID] == "H2O2^0" ) {
-			A = -8122.5; B = 1.45081; C = 11.44698;
-		} else if (fMoleculesName[molID] == "H_2^0" ) {
-			A = -8221.0; B = 1.45315; C = 11.76385;
-		} else if (fMoleculesName[molID] == "H^0" ) {
-			A = -8333.0; B = 1.45576; C = 11.92479;
-		} else if (fMoleculesName[molID] == "OH^-1" ) {
-			A = -113704.1; B = 2.00721; C = 10.95892;
-		} else if (fMoleculesName[molID] == "HO2^0" ) {
-			A = -16782.7; B = 1.59057; C = 11.30206;
-		} else if (fMoleculesName[molID] == "HO2^-1" ) {
-			A = -16648.6; B = 1.58897; C = 11.08846;
-		} else if (fMoleculesName[molID] == "O2^0" ) {
-			A = -16797.5; B = 1.59077; C = 11.32031;
-		} else if (fMoleculesName[molID] == "O2^-1" ) {
-			A = -16717.0; B = 1.58975; C = 11.18462;
-		} else if (fMoleculesName[molID] == "O3P^0" ) {
-			A = -16740.6; B = 1.59003; C = 11.24232;
-		} else if (fMoleculesName[molID] == "O^-1" ) {
-			A = -16740.4; B = 1.59003; C = 11.24233;
-		} else if (fMoleculesName[molID] == "O3^-1" ) {
-			A = -16740.3; B = 1.59003; C = 11.24233;
-		} else if (fMoleculesName[molID] == "O3^0" ) {
-			A = -16740.0; B = 1.59002; C = 11.24234;
-		} else {
-			continue;
-		}
-		
-		if ( D == 0 ) {
-			G4double invTemp = 1./(temperatureInCelsius+273.15);
-			D = A * std::pow(invTemp, B) + C;
-			D = std::pow(10., D) * nm * nm / s;
-		}
-		
-		aMol.second.diffusionCoefficient = D;
-		G4cout << std::setprecision(5) << D/(nm*nm/s) << " nm2/s " << G4endl;
-		D = 0;
-	}
-}
-
-
-void TsIRTConfiguration::AdjustDiffusionCoefficientyForTemperature(G4double temperatureInCelsius) {
-	G4double DH2O_T = 1.0704e-9 + 4.7082e-11*temperatureInCelsius - 1.2633e-14 * std::pow(temperatureInCelsius,2) +
-	5.0605e-15 * std::pow(temperatureInCelsius,3) - 2.3048e-17 * std::pow(temperatureInCelsius,4) +
-	2.9217e-20 * std::pow(temperatureInCelsius,5) + 1.3128e-23 * std::pow(temperatureInCelsius,6);
-	G4double ambientTemperature = 25.0;
-	G4double DH2O_25C = 1.0704e-9 + 4.7082e-11*ambientTemperature - 1.2633e-14 * std::pow(ambientTemperature,2) +
-	5.0605e-15 * std::pow(ambientTemperature,3) - 2.3048e-17 * std::pow(ambientTemperature,4) +
-	2.9217e-20 * std::pow(ambientTemperature,5) + 1.3128e-23 * std::pow(ambientTemperature,6);
-	
-	G4double D = 0.0;
-	for ( auto& aMol : fMoleculesDefinition ) {
-		G4int molID = aMol.first;
-		G4cout << "Updating diffCoeff for molecule " << std::setw(7) << fMoleculesName[molID] << ": " <<
-		std::setprecision(5) << aMol.second.diffusionCoefficient/(nm*nm/s) << " -> ";
-		
-		if ( fMoleculesName[molID] == "OH^-1" ) {
-			D = 2.666e-9 + 9.769e-11 * temperatureInCelsius +
-			3.303e-13 * temperatureInCelsius*temperatureInCelsius -
-			7.295e-16 * temperatureInCelsius*temperatureInCelsius*temperatureInCelsius;
-			aMol.second.diffusionCoefficient = D * m * m / s;
-			
-		} else if ( fMoleculesName[molID] == "H3O^1" ) {
-			D = 5.361e-9 + 1.659e-10 * temperatureInCelsius -
-			7.48e-14 * temperatureInCelsius*temperatureInCelsius -
-			1.0018e-16 * temperatureInCelsius*temperatureInCelsius*temperatureInCelsius;
-			aMol.second.diffusionCoefficient = D * m * m / s;
-			
-		} else if ( fMoleculesName[molID] == "e_aq^-1" ) {
-			if (temperatureInCelsius <= 90) {
-				D = -4.690 + 1.8e-2 * temperatureInCelsius -
-				1.253e-4 * temperatureInCelsius*temperatureInCelsius +
-				5.458e-7 * temperatureInCelsius*temperatureInCelsius*temperatureInCelsius;
-				D = std::pow(10, D) * 1E-4;
-				aMol.second.diffusionCoefficient = D * m * m / s;
-			}
-			
-			else {
-				D = Arrhenius(1.98373E-05, temperatureInCelsius + 273.15, 20.75);
-				aMol.second.diffusionCoefficient = D * m * m / s;
-			}
-			
-		} else {
-			D = aMol.second.diffusionCoefficient * DH2O_T/DH2O_25C;
-			aMol.second.diffusionCoefficient = D;
-		}
-		G4cout << std::setprecision(5) << aMol.second.diffusionCoefficient/(nm*nm/s) << " nm2/s " << G4endl;
-	}
-}
-
-
 G4bool TsIRTConfiguration::MoleculeExists(G4String name) {
 	if ( fMoleculesID.find(name) == fMoleculesID.end() )
 		return false;
@@ -532,6 +435,17 @@ G4double TsIRTConfiguration::GetMoleculeRadius(G4int moleculeID) {
 
 G4int TsIRTConfiguration::GetMoleculeCharge(G4int moleculeID) {
 	return fMoleculesDefinition[moleculeID].charge;
+}
+
+
+TsIRTConfiguration::TsMolecularReaction TsIRTConfiguration::GetReaction(G4int index) {
+	if (fReactions.count(index) == 1)
+		return fReactions[index];
+	else {
+		TsMolecularReaction NoReaction;
+		NoReaction.index = -1;
+		return NoReaction;
+	}
 }
 
 
@@ -758,6 +672,74 @@ void TsIRTConfiguration::PrintReactionsInformation() {
 		for (int k = 0; k < 120; k++ )
 			G4cout << "=";
 		G4cout << G4endl;
+		
+		for ( auto& reactions : temporal[i] ) {
+			if ( i == 1 ) {
+				G4cout << std::setw(7) << " I "
+				<< std::setw(maxLengthOutputReactionParentA) << std::left << outputReactionParentA[n] << " + "
+				<< std::setw(maxLengthOutputReactionParentB) << std::left << outputReactionParentB[n] << " -> "
+				<< std::setw(maxLengthOutputReactionProducts) << std::left << outputReactionProducts[n]
+				<< std::setw(maxLengthOutputKobs) << std::left << outputKobs[n]
+				<< std::setw(maxLengthOutputReactionRadius) << std::left << outputReactionRadius[n]
+				<< std::setw(maxLengthOutputProbability) << std::left << outputProbability[n] <<
+				G4endl;
+			} else if ( i == 2 ) {
+				G4cout << std::setw(7) << " II "
+				<< std::setw(maxLengthOutputReactionParentA) << std::left << outputReactionParentA[n] << " + "
+				<< std::setw(maxLengthOutputReactionParentB) << std::left << outputReactionParentB[n] << " -> "
+				<< std::setw(maxLengthOutputReactionProducts) << std::left << outputReactionProducts[n]
+				<< std::setw(maxLengthOutputKobs) << std::left << outputKobs[n]
+				<< std::setw(maxLengthOutputKdif) << std::left << outputKdif[n]
+				<< std::setw(maxLengthOutputKact) << std::left << outputKact[n]
+				<< std::setw(maxLengthOutputReactionRadius) << std::left << outputReactionRadius[n]
+				<< std::setw(maxLengthOutputProbability) << std::left << outputProbability[n]
+				<< std::setw(maxLengthOutputAlpha) << std::left << outputAlpha[n] <<
+				G4endl;
+			} else if ( i == 3 ) {
+				G4cout << std::setw(7) << " III "
+				<< std::setw(maxLengthOutputReactionParentA) << std::left << outputReactionParentA[n] << " + "
+				<< std::setw(maxLengthOutputReactionParentB) << std::left << outputReactionParentB[n] << " -> "
+				<< std::setw(maxLengthOutputReactionProducts) << std::left << outputReactionProducts[n]
+				<< std::setw(maxLengthOutputKobs) << std::left << outputKobs[n]
+				<< std::setw(maxLengthOutputReactionRadius+3) << std::left << outputReactionRadius[n]
+				<< std::setw(maxLengthOutputReactionRadiusEff+3) << std::left << outputReactionRadiusEff[n]
+				<< std::setw(maxLengthOutputProbability+3) << std::left << outputProbability[n] <<
+				G4endl;
+			} else if ( i == 4 ) {
+				G4cout << std::setw(7) << " IV "
+				<< std::setw(maxLengthOutputReactionParentA) << std::left << outputReactionParentA[n] << " + "
+				<< std::setw(maxLengthOutputReactionParentB) << std::left << outputReactionParentB[n] << " -> "
+				<< std::setw(maxLengthOutputReactionProducts) << std::left << outputReactionProducts[n]
+				<< std::setw(maxLengthOutputKobs) << std::left << outputKobs[n]
+				<< std::setw(maxLengthOutputKdif) << std::left << outputKdif[n]
+				<< std::setw(maxLengthOutputKact) << std::left << outputKact[n]
+				<< std::setw(maxLengthOutputReactionRadius) << std::left << outputReactionRadius[n]
+				<< std::setw(maxLengthOutputReactionRadiusEff) << std::left << outputReactionRadiusEff[n]
+				<< std::setw(maxLengthOutputReactionRadiusEff1) << std::left << outputReactionRadiusEff1[n]
+				<< std::setw(maxLengthOutputProbability) << std::left << outputProbability[n] <<
+				G4endl;
+			} else if ( i == 5 ) {
+				G4cout << std::setw(7) << " V "
+				<< std::setw(maxLengthOutputReactionParentA) << std::left << outputReactionParentA[n] << " + "
+				<< std::setw(maxLengthOutputReactionParentB) << std::left << outputReactionParentB[n] << " -> "
+				<< std::setw(maxLengthOutputReactionProducts) << std::left << outputReactionProducts[n]
+				<< std::setw(maxLengthOutputKobs) << std::left << outputKobs[n]
+				<< std::setw(maxLengthOutputReactionRadius) << std::left << outputReactionRadius[n]
+				<< std::setw(maxLengthOutputReactionRadiusEff) << std::left << outputReactionRadiusEff[n]
+				<< std::setw(maxLengthOutputProbability) << std::left << outputProbability[n] <<
+				G4endl;
+			} else if ( i == 6 ) {
+				G4String scavModel = outputModel[n] == "false" ? " Single factor " : " Double factor ";
+				G4cout << std::setw(7) << " VI "
+				<< std::setw(maxLengthOutputReactionParentA) << std::left << outputReactionParentA[n] << " + "
+				<< std::setw(maxLengthOutputReactionParentB) << std::left << outputReactionParentB[n] << " -> "
+				<< std::setw(maxLengthOutputReactionProducts) << std::left << outputReactionProducts[n]
+				<< std::setw(maxLengthOutputKobs) << std::left << outputScav[n] << std::setw(15) << scavModel <<
+				G4endl;
+			}
+			n++;
+		}
+		G4cout << G4endl;
 	}
 	
 	delete[] title;
@@ -781,7 +763,7 @@ void TsIRTConfiguration::PrintReactionsInformation() {
 G4int TsIRTConfiguration::GetReactionIndex(G4int pdgA, G4int pdgB) {
 	for ( size_t u = 0; u < fMoleculeCanReactWith[pdgA].size(); u++ ) {
 		if ( pdgB == fMoleculeCanReactWith[pdgA][u].first )
-			return fMoleculeCanReactWith[pdgA][u].second;
+				return fMoleculeCanReactWith[pdgA][u].second;
 	}
 	return -1;
 }
@@ -948,21 +930,18 @@ void TsIRTConfiguration::ResolveReactionRateCoefficients() {
 		} else if ( reactionType == 2 || reactionType == 4 ) {
 			
 			// R = RA + RB, see Plante 2011 after Eq.17
-			fReactionRadius = fMoleculesDefinition[molA].radius + fMoleculesDefinition[molB].radius;
+			G4double ReactionRadius = fMoleculesDefinition[molA].radius + fMoleculesDefinition[molB].radius;
 			G4double sumDiffCoeff = fMoleculesDefinition[molA].diffusionCoefficient + fMoleculesDefinition[molB].diffusionCoefficient;
 			
 			if ( reactionType == 2 ) {
-				diffusionReactionRate = 4 * pi * sumDiffCoeff * (fMoleculesDefinition[molA].radius +
-																 fMoleculesDefinition[molB].radius) * Avogadro;
+				diffusionReactionRate = 4 * pi * sumDiffCoeff * ReactionRadius * Avogadro;
 				if (molA == molB)
 					diffusionReactionRate/=2;
 				
 				activationReactionRate = diffusionReactionRate * kobs / (diffusionReactionRate - kobs);
 				
 			} else {
-				G4double effectiveReactionRadius = -rc / (1-exp(rc /
-																(fMoleculesDefinition[molA].radius +
-																 fMoleculesDefinition[molB].radius)));
+				G4double effectiveReactionRadius = -rc / (1-exp(rc / ReactionRadius));
 				diffusionReactionRate = 4 * pi * sumDiffCoeff * effectiveReactionRadius * Avogadro;
 				
 				if (molA == molB) diffusionReactionRate/=2;
@@ -1057,21 +1036,21 @@ void TsIRTConfiguration::InsertReaction(G4String A, G4String B, G4String p1, G4S
 
 	std::vector<G4int> products;
 	G4String molNameP1 = p1;
-	if (p1 != "None") {
+	if (p1 != "None" && p1 != "none") {
 		QuitIfMoleculeNotFound(p1);
 		molNameP1 = fExistingMolecules[p1];
 		products.push_back(fMoleculesID[molNameP1]);
 	}
 
 	G4String molNameP2 = p2;
-	if (p2 != "None") {
+	if (p2 != "None" && p2 != "none") {
 		QuitIfMoleculeNotFound(p2);
 		molNameP2 = fExistingMolecules[p2];
 		products.push_back(fMoleculesID[molNameP2]);
 	}
 
 	G4String molNameP3 = p3;
-	if (p3 != "None") {
+	if (p3 != "None" && p3 != "none") {
 		QuitIfMoleculeNotFound(p3);
 		molNameP3 = fExistingMolecules[p3];
 		products.push_back(fMoleculesID[molNameP3]);
@@ -1089,7 +1068,45 @@ void TsIRTConfiguration::InsertReaction(G4String A, G4String B, G4String p1, G4S
 	}
 	
 	InsertReaction(molA, molB, products, kobs, reactionType);
+}
+
+
+void TsIRTConfiguration::InsertReaction(G4String A, G4String B, std::vector<G4String> prods,
+										G4double kobs, G4int reactionType)
+{
+	QuitIfMoleculeNotFound(A);
+	QuitIfMoleculeNotFound(B);
+	G4String molNameA  = fExistingMolecules[A];
+	G4String molNameB  = fExistingMolecules[B];
+	std::vector<G4int> products;
+
+	for (size_t i = 0; i < prods.size(); i++) {
+		G4String molName = prods[i];
+		if (molName != "None" && molName != "none") {
+			QuitIfMoleculeNotFound(molName);
+			molName = fExistingMolecules[molName];
+			products.push_back(fMoleculesID[molName]);
+		}
+	}
+
+	G4int molA = fMoleculesID[molNameA];
+	G4int molB = fMoleculesID[molNameB];
 	
+	if ( GetReactionIndex(molA, molB) > -1 ) {
+		G4cerr << "TOPAS is exiting due to a fatal error in IRT Chemistry setup!" << G4endl;
+		G4cerr << "--- Reaction: " << molNameA << " + " << molNameB << " -> ";
+		for (size_t i = 0; i < prods.size(); i++) {
+			if (i != prods.size() -1) 
+				G4cerr << prods[i] << " + ";
+			else
+				G4cerr << prods[i];
+		}
+		G4cerr << " already exists." << G4endl;
+		fPm->AbortSession(1);
+		return;
+	}
+	
+	InsertReaction(molA, molB, products, kobs, reactionType);
 }
 
 
@@ -1110,21 +1127,21 @@ void TsIRTConfiguration::InsertBackgroundReaction(G4String A, G4String B, G4Stri
 
 	std::vector<G4int> products;
 	G4String molNameP1 = p1;
-	if (p1 != "None") {
+	if (p1 != "None" && p1 != "none") {
 		QuitIfMoleculeNotFound(p1);
 		molNameP1 = fExistingMolecules[p1];
 		products.push_back(fMoleculesID[molNameP1]);
 	}
 
 	G4String molNameP2 = p2;
-	if (p2 != "None") {
+	if (p2 != "None" && p2 != "none") {
 		QuitIfMoleculeNotFound(p2);
 		molNameP2 = fExistingMolecules[p2];
 		products.push_back(fMoleculesID[molNameP2]);
 	}
 
 	G4String molNameP3 = p3;
-	if (p3 != "None") {
+	if (p3 != "None" && p3 != "none") {
 		QuitIfMoleculeNotFound(p3);
 		molNameP3 = fExistingMolecules[p3];
 		products.push_back(fMoleculesID[molNameP3]);
@@ -1139,7 +1156,7 @@ void TsIRTConfiguration::InsertBackgroundReaction(G4String A, G4String B, G4Stri
 	aMolecularReaction.index = index;
 	aMolecularReaction.reactionType = 6;
 	aMolecularReaction.sampleExponential = sampleExponential;
-	
+
 	fReactions[index] = aMolecularReaction;
 }
 
@@ -1160,21 +1177,21 @@ void TsIRTConfiguration::InsertBackgroundReaction(G4String A, G4String B, G4Stri
 	// No test to confirm if this reaction already exists, it could be a first order reaction
 	std::vector<G4int> products;
 	G4String molNameP1 = p1;
-	if (p1 != "None") {
+	if (p1 != "None" && p1 != "none") {
 		QuitIfMoleculeNotFound(p1);
 		molNameP1 = fExistingMolecules[p1];
 		products.push_back(fMoleculesID[molNameP1]);
 	}
 
 	G4String molNameP2 = p2;
-	if (p2 != "None") {
+	if (p2 != "None" && p2 != "none") {
 		QuitIfMoleculeNotFound(p2);
 		molNameP2 = fExistingMolecules[p2];
 		products.push_back(fMoleculesID[molNameP2]);
 	}
 
 	G4String molNameP3 = p3;
-	if (p3 != "None") {
+	if (p3 != "None" && p3 != "none") {
 		QuitIfMoleculeNotFound(p3);
 		molNameP3 = fExistingMolecules[p3];
 		products.push_back(fMoleculesID[molNameP3]);
@@ -1197,541 +1214,314 @@ void TsIRTConfiguration::InsertBackgroundReaction(G4String A, G4String B, G4Stri
 }
 
 
-G4double TsIRTConfiguration::Arrhenius(G4double A, G4double temperatureInKelvin, G4double E) {
-	G4double den = 0.0083146*temperatureInKelvin;
-	return A * std::exp(-E/den);
-}
-
-
-G4double TsIRTConfiguration::Noyes(G4double kobs, G4double kact, G4double kdiff) {
-	if (kobs == 0)
-		return (kdiff * kact) / (kact + kdiff);
+void TsIRTConfiguration::InsertBackgroundReaction(G4String A, G4String B, std::vector<G4String> p,
+												  G4double scavengingCapacity, G4bool sampleExponential)
+{
+	QuitIfMoleculeNotFound(A);
+	QuitIfMoleculeNotFound(B);
+	G4String molNameA = fExistingMolecules[A];
+	G4String molNameB = fExistingMolecules[B];
 	
-	else if (kact == 0)
-		return  (kobs * kdiff) / (kdiff - kobs);
-	
-	else if (kdiff == 0 )
-		return (kobs * kact ) / (kact - kobs);
-	
-	else
-		return 0;
-}
+	G4int index = fReactionID;
+	fReactionID++;
+	G4int molA = fMoleculesID[molNameA];
+	G4int molB = fMoleculesID[molNameB];
+	// No need to test to confirm if this reaction already exists, because it could exists as a second order reaction
 
-
-G4double TsIRTConfiguration::Smoluchowski(G4double Beta, TsMolecularReaction Reaction) {
-	G4double r = fMoleculesDefinition[Reaction.reactorA].radius +
-	fMoleculesDefinition[Reaction.reactorB].radius;
-	G4double D = fMoleculesDefinition[Reaction.reactorA].diffusionCoefficient +
-	fMoleculesDefinition[Reaction.reactorB].diffusionCoefficient;
-	
-	G4double diffusionReactionRate = 4 * pi * Beta * Avogadro * D * r;
-	if (Reaction.reactorA == Reaction.reactorB) diffusionReactionRate/=2;
-	
-	return diffusionReactionRate/fPm->GetUnitValue("/M/s");
-}
-
-
-G4double TsIRTConfiguration::Debye(G4double Beta, TsMolecularReaction Reaction, G4double temperatureInCelsius) {
-	G4int molA = Reaction.reactorA;
-	G4int molB = Reaction.reactorB;
-	
-	G4double sumDiffCoeff = fMoleculesDefinition[molA].diffusionCoefficient +
-	fMoleculesDefinition[molB].diffusionCoefficient;
-	G4double effectiveReactionRadius = fMoleculesDefinition[molA].radius +
-	fMoleculesDefinition[molB].radius;
-	
-	G4double fD = DebyeFactor(temperatureInCelsius, molA, molB, fMoleculesDefinition[molA].radius +
-							  fMoleculesDefinition[molB].radius);
-	
-	G4double diffusionReactionRate = 4 * pi * sumDiffCoeff * Beta * effectiveReactionRadius * Avogadro * fD;
-	
-	if (molA == molB) diffusionReactionRate/=2;
-	
-	return diffusionReactionRate/fPm->GetUnitValue("/M/s");
-}
-
-
-G4double TsIRTConfiguration::DebyeFactor(G4double , G4int molA, G4int molB, G4double r) {
-	G4double rc = GetOnsagerRadius(molA, molB);
-	G4double d = rc/r;
-	return d/(std::exp(d) - 1);
-}
-
-
-G4double TsIRTConfiguration::ProbabilityOfReactionT(TsMolecularReaction reaction, G4double , G4double ) {
-	G4double rc = GetOnsagerRadius(reaction.reactorA, reaction.reactorB);
-	G4double Rs = 0.29 * nm;
-	G4double kdiv = 1;
-	if ( reaction.reactionType == 2 || reaction.reactionType == 4) {
-		G4double r = fMoleculesDefinition[reaction.reactorA].radius +
-		fMoleculesDefinition[reaction.reactorB].radius;
-		
-		if ( reaction.reactionType == 4 )
-			r = -rc / (1-exp(rc / r));
-		
-		kdiv = reaction.kdif / reaction.kact;
-		return Rs/(Rs + kdiv*(r + Rs));
-		
-	} else {
-		return reaction.probabilityOfReaction;
+	std::vector<G4int> products;
+	for (size_t i = 0; i < p.size(); i++) {
+		G4String molNameP = p[i];
+		if (p[i] != "None" && p[i] != "none") {
+			QuitIfMoleculeNotFound(p[i]);
+			molNameP = fExistingMolecules[p[i]];
+			products.push_back(fMoleculesID[molNameP]);
+		}
 	}
+	
+	TsMolecularReaction aMolecularReaction;
+	aMolecularReaction.reactorA = molA;
+	aMolecularReaction.reactorB = molB;
+	aMolecularReaction.products = products;
+	aMolecularReaction.scavengingCapacity = scavengingCapacity;
+	aMolecularReaction.kobs = 0.0;
+	aMolecularReaction.index = index;
+	aMolecularReaction.reactionType = 6;
+	aMolecularReaction.sampleExponential = sampleExponential;
+	
+	fReactions[index] = aMolecularReaction;
 }
 
 
-G4double TsIRTConfiguration::OnsagerRadius(G4double temperatureInKelvin) {// <- erase
-	G4double epsilon =((5321.0 * pow(temperatureInKelvin,-1))
-					   + (233.76 * pow(temperatureInKelvin,+0))
-					   - (0.9297 * pow(temperatureInKelvin,+1))
-					   + (0.001417*pow(temperatureInKelvin,+2))
-					   - (8.292E-7*pow(temperatureInKelvin,+3)))
-	*  8.85418781762037E-12;
-	G4double electronCharge = 1.60217662E-19;
-	G4double RC = pow(electronCharge,2) / (4 * pi * epsilon * 1.3806488E-23 * temperatureInKelvin);
+void TsIRTConfiguration::InsertBackgroundReaction(G4String A, G4String B, std::vector<G4String> p,
+												  G4double kobs, G4double concentration, G4bool sampleExponential)
+{
+	QuitIfMoleculeNotFound(A);
+	QuitIfMoleculeNotFound(B);
+	G4String molNameA = fExistingMolecules[A];
+	G4String molNameB = fExistingMolecules[B];
 	
-	return RC * m;
+	G4int index = fReactionID;
+	fReactionID++;
+	G4int molA = fMoleculesID[molNameA];
+	G4int molB = fMoleculesID[molNameB];
+	// No test to confirm if this reaction already exists, it could be a first order reaction
+	
+	std::vector<G4int> products;
+	for (size_t i = 0; i < p.size(); i++) {
+		G4String molNameP = p[i];
+		if (p[i] != "None" && p[i] != "none") {
+			QuitIfMoleculeNotFound(p[i]);
+			molNameP = fExistingMolecules[p[i]];
+			products.push_back(fMoleculesID[molNameP]);
+		}
+	}
+	
+	TsMolecularReaction aMolecularReaction;
+	aMolecularReaction.reactorA = molA;
+	aMolecularReaction.reactorB = molB;
+	aMolecularReaction.products = products;
+	aMolecularReaction.kobs = kobs;
+	G4double sumDiffCoeff = fMoleculesDefinition[molA].diffusionCoefficient
+	+ fMoleculesDefinition[molB].diffusionCoefficient;
+	aMolecularReaction.effectiveReactionRadius = kobs / (4. * CLHEP::pi * sumDiffCoeff * CLHEP::Avogadro);
+	aMolecularReaction.concentration = concentration;
+	aMolecularReaction.scavengingCapacity = kobs * concentration;
+	aMolecularReaction.index = index;
+	aMolecularReaction.reactionType = 6;
+	aMolecularReaction.sampleExponential = sampleExponential;// true;
+	fReactions[index] = aMolecularReaction;
 }
 
 
-void TsIRTConfiguration::AdjustReactionRateForTemperature(G4double temperatureInCelsius) {
-	G4double temperatureInKelvin = 273.15 + temperatureInCelsius;
-	
-	std::vector<std::vector<G4String>> reactions;
-	reactions.push_back({"R1",   "e_aq^-1","e_aq^-1"});
-	reactions.push_back({"R2",   "e_aq^-1","H3O^1"});
-	reactions.push_back({"R3",   "e_aq^-1","H^0"});
-	reactions.push_back({"R4",   "e_aq^-1","OH^0"});
-	reactions.push_back({"R5",   "e_aq^-1","H2O2^0"});
-	reactions.push_back({"R6",   "H3O^1",  "OH^-1"});
-	reactions.push_back({"R7",   "H^0",    "H^0"});
-	reactions.push_back({"R8",   "H^0",    "OH^0"});
-	reactions.push_back({"R9",   "H^0",    "H2O2^0"});
-	reactions.push_back({"R10",  "OH^0",   "OH^0"});
-	for (size_t i = 0 ; i < fReactions.size() ; i++) {
+void TsIRTConfiguration::AdjustReactionAndDiffusionRateForTemperature() {
+	std::map<G4String, std::pair<G4String,G4String>> ReactionLabels;
+	std::map<G4String, G4double> DefaultValues;
+
+	ReactionLabels["R1"]  = std::make_pair("e_aq^-1","e_aq^-1");
+	DefaultValues["R1"]   = 5.5e9;
+	ReactionLabels["R2"]  = std::make_pair("e_aq^-1","H3O^1");
+    DefaultValues["R2"]   = 2.3e10;
+	ReactionLabels["R3"]  = std::make_pair("e_aq^-1","H^0");
+    DefaultValues["R3"]   = 2.5e10;
+	ReactionLabels["R4"]  = std::make_pair("e_aq^-1","OH^0");
+    DefaultValues["R4"]   = 3.0e10;
+	ReactionLabels["R5"]  = std::make_pair("e_aq^-1","H2O2^0");
+    DefaultValues["R5"]   = 1.1e10;
+	ReactionLabels["R6"]  = std::make_pair("H3O^1",  "OH^-1");
+    DefaultValues["R6"]   = 14.3e10;
+	ReactionLabels["R7"]  = std::make_pair("H^0",    "H^0");
+	DefaultValues["R7"]   = 7.8e9;
+	ReactionLabels["R8"]  = std::make_pair("OH^0",   "H^0");
+	DefaultValues["R8"]   = 1.55e10;
+	ReactionLabels["R9"]  = std::make_pair("H^0",    "H2O2^0");
+	DefaultValues["R9"]   = 9.0e7;
+	ReactionLabels["R10"] = std::make_pair("OH^0",   "OH^0");
+	DefaultValues["R10"]  = 5.5e9;
+
+	for(size_t i = 0; i < fReactions.size(); i++) {
+		G4int chargeA = fMoleculesDefinition[fReactions[i].reactorA].charge;
+		G4int chargeB = fMoleculesDefinition[fReactions[i].reactorB].charge;
+		G4double radiusA = fMoleculesDefinition[fReactions[i].reactorA].radius / m;
+		G4double radiusB = fMoleculesDefinition[fReactions[i].reactorB].radius / m;
+		G4double diffusionA = fMoleculesDefinition[fReactions[i].reactorA].diffusionCoefficient / (m*m/s);
+		G4double diffusionB = fMoleculesDefinition[fReactions[i].reactorB].diffusionCoefficient / (m*m/s);
 		G4String ReactA = fMoleculesName[fReactions[i].reactorA];
 		G4String ReactB = fMoleculesName[fReactions[i].reactorB];
-		//G4bool isReaction = false;
-		
-		for (size_t j = 0 ; j < reactions.size() ; j++) {
-			if (((ReactA == reactions[j][1]) && (ReactB == reactions[j][2]))
-				||  ((ReactA == reactions[j][2]) && (ReactB == reactions[j][1]))) {
-				//isReaction = true;
-				fReactions[i].kobs /= fPm->GetUnitValue("/M/s");
-				fReactions[i].kact /= fPm->GetUnitValue("/M/s");
-				fReactions[i].kdif /= fPm->GetUnitValue("/M/s");
-				fReactions[i].scavengingCapacity /= 1.0/s;
-				
-				if (reactions[j][0] == "R1") {
-					/*fReactions[i].kobs = 2.0 * pow(10,12.281-
-							         3.768e2/temperatureInKelvin-
- 							         6.673e4/pow(temperatureInKelvin,2)-
-							         1.075e7/pow(temperatureInKelvin,3));*/
-					if (fKick)
-						fReactions[i].kobs = 3.431e+13 * exp(-2296.32/temperatureInKelvin)*0.81;
-					else
-						fReactions[i].kobs = 3.431e+13 * exp(-2296.32/temperatureInKelvin);
-                                } 
-                                else if ( reactions[j][0] == "R2" ) {
-					/*fReactions[i].kobs = pow(10,39.127-
-							         3.888e4/temperatureInKelvin+
-								 2.054e7/pow(temperatureInKelvin,2)-
-								 4.899e9/pow(temperatureInKelvin,3)+
-								 4.376e11/pow(temperatureInKelvin,4));*/
-				
-					if (fKick)
-						fReactions[i].kobs = 1.693e+12 * exp(-1281.58/temperatureInKelvin)*1.08;
-					else
-						fReactions[i].kobs = 1.693e+12 * exp(-1281.58/temperatureInKelvin);
-				
-				}
-				else if ( reactions[j][0] == "R3" ) {
-					if (fKick)
-						fReactions[i].kobs = 7.837e+12 * exp(-1681.53/temperatureInKelvin)*0.99;
-					else
-						fReactions[i].kobs = 7.837e+12 * exp(-1681.53/temperatureInKelvin);
-				}
-				else if ( reactions[j][0] == "R4" ) {
-					/*fReactions[i].kobs = pow(10,13.123-
-								 1.023e3/temperatureInKelvin+
-								 7.634e4/pow(temperatureInKelvin,2));*/
-					if (fKick)
-						fReactions[i].kobs = 2.728e+12 * exp(-1300.38/temperatureInKelvin)*0.93;
-					else
-						fReactions[i].kobs = 2.728e+12 * exp(-1300.38/temperatureInKelvin);
-				}
-				else if ( reactions[j][0] == "R5" ) {
-					if (fKick)
-						fReactions[i].kobs = 8.316e+12 * exp(-1922.07/temperatureInKelvin)*0.93;
-					else
-						fReactions[i].kobs = 8.316e+12 * exp(-1922.07/temperatureInKelvin);
-				}
-				else if ( reactions[j][0] == "R6" ) {
-					/*fReactions[i].kobs = pow(10,20.934-
-								 1.236e4/temperatureInKelvin+
-								 6.364e6/pow(temperatureInKelvin,2)-
-								 1.475e9/pow(temperatureInKelvin,3)+
-								 1.237e11/pow(temperatureInKelvin,4));*/
-					if (fKick)
-						fReactions[i].kobs = 1.555e+13 * exp(-1429.76/temperatureInKelvin)*1.21;
-					else
-						fReactions[i].kobs = 1.555e+13 * exp(-1429.76/temperatureInKelvin);
-				}
-				else if ( reactions[j][0] == "R7" ) {
-					if (fKick)
-						fReactions[i].kobs = 4.531e+12 * exp(-1816.37/temperatureInKelvin)*1.69;
-					else
-						fReactions[i].kobs = 4.531e+12 * exp(-1816.37/temperatureInKelvin);
-				}
-				else if ( reactions[j][0] == "R8" ) {
-					if (fKick)
-						fReactions[i].kobs = 4.531e+11 * exp(-1109.71/temperatureInKelvin)*1.51;
-					else
-						fReactions[i].kobs = 4.531e+11 * exp(-1109.71/temperatureInKelvin);
-				}
-				else if ( reactions[j][0] == "R9" ) {
-					if (fKick)
-						fReactions[i].kobs = 1.968e+11 * exp(-2559.09/temperatureInKelvin)*2.84;
-					else
-						fReactions[i].kobs = 1.968e+11 * exp(-2559.09/temperatureInKelvin);
-				}
-				else if ( reactions[j][0] == "R10" ) {
-					if (fKick)
-						fReactions[i].kobs = 8.728e+10 * exp(-858.30/temperatureInKelvin)*1.18;
-					else
-						fReactions[i].kobs = 8.728e+10 * exp(-858.30/temperatureInKelvin);
-					/*fReactions[i].kobs = pow(10, 8.054 + 
-								 2.193e3/temperatureInKelvin - 
-								 7.395e5/pow(temperatureInKelvin,2) + 
-								 6.870e7/pow(temperatureInKelvin,3));*/
-				}
-				fReactions[i].kobs *= fPm->GetUnitValue("/M/s");
-				fReactions[i].kact *= fPm->GetUnitValue("/M/s");
-				fReactions[i].kdif *= fPm->GetUnitValue("/M/s");
-				fReactions[i].scavengingCapacity *= 1.0/s;
-			}
-		}	
-	}
-}
-/*	
-void TsIRTConfiguration::AdjustReactionRateForTemperature(G4double temperatureInCelsius) {
-	G4double temperatureInKelvin = 273.15 + temperatureInCelsius;
-	
-	//May change with Temperature or H2SO4 Concentration
-	G4double Kw      = K_water(temperatureInCelsius);
-	G4double Hp_Con  = sqrt(Kw);
-	G4double OHm_Con = Kw / Hp_Con;
-	
-	G4double Hp_25  = 1.003E-7;
-	G4double OHm_25 = 1.003E-7;
-	
-	G4double H2O_Con = lH2Ol(temperatureInCelsius);
-	G4double H2O_25  = lH2Ol(25.);
-	
-	std::vector<std::vector<G4String>> HerveReactions;
-	HerveReactions.push_back({"R1",   "e_aq^-1","OH^0"});
-	HerveReactions.push_back({"R2-1", "e_aq^-1","H3O^1"});
-	HerveReactions.push_back({"R2-2", "H^0",    "None"});
-	HerveReactions.push_back({"R3",   "e_aq^-1","e_aq^-1"});
-	HerveReactions.push_back({"R4",   "e_aq^-1","H^0"});
-	HerveReactions.push_back({"R5",   "e_aq^-1","H2O2^0"});
-	HerveReactions.push_back({"R6-1", "e_aq^-1","None"});
-	HerveReactions.push_back({"R6-2", "H^0",    "OH^-1"});
-	HerveReactions.push_back({"R7",   "OH^0",   "OH^0"});
-	HerveReactions.push_back({"R8",   "H^0",    "OH^0"});
-	HerveReactions.push_back({"R9-1", "OH^0",   "OH^-1"});
-	HerveReactions.push_back({"R9-2", "O^-1",   "None"});
-	HerveReactions.push_back({"R10",  "H^0",    "H^0"});
-	HerveReactions.push_back({"R11",  "H3O^1",  "HO2^-1"});
-	HerveReactions.push_back({"R12",  "H3O^1",  "OH^-1"});
-	HerveReactions.push_back({"R13",  "H3O^1",  "O^-1"});
-	HerveReactions.push_back({"R14",  "H^0",    "O3P^0"});
-	HerveReactions.push_back({"R15",  "H^0",    "H2O2^0"});
-	
-	// DC: kobs fitted by a Smoluchowski or Debye equation (3 or 4 in Herve et al, 2000)
-	// DC*, A and A*: Arrhenius fits to kobs.
-	// P: polynomial fit to kobs.
-	// N: Arrhenius fit to kact.
-	//
-	// DC and DC*: kobs = kdif
-	// A and A*: get kact from Noyes equation
-	// P: kobs from fitting data of Elliot and kact from Noyes equation
-	// N: after having kact, then get kobs from Noyes eq.
-	
-	for (size_t i = 0 ; i < fReactions.size() ; i++) {
-		G4String ReactA = fMoleculesName[fReactions[i].reactorA];
-		G4String ReactB = fMoleculesName[fReactions[i].reactorB];
-		G4bool isHerveReaction = false;
-		
-		for (size_t j = 0 ; j < HerveReactions.size() ; j++) {
-			if (((ReactA == HerveReactions[j][1]) && (ReactB == HerveReactions[j][2]))
-				||  ((ReactA == HerveReactions[j][2]) && (ReactB == HerveReactions[j][1]))) {
-				isHerveReaction = true;
-				fReactions[i].kobs /= fPm->GetUnitValue("/M/s");
-				fReactions[i].kact /= fPm->GetUnitValue("/M/s");
-				fReactions[i].kdif /= fPm->GetUnitValue("/M/s");
-				fReactions[i].scavengingCapacity /= 1.0/s;
-				
-				if (HerveReactions[j][0] == "R1") {
-					//if ( fKick )
-					//	fReactions[i].kobs = 0.844 * pow(10, 13.123 - 1.023e3/ temperatureInKelvin + 7.634e4/(pow(temperatureInKelvin,2)));
-					//else
-					//	fReactions[i].kobs = pow(10, 13.123 - 1.023e3/ temperatureInKelvin + 7.634e4/(pow(temperatureInKelvin,2)));
-					
-					fReactions[i].kact = Arrhenius(0.0304e12, temperatureInKelvin,-3.5);//Noyes(fReactions[i].kobs, 0 , fReactions[i].kdif);
-					if (fKick)
-						fReactions[i].kact *= 1.071;
-					
-					//fReactions[i].kdif = Noyes(fReactions[i].kobs, fReactions[i].kact, 0);
-					fReactions[i].kobs = Noyes(0, fReactions[i].kact, fReactions[i].kdif);
-				}
-				
-				else if (HerveReactions[j][0] == "R2-1") {
-					if (fReactions[i].reactionType != 6) {
-						//if ( fKick )
-						//	fReactions[i].kobs = 1.09 * pow(10, 39.127 - 3.888e4 / temperatureInKelvin + 2.054e7/(pow(temperatureInKelvin,2)) - 4.899e9/(pow(temperatureInKelvin,3)) + 4.376e11/(pow(temperatureInKelvin,4)));
-						//else
-						//fReactions[i].kobs = pow(10, 39.127 - 3.888e4 / temperatureInKelvin + 2.054e7/(pow(temperatureInKelvin,2)) - 4.899e9/(pow(temperatureInKelvin,3)) + 4.376e11/(pow(temperatureInKelvin,4)));
-						fReactions[i].kobs = Arrhenius(1.24e12, temperatureInKelvin, 10.1 );
-						if ( fKick )
-							fReactions[i].kobs *= 1.095;
-						
-						//fReactions[i].kdif = Debye(1.0, fReactions[i], temperatureInKelvin);
-						//if ( fKick)
-						//	fReactions[i].kdif *= 0.98;
-						
-						fReactions[i].kact = Noyes(fReactions[i].kobs, 0 , fReactions[i].kdif);
-					}
-					else {
-						fReactions[i].scavengingCapacity = 1.0004*Arrhenius(1.24E12, temperatureInKelvin, 10.1) * Hp_Con;
-					}
-				}
-				
-				else if (HerveReactions[j][0] == "R2-2") {
-					fReactions[i].kobs = k_26(temperatureInCelsius);
-				}
-				
-				else if (HerveReactions[j][0] == "R3") {
-					if (temperatureInCelsius <= 150 ) {//2.33e13,20.3) From Elliot 1994
-						//if ( fKick )
-						//	fReactions[i].kobs = 2.0 * 0.76 * pow(10 , 12.281 - 3.768e2 / temperatureInKelvin - 6.673e4/(pow(temperatureInKelvin, 2)) - 1.075e7/(pow(temperatureInKelvin,3)));
-						//else
-						//	fReactions[i].kobs = 2.0 * pow(10 , 12.281 - 3.768e2 / temperatureInKelvin - 6.673e4/(pow(temperatureInKelvin, 2)) - 1.075e7/(pow(temperatureInKelvin,3)));
-						fReactions[i].kobs = 2.0 * Arrhenius(2.33e13, temperatureInKelvin, 20.3);
-						if ( fKick )
-							fReactions[i].kobs *= 8.50E-01;
-						
-						fReactions[i].kdif = fReactions[i].kobs;
-					}
-					else {
-						fReactions[i].kobs = pow(10 , - 47.532 + 4.920e4 / temperatureInKelvin - 1.036e7/(pow(temperatureInKelvin,2)));
-						fReactions[i].kdif = fReactions[i].kobs;
-					}
-				}
-				
-				else if (HerveReactions[j][0] == "R4") {
-					if ( fKick )
-						fReactions[i].kobs = 0.90 * Arrhenius(1.14e13, temperatureInKelvin, 14.93052722) ;
-					else
-						fReactions[i].kobs =  Arrhenius(1.14e13, temperatureInKelvin, 14.93052722);
-					fReactions[i].kdif = fReactions[i].kobs;
-				}
-				
-				else if (HerveReactions[j][0] == "R5") {
-					if ( fKick ) {
-						//fReactions[i].kact = 0.6961*Arrhenius(6.26E12, temperatureInKelvin, 14.0);
-						fReactions[i].kobs = 8.08E-01 * Arrhenius(7.70e12, temperatureInKelvin, 15.71126816);
-					}
-					else {
-						//fReactions[i].kact = Arrhenius(6.26E12, temperatureInKelvin, 14.0);//0.697;
-						fReactions[i].kobs = Arrhenius(7.70e12, temperatureInKelvin, 15.71126816);
-					}
-					//fReactions[i].kobs = Noyes(0, fReactions[i].kact, fReactions[i].kdif);
-					//fReactions[i].kdif = Noyes(fReactions[i].kobs, fReactions[i].kact, 0);
-					fReactions[i].kact = Noyes(fReactions[i].kobs, 0 , fReactions[i].kdif);
-				}
-				
-				else if (HerveReactions[j][0] == "R6-1") {
-					fReactions[i].kobs = Arrhenius(133E12, temperatureInKelvin, 38.38) * K_water(temperatureInCelsius) /
-					(lH2Ol(temperatureInCelsius) * K_H(temperatureInCelsius));
-				}
-				
-				else if (HerveReactions[j][0] == "R6-2") {
-					if (fReactions[i].reactionType != 6) {
-						if ( fKick )
-							fReactions[i].kobs = 0.9992*Arrhenius(133.0E12, temperatureInKelvin, 38.38); // Could Be Eo = 38.8
-						else
-							fReactions[i].kobs = Arrhenius(133.0E12, temperatureInKelvin, 38.38); // Could Be Eo = 38.8
-						fReactions[i].kact = Noyes(fReactions[i].kobs, 0 , fReactions[i].kdif);
-					}
-					
-					else {
-						fReactions[i].scavengingCapacity = 0.9992*Arrhenius(133.0E12, temperatureInKelvin, 38.38) * OHm_Con;
-					}
-				}
-				
-				else if (HerveReactions[j][0] == "R7") {
-					//if ( fKick )
-					//	fReactions[i].kobs = 1.14 * pow(10 , 8.054 + 2.193E3 / temperatureInKelvin - 7.395e5/(pow(temperatureInKelvin,2)) + 6.870e7/(pow(temperatureInKelvin,3)));
-					//else
-					//	fReactions[i].kobs = pow(10 , 8.054 + 2.193E3 / temperatureInKelvin - 7.395e5/(pow(temperatureInKelvin,2)) + 6.870e7/(pow(temperatureInKelvin,3)));
-					//fReactions[i].kobs = Arrhenius(1.04e11, temperatureInKelvin, 7.65);
-					
-					//fReactions[i].kdif = Smoluchowski(1.0, fReactions[i]);
-					fReactions[i].kact = 2.0 * Arrhenius(0.0369e12, temperatureInKelvin, 3.0);
-					if ( fKick )
-						fReactions[i].kdif *= 1.01E+00;
-					
-					fReactions[i].kobs = Noyes(0, fReactions[i].kact, fReactions[i].kdif);
-				}
-				
-				else if (HerveReactions[j][0] == "R8") {
-					if ( fKick )
-						fReactions[i].kobs = 1.83 * Arrhenius(4.26e11, temperatureInKelvin, 9.07871174);
-					else
-						fReactions[i].kobs = Arrhenius(4.26e11, temperatureInKelvin, 9.07871174);
-					
-					fReactions[i].kact = Arrhenius(0.178e12, temperatureInKelvin, 4.5);
-					if (fKick)
-						fReactions[i].kact *= 2.305;
-					//fReactions[i].kact = Noyes(fReactions[i].kobs, 0 ,fReactions[i].kdif);
-				}
-				
-				else if (HerveReactions[j][0] == "R9-1") {
-					if (fReactions[i].reactionType != 6) {
-						G4double invTemp = 1./(temperatureInCelsius+273.15);
-						G4double kobs = -28232.6 * std::pow(invTemp, 1.72145) +  11.66062;
-						G4double kact = -19846.6 * std::pow(invTemp, 1.65751) +  12.06992;
-						kobs = std::pow(10., kobs);
-						kact = std::pow(10., kact);
-						if ( fKick ) {
-							fReactions[i].kobs = 0.4914197*kobs;
-							fReactions[i].kact = 0.2504124*kact;
-						}
-						else {
-							fReactions[i].kobs = kobs;
-							fReactions[i].kact = kact;
-						}
-						fReactions[i].kdif = Noyes(kobs, kact, 0);
-					}
-					
-					else {
-						G4double invTemp = 1./(temperatureInCelsius+273.15);
-						G4double kobs = -28232.6 * std::pow(invTemp, 1.72145) +  11.66062;
-						kobs = std::pow(10., kobs);
-						if ( fKick )
-							fReactions[i].scavengingCapacity = 0.4914197 * kobs * OHm_Con;
-						else
-							fReactions[i].scavengingCapacity = kobs * OHm_Con;
-					}
-				}
-				
-				else if (HerveReactions[j][0] == "R9-2") {
-					fReactions[i].kobs = k29_inverse(temperatureInCelsius);
-				}
-				
-				else if (HerveReactions[j][0] == "R10") {
-					if ( fKick )
-						fReactions[i].kobs = 2 * 1.51 * Arrhenius(2.70e12, temperatureInKelvin, 15.5275155);
-					else
-						fReactions[i].kobs = 2 * Arrhenius(2.70e12, temperatureInKelvin, 15.5275155);
-					fReactions[i].kdif = fReactions[i].kobs;
-				}
-				
-				else if (HerveReactions[j][0] == "R11") {
-					if (fReactions[i].reactionType != 6) {
-						G4double invTemp = 1./(temperatureInCelsius+273.15);
-						G4double kobs = -319.8 * std::pow(invTemp, 0.85502) +  13.14262;
-						G4double kact = -651.2 * std::pow(invTemp, 0.98174) +  13.53771;
-						kobs = std::pow(10., kobs);
-						kact = std::pow(10., kact);
-						fReactions[i].kobs = kobs;
-						fReactions[i].kact = kact;
-						fReactions[i].kdif = Noyes(kobs, kact, 0);
-					}
-					else {
-						G4double invTemp = 1./(temperatureInCelsius+273.15);
-						G4double kobs = -319.8 * std::pow(invTemp, 0.85502) +  13.14262;
-						kobs = std::pow(10., kobs);
-						fReactions[i].scavengingCapacity = kobs * Hp_Con;
-					}
-				}
-				
-				else if (HerveReactions[j][0] == "R12") {
-					if (fReactions[i].reactionType != 6) {
-						//if ( fKick )
-						//	fReactions[i].kobs = 1.21 * pow(10,20.934 - 1.236e4/temperatureInKelvin + 6.364e6/(pow(temperatureInKelvin,2)) - 1.475e9/(pow(temperatureInKelvin,3)) + 1.237e11/(pow(temperatureInKelvin,4)));
-						//else
-						//	fReactions[i].kobs = pow(10,20.934 - 1.236e4/temperatureInKelvin + 6.364e6/(pow(temperatureInKelvin,2)) - 1.475e9/(pow(temperatureInKelvin,3)) + 1.237e11/(pow(temperatureInKelvin,4)));
-						fReactions[i].kobs = Debye(1, fReactions[i], temperatureInCelsius);
-						if ( fKick)
-							fReactions[i].kobs *= 1.24E+00;
-						fReactions[i].kdif = fReactions[i].kobs;
-					}
-					
-					else {
-						if ( fKick )
-							fReactions[i].scavengingCapacity = 0.9766 * Debye(1, fReactions[i], temperatureInCelsius) * OHm_Con;
-						else
-							fReactions[i].scavengingCapacity = Debye(1, fReactions[i], temperatureInCelsius) * OHm_Con;
-					}
-				}
-				
-				else if (HerveReactions[j][0] == "R13") {
-					if (fReactions[i].reactionType != 6) {
-						G4double invTemp = 1./(temperatureInCelsius+273.15);
-						G4double kobs = -319.8 * std::pow(invTemp, 0.85502) + 13.14262;
-						G4double kact = -762.0 * std::pow(invTemp, 1.02866) + 13.25234;
-						kobs = std::pow(10., kobs);
-						kact = std::pow(10., kact);
-						fReactions[i].kobs = kobs;
-						fReactions[i].kact = kact;
-						fReactions[i].kdif = Noyes(kobs, kact, 0);
-					}
-					
-					else {
-						G4double invTemp = 1./(temperatureInCelsius+273.15);
-						G4double kobs = -319.8 * std::pow(invTemp, 0.85502) + 13.14262;
-						kobs = std::pow(10., kobs);
-						fReactions[i].scavengingCapacity = kobs * Hp_Con;
-					}
-				}
-				
-				else if (HerveReactions[j][0] == "R14") {
-					//R14: DC* (13)
-					fReactions[i].kobs = Arrhenius(10.9E12, temperatureInKelvin, 15.6);
-					fReactions[i].kdif = fReactions[i].kobs;
-				}
-				else if (HerveReactions[j][0] == "R15") {
-					
-					if ( fKick )
-						fReactions[i].kobs = 2.47 * Arrhenius(1.79e11, temperatureInKelvin, 21.06587056);
-					else
-						fReactions[i].kobs = Arrhenius(1.79e11, temperatureInKelvin, 21.06587056);
-					//fReactions[i].kdif = Smoluchowski(1, fReactions[i]);
-					fReactions[i].kact = Noyes(fReactions[i].kobs, 0 , fReactions[i].kdif);
-				}
-				fReactions[i].kobs *= fPm->GetUnitValue("/M/s");
-				fReactions[i].kact *= fPm->GetUnitValue("/M/s");
-				fReactions[i].kdif *= fPm->GetUnitValue("/M/s");
-				fReactions[i].scavengingCapacity *= 1.0/s;
+
+		G4double newKobs = -1;
+		G4double newKdif = -1;
+		G4double newKact = -1;
+
+		G4double refKobs = -1;
+		G4double refKdif = -1;
+		G4double refKact = -1;
+
+		G4double factor  = -1;
+
+		G4int type = fReactions[i].reactionType;
+
+		G4bool Found = false;
+		if ((ReactA == ReactionLabels["R1"].first  && ReactB == ReactionLabels["R1"].second) ||
+			(ReactA == ReactionLabels["R1"].second && ReactB == ReactionLabels["R1"].first)) {
+			G4double R  = radiusA + radiusB;
+			G4double Da = fUtils->ElectronDiffusionRate(fTemperature);
+			newKobs = 2*fUtils->ArrheniusFunction(2.33E13, fTemperature+273.15, 20.3);
+			refKobs = 2*fUtils->ArrheniusFunction(2.33E13, 298.15, 20.3);
+			factor  = 2*DefaultValues["R1"] / (refKobs);
+			Found = true;
+		}
+
+		else if ((ReactA == ReactionLabels["R2"].first  && ReactB == ReactionLabels["R2"].second) ||
+			     (ReactA == ReactionLabels["R2"].second && ReactB == ReactionLabels["R2"].first)) {
+			G4double R = radiusA + radiusB;
+			G4double Da = fUtils->ElectronDiffusionRate(fTemperature);
+			G4double Db = fUtils->H3ODiffusionRate(fTemperature+273.15);
+			newKobs = fUtils->ArrheniusFunction(1.24E12,fTemperature+273.15,10.1);
+			newKdif = fUtils->DebyeFunction(1, R, Da+Db, fTemperature, -1, 1);
+			newKact = fUtils->NoyesRelationship(newKobs, 0, newKdif);
+			refKobs = fUtils->ArrheniusFunction(1.24E12,298.15,10.1);
+			factor  = DefaultValues["R2"] / refKobs;
+			Found = true;
+		}
+
+		else if ((ReactA == ReactionLabels["R3"].first  && ReactB == ReactionLabels["R3"].second) ||
+			     (ReactA == ReactionLabels["R3"].second && ReactB == ReactionLabels["R3"].first)) {
+			G4double R = radiusA + radiusB;
+			G4double Da = fUtils->WaterDiffusionRate(fTemperature+273.15,8.0E-9);
+			G4double Db = fUtils->ElectronDiffusionRate(fTemperature);
+			newKobs = fUtils->ArrheniusFunction(7.52E12, fTemperature+273.15, 14.0);
+			refKobs = fUtils->ArrheniusFunction(7.52E12, 298.15, 14.0);
+			factor  = DefaultValues["R3"] / refKobs;
+			Found = true;
+		}
+
+		else if ((ReactA == ReactionLabels["R4"].first  && ReactB == ReactionLabels["R4"].second) ||
+			     (ReactA == ReactionLabels["R4"].second && ReactB == ReactionLabels["R4"].first)) {
+			G4double R = radiusA + radiusB;
+			G4double D = fUtils->ElectronDiffusionRate(25.) + 2.3E-9;
+			G4double Da = fUtils->ElectronDiffusionRate(fTemperature);
+			G4double Db = fUtils->WaterDiffusionRate(fTemperature+273.15,2.3E-9);
+			newKact = fUtils->ArrheniusFunction(3.04E10, fTemperature+273.15, -3.5);
+			newKdif = fUtils->SmoluchowskiFunction(1, R, Da+Db);
+			newKobs = fUtils->NoyesRelationship(0, newKact, newKdif);
+			refKact = fUtils->ArrheniusFunction(3.04E10, 298.15, -3.5);
+			refKdif = fUtils->SmoluchowskiFunction(1, R, D);
+			refKobs = fUtils->NoyesRelationship(0,refKact,refKdif);
+			factor  = DefaultValues["R4"] / refKobs;
+			Found = true;
+		}
+
+		else if ((ReactA == ReactionLabels["R5"].first  && ReactB == ReactionLabels["R5"].second) ||
+			     (ReactA == ReactionLabels["R5"].second && ReactB == ReactionLabels["R5"].first)) {
+			G4double R = radiusA + radiusB;
+			G4double D = fUtils->ElectronDiffusionRate(25.) + 2.3E-9;
+			G4double Da = fUtils->ElectronDiffusionRate(fTemperature);
+			G4double Db = fUtils->WaterDiffusionRate(fTemperature+273.15,2.3E-9);
+			newKact = fUtils->ArrheniusFunction(6.26E12, fTemperature+273.15, 14.0);
+			newKdif = fUtils->SmoluchowskiFunction(1, R, Da+Db);
+			newKobs = fUtils->NoyesRelationship(0, newKact, newKdif);
+			refKact = fUtils->ArrheniusFunction(6.26E12, 298.15, 14.0);
+			refKdif = fUtils->SmoluchowskiFunction(1, R, D);
+			refKobs = fUtils->NoyesRelationship(0,refKact,refKdif);
+			factor  = DefaultValues["R5"] / refKobs;
+			Found = true;
+		}
+
+		else if ((ReactA == ReactionLabels["R6"].first  && ReactB == ReactionLabels["R6"].second) ||
+			     (ReactA == ReactionLabels["R6"].second && ReactB == ReactionLabels["R6"].first)) {
+			G4double R = radiusA + radiusB;
+			G4double D = fUtils->H3ODiffusionRate(298.15) + fUtils->OHmDiffusionRate(298.15);//diffusionA + diffusionB;
+			G4double Da = fUtils->H3ODiffusionRate(fTemperature+273.15);
+			G4double Db = fUtils->OHmDiffusionRate(fTemperature+273.15);
+			newKobs = fUtils->DebyeFunction(1, R, Da+Db, fTemperature, 1, -1);
+			refKobs = fUtils->DebyeFunction(1, R, D, 25.,-1,1);
+			factor  = DefaultValues["R6"] / refKobs;
+			Found = true;
+		}
+
+		else if ((ReactA == ReactionLabels["R7"].first  && ReactB == ReactionLabels["R7"].second) ||
+			     (ReactA == ReactionLabels["R7"].second && ReactB == ReactionLabels["R7"].first)) {
+			G4double R = radiusA + radiusB;
+			G4double D = diffusionA + diffusionB;
+			G4double Da = fUtils->WaterDiffusionRate(fTemperature+273.15,8.0E-9);
+			newKobs = 2*fUtils->SmoluchowskiFunction(1, R, 2*Da);
+			refKobs = 2*fUtils->SmoluchowskiFunction(1, R, 1.6E-8);
+			factor  = 2*DefaultValues["R7"] / (refKobs);
+			Found = true;
+		}
+
+		else if ((ReactA == ReactionLabels["R8"].first  && ReactB == ReactionLabels["R8"].second) ||
+			     (ReactA == ReactionLabels["R8"].second && ReactB == ReactionLabels["R8"].first)) {
+			G4double R = radiusA + radiusB;
+			G4double Da = fUtils->WaterDiffusionRate(fTemperature+273.15,8.0E-9);
+			G4double Db = fUtils->WaterDiffusionRate(fTemperature+273.15,2.3E-9);
+			newKact = fUtils->ArrheniusFunction(0.178E12, fTemperature+273.15, 4.5);
+			newKdif = fUtils->SmoluchowskiFunction(1, R, Da+Db);
+			newKobs = fUtils->NoyesRelationship(0,newKact,newKdif);
+			refKact = fUtils->ArrheniusFunction(0.178E12, 298.15, 4.5);
+			refKdif = fUtils->SmoluchowskiFunction(1, R, 10.3E-9);
+			refKobs = fUtils->NoyesRelationship(0,refKact,refKdif);
+			factor  = DefaultValues["R8"] / refKobs;
+			Found = true;
+		}
+
+		else if ((ReactA == ReactionLabels["R9"].first  && ReactB == ReactionLabels["R9"].second) ||
+			     (ReactA == ReactionLabels["R9"].second && ReactB == ReactionLabels["R9"].first)) {
+			G4double R = radiusA + radiusB;
+			G4double Da = fUtils->WaterDiffusionRate(fTemperature+273.15,8.0E-9);
+			G4double Db = fUtils->WaterDiffusionRate(fTemperature+273.15,2.3E-9);
+			newKobs = fUtils->ArrheniusFunction(3.21E10, fTemperature+273.15, 15.94);
+			newKdif = fUtils->SmoluchowskiFunction(1, R, Da+Db);
+			newKact = fUtils->NoyesRelationship(newKobs, 0, newKdif);
+			refKobs = fUtils->ArrheniusFunction(3.21E10, 298.15, 15.94);
+			factor  = DefaultValues["R9"] / refKobs;
+			Found = true;
+		}
+
+		else if ((ReactA == ReactionLabels["R10"].first  && ReactB == ReactionLabels["R10"].second) ||
+			     (ReactA == ReactionLabels["R10"].second && ReactB == ReactionLabels["R10"].first)) {
+			G4double R = radiusA + radiusB;
+			G4double Da = fUtils->WaterDiffusionRate(fTemperature+273.15,2.3E-9);
+			newKact = fUtils->ArrheniusFunction(3.69E10, fTemperature+273.15, 3);
+			newKdif = fUtils->SmoluchowskiFunction(1, R, 2*Da)/2;
+			newKobs = fUtils->NoyesRelationship(0,newKact,newKdif);
+			refKact = fUtils->ArrheniusFunction(3.69E10, 298.15, 3);
+			refKdif = fUtils->SmoluchowskiFunction(1, R, 4.6E-9)/2;
+			refKobs = fUtils->NoyesRelationship(0,refKact,refKdif);
+			newKdif = -1;
+			newKact = -1;
+			factor  = DefaultValues["R10"] / refKobs;
+			Found = true;
+		}
+
+		if (fKick == true)
+			newKobs = newKobs * factor;
+
+		if (Found) {
+			if (type != 6) {
+				if (newKobs > 0)
+					fReactions[i].kobs = newKobs * fPm->GetUnitValue("/M/s");
+				if (newKact > 0)
+					fReactions[i].kact = newKact * fPm->GetUnitValue("/M/s");
+				if (newKdif > 0)
+					fReactions[i].kdif = newKdif * fPm->GetUnitValue("/M/s");
 			}
 		}
-		
-		if (!isHerveReaction) {
-			if (fReactions[i].reactionType == 6) {
-				if (ReactB == "H3O^1") {
-					fReactions[i].scavengingCapacity = fReactions[i].scavengingCapacity * Hp_Con / Hp_25;
-				}
-				else if (ReactB == "OH^-1") {
-					fReactions[i].scavengingCapacity = fReactions[i].scavengingCapacity * OHm_Con / OHm_25;
-				}
-				else if (ReactB == "None") {
-					fReactions[i].scavengingCapacity = fReactions[i].scavengingCapacity * H2O_Con / H2O_25;
-				}
-			}
+		else {
+			fReactions[i].kobs = newKobs * fPm->GetUnitValue("/M/s");
+			fReactions[i].scavengingCapacity = newKobs * (fReactions[i].scavengingCapacity / refKobs);
+		}
+	}
+
+	for (auto& IndexAndMolDef:fMoleculesDefinition) {
+		G4int Index                 = IndexAndMolDef.first;
+		TsMoleculeDefinition MolDef = IndexAndMolDef.second;
+		G4String MolName            = fMoleculesName[Index];
+
+		if (MolName == "e_aq^-1") {
+			G4double Diff = fUtils->ElectronDiffusionRate(fTemperature);
+			fMoleculesDefinition[Index].diffusionCoefficient = Diff * (m*m/s);
+		} else if (MolName == "H3O^1") {
+			G4double Diff = fUtils->H3ODiffusionRate(fTemperature+273.15);
+			fMoleculesDefinition[Index].diffusionCoefficient = Diff * (m*m/s);
+		} else if (MolName == "OH^-1") {
+			G4double Diff = fUtils->OHmDiffusionRate(fTemperature+273.15);
+			fMoleculesDefinition[Index].diffusionCoefficient = Diff * (m*m/s);
+		} else if (MolName == "OH^0") {
+			G4double Diff = fUtils->WaterDiffusionRate(fTemperature+273.15,2.3E-9);
+			fMoleculesDefinition[Index].diffusionCoefficient = Diff * (m*m/s);
+		} else if (MolName == "H^0") {
+			G4double Diff = fUtils->WaterDiffusionRate(fTemperature+273.15,8.0E-9);
+			fMoleculesDefinition[Index].diffusionCoefficient = Diff * (m*m/s);
+		} else if (MolName == "H_2^0") {
+			G4double Diff = fUtils->WaterDiffusionRate(fTemperature+273.15,4.8E-9);
+			fMoleculesDefinition[Index].diffusionCoefficient = Diff * (m*m/s);
+		} else if (MolName == "H2O2^0") {
+			G4double Diff = fUtils->WaterDiffusionRate(fTemperature+273.15,2.3E-9);
+			fMoleculesDefinition[Index].diffusionCoefficient = Diff * (m*m/s);
 		}
 	}
 }
-*/
 
 void TsIRTConfiguration::AdjustReactionRateForPH(G4String pHOrConcentration) {
 	std::vector<G4double> AcidComponents;
@@ -1877,6 +1667,9 @@ void TsIRTConfiguration::ResampleReactantsPosition(TsMolecule& molA, TsMolecule&
 	
 	G4ThreeVector r1 = molA.position;
 	G4ThreeVector r2 = molB.position;
+	G4double dtA = std::fabs(time-molA.time);
+	G4double dtB = std::fabs(time-molB.time);
+	G4double dt  = dtA > dtB ? dtA : dtB;
 	
 	if ( D1 == 0 ) {
 		molB.position = r1;
@@ -1885,6 +1678,9 @@ void TsIRTConfiguration::ResampleReactantsPosition(TsMolecule& molA, TsMolecule&
 		molA.position = r2;
 		return;
 	}
+	if (dt == 0) {
+		dt = 1*ps;
+	}
 	
 	G4ThreeVector S1 = r1-r2;
 	G4double r0 = S1.mag();
@@ -1892,9 +1688,9 @@ void TsIRTConfiguration::ResampleReactantsPosition(TsMolecule& molA, TsMolecule&
 	if ( fReactions[index].reactionType == 4 )
 		effectiveReactionRadius = fReactions[index].effectiveTildeReactionRadius;
 	
-	S1.setMag(effectiveReactionRadius);
-	G4double dt = std::fabs(time-molA.time);
-	
+	if (S1 != G4ThreeVector())
+		S1.setMag(effectiveReactionRadius);
+
 	G4double s12 = 2.0 * D1 * dt;
 	G4double s22 = 2.0 * D2 * dt;
 	G4double alpha = effectiveReactionRadius * r0/(2*(D1+D2)*dt);
@@ -1903,12 +1699,14 @@ void TsIRTConfiguration::ResampleReactantsPosition(TsMolecule& molA, TsMolecule&
 														   G4RandGauss::shoot(0.0, s12 + s22*s22/s12),
 														   G4RandGauss::shoot(0.0, s12 + s22*s22/s12));
 	
-	S1.setPhi(rad*G4UniformRand()*2.0*CLHEP::pi);
-	S1.setTheta(rad*std::acos(1.0 + 1./alpha * std::log(1.0 - G4UniformRand()*(1.-std::exp(-2.0*alpha)))));
-	
-	G4ThreeVector R1 = (D1 * S1 + D2*S2)/(D1+D2);
+	if (S1 != G4ThreeVector()) {
+		S1.setPhi(rad*G4UniformRand()*2.0*CLHEP::pi);
+		S1.setTheta(rad*std::acos(1.0 + 1./alpha * std::log(1.0 - G4UniformRand()*(1.-std::exp(-2.0*alpha)))));
+	}
+
+	G4ThreeVector R1 = (D1*S1 + D2*S2)/(D1+D2);
 	G4ThreeVector R2 = D2*(S2-S1)/(D1+D2);
-	
+
 	molA.position = R1;
 	molA.time = time;
 	molB.position = R2;
@@ -1943,6 +1741,12 @@ std::vector<G4ThreeVector> TsIRTConfiguration::GetPositionOfProducts(TsMolecule 
 		// at parents position
 		result.push_back(r1);
 		result.push_back(r2);
+	}
+	else if ( fReactions[index].products.size() == 4) {
+		result.push_back(position);
+		result.push_back(r1);
+		result.push_back(r2);
+		result.push_back(r1 + 0.5*(r1+r2));
 	}
 	
 	return result;
@@ -1995,6 +1799,7 @@ G4double TsIRTConfiguration::SampleIRTTotallyDiffusionControlled(TsMolecule molA
 	if ( W < Winf ) {
 		irt = (0.25/D) * std::pow( (reff-Reff)/fUtils->erfcInv(reff*W/Reff), 2 );
 	}
+
 	return irt;
 }
 
@@ -2049,8 +1854,7 @@ void TsIRTConfiguration::TestSampling(G4int indexOfReaction, G4int nHistories) {
 G4double TsIRTConfiguration::SampleIRTPartiallyDiffusionControlled(TsMolecule molA, TsMolecule molB, G4int indexOfReaction) {
 	G4double r0 = (molA.position-molB.position).mag();
 	
-	G4double irt = 0.0;
-	//G4double prob = 0.0;
+	G4double irt, prob = 0.0;
 	if ( fReactions[indexOfReaction].reactionType == 2 ) {
 		// From paper Plante 2017, Considerations for ...
 		G4double alpha = -(fReactions[indexOfReaction]).alpha;
@@ -2067,7 +1871,7 @@ G4double TsIRTConfiguration::SampleIRTPartiallyDiffusionControlled(TsMolecule mo
 		G4double W = G4UniformRand();
 		if ( W < Winf ) {
 			irt = brents_fun(molA, molB, indexOfReaction, -W);
-			//prob = W;
+			prob = W;
 		} else {
 			irt = -1.0*ps;
 		}
@@ -2108,12 +1912,18 @@ G4int  TsIRTConfiguration::ContactFirstOrderAndBackgroundReactions(TsMolecule mo
 	for ( size_t v = 0; v < sizeIndex; v++ ) {
 		size_t u = index[v];
 		if (pdgA == fReactions[u].reactorA) {
-			G4double R3 = fMoleculesDefinition[pdgA].radius*fMoleculesDefinition[pdgA].radius*fMoleculesDefinition[pdgA].radius;
+			G4double R  = fMoleculesDefinition[pdgA].radius/nm;
+			G4double R3 = R*R*R;
 			G4double Cs = fReactions[u].concentration/fPm->GetUnitValue("M");
+			G4double Ko = fReactions[u].kobs*fPm->GetUnitValue("M");
+			G4double Sc = Ko*Cs;
+			G4double Dt = 100*ps;
 			// nm3 to M multiply by 10^-24 Nav = 6.02214076×10^23x10^-24 = 0.602214076
-			Cs /= 6.022140857e-1 * (nm*nm*nm);
-			G4double prob = std::exp(-4.0*CLHEP::pi*R3*Cs/3.);
-			if ( G4UniformRand() < 1. - prob ) {
+			Cs *= 6.022140857e-1;
+			G4double prob1 = std::exp(-4.0*CLHEP::pi*R3*Cs/3.);
+			G4double prob2 = std::exp(-Sc*Dt);
+			//G4cout << 1 - prob1 << "  " << fReactions[u].concentration/fPm->GetUnitValue("M") << "  " << 1-prob2 << G4endl;
+			if ( G4UniformRand() < 1. - prob2 ) {
 				return (int)u;
 			}
 		}
@@ -2180,7 +1990,10 @@ std::pair<G4int, G4double> TsIRTConfiguration::SampleIRTFirstOrderAndBackgroundR
 			if ( fReactions[u].sampleExponential )
 				time = SampleExponentialTime(pdgA,fReactions[u].reactorB, G4int(u));
 			else
-				time = -(std::log(1.0 - prob)/scavengingCapacity);
+				if (scavengingCapacity <= 0)
+					time = -1;
+				else
+					time = -(std::log(1.0 - prob)/scavengingCapacity);
 			
 			if ( time < irt && time > 0.0) {
 				irt = time;
@@ -2190,8 +2003,9 @@ std::pair<G4int, G4double> TsIRTConfiguration::SampleIRTFirstOrderAndBackgroundR
 		}
 	}
 	
-	if ( !found )
+	if ( !found ) {
 		return std::make_pair(-1,-1*ps);
+	}
 	
 	return std::make_pair(index, irt);
 }
@@ -2442,15 +2256,27 @@ G4double TsIRTConfiguration::brents_fun_scav(TsMolecule molA, G4int indexOfReact
 }
 
 
-G4bool TsIRTConfiguration::MakeReaction(std::vector<TsMolecule> &initialSpecies,
-										std::map<G4int, std::map<G4int, std::map<G4int,
-										std::vector<G4int>>>> &spaceBinned,
+G4bool TsIRTConfiguration::Inside(G4ThreeVector p ) {
+	G4double delta = 0.5 * 1e-3 * nm;
+	G4double fDx = 0.5*um;
+	G4double fDy = 0.5*um;
+	G4double fDz = 0.5*um;
+	G4double dist = std::max(std::max(std::abs(p.x())-fDx,
+									  std::abs(p.y())-fDy),
+							          std::abs(p.z())-fDz);
+	if (dist > delta) return false;
+	return true;
+}
+
+
+G4bool TsIRTConfiguration::MakeReaction(std::unordered_map<G4int,TsMolecule> &initialSpecies, G4int& speciesIndex,
+										std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int,G4bool>>>> &spaceBinned,
 										G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin,
 										G4double YMax, G4double ZMin, G4double ZMax,
 										std::map<G4int, std::map<G4int, G4int>> &theGvalue,
 										std::vector<G4double> timeSteps,
 										G4int iM, G4int indexOfReaction, G4double irt,
-										std::vector<G4bool> &used) {
+										std::unordered_map<G4int,G4bool> &used, std::vector<G4int>& prods) {
 	
 	G4ThreeVector positions = initialSpecies[iM].position;
 	std::vector<G4int> products = (GetReaction(indexOfReaction)).products;
@@ -2465,6 +2291,7 @@ G4bool TsIRTConfiguration::MakeReaction(std::vector<TsMolecule> &initialSpecies,
 		aProd.trackID = 0;
 		aProd.reacted = false;
 		aProd.isDNA = false;
+		aProd.isNew = true;
 		if ( products[u] == 1 || products[u] == 5)
 			aProd.spin = G4UniformRand() > 0.5 ? 1 : 0;
 		else
@@ -2474,14 +2301,15 @@ G4bool TsIRTConfiguration::MakeReaction(std::vector<TsMolecule> &initialSpecies,
 		G4int j = fUtils->FindBin(NY, YMin, YMax, positions.y());
 		G4int k = fUtils->FindBin(NZ, ZMin, ZMax, positions.z());
 		
-		spaceBinned[i][j][k].push_back( int(initialSpecies.size()) );
-		
-		initialSpecies.push_back(aProd);
+		spaceBinned[i][j][k][speciesIndex] = true;
+		initialSpecies[speciesIndex] = aProd;
+		used[speciesIndex] = false;
+		prods.push_back(speciesIndex);
+		speciesIndex++;
 		
 		for ( int ti = tBin; ti < (int)timeSteps.size(); ti++ ) {
 			theGvalue[aProd.id][ti]++;
 		}
-		used.push_back(false);
 	}
 	for ( int ti = tBin; ti < (int)timeSteps.size(); ti++ )
 		theGvalue[initialSpecies[iM].id][ti]--;
@@ -2491,15 +2319,14 @@ G4bool TsIRTConfiguration::MakeReaction(std::vector<TsMolecule> &initialSpecies,
 }
 
 
-G4bool TsIRTConfiguration::MakeReaction(std::vector<TsMolecule> &initialSpecies,
-										std::map<G4int, std::map<G4int, std::map<G4int,
-										std::vector<G4int>>>> &spaceBinned,
+G4bool TsIRTConfiguration::MakeReaction(std::unordered_map<G4int,TsMolecule> &initialSpecies, G4int& speciesIndex,
+										std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int,G4bool>>>> &spaceBinned,
 										G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin,
 										G4double YMax, G4double ZMin, G4double ZMax,
 										std::map<G4int, std::map<G4int, G4int>> &theGvalue,
 										std::vector<G4double> timeSteps,
 										G4int iM, G4int jM, G4int indexOfReaction, G4double irt,
-										G4double probabilityOfReaction, std::vector<G4bool> &used) {
+										G4double probabilityOfReaction, std::unordered_map<G4int,G4bool> &used, std::vector<G4int>& prods) {
 	
 	if ( G4UniformRand() < probabilityOfReaction ) {
 		std::vector<G4ThreeVector> positions = GetPositionOfProducts(initialSpecies[iM], initialSpecies[jM], indexOfReaction);
@@ -2515,6 +2342,7 @@ G4bool TsIRTConfiguration::MakeReaction(std::vector<TsMolecule> &initialSpecies,
 			aProd.trackID = 0;
 			aProd.reacted = false;
 			aProd.isDNA = false;
+			aProd.isNew = true;
 			if ( products[u] == 1 || products[u] == 5)
 				aProd.spin = G4UniformRand() > 0.5 ? 1 : 0;
 			else
@@ -2524,14 +2352,15 @@ G4bool TsIRTConfiguration::MakeReaction(std::vector<TsMolecule> &initialSpecies,
 			G4int j = fUtils->FindBin(NY, YMin, YMax, positions[u].y());
 			G4int k = fUtils->FindBin(NZ, ZMin, ZMax, positions[u].z());
 			
-			spaceBinned[i][j][k].push_back( int(initialSpecies.size()) );
-			
-			initialSpecies.push_back(aProd);
+			spaceBinned[i][j][k][speciesIndex] = true;
+			initialSpecies[speciesIndex] = aProd;
+			used[speciesIndex] = false;
+			prods.push_back(speciesIndex);
+			speciesIndex++;
 			
 			for ( int ti = tBin; ti < (int)timeSteps.size(); ti++ ) {
 				theGvalue[aProd.id][ti]++;
 			}
-			used.push_back(false);
 		}
 		for ( int ti = tBin; ti < (int)timeSteps.size(); ti++ ) {
 			theGvalue[initialSpecies[iM].id][ti]--;
@@ -2546,30 +2375,15 @@ G4bool TsIRTConfiguration::MakeReaction(std::vector<TsMolecule> &initialSpecies,
 }
 
 
-G4bool TsIRTConfiguration::Inside(G4ThreeVector p ) {
-	G4double delta = 0.5 * 1e-3 * nm;
-	G4double fDx = 0.5*um;
-	G4double fDy = 0.5*um;
-	G4double fDz = 0.5*um;
-	G4double dist = std::max(std::max(
-									  std::abs(p.x())-fDx,
-									  std::abs(p.y())-fDy),
-							 std::abs(p.z())-fDz);
-	if (dist > delta) return false;
-	return true;
-}
-
-
-G4bool TsIRTConfiguration::MakeReaction(std::vector<TsMolecule> &initialSpecies,
-										std::map<G4int, std::map<G4int, std::map<G4int,
-										std::vector<G4int>>>> &spaceBinned,
+G4bool TsIRTConfiguration::MakeReaction(std::unordered_map<G4int,TsMolecule> &initialSpecies, G4int& speciesIndex,
+										std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int,G4bool>>>> &spaceBinned,
 										G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin,
 										G4double YMax, G4double ZMin, G4double ZMax,
 										std::map<G4int, std::map<G4int, G4int>> &theGvalue,
 										std::map<G4int, std::map<G4int, G4int>> &theGvalueInVolume,
 										std::vector<G4double> timeSteps,
 										G4int iM, G4int jM, G4int indexOfReaction, G4double irt,
-										G4double probabilityOfReaction, std::vector<G4bool> &used) {
+										G4double probabilityOfReaction, std::unordered_map<G4int,G4bool> &used, std::vector<G4int>& prods) {
 	
 	if ( G4UniformRand() < probabilityOfReaction ) {
 		std::vector<G4ThreeVector> positions = GetPositionOfProducts(initialSpecies[iM], initialSpecies[jM], indexOfReaction);
@@ -2589,6 +2403,7 @@ G4bool TsIRTConfiguration::MakeReaction(std::vector<TsMolecule> &initialSpecies,
 			aProd.trackID = 0;
 			aProd.reacted = false;
 			aProd.isDNA = false;
+			aProd.isNew = true;
 			if ( products[u] == 1 || products[u] == 5)
 				aProd.spin = G4UniformRand() > 0.5 ? 1 : 0;
 			else
@@ -2598,16 +2413,17 @@ G4bool TsIRTConfiguration::MakeReaction(std::vector<TsMolecule> &initialSpecies,
 			G4int j = fUtils->FindBin(NY, YMin, YMax, positions[u].y());
 			G4int k = fUtils->FindBin(NZ, ZMin, ZMax, positions[u].z());
 			
-			spaceBinned[i][j][k].push_back( int(initialSpecies.size()) );
-			
-			initialSpecies.push_back(aProd);
+			spaceBinned[i][j][k][speciesIndex] = true;;
+			initialSpecies[speciesIndex] = aProd;
+			used[speciesIndex] = false;
+			prods.push_back(speciesIndex);
+			speciesIndex++;
 			
 			for ( int ti = tBin; ti < (int)timeSteps.size(); ti++ ) {
 				theGvalue[aProd.id][ti]++;
 				if ( inVolume )
 					theGvalueInVolume[aProd.id][ti]++;
 			}
-			used.push_back(false);
 		}
 		for ( int ti = tBin; ti < (int)timeSteps.size(); ti++ ) {
 			theGvalue[initialSpecies[iM].id][ti]--;
@@ -2624,7 +2440,6 @@ G4bool TsIRTConfiguration::MakeReaction(std::vector<TsMolecule> &initialSpecies,
 		return false;
 	}
 }
-
 
 
 void TsIRTConfiguration::ScoreGvalue(std::vector<TsMolecule> &initialSpecies,
@@ -2683,7 +2498,7 @@ std::vector<G4double> TsIRTConfiguration::GetH2SO4ComponentsConcentrationP(G4dou
 	
 	std::vector<G4double> P = {_p4, _p3, _p2, _p1, _p0};
 	
-	std::vector<G4double> Result = GetRoots(4, P);
+	std::vector<G4double> Result = fUtils->GetRoots(4, P);
 	
 	G4double _H_pos = -10;
 	
@@ -2745,347 +2560,3 @@ G4double TsIRTConfiguration::IonicRate(G4double IonicStrength, TsMolecularReacti
 	G4double K = Rate * scaleFactor;
 	return K;
 }
-
-
-void TsIRTConfiguration::roots(double *a,int n,double *wr,double *wi) {
-	double sq,b2,c,disc;
-	int i,numroots;
-	
-	i = n;
-	numroots = 0;
-	while (i > 1) {
-		b2 = -0.5*a[i-2];
-		c = a[i-1];
-		disc = b2*b2-c;
-		if (disc < 0.0) {                   // complex roots
-			sq = sqrt(-disc);
-			wr[i-2] = b2;
-			wi[i-2] = sq;
-			wr[i-1] = b2;
-			wi[i-1] = -sq;
-			numroots+=2;
-		}
-		else {                              // real roots
-			sq = sqrt(disc);
-			wr[i-2] = fabs(b2)+sq;
-			if (b2 < 0.0) wr[i-2] = -wr[i-2];
-			if (wr[i-2] == 0)
-				wr[i-1] = 0;
-			else {
-				wr[i-1] = c/wr[i-2];
-				numroots+=2;
-			}
-			wi[i-2] = 0.0;
-			wi[i-1] = 0.0;
-		}
-		i -= 2;
-	}
-	if (i == 1) {
-		wr[0] = -a[0];
-		wi[0] = 0.0;
-		numroots++;
-	}
-}
-
-
-void TsIRTConfiguration::deflate(double *a,int n,double *b,double *quad,double *err) {
-	double r,z;
-	int i;
-	
-	r = quad[1];
-	z = quad[0];
-	
-	b[1] = a[1] - r;
-	
-	for (i=2;i<=n;i++){
-		b[i] = a[i] - r * b[i-1] - z * b[i-2];
-	}
-	*err = fabs(b[n])+fabs(b[n-1]);
-}
-
-
-void TsIRTConfiguration::find_quad(double *a,int n,double *b,double *quad,double *err, int *iter) {
-	double maxiter = 500;
-	double *c,dn,dr,ds,drn,dsn,eps,r,z;
-	int i;
-	
-	c = new double [n+1];
-	c[0] = 1.0;
-	r = quad[1];
-	z = quad[0];
-	eps = 1e-15;
-	*iter = 1;
-	
-	do {
-		if (*iter > maxiter) break;
-		if (((*iter) % 200) == 0) {
-			eps *= 10.0;
-		}
-		b[1] = a[1] - r;
-		c[1] = b[1] - r;
-		
-		for (i=2;i<=n;i++){
-			b[i] = a[i] - r * b[i-1] - z * b[i-2];
-			c[i] = b[i] - r * c[i-1] - z * c[i-2];
-		}
-		dn=c[n-1] * c[n-3] - c[n-2] * c[n-2];
-		drn=b[n] * c[n-3] - b[n-1] * c[n-2];
-		dsn=b[n-1] * c[n-1] - b[n] * c[n-2];
-		
-		if (fabs(dn) < 1e-10) {
-			if (dn < 0.0) dn = -1e-8;
-			else dn = 1e-8;
-		}
-		dr = drn / dn;
-		ds = dsn / dn;
-		r += dr;
-		z += ds;
-		(*iter)++;
-	} while ((fabs(dr)+fabs(ds)) > eps);
-	quad[0] = z;
-	quad[1] = r;
-	*err = fabs(ds)+fabs(dr);
-	delete [] c;
-}
-
-
-void TsIRTConfiguration::diff_poly(double *a,int n,double *b) {
-	double coef;
-	int i;
-	
-	coef = (double)n;
-	b[0] = 1.0;
-	for (i=1;i<n;i++) {
-		b[i] = a[i]*((double)(n-i))/coef;
-	}
-}
-
-
-void TsIRTConfiguration::recurse(double *a,int n,double *b,int p,double *quad,
-								 double *err,int *iter) {
-	double *c,*x,rs[2],tst;
-	
-	if (fabs(b[p]) < 1e-16) p--;    // this bypasses roots at zero
-	if (p == 2) {
-		quad[0] = b[2];
-		quad[1] = b[1];
-		*err = 0;
-		*iter = 0;
-		return;
-	}
-	c = new double [p+1];
-	x = new double [n+1];
-	c[0] = x[0] = 1.0;
-	rs[0] = quad[0];
-	rs[1] = quad[1];
-	*iter = 0;
-	find_quad(b,p,c,rs,err,iter);
-	tst = fabs(rs[0]-quad[0])+fabs(rs[1]-quad[1]);
-	if (*err < 1e-12) {
-		quad[0] = rs[0];
-		quad[1] = rs[1];
-	}
-	
-	if (((*iter > 5) && (tst < 1e-4)) || ((*iter > 20) && (tst < 1e-1))) {
-		diff_poly(b,p,c);
-		recurse(a,n,c,p-1,rs,err,iter);
-		quad[0] = rs[0];
-		quad[1] = rs[1];
-	}
-	delete [] x;
-	delete [] c;
-}
-
-
-void TsIRTConfiguration::get_quads(double *a,int n,double *quad,double *x) {
-	double maxiter = 500;
-	double *b,*z,err,tmp;
-	int iter,i,p;
-	
-	if ((tmp = a[0]) != 1.0) {
-		a[0] = 1.0;
-		for (i=1;i<=n;i++) {
-			a[i] /= tmp;
-		}
-	}
-	if (n == 2) {
-		x[0] = a[1];
-		x[1] = a[2];
-		return;
-	}
-	else if (n == 1) {
-		x[0] = a[1];
-		return;
-	}
-	p = n;
-	b = new double [n+1];
-	z = new double [n+1];
-	b[0] = 1.0;
-	for (i=0;i<=n;i++) {
-		z[i] = a[i];
-		x[i] = 0.0;
-	}
-	do {
-		if (n > p) {
-			quad[0] = 3.14159e-1;
-			quad[1] = 2.78127e-1;
-		}
-		do {
-			for (i=0;i<5;i++) {
-				find_quad(z,p,b,quad,&err,&iter);
-				if ((err > 1e-7) || (iter > maxiter)) {
-					diff_poly(z,p,b);
-					recurse(z,p,b,p-1,quad,&err,&iter);
-				}
-				deflate(z,p,b,quad,&err);
-				if (err < 0.001) break;
-				//quad[0] = random(8) - 4.0;
-				//quad[1] = random(8) - 4.0;
-				quad[0] = (rand() % 8) - 4;
-				quad[i] = (rand() % 8) - 4;
-			}
-			if (err > 0.01) {
-				std::cout << "Error! Convergence failure in quadratic x^2 + r*x + s." << std::endl;
-				std::cout << "Enter new trial value for 'r': ";
-				std::cin >> quad[1];
-				std::cout << "Enter new trial value for 's' ( 0 to exit): ";
-				std::cin >> quad[0];
-				if (quad[0] == 0) {
-					G4cerr << "TOPAS is exiting due to fatal error en IRT Chemistry setup!" << G4endl;
-					G4cerr << "--- No valid solution to the pH scaling system found!" << G4endl;
-					fPm->AbortSession(1);
-				}
-			}
-		} while (err > 0.01);
-		x[p-2] = quad[1];
-		x[p-1] = quad[0];
-		p -= 2;
-		for (i=0;i<=p;i++) {
-			z[i] = b[i];
-		}
-	} while (p > 2);
-	if (p == 2) {
-		x[0] = b[1];
-		x[1] = b[2];
-	}
-	else x[0] = b[1];
-	delete [] z;
-	delete [] b;
-}
-
-std::vector<double> TsIRTConfiguration::GetRoots(int Order, std::vector<double> Exponents) {
-	
-	double a[21],x[21],wr[21],wi[21],quad[2];
-	int n,i;
-	
-	n = Order;
-	if ((n < 1) || (n > 20)) {
-		std::cout << "Error! Invalid order: n = " << n << std::endl;
-		return {0};
-	}
-	
-	for (i = 0; i <= n; i++) {
-		a[i] = Exponents[i];
-		if (a[0] == 0) {
-			std::cout << "Error! Highest coefficient cannot be 0." << std::endl;
-			return {0};
-		}
-	}
-	if (a[n] == 0) {
-		std::cout << "Error! Lowest coefficient (constant term) cannot be 0." << std::endl;
-		return {0};
-	}
-	
-	quad[0] = 2.71828e-1;
-	quad[1] = 3.14159e-1;
-	
-	get_quads(a,n,quad,x);
-	roots(x,n,wr,wi);
-	std::vector<double> Results;
-	
-	for (i=0;i<n;i++) {
-		if ((wr[i] != 0.0) || (wi[i] != 0.0)){
-			Results.push_back(wr[i]);
-			Results.push_back(wi[i]);
-		}
-	}
-	return Results;
-}
-
-
-G4double TsIRTConfiguration::k23_inverse(G4double t) {
-	return 6.62 * pow(10,10) + (1.48 * pow(10,9) * t) + (1.28 * pow(10,7) * pow(t,2)) - (6.03 * pow(10,4) * pow(t,3)) + (1.28 * pow(10,2) * pow(t,4));
-}
-
-
-G4double TsIRTConfiguration::k26_inverse(G4double t) {
-	G4double T = 273.15 + t;
-	G4double p = 18.61 - (6.94 * pow(10,3) * pow(T,-1)) + (2.12 * pow(10,6) * pow(T,-2)) - (2.34 * pow(10,8) * pow(T,-3));
-	return pow(10,p);
-}
-
-
-G4double TsIRTConfiguration::k27_inverse(G4double t) {
-	G4double T = 273.15 + t;
-	return pow(10,14) * 1.33 * std::exp(-38.38/(0.0083146*T));
-}
-
-
-G4double TsIRTConfiguration::k29_inverse(G4double t) {
-	return (k_29(t) * K_water(t)) / (lH2Ol(t) * K_OH(t));
-}
-
-
-G4double TsIRTConfiguration::k30_inverse(G4double t) {
-	return 3.41 * pow(10,10) + (2.75 * pow(10, 8) * t) + (1.24 * pow(10,7) * pow(t,2)) - (6.23 * pow(10,4) * pow(t,3)) + (1.31 * pow(10,2) * pow(t,4));
-}
-
-
-G4double TsIRTConfiguration::K_H(G4double t) {
-	G4double p = 10.49 - (4.103 * pow(10,-2) * t) + (1.443 * pow(10,-4) * pow(t,2)) - (2.325 * pow(10,-7) * pow(t,3)) + (2.065 * pow(10,-10) * pow(t,4));
-	return pow(10,-p);
-}
-
-
-G4double TsIRTConfiguration::K_OH(G4double t) {
-	G4double p = 12.50 - (3.317 * pow(10,-2) * t) + (1.964 * pow(10,-4) * pow(t,2)) - (6.198 * pow(10,-7) * pow(t,3)) + (8.244 * pow(10,-10) * pow(t,4));
-	return pow(10,-p);
-}
-
-
-G4double TsIRTConfiguration::K_H2O2(G4double t) {
-	G4double p = 12.50 - 3.317 * pow(10,-2) * t + 1.964 * pow(10,-4) * pow(t,2) - 6.198 * pow(10,-7) * pow(t, 3) + 8.244 * pow(10,-10) * pow(t,4);
-	return pow(10,(-p));
-}
-
-
-G4double TsIRTConfiguration::k_26(G4double t) {
-	return K_H(t)*k26_inverse(t);
-}
-
-
-G4double TsIRTConfiguration::lH2Ol(G4double t) {
-	return 55.55 * (1.007 - (4.449 * pow(10,-4) * t) - (3.155 * pow(10,-8) * pow(t,2)) - (6.088 * pow(10,-9) * pow(t,3)));
-}
-
-
-G4double TsIRTConfiguration::K_water(G4double t) {
-	G4double p = 14.93 - (4.131 * pow(10,-2) * t) + (1.903 * pow(10,-4) * pow(t,2)) - (4.705 * pow(10,-7) * pow(t,3)) + (5.724 * pow(10,-10) * pow(t,4));
-	return pow(10,-p);
-}
-
-
-G4double TsIRTConfiguration::k_28(G4double t) {
-	return k30_inverse(t) * K_OH(t);
-}
-
-
-G4double TsIRTConfiguration::k_29(G4double t) {
-	return 7.22 * pow(10,9) + (1.62 * pow(10,8) * t)  + (2.40 * pow(10,6) * pow(t,2)) - (7.81 * pow(10,3) * pow(t,3)) + (1.06 * 10 * pow(t,4));
-}
-
-
-G4double TsIRTConfiguration::k_30(G4double t) {
-	return k30_inverse(t)*K_H2O2(t);
-}
-
