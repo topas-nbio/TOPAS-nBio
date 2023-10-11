@@ -153,11 +153,11 @@ G4VPhysicalVolume* TsSphericalCellSphericalNP::Construct()
         G4LogicalVolume* lNP = CreateLogicalVolume("Nanoparticle", gNP);
         
         //Randomly distribute mitochondria throughout the cell volume
-        for (int m = 0; m < NbOfNP; m++){
+        for (int numberOfPlacedNP = 0; numberOfPlacedNP < NbOfNP; numberOfPlacedNP++){
             
-            G4cout << "** Add NP at Nucleus  " << m  <<  " **" << G4endl;
+            G4cout << "** Add NP at Nucleus  " << numberOfPlacedNP  <<  " **" << G4endl;
 
-            CreatePhysicalVolume("Nanoparticle", m, true, lNP, rotationMatrix, AddNanoparticleAtSphereSurface(rNP, 0), fEnvelopePhys);
+            CreatePhysicalVolume("Nanoparticle", numberOfPlacedNP, true, lNP, rotationMatrix, AddNanoparticleAtSphereSurface(rNP, 0), fEnvelopePhys);
                       
         }
      }
@@ -214,12 +214,12 @@ G4VPhysicalVolume* TsSphericalCellSphericalNP::Construct()
             G4LogicalVolume* lNP = CreateLogicalVolume("Nanoparticle", gNP);
         
             //Randomly distribute mitochondria throughout the cell volume
-            for (int m = 0; m < NbOfNP; m++){
+            for (int numberOfPlacedNP = 0; numberOfPlacedNP < NbOfNP; numberOfPlacedNP++){
             
                 G4int NPatMitochondria = std::round((G4UniformRand()*MitoNumber) + 1.0);
-                G4cout << "** Add NP "<<  m << " at Mitochondria  " << NPatMitochondria  <<  " **" << G4endl;
+                G4cout << "** Add NP "<<  numberOfPlacedNP << " at Mitochondria  " << NPatMitochondria  <<  " **" << G4endl;
                 
-                CreatePhysicalVolume("Nanoparticle", m, true, lNP, rotationMatrix, AddNanoparticleAtSphereSurface(rNP, NPatMitochondria), fEnvelopePhys);
+                CreatePhysicalVolume("Nanoparticle", numberOfPlacedNP, true, lNP, rotationMatrix, AddNanoparticleAtSphereSurface(rNP, NPatMitochondria), fEnvelopePhys);
                       
             }
         }
@@ -248,11 +248,11 @@ G4VPhysicalVolume* TsSphericalCellSphericalNP::Construct()
         G4LogicalVolume* lNP = CreateLogicalVolume("Nanoparticle", gNP);
         
         //Randomly distribute mitochondria throughout the cell volume
-        for (int m = 0; m < NbOfNP; m++){
+        for (int numberOfPlacedNP = 0; numberOfPlacedNP < NbOfNP; numberOfPlacedNP++){
             
-            G4cout << "** Add NP  " << m  <<  " **" << G4endl;
+            G4cout << "** Add NP  " << numberOfPlacedNP  <<  " **" << G4endl;
 
-            CreatePhysicalVolume("Nanoparticle", m, true, lNP, rotationMatrix, AddSphereToCell(rNP), fEnvelopePhys);
+            CreatePhysicalVolume("Nanoparticle", numberOfPlacedNP, true, lNP, rotationMatrix, AddSphereToCell(rNP), fEnvelopePhys);
         }
     }
 

@@ -219,11 +219,11 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
         }
     else if (SomaNumber > 1){
         //Soma consists of more than one component - unionize the components (combine spheres):
-        G4ThreeVector PosSoma(x0,y0,z0);
+        G4ThreeVector PosSoma0(x0,y0,z0);
         
         G4Orb* Soma1 = new G4Orb("Soma1", fRadius[0]);
         G4Orb* Soma2 = new G4Orb("Soma2", fRadius[1]);
-        G4UnionSolid* SomaUnion = new G4UnionSolid("SomaUnion", Soma1, Soma2, 0, PosSoma);
+        G4UnionSolid* SomaUnion = new G4UnionSolid("SomaUnion", Soma1, Soma2, 0, PosSoma0);
         
         //Used for overlap checking:
         fSomaRadii.reserve(10);
@@ -232,13 +232,13 @@ G4VPhysicalVolume* TsNeuroMorpho::Construct()
         
         for (G4int n = 2; n < SomaNumber; n++){
             
-            G4double x0 = fPositions[n]->x();
-            G4double y0 = fPositions[n]->y();
-            G4double z0 = fPositions[n]->z();
-            G4ThreeVector PosSoma(x0,y0,z0);
+            x0 = fPositions[n]->x();
+            y0 = fPositions[n]->y();
+            z0 = fPositions[n]->z();
+            G4ThreeVector PosSoma1(x0,y0,z0);
             
             G4Orb* Soma_n = new G4Orb("Soma", fRadius[n]);
-            SomaUnion = new G4UnionSolid("SomaUnion", SomaUnion, Soma_n, 0, PosSoma);
+            SomaUnion = new G4UnionSolid("SomaUnion", SomaUnion, Soma_n, 0, PosSoma1);
             
             fSomaRadii.push_back(fRadius[n]);
             

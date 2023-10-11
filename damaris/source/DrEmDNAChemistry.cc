@@ -198,17 +198,17 @@ void DrEmDNAChemistry::DefineParameters()
             reactors.push_back(fExistingMolecules[reactorA]);
             reactors.push_back(fExistingMolecules[reactorB]);
 
-            for ( int i = 0; i < nbOfProduct; i++ ) {
-                product[i].toLower();
-                if ( product[i] == "noproduct" ) // Note on comparison of strings: See comment on ConstructReactionTable()
+            for ( int j = 0; j < nbOfProduct; j++ ) {
+                product[j].toLower();
+                if ( product[j] == "noproduct" ) // Note on comparison of strings: See comment on ConstructReactionTable()
                     products.push_back("noproduct");
-                else if ( product[i] == "water") {
+                else if ( product[j] == "water") {
                     products.push_back("H2O");
                 } else {
-                    if ( !MoleculeExists(product[i]) )
-                        Quit(parName, ". Molecule: " + product[i] + " was not found in database");
+                    if ( !MoleculeExists(product[j]) )
+                        Quit(parName, ". Molecule: " + product[j] + " was not found in database");
                     else {
-                        products.push_back(fExistingMolecules[product[i]]);
+                        products.push_back(fExistingMolecules[product[j]]);
                     }
                 }
             }

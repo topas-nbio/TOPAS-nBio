@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <functional>
 #include <sstream>
+#include <random>
 
 TsIRTConfiguration::TsIRTConfiguration(G4String name, TsParameterManager* pM)
 : fPm(pM), fName(name), fReactionID(0), fTotalBinaryReaction(0), fLastMoleculeID(0),
@@ -1319,12 +1320,8 @@ void TsIRTConfiguration::AdjustReactionAndDiffusionRateForTemperature() {
 	DefaultValues["R10"]  = 5.5e9;
 
 	for(size_t i = 0; i < fReactions.size(); i++) {
-		G4int chargeA = fMoleculesDefinition[fReactions[i].reactorA].charge;
-		G4int chargeB = fMoleculesDefinition[fReactions[i].reactorB].charge;
 		G4double radiusA = fMoleculesDefinition[fReactions[i].reactorA].radius / m;
 		G4double radiusB = fMoleculesDefinition[fReactions[i].reactorB].radius / m;
-		G4double diffusionA = fMoleculesDefinition[fReactions[i].reactorA].diffusionCoefficient / (m*m/s);
-		G4double diffusionB = fMoleculesDefinition[fReactions[i].reactorB].diffusionCoefficient / (m*m/s);
 		G4String ReactA = fMoleculesName[fReactions[i].reactorA];
 		G4String ReactB = fMoleculesName[fReactions[i].reactorB];
 
@@ -1343,8 +1340,6 @@ void TsIRTConfiguration::AdjustReactionAndDiffusionRateForTemperature() {
 		G4bool Found = false;
 		if ((ReactA == ReactionLabels["R1"].first  && ReactB == ReactionLabels["R1"].second) ||
 			(ReactA == ReactionLabels["R1"].second && ReactB == ReactionLabels["R1"].first)) {
-			G4double R  = radiusA + radiusB;
-			G4double Da = fUtils->ElectronDiffusionRate(fTemperature);
 			newKobs = 2*fUtils->ArrheniusFunction(2.33E13, fTemperature+273.15, 20.3);
 			refKobs = 2*fUtils->ArrheniusFunction(2.33E13, 298.15, 20.3);
 			factor  = 2*DefaultValues["R1"] / (refKobs);
@@ -1366,9 +1361,6 @@ void TsIRTConfiguration::AdjustReactionAndDiffusionRateForTemperature() {
 
 		else if ((ReactA == ReactionLabels["R3"].first  && ReactB == ReactionLabels["R3"].second) ||
 			     (ReactA == ReactionLabels["R3"].second && ReactB == ReactionLabels["R3"].first)) {
-			G4double R = radiusA + radiusB;
-			G4double Da = fUtils->WaterDiffusionRate(fTemperature+273.15,8.0E-9);
-			G4double Db = fUtils->ElectronDiffusionRate(fTemperature);
 			newKobs = fUtils->ArrheniusFunction(7.52E12, fTemperature+273.15, 14.0);
 			refKobs = fUtils->ArrheniusFunction(7.52E12, 298.15, 14.0);
 			factor  = DefaultValues["R3"] / refKobs;
@@ -1422,7 +1414,6 @@ void TsIRTConfiguration::AdjustReactionAndDiffusionRateForTemperature() {
 		else if ((ReactA == ReactionLabels["R7"].first  && ReactB == ReactionLabels["R7"].second) ||
 			     (ReactA == ReactionLabels["R7"].second && ReactB == ReactionLabels["R7"].first)) {
 			G4double R = radiusA + radiusB;
-			G4double D = diffusionA + diffusionB;
 			G4double Da = fUtils->WaterDiffusionRate(fTemperature+273.15,8.0E-9);
 			newKobs = 2*fUtils->SmoluchowskiFunction(1, R, 2*Da);
 			refKobs = 2*fUtils->SmoluchowskiFunction(1, R, 1.6E-8);
@@ -1495,7 +1486,6 @@ void TsIRTConfiguration::AdjustReactionAndDiffusionRateForTemperature() {
 
 	for (auto& IndexAndMolDef:fMoleculesDefinition) {
 		G4int Index                 = IndexAndMolDef.first;
-		TsMoleculeDefinition MolDef = IndexAndMolDef.second;
 		G4String MolName            = fMoleculesName[Index];
 
 		if (MolName == "e_aq^-1") {
@@ -1906,21 +1896,24 @@ G4int  TsIRTConfiguration::ContactFirstOrderAndBackgroundReactions(TsMolecule mo
 		index.push_back(u);
 	
 	size_t sizeIndex = index.size();
-	if ( 0 < sizeIndex )
-		std::random_shuffle(index.begin(), index.end());
+	if ( 0 < sizeIndex ) {
+		std::random_device rd;
+		std::mt19937 RandomGenerator(rd());
+		std::shuffle(std::begin(index),std::end(index),RandomGenerator);
+	}
 	
 	for ( size_t v = 0; v < sizeIndex; v++ ) {
 		size_t u = index[v];
 		if (pdgA == fReactions[u].reactorA) {
-			G4double R  = fMoleculesDefinition[pdgA].radius/nm;
-			G4double R3 = R*R*R;
+			//G4double R  = fMoleculesDefinition[pdgA].radius/nm;
+			//G4double R3 = R*R*R;
 			G4double Cs = fReactions[u].concentration/fPm->GetUnitValue("M");
+			// nm3 to M multiply by 10^-24 Nav = 6.02214076×10^23x10^-24 = 0.602214076
+			//Cs *= 6.022140857e-1;
+			//G4double prob1 = std::exp(-4.0*CLHEP::pi*R3*Cs/3.);
 			G4double Ko = fReactions[u].kobs*fPm->GetUnitValue("M");
 			G4double Sc = Ko*Cs;
 			G4double Dt = 100*ps;
-			// nm3 to M multiply by 10^-24 Nav = 6.02214076×10^23x10^-24 = 0.602214076
-			Cs *= 6.022140857e-1;
-			G4double prob1 = std::exp(-4.0*CLHEP::pi*R3*Cs/3.);
 			G4double prob2 = std::exp(-Sc*Dt);
 			//G4cout << 1 - prob1 << "  " << fReactions[u].concentration/fPm->GetUnitValue("M") << "  " << 1-prob2 << G4endl;
 			if ( G4UniformRand() < 1. - prob2 ) {

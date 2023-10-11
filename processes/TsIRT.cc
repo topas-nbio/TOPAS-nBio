@@ -768,7 +768,7 @@ void TsIRT::ConductReactions() {
 					}
 				}
 				
-				TsIRTConfiguration::TsMolecularReaction binReaction = fReactionConf->GetReaction(indexOfReaction);
+				binReaction = fReactionConf->GetReaction(indexOfReaction);
 				if (binReaction.index < 0) {continue;}
 				products = binReaction.products;
 				
@@ -804,7 +804,7 @@ void TsIRT::ConductReactions() {
 				for ( int ip = 0; ip < 3; ip++ )
 					positions.push_back(fChemicalSpecies[iM].position);
 				
-				TsIRTConfiguration::TsMolecularReaction binReaction = fReactionConf->GetReaction(indexOfReaction);
+				binReaction = fReactionConf->GetReaction(indexOfReaction);
 				if (binReaction.index < 0) {continue;}
 				products = binReaction.products;
 				if ( 0 <= tBin ) {
