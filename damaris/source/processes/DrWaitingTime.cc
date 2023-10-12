@@ -68,7 +68,8 @@ G4double DrWaitingTime::PostStepGetPhysicalInteractionLength(const G4Track &trac
 
   State(fPreviousTimeAtPreStepPoint) = track.GetGlobalTime();
 
-  DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+  // Changed GetIndex with GetModelIndex. But could also be GetModelID: ToDo, check which one is the good one.
+  DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
 
   G4double moleculeWaitingTime = breakMolecule->fWaitingTime;
   G4double moleculeDiffusionTime = breakMolecule->fDiffusionTime;
@@ -160,7 +161,7 @@ G4VParticleChange *DrWaitingTime::PostStepDoIt(const G4Track &track, const G4Ste
 }
 
 void DrWaitingTime::Process(const G4Track &track) {
-    DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+    DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
 
     G4bool isWaiting = breakMolecule->fIsWaiting;
     if (!isWaiting) {
@@ -182,6 +183,6 @@ void DrWaitingTime::GenerateWaitingTime(const G4Track &track) {
   G4double rand = G4UniformRand();
   G4double alpha = 0.5;
   G4double waitingTime = A / pow((1 - rand), (1 / alpha));
-  DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+  DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
   breakMolecule->fWaitingTime = waitingTime;
 }

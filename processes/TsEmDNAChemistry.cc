@@ -45,6 +45,7 @@
 #include "G4VDNAReactionModel.hh"
 #include "G4DNAElectronHoleRecombination.hh"
 #include "G4DNAIonisation.hh"
+#include "G4DNASancheExcitationModel.hh"
 
 // particles
 #include "G4Electron.hh"

@@ -138,7 +138,8 @@ G4VParticleChange *DrReportSystem::RecordSystem(const G4Track &) {
         else moleculeCount[molDef]++; // found molecule, add one to count
 
         if(molDef->GetName().substr(0,3) == "DSB"){
-            DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+            // Changed GetIndex with GetModelIndex. But could also be GetModelID: ToDo, check which one is the good one.
+            DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
             if(breakMolecule->sBreakEndA->fPKcsIsBleached) bleachedCount++;
             if(breakMolecule->sBreakEndB->fPKcsIsBleached) bleachedCount++;
         }

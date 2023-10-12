@@ -31,6 +31,10 @@ DrDNASmoluchowskiReactionModel::DrDNASmoluchowskiReactionModel()
 
 DrDNASmoluchowskiReactionModel::~DrDNASmoluchowskiReactionModel() = default;
 
+G4double DrDNASmoluchowskiReactionModel::GetReactionRadius(const G4int&) {
+    return 0;
+}
+
 G4double DrDNASmoluchowskiReactionModel::GetReactionRadius(const G4int __i)
 {
     G4double __output = (*fpReactionData)[__i]->GetEffectiveReactionRadius();
@@ -82,9 +86,9 @@ G4bool DrDNASmoluchowskiReactionModel::FindReaction(const G4Track& trackA, const
         G4String MoleculeBName = GetMolecule(trackB)->GetDefinition()->GetName();
 
         if(MoleculeAName.substr(0,3) == "DSB" && MoleculeBName.substr(0,3) == "DSB"){
-
-            DrBreakMolecule* breakMoleculeA = (DrBreakMolecule*)(trackA.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
-            DrBreakMolecule* breakMoleculeB = (DrBreakMolecule*)(trackB.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+            // Changed GetIndex with GetModelIndex. But could also be GetModelID: ToDo, check which one is the good one.
+            DrBreakMolecule* breakMoleculeA = (DrBreakMolecule*)(trackA.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
+            DrBreakMolecule* breakMoleculeB = (DrBreakMolecule*)(trackB.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
 
             G4bool isWaitingMoleculeA = breakMoleculeA->fIsWaiting;
             G4double jumpDiffusionCoefficient = DrDefinitions::Instance()->GetJumpDiff();

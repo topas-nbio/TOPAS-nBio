@@ -40,7 +40,7 @@ DrBreakMolecule& DrBreakMolecule::operator =(const DrBreakMolecule& rhs){
 }
 
 void DrBreakMolecule::PrintBreakDetails() {
-    G4String ID = DrDefinitions::Instance()->fCurrentBiologyRepeatNumber;
+    G4int ID = DrDefinitions::Instance()->fCurrentBiologyRepeatNumber;
     std::ofstream file("ReportBreakStructure.out", std::ios_base::app);
     file << "===Start of run " << ID <<"===" << G4endl;
     file << "---Start of BreakEndA---" << G4endl;

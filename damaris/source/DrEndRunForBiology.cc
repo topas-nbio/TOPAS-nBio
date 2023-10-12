@@ -47,7 +47,7 @@ DrEndRunForBiology::DrEndRunForBiology(TsParameterManager* fPm) {
                    << "-----------------------------------------------------------"
                    << G4endl << "Physics stage ends" << G4endl
                    << "DrBreakMolecule registered as physics process "
-                   << G4PhysicsModelCatalog::GetIndex("DrBreakMolecule") << G4endl
+                   << G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule") << G4endl
                    << "Number of biology repeats selected is " << numberOfRepeats
                    << G4endl << "Biology run time selected is "
                    << G4Scheduler::Instance()->GetEndTime() / 1e9 << " s" << G4endl

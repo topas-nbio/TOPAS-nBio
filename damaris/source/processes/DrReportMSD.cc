@@ -164,8 +164,8 @@ G4VParticleChange *DrReportMSD::RecordMSD(const G4Track &thisTrack) {
     const G4MoleculeDefinition *moleculeDefinition = molecule->GetDefinition();
     G4String name = moleculeDefinition->GetName();
     if (name.substr(0, 3) == "DSB") {
-
-        DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+        // Changed GetIndex with GetModelIndex. But could also be GetModelID: ToDo, check which one is the good one.
+        DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
 
       //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       //@@@@ This calculates the displacement of every particle.

@@ -137,7 +137,8 @@ G4VParticleChange *DrFRAP::FRAP(const G4Track &track) {
       auto listOfAllMolecules = DrDefinitions::Instance()->GetNameMap();
       if(listOfAllMolecules.find(NameOfMoleculesWithPKc) != listOfAllMolecules.end()){
         if(moleculeName == NameOfMoleculesWithPKc){
-            DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(molTrack->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+            // Changed GetIndex with GetModelIndex. But could also be GetModelID: ToDo, check which one is the good one.
+            DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(molTrack->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
           breakMolecule->sBreakEndA->fPKcsIsBleached = true;
           if(breakMolecule->sBreakEndB->fOriginalBreakMoleculeID != -1) breakMolecule->sBreakEndB->fPKcsIsBleached = true;
         }

@@ -330,9 +330,10 @@ DrDNAMoleculeEncounterStepper::CalculateStep(const G4Track& trackA,
                 if(isSubDiffusion){
                     G4IT* reactiveB = resultsNearest->GetItem<G4IT>();
                     G4Track *trackB = reactiveB->GetTrack();
-
-                    DrBreakMolecule* breakMoleculeA = (DrBreakMolecule*)(trackA.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
-                    DrBreakMolecule* breakMoleculeB = (DrBreakMolecule*)(trackB->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+                    
+                    // Changed GetIndex with GetModelIndex. But could also be GetModelID: ToDo, check which one is the good one.
+                    DrBreakMolecule* breakMoleculeA = (DrBreakMolecule*)(trackA.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
+                    DrBreakMolecule* breakMoleculeB = (DrBreakMolecule*)(trackB->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
 
                     G4bool isWaitingMoleculeA = breakMoleculeA->fIsWaiting;
                     G4bool isWaitingMoleculeB = breakMoleculeB->fIsWaiting;
@@ -388,8 +389,8 @@ DrDNAMoleculeEncounterStepper::CalculateStep(const G4Track& trackA,
                         G4IT* reactiveB = resultsNearest->GetItem<G4IT>();
                         G4Track *trackB = reactiveB->GetTrack();
 
-                        DrBreakMolecule* breakMoleculeA = (DrBreakMolecule*)(trackA.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
-                        DrBreakMolecule* breakMoleculeB = (DrBreakMolecule*)(trackB->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+                        DrBreakMolecule* breakMoleculeA = (DrBreakMolecule*)(trackA.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
+                        DrBreakMolecule* breakMoleculeB = (DrBreakMolecule*)(trackB->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
 
                         G4bool isWaitingMoleculeA = breakMoleculeA->fIsWaiting;
                         G4bool isWaitingMoleculeB = breakMoleculeB->fIsWaiting;

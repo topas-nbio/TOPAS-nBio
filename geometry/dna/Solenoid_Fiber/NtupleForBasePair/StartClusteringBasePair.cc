@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include "StartClusteringBasePair.hh"
+#include "TsParameterManager.hh"
 
 StartClusteringBasePair::StartClusteringBasePair(TsParameterManager *fPm)
 {
@@ -42,13 +43,13 @@ StartClusteringBasePair::StartClusteringBasePair(TsParameterManager *fPm)
 
     
     //set up energy values
-    if (fPm->ParameterExists(fPm->GetDoubleParameter("MinEneRange", "Energy"))){
+    if (fPm->ParameterExists("MinEneRange")) {
         Emin = fPm->GetDoubleParameter("MinEneRange", "Energy");
     }
-    if (fPm->ParameterExists(fPm->GetDoubleParameter("MaxEneRange", "Energy"))){
+    if (fPm->ParameterExists("MaxEneRange")) {
         Emax = fPm->GetDoubleParameter("MaxEneRange", "Energy");
     }
-    if (fPm->ParameterExists(fPm->GetDoubleParameter("MinEneThresh", "Energy"))){
+    if (fPm->ParameterExists("MinEneThresh")) {
         EThresh = fPm->GetDoubleParameter("MinEneThresh", "Energy");
     }
     

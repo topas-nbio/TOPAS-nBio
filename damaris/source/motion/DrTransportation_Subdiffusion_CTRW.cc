@@ -178,9 +178,9 @@ void DrTransportation_Subdiffusion_CTRW::ComputeStep(const G4Track &track, const
 
     if (timeStep > 0) {
         spaceStep = DBL_MAX;
-
+        // Changed GetIndex with GetModelIndex. But could also be GetModelID: ToDo, check which one is the good one.
         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+        DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
         G4bool isWaiting = breakMolecule->fIsWaiting;
         G4double diffCoeff = (isWaiting) ? fTrappedDiffCoef : fJumpDiffCoef;
         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -332,7 +332,7 @@ DrTransportation_Subdiffusion_CTRW::PostStepDoIt(const G4Track &track, const G4S
         fParticleChange.G4VParticleChange::AddSecondary(theDaughterTrack);
         //@@@@ Carries over the break information, the molecule  is changed but
         //@@@@ the break is still the same.
-        G4int auxIndex = G4PhysicsModelCatalog::GetIndex("DrBreakMolecule");
+        G4int auxIndex = G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule");
         DrBreakMolecule* daughterBreak = (DrBreakMolecule*)track.GetAuxiliaryTrackInformation(auxIndex);
         track.SetAuxiliaryTrackInformation(auxIndex,nullptr);
         theDaughterTrack->SetAuxiliaryTrackInformation(auxIndex,daughterBreak);
@@ -504,7 +504,7 @@ G4double DrTransportation_Subdiffusion_CTRW::AlongStepGetPhysicalInteractionLeng
     }
 
     //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+    DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
     G4bool isWaiting = breakMolecule->fIsWaiting;
     G4double diffusionCoefficient = (isWaiting) ? fTrappedDiffCoef : fJumpDiffCoef;
     //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -600,7 +600,7 @@ G4VParticleChange * DrTransportation_Subdiffusion_CTRW::AlongStepDoIt(const G4Tr
         }
         else {
             //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-            DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+            DrBreakMolecule* breakMolecule = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
             G4bool isWaiting = breakMolecule->fIsWaiting;
             G4double diffusionCoefficient = (isWaiting) ? fTrappedDiffCoef : fJumpDiffCoef;
             //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

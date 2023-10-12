@@ -137,9 +137,9 @@ G4VParticleChange* DrProteinKinetics_Generic::PKGenericAction(const G4Track& tra
     //@@@@ Safety to make sure everything is cleared and fresh
     aParticleChange.Clear();
     aParticleChange.Initialize(track);
-
+    // Changed GetIndex with GetModelIndex. But could also be GetModelID: ToDo, check which one is the good one.
     //--------------------Setting Up Involved Molecules-------------------------
-    DrBreakMolecule* motherBreak = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+    DrBreakMolecule* motherBreak = (DrBreakMolecule*)(track.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
     //--------------------------------------------------------------------------
 
     //--------------------Cleaning Additional Lesions---------------------------
@@ -224,7 +224,7 @@ G4VParticleChange* DrProteinKinetics_Generic::PKGenericAction(const G4Track& tra
     if(fNumberSecondaries == 1){
         //@@@@ Carries over the break information, the molecule type is changed but
         //@@@@ the break is still the same.
-        G4int auxIndex = G4PhysicsModelCatalog::GetIndex("DrBreakMolecule");
+        G4int auxIndex = G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule");
         auto daughterBreak = (DrBreakMolecule*)track.GetAuxiliaryTrackInformation(auxIndex);
         track.SetAuxiliaryTrackInformation(auxIndex,nullptr);
         theDaughterTracks[0]->SetAuxiliaryTrackInformation(auxIndex,daughterBreak);

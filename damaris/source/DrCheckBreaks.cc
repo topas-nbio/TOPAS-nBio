@@ -47,8 +47,8 @@ void DrCheckBreaks::CheckRepairFidelity() {
                     molecule->GetDefinition();
 
             if (moleculeDefinition->GetName().substr(0, 3) == "DSB") {
-
-                DrBreakMolecule *breakMol = (DrBreakMolecule *) (track->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+                // Changed GetIndex with GetModelIndex. But could also be GetModelID: ToDo, check which one is the good one.
+                DrBreakMolecule *breakMol = (DrBreakMolecule *) (track->GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
 
                 if (!breakMol) {
                     G4cerr << "WARNING: Simulation had no double strand break ends" << G4endl;

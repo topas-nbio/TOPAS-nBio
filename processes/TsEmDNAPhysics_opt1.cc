@@ -15,6 +15,8 @@
 #include "G4DNAELSEPAElasticModel.hh"
 #include "G4DNAChampionElasticModel.hh"
 #include "G4DNAScreenedRutherfordElasticModel.hh"
+#include "G4DNAMillerGreenExcitationModel.hh"
+#include "G4DNABornExcitationModel.hh"
 
 #include "G4DNAExcitation.hh"
 #include "G4DNAAttachment.hh"

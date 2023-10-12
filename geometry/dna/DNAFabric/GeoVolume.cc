@@ -156,7 +156,7 @@ G4LogicalVolume* GeoVolume::BuildLogicFiber(std::vector<std::vector<DNAPlacement
     //***************************************
 
     // Distance value used to place the volumes at the beginning of the fiber
-    G4ThreeVector minusForFiber = G4ThreeVector(0.,0.,-solidFiber->GetDz() + fHistoneHeight);
+    G4ThreeVector minusForFiber = G4ThreeVector(0.,0.,-solidFiber->GetZHalfLength() + fHistoneHeight);
 
     // Build the nucleosome helix inside the fiber
 

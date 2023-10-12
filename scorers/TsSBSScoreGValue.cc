@@ -22,15 +22,13 @@
 #include "G4Molecule.hh"
 #include "G4H2O.hh"
 
-#include "G4DNADamage.hh"
-
 TsSBSScoreGValue::TsSBSScoreGValue(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
                              G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer)
 : TsVNtupleScorer(pM, mM, gM, scM, eM, scorerName, quantity, outFileName, isSubScorer),
 fPm(pM), fEnergyDepositPerEvent(0)
 {
     if ( G4Threading::IsWorkerThread() )  {
-        G4VMoleculeCounter::Use();
+        G4VMoleculeCounter::Instance()->Use(true);
         G4MoleculeCounter::Instance()->DontRegister(G4H2O::Definition());
     } else {
         G4DNAChemistryManager::Instance()->ResetCounterWhenRunEnds(false);

@@ -34,7 +34,7 @@ void DrDSBMoleculeManager::NewBreakID(DrBreakMolecule* breakMolecule){
 
 DrBreakMolecule* DrDSBMoleculeManager::LinkNewBreakMolecule(G4Track* track){
     auto* breakMolecule = new DrBreakMolecule();
-    track->SetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule"),breakMolecule);
+    track->SetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule"),breakMolecule);
     return breakMolecule;
 }
 
@@ -46,20 +46,20 @@ DrBreakMolecule* DrDSBMoleculeManager::CopyBreakInfo(DrBreakMolecule* mother){
 
 void DrDSBMoleculeManager::LinkThisBreakMolecule (G4Track* track, DrBreakMolecule* breakMolecule){
     DrBreakMolecule* newBreakMolecule = CopyBreakInfo(breakMolecule);
-    track->SetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule"),newBreakMolecule);
+    track->SetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule"),newBreakMolecule);
 }
 
 
 void DrDSBMoleculeManager::LinkThisBreakMolecule(const G4Track& trackOld, const G4Track& trackNew){
-    DrBreakMolecule* breakMolecule = (DrBreakMolecule*)trackOld.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule"));
-    trackOld.SetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule"),nullptr);
-    trackNew.SetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule"),breakMolecule);
+    DrBreakMolecule* breakMolecule = (DrBreakMolecule*)trackOld.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule"));
+    trackOld.SetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule"),nullptr);
+    trackNew.SetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule"),breakMolecule);
 }
 
 void DrDSBMoleculeManager::JoinBreakMolecule(const G4Track& trackReactant1, const G4Track& trackReactant2, G4Track* trackProduct){
 
-    DrBreakMolecule* break1 = (DrBreakMolecule*)(trackReactant1.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
-    DrBreakMolecule* break2 = (DrBreakMolecule*)(trackReactant2.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+    DrBreakMolecule* break1 = (DrBreakMolecule*)(trackReactant1.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
+    DrBreakMolecule* break2 = (DrBreakMolecule*)(trackReactant2.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
 
     //@@@@ copying BreakEndA info from Break2 into BreakEndB of Break1
     //@@@@ Break2 will be destroyed after this and Break1 (which now
@@ -78,7 +78,7 @@ void DrDSBMoleculeManager::JoinBreakMolecule(const G4Track& trackReactant1, cons
 
 void DrDSBMoleculeManager::SplitBreakMolecule(const G4Track& trackMother, G4Track* trackDaughter1, G4Track* trackDaughter2){
 
-    DrBreakMolecule* mother = (DrBreakMolecule*)(trackMother.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetIndex("DrBreakMolecule")));
+    DrBreakMolecule* mother = (DrBreakMolecule*)(trackMother.GetAuxiliaryTrackInformation(G4PhysicsModelCatalog::GetModelIndex("DrBreakMolecule")));
     DrBreakMolecule* daughter1 = LinkNewBreakMolecule(trackDaughter1);
     DrBreakMolecule* daughter2 = LinkNewBreakMolecule(trackDaughter2);
 
