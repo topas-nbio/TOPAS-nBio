@@ -64,20 +64,38 @@ private:
     std::vector<G4double> fReactionRates;
     
     G4bool fSetWaterConfiguration;
-    
+
+    // Ionisation Branching ratio
     G4double fIonizationStates;
-    G4double fA1B1DissociativeDecay;
+
+    // Fifth Layer Excitation
     G4double fA1B1Relaxation;
-    G4double fB1A1AutoIonization;
-    G4double fB1A1DissociativeDecay;
+    G4double fA1B1DissociativeDecay;
+
+    // Fourth Layer Excitation
     G4double fB1A1Relaxation;
+    G4double fB1A1DissociativeDecay;
+    G4double fB1A1AutoIonization;
+    G4double fA1B1DissociativeDecay2;
+    G4double fB1A1DissociativeDecay2;
+
+    // Third, Second and First Layer Excitation
     G4double fRydDiffAutoIonization;
     G4double fRydDiffRelaxation;
+
+    // Dissociative Attachment
     G4double fDissociativeAttachment;
+
+    // Electron Hole Recombination
+    G4double fH2OvibDissociationDecay1;
+    G4double fH2OvibDissociationDecay2;
+    G4double fH2OvibDissociationDecay3;
+    G4double fH2OvibDissociationDecay4;
 
     std::vector<G4String> fScavengedMolecules;
     std::vector<G4double> fScavengedCapacities;
     std::vector<G4bool> fScavengerHasProducts;
+    std::vector<std::vector<G4String>> fScavengerProducts;
 	std::vector<G4String> fRemoveInMaterialTheseMolecules;
 	G4String fRemoveInMaterial;
 };
