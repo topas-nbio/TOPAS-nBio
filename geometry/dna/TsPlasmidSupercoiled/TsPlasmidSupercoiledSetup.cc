@@ -2,11 +2,10 @@
 //
 // ********************************************************************
 // *                                                                  *
-// * This  code  implementation is the  intellectual property  of the *
-// * TOPAS collaboration.                                             *
-// * Use or redistribution of this code is not permitted without the  *
-// * explicit approval of the TOPAS collaboration.                    *
-// * Contact: Joseph Perl, perl@slac.stanford.edu                     *
+// * This file is part of the TOPAS-nBio extensions to the            *
+// *   TOPAS Simulation Toolkit.                                      *
+// * The TOPAS-nBio extensions are freely available under the license *
+// *   agreement set forth at: https://topas-nbio.readthedocs.io/     *
 // *                                                                  *
 // ********************************************************************
 //

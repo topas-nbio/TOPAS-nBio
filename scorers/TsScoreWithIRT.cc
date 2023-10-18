@@ -1,15 +1,13 @@
-// Scorer for TsIRTGvalue
+// Scorer for IRTInTOPAS
 //
 // ********************************************************************
 // *                                                                  *
-// * This  code  implementation is the  intellectual property  of the *
-// * TOPAS collaboration.                                             *
-// * Use or redistribution of this code is not permitted without the  *
-// * explicit approval of the TOPAS collaboration.                    *
-// * Contact: Joseph Perl, perl@slac.stanford.edu                     *
+// * This file is part of the TOPAS-nBio extensions to the            *
+// *   TOPAS Simulation Toolkit.                                      *
+// * The TOPAS-nBio extensions are freely available under the license *
+// *   agreement set forth at: https://topas-nbio.readthedocs.io/     *
 // *                                                                  *
 // ********************************************************************
-//
 
 #include "TsScoreWithIRT.hh"
 #include "TsIRT.hh"
@@ -28,6 +26,7 @@
 #include "G4UnitsTable.hh"
 #include "Randomize.hh"
 #include "G4Timer.hh"
+#include "G4LogicalVolumeStore.hh"
 
 TsScoreWithIRT::TsScoreWithIRT(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
 							   G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer)
@@ -36,21 +35,25 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyLossKill(0), fName(scorerName)
 {
 	SetUnit("");
 	
-	
-		fIRT = new TsIRT(fPm, fName);
-	
 	fNtuple->RegisterColumnD(&fGValue, "GValue: number of molecules per 100 eV of energy deposit", "");
 	fNtuple->RegisterColumnD(&fGValueError, "GValue statistical error", "");
+
+	if (fPm->ParameterExists(GetFullParmName("ReportMoleculeYield")) &&
+		fPm->GetBooleanParameter(GetFullParmName("ReportMoleculeYield"))){
+	    fNtuple->RegisterColumnD(&fMolecules,"Number of molecules","");
+	    fNtuple->RegisterColumnD(&fMoleculesError,"Number of molecules error","");		
+	}
+
 	fNtuple->RegisterColumnD(&fTime,    "Time", "picosecond");
 	fNtuple->RegisterColumnS(&fMoleculeName, "MoleculeName");
 	
-	fEnergyLossKill = fPm->GetDoubleParameter(GetFullParmName("KillPrimaryIfEnergyLossExceeds"),"Energy");
+	fEnergyLossKill  = fPm->GetDoubleParameter(GetFullParmName("KillPrimaryIfEnergyLossExceeds"),"Energy");
 	fEnergyLossAbort = fPm->GetDoubleParameter(GetFullParmName("AbortEventIfPrimaryEnergyLossExceeds"),"Energy");
 	fMaximumTrackLength = fPm->GetDoubleParameter(GetFullParmName("KillPrimaryBasedOnTrackLength"), "Length");
-	
-	fTCut = 1.0 * ps;
-	if ( fPm->ParameterExists(GetFullParmName("CutoffTime")) )
-		fTCut = fPm->GetDoubleParameter(GetFullParmName("CutoffTime"), "Time");
+
+	G4double TMiddle = 10 * us;
+	if ( fPm->ParameterExists(GetFullParmName("IRTTimeEnd")) )
+		TMiddle = fPm->GetDoubleParameter(GetFullParmName("IRTTimeEnd"), "Time");
 	
 	fNumberOfSteps = 0;
 	fMaximumNumberOfSteps = 0;
@@ -69,15 +72,23 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyLossKill(0), fName(scorerName)
 	if ( fPm->ParameterExists(GetFullParmName("OutputFile"))) {
 		fOutputFile = fPm->GetStringParameter(GetFullParmName("OutputFile"));
 	}
-	
+
+	fVolume = 0;
+
+	fIRT       = new TsIRT(fPm, fName);
 	
 	fNbOfScoredEvents = 0;
 	fEnergyLoss = 0.0;
 	fTotalTrackLength = 0.0;
 	fEnergyDepositPlusEnergyKinetic = 0.0;
 	fEnergyDepositPerEvent = 0.0;
-	fExecutionTime = 0.0;
-	fExecutionTimeStdv = 0.0;
+	fIRTExecutionTime = 0.0;
+	fIRTExecutionTimeStdv = 0.0;
+
+
+	G4String DeltaGFile = fOutputFile+"_DeltaG.phsp";
+	const char* DeltaGFileOutput = DeltaGFile.c_str();
+	remove(DeltaGFileOutput);
 }
 
 
@@ -97,6 +108,8 @@ G4bool TsScoreWithIRT::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	if ( -1 < aStep->GetTrack()->GetTrackID() ) {
 		
 		if ( aStep->GetTrack()->GetParentID() == 0 ) {
+			ResolveSolid(aStep);
+			fVolume = fSolid->GetCubicVolume();
 			
 			if ( !fUseMaximumNumberOfSteps ) {
 				fTotalTrackLength += aStep->GetStepLength();
@@ -148,22 +161,24 @@ G4bool TsScoreWithIRT::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 void TsScoreWithIRT::UserHookForEndOfEvent() {
 	if(!G4EventManager::GetEventManager()->GetConstCurrentEvent()->IsAborted() && fEnergyDepositPerEvent > 0) {
-		//G4cout << " --- IRT start for event " << GetEventID() << G4endl;
+
 		fIRTTimer[0].Start();
 		fIRT->runIRT();
 		fIRTTimer[0].Stop();
 			
 		std::map<G4String, std::map<G4double, G4int>> irt = fIRT->GetGValues();
+		fIRTExecutionTime     += fIRTTimer[0].GetUserElapsed();
+		fIRTExecutionTimeStdv += (fIRTTimer[0].GetUserElapsed())*(fIRTTimer[0].GetUserElapsed());
 
-		fExecutionTime += fIRTTimer[0].GetUserElapsed();
-		fExecutionTimeStdv += (fIRTTimer[0].GetUserElapsed())*(fIRTTimer[0].GetUserElapsed());
-
-		//G4cout << " --- IRT ends for event " << GetEventID() << G4endl;
 		for ( auto& nameTimeAndGvalue : irt ) {
 			G4String name = nameTimeAndGvalue.first;
 			for ( auto& timeAndGvalue : (nameTimeAndGvalue.second) ) {
 				G4double time = timeAndGvalue.first;
 				G4double gvalue = timeAndGvalue.second;
+
+			    fMoleculesPerSpeciePerTime[name][time] += gvalue;
+			    fMoleculesPerSpeciePerTime2[name][time] += gvalue*gvalue;
+
 				gvalue *= 100/(fEnergyDepositPerEvent/eV);
 				
 				fGValuePerSpeciePerTime[name][time] += gvalue;
@@ -189,9 +204,6 @@ void TsScoreWithIRT::UserHookForEndOfEvent() {
 			
 		fEnergyDepositPlusEnergyKinetic /= fTotalTrackLength;
 		fLET /= fTotalTrackLength;
-		//std::cout << " - For event " << GetEventID() << ": ";
-		//std::cout << " ---- T1-T2 : " << fEnergyDepositPlusEnergyKinetic / (keV/um) << " keV/um ---- ";
-		//std::cout << " ---- LETEdep: " << fLET/(keV/um) << " keV/um." << G4endl;
 		
 		irt.clear();
 		fIRT->Clean();
@@ -209,15 +221,23 @@ void TsScoreWithIRT::UserHookForEndOfEvent() {
 
 
 void TsScoreWithIRT::UserHookForPreTimeStepAction() {
-	if ( !G4EventManager::GetEventManager()->GetConstCurrentEvent()->IsAborted()  && 
-	     G4Scheduler::Instance()->GetNbSteps() == 2) {
+	if (!G4EventManager::GetEventManager()->GetConstCurrentEvent()->IsAborted()) {
 		G4TrackManyList* trackList = G4ITTrackHolder::Instance()->GetMainList();
 		G4ManyFastLists<G4Track>::iterator it_begin = trackList->begin();
-		G4ManyFastLists<G4Track>::iterator it_end = trackList->end();
-		
+		G4ManyFastLists<G4Track>::iterator it_end   = trackList->end();
+
+		for(;it_begin!=it_end;++it_begin) {
+			G4Molecule* Molecule = GetMolecule(*it_begin);
+			const G4MoleculeDefinition* MolDef = Molecule->GetDefinition();
+	     	if (MolDef == G4H2O::Definition()) {
+	     		return;
+	     	}
+		}
+
+		it_begin = trackList->begin();
 		for(;it_begin!=it_end;++it_begin){
 			G4double time = it_begin->GetGlobalTime();
-	     		fIRT->AddMolecule(*it_begin, time, 0, G4ThreeVector());
+	     	fIRT->AddMolecule(*it_begin, time, 0, G4ThreeVector());
 		}
 
 		G4Scheduler::Instance()->Stop();
@@ -231,8 +251,8 @@ void TsScoreWithIRT::AbsorbResultsFromWorkerScorer(TsVScorer* workerScorer) {
 	TsScoreWithIRT* workerGvalueScorer = dynamic_cast<TsScoreWithIRT*>(workerScorer);
 	
 	fNbOfScoredEvents += workerGvalueScorer->fNbOfScoredEvents;
-	fExecutionTime += workerGvalueScorer->fExecutionTime;
-	fExecutionTimeStdv += workerGvalueScorer->fExecutionTimeStdv;
+	fIRTExecutionTime += workerGvalueScorer->fIRTExecutionTime;
+	fIRTExecutionTimeStdv += workerGvalueScorer->fIRTExecutionTimeStdv;
 	
 	std::map<G4String, std::map<G4double, G4double> >::iterator wIter;
 	std::map<G4String, std::map<G4double, G4double> >::iterator mIter;
@@ -268,6 +288,27 @@ void TsScoreWithIRT::AbsorbResultsFromWorkerScorer(TsVScorer* workerScorer) {
 		}
 	}
 
+	// Merge the Number Of Molecules Per Time
+	for (auto& NameAndElse: workerGvalueScorer->fMoleculesPerSpeciePerTime) {
+		G4String MoleculeName = NameAndElse.first;
+		for (auto& TimeAndMolecules:NameAndElse.second) {
+			G4double MoleculeTime = TimeAndMolecules.first;
+			G4double MoleculesNum = TimeAndMolecules.second;
+			fMoleculesPerSpeciePerTime[MoleculeName][MoleculeTime]+=MoleculesNum;
+		}
+	}
+
+	// Merge the Number Of Molecules squared Per Time
+	for (auto& NameAndElse: workerGvalueScorer->fMoleculesPerSpeciePerTime2) {
+		G4String MoleculeName = NameAndElse.first;
+		for (auto& TimeAndMolecules:NameAndElse.second) {
+			G4double MoleculeTime = TimeAndMolecules.first;
+			G4double MoleculesNum = TimeAndMolecules.second;
+			fMoleculesPerSpeciePerTime2[MoleculeName][MoleculeTime]+=MoleculesNum;
+		}
+	}
+
+	// If Report Delta: Merge the DeltaG
 	if (fReportDelta) {
 		for (auto& indexTimeAndDelta : workerGvalueScorer->fDeltaGPerReactionPerTime){
 			G4int index = indexTimeAndDelta.first;
@@ -290,6 +331,8 @@ void TsScoreWithIRT::AbsorbResultsFromWorkerScorer(TsVScorer* workerScorer) {
 
 	workerGvalueScorer->fGValuePerSpeciePerTime.clear();
 	workerGvalueScorer->fGValuePerSpeciePerTime2.clear();
+	workerGvalueScorer->fMoleculesPerSpeciePerTime.clear();
+	workerGvalueScorer->fMoleculesPerSpeciePerTime2.clear();
 	workerGvalueScorer->fNbOfScoredEvents = 0;
 	workerGvalueScorer->fEnergyDepositPerEvent = 0.0;
     workerGvalueScorer->fLET = 0.0;
@@ -313,30 +356,36 @@ void TsScoreWithIRT::Output() {
 		wIter2 = fGValuePerSpeciePerTime2.find(wIter->first);
 		
 		for ( iter = (wIter->second).begin(); iter != (wIter->second).end(); iter++ ) {
+			fTime = iter->first;
+			fMoleculeName = wIter->first;
+
+			if (fMoleculeName == "") 
+				continue;
+
 			iter2 = (wIter2->second).find( iter->first );
 			
-			fGValue = iter->second/fNbOfScoredEvents;
+			fGValue    = iter->second/fNbOfScoredEvents;
+			fMolecules = fMoleculesPerSpeciePerTime[fMoleculeName][fTime]/fNbOfScoredEvents;
 			if ( fNbOfScoredEvents > 1 ) {
 				fGValueError = sqrt( (1.0/(fNbOfScoredEvents-1)) * ( (iter2->second)/fNbOfScoredEvents - fGValue*fGValue));
+				fMoleculesError = sqrt( (1.0/(fNbOfScoredEvents-1)) * ( (fMoleculesPerSpeciePerTime2[fMoleculeName][fTime])/fNbOfScoredEvents - fMolecules*fMolecules));
 			} else {
 				fGValueError = 1.0;
+				fMoleculesError = 1.0;
 			}
-			fTime = iter->first;
-			
-			fMoleculeName = wIter->first;
 			fNtuple->Fill();
 		}
 	}
 	
 	fNtuple->Write();
-	fExecutionTime /= fNbOfScoredEvents;
+	fIRTExecutionTime /= fNbOfScoredEvents;
 	if ( fNbOfScoredEvents == 1 )
-		fExecutionTimeStdv = 0.0;
+		fIRTExecutionTimeStdv = 0.0;
 	else
-		fExecutionTimeStdv = std::sqrt(fNbOfScoredEvents/(fNbOfScoredEvents-1) * 
-                                               (fExecutionTimeStdv/fNbOfScoredEvents-fExecutionTime*fExecutionTime));
+		fIRTExecutionTimeStdv = std::sqrt(fNbOfScoredEvents/(fNbOfScoredEvents-1) * 
+                                         (fIRTExecutionTimeStdv/fNbOfScoredEvents-fIRTExecutionTime*fIRTExecutionTime));
 
-	G4cout << "######### Averaged IRT-execution-time per history (" << fNbOfScoredEvents<< " histories): " << fExecutionTime << " s +/- " << fExecutionTimeStdv << " s " << G4endl;
+	G4cout << "######### Averaged IRT-execution-time per history (" << fNbOfScoredEvents<< " histories): " << fIRTExecutionTime << " s +/- " << fIRTExecutionTimeStdv << " s " << G4endl;
 
 	if (fReportDelta) {
 		std::ofstream DeltaGFile;
@@ -396,7 +445,10 @@ void TsScoreWithIRT::Output() {
 
 void TsScoreWithIRT::Clear() {
 	fGValuePerSpeciePerTime.clear();
-	fExecutionTime = 0;
+	fGValuePerSpeciePerTime2.clear();
+	fMoleculesPerSpeciePerTime.clear();
+	fMoleculesPerSpeciePerTime2.clear();
+	fIRTExecutionTime = 0;
 	fNbOfScoredEvents = 0;
 	if (fReportDelta) {
 		fDeltaGPerReactionPerTime.clear();

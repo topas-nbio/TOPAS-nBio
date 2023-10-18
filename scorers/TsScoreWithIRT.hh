@@ -1,11 +1,10 @@
 //
 // ********************************************************************
 // *                                                                  *
-// * This  code  implementation is the  intellectual property  of the *
-// * TOPAS collaboration.                                             *
-// * Use or redistribution of this code is not permitted without the  *
-// * explicit approval of the TOPAS collaboration.                    *
-// * Contact: Joseph Perl, perl@slac.stanford.edu                     *
+// * This file is part of the TOPAS-nBio extensions to the            *
+// *   TOPAS Simulation Toolkit.                                      *
+// * The TOPAS-nBio extensions are freely available under the license *
+// *   agreement set forth at: https://topas-nbio.readthedocs.io/     *
 // *                                                                  *
 // ********************************************************************
 //
@@ -50,9 +49,14 @@ protected:
     G4double fGValueError;
     G4double fTime;
     G4String fMoleculeName;
+    G4double fMolecules;
+    G4double fMoleculesError;
 	
     std::map<G4String, std::map<G4double, G4double> > fGValuePerSpeciePerTime;
     std::map<G4String, std::map<G4double, G4double> > fGValuePerSpeciePerTime2;
+
+    std::map<G4String, std::map<G4double, G4double> > fMoleculesPerSpeciePerTime;
+    std::map<G4String, std::map<G4double, G4double> > fMoleculesPerSpeciePerTime2;
 
     std::map<G4int, std::map<G4double, G4double> > fDeltaGPerReactionPerTime;
     std::map<G4int, std::map<G4double, G4double> > fDeltaGPerReactionPerTime2;
@@ -64,8 +68,9 @@ private:
 	std::vector<TsIRTConfiguration::TsMolecule> fSpecies;
 
     G4Timer fIRTTimer[1];
-    G4double fExecutionTime;
-    G4double fExecutionTimeStdv;
+    G4Timer fGilTimer[1];
+    G4double fIRTExecutionTime;
+    G4double fIRTExecutionTimeStdv;
 	
     G4double fEnergyDepositPerEvent;
     G4int fNbOfScoredEvents;
@@ -74,7 +79,6 @@ private:
     G4double fEnergyLoss;
 	G4String fName;
 	
-    G4double fTCut;
     G4double fTotalTrackLength;
     G4double fMaximumTrackLength;
     
@@ -84,6 +88,7 @@ private:
     
     G4double fEnergyDepositPlusEnergyKinetic;
     G4double fLET;
+    G4double fVolume;
 		
 	std::vector<G4double> fVEnergyDeposit;
 
