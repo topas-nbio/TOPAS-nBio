@@ -441,8 +441,8 @@ void TsEmDNAChemistry::ConstructMolecule()
     G4MoleculeTable::Instance()->CreateConfiguration("H2", G4H2::Definition());
     G4MoleculeTable::Instance()->CreateConfiguration("e_aq", G4Electron_aq::Definition());
     G4MoleculeTable::Instance()->CreateConfiguration("H3Op", G4H3O::Definition());
+    
     G4MoleculeTable::Instance()->CreateConfiguration("Oxy", G4Oxygen::Definition());
-
     G4MoleculeTable::Instance()->GetConfiguration("Oxy")->SetVanDerVaalsRadius(0.20*nm);
     
     G4MolecularConfiguration* OHm =

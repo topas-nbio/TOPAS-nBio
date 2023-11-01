@@ -78,6 +78,10 @@ private:
     G4double fRydDiffAutoIonization;
     G4double fRydDiffRelaxation;
     G4double fDissociativeAttachment;
+    G4double fH2OvibDissociationDecay1;
+    G4double fH2OvibDissociationDecay2;
+    G4double fH2OvibDissociationDecay3;
+    G4double fH2OvibDissociationDecay4;
 
 
     std::vector<G4String> fScavengedMolecules;

@@ -62,6 +62,7 @@
 #include "G4H2O2.hh"
 #include "TsHO2.hh"
 #include "TsO2.hh"
+#include "G4Oxygen.hh"
 #include "TsScavengerProduct.hh"
 
 #include "G4PhysicsListHelper.hh"
@@ -314,6 +315,26 @@ void TsEmDNAChemistryExtended::DefineParameters()
     if ( fPm->ParameterExists(parName + "DissociativeAttachment"))
         fDissociativeAttachment = fPm->GetUnitlessParameter(parName + "DissociativeAttachment");
     std::cout << "-- Branching ratio: dissociative attachment probability " << fDissociativeAttachment << std::endl;
+
+    fH2OvibDissociationDecay1 = 0.15;
+    if ( fPm->ParameterExists(parName + "ElectronHole/DissociativeDecay1"))
+        fH2OvibDissociationDecay1 = fPm->GetUnitlessParameter(parName + "H2OVibration/DissociativeDecay1");
+    std::cout << "-- Branching ratio: H2O Electron Hole Recombination Dissociative decay1 probability " << fH2OvibDissociationDecay1 << std::endl;
+
+    fH2OvibDissociationDecay2 = 0.55;
+    if ( fPm->ParameterExists(parName + "ElectronHole/DissociativeDecay2"))
+        fH2OvibDissociationDecay2 = fPm->GetUnitlessParameter(parName + "H2OVibration/DissociativeDecay2");
+    std::cout << "-- Branching ratio: H2O Electron Hole Recombination Dissociative decay2 probability " << fH2OvibDissociationDecay2 << std::endl;
+
+    fH2OvibDissociationDecay3 = 0;
+    if ( fPm->ParameterExists(parName + "ElectronHole/DissociativeDecay3"))
+        fH2OvibDissociationDecay3 = fPm->GetUnitlessParameter(parName + "H2OVibration/DissociativeDecay3");
+    std::cout << "-- Branching ratio: H2O Electron Hole Recombination Dissociative decay3 probability " << fH2OvibDissociationDecay3 << std::endl;
+
+    fH2OvibDissociationDecay4 = 0.3;
+    if ( fPm->ParameterExists(parName + "ElectronHole/DissociativeDecay4"))
+        fH2OvibDissociationDecay4 = fPm->GetUnitlessParameter(parName + "H2OVibration/DissociativeDecay4");
+    std::cout << "-- Branching ratio: H2O Electron Hole Recombination Dissociative decay4 probability " << fH2OvibDissociationDecay4 << std::endl;
 }
 
 
@@ -359,6 +380,9 @@ void TsEmDNAChemistryExtended::ConstructMolecule()
     G4MoleculeTable::Instance()->CreateConfiguration("H2O2", G4H2O2::Definition()); // moleculeID = 8
     G4MoleculeTable::Instance()->CreateConfiguration("HO2", TsHO2::Definition()); // moleculeID = 9
     G4MoleculeTable::Instance()->CreateConfiguration("O2", TsO2::Definition()); // moleculeID = 10
+
+    G4MoleculeTable::Instance()->CreateConfiguration("Oxy", G4Oxygen::Definition());
+    G4MoleculeTable::Instance()->GetConfiguration("Oxy")->SetVanDerVaalsRadius(0.20*nm);
   
     if ( fSetWaterConfiguration )
         G4MoleculeTable::Instance()->CreateConfiguration("H2O", G4H2O::Definition()); // moleculeID = 11
@@ -381,18 +405,22 @@ void TsEmDNAChemistryExtended::ConstructMolecule()
 
 void TsEmDNAChemistryExtended::ConstructDissociationChannels()
 {
-    G4MolecularConfiguration* OH = G4MoleculeTable::Instance()->GetConfiguration("OH");
-    G4MolecularConfiguration* OHm = G4MoleculeTable::Instance()->GetConfiguration("OHm");
+    G4MolecularConfiguration* OH   = G4MoleculeTable::Instance()->GetConfiguration("OH");
+    G4MolecularConfiguration* OHm  = G4MoleculeTable::Instance()->GetConfiguration("OHm");
     G4MolecularConfiguration* e_aq = G4MoleculeTable::Instance()->GetConfiguration("e_aq");
-    G4MolecularConfiguration* H2 = G4MoleculeTable::Instance()->GetConfiguration("H2");
-    G4MolecularConfiguration* H3O = G4MoleculeTable::Instance()->GetConfiguration("H3Op");
-    G4MolecularConfiguration* H = G4MoleculeTable::Instance()->GetConfiguration("H");
+    G4MolecularConfiguration* H2   = G4MoleculeTable::Instance()->GetConfiguration("H2");
+    G4MolecularConfiguration* H3O  = G4MoleculeTable::Instance()->GetConfiguration("H3Op");
+    G4MolecularConfiguration* H    = G4MoleculeTable::Instance()->GetConfiguration("H");
+    G4MolecularConfiguration* O    = G4MoleculeTable::Instance()->GetConfiguration("Oxy");
     
     //-------------------------------------
     //Define the decay channels
     G4MoleculeDefinition* water = G4H2O::Definition();
     G4MolecularDissociationChannel* decCh1;
     G4MolecularDissociationChannel* decCh2;
+    G4MolecularDissociationChannel* decCh3;
+    G4MolecularDissociationChannel* decCh4;
+    G4MolecularDissociationChannel* decCh5;
     
     G4ElectronOccupancy* occ = new G4ElectronOccupancy(*(water->GetGroundStateElectronOccupancy()));
     
@@ -427,7 +455,7 @@ void TsEmDNAChemistryExtended::ConstructDissociationChannels()
     //---------------Excitation on the fourth layer-----------
     decCh1 = new G4MolecularDissociationChannel("B^1A_1_Relaxation_Channel");
     decCh2 = new G4MolecularDissociationChannel("B^1A_1_DissociativeDecay");
-    G4MolecularDissociationChannel* decCh3 = new G4MolecularDissociationChannel("B^1A_1_AutoIonisation_Channel");
+    decCh3 = new G4MolecularDissociationChannel("B^1A_1_AutoIonisation_Channel");
     
     //Decay 1 : energy
     decCh1->SetEnergy(waterExcitation.ExcitationEnergy(1));
@@ -588,7 +616,46 @@ void TsEmDNAChemistryExtended::ConstructDissociationChannels()
     occ->AddElectron(5, 1); // H_2O^-
     water->NewConfigurationWithElectronOccupancy("DissociativeAttachment", *occ);
     water->AddDecayChannel("DissociativeAttachment", decCh1);
+
+    //////////////////////////////////////////////////////////
+    //            Electron-hole recombination               //
+    //////////////////////////////////////////////////////////
+    decCh1 = new G4MolecularDissociationChannel("H2Ovib_DissociationDecay1");
+    decCh2 = new G4MolecularDissociationChannel("H2Ovib_DissociationDecay2");
+    decCh3 = new G4MolecularDissociationChannel("H2Ovib_DissociationDecay3");
+    decCh4 = new G4MolecularDissociationChannel("H2Ovib_DissociationDecay4");
+    //decCh5 = new G4MolecularDissociationChannel("H2Ovib_DissociationDecay5");
     
+    //Decay 1 : 2OH + H_2
+    decCh1->AddProduct(H2);
+    decCh1->AddProduct(OH);
+    decCh1->AddProduct(OH);
+    decCh1->SetProbability(fH2OvibDissociationDecay1);
+    decCh1->SetDisplacementType(G4DNAWaterDissociationDisplacer::B1A1_DissociationDecay);
+
+    //Decay 2 : OH + H
+    decCh2->AddProduct(OH);
+    decCh2->AddProduct(H);
+    decCh2->SetProbability(fH2OvibDissociationDecay2);
+    decCh2->SetDisplacementType(G4DNAWaterDissociationDisplacer::A1B1_DissociationDecay);
+
+    //Decay 3 : 2H + O(3p)
+    decCh3->AddProduct(O);
+    decCh3->AddProduct(H);
+    decCh3->AddProduct(H);
+    decCh3->SetProbability(fH2OvibDissociationDecay3);
+    decCh3->SetDisplacementType(G4DNAWaterDissociationDisplacer::B1A1_DissociationDecay2);
+
+    //Decay 4 : relaxation
+    decCh4->SetProbability(fH2OvibDissociationDecay4);
+
+    const G4MolecularConfiguration* pH2Ovib = G4H2O::Definition()->NewConfiguration("H2Ovib");
+
+    water->AddDecayChannel(pH2Ovib, decCh1);
+    water->AddDecayChannel(pH2Ovib, decCh2);
+    water->AddDecayChannel(pH2Ovib, decCh3);
+    water->AddDecayChannel(pH2Ovib, decCh4);
+
     delete occ;
 }
 
@@ -597,32 +664,32 @@ void TsEmDNAChemistryExtended::ConstructReactionTable(G4DNAMolecularReactionTabl
 {
     //-----------------------------------
     //Get the molecular configuration
-    G4MolecularConfiguration* OH = G4MoleculeTable::Instance()->GetConfiguration("OH");
-    G4MolecularConfiguration* OHm = G4MoleculeTable::Instance()->GetConfiguration("OHm");
+    G4MolecularConfiguration* OH   = G4MoleculeTable::Instance()->GetConfiguration("OH");
+    G4MolecularConfiguration* OHm  = G4MoleculeTable::Instance()->GetConfiguration("OHm");
     G4MolecularConfiguration* e_aq = G4MoleculeTable::Instance()->GetConfiguration("e_aq");
-    G4MolecularConfiguration* H2 = G4MoleculeTable::Instance()->GetConfiguration("H2");
+    G4MolecularConfiguration* H2   = G4MoleculeTable::Instance()->GetConfiguration("H2");
     G4MolecularConfiguration* H3Op = G4MoleculeTable::Instance()->GetConfiguration("H3Op");
-    G4MolecularConfiguration* H = G4MoleculeTable::Instance()->GetConfiguration("H");
+    G4MolecularConfiguration* H    = G4MoleculeTable::Instance()->GetConfiguration("H");
     G4MolecularConfiguration* H2O2 = G4MoleculeTable::Instance()->GetConfiguration("H2O2");
-    G4MolecularConfiguration* HO2 = G4MoleculeTable::Instance()->GetConfiguration("HO2");
+    G4MolecularConfiguration* HO2  = G4MoleculeTable::Instance()->GetConfiguration("HO2");
     G4MolecularConfiguration* HO2m = G4MoleculeTable::Instance()->GetConfiguration("HO2m");
-    G4MolecularConfiguration* O2 = G4MoleculeTable::Instance()->GetConfiguration("O2");
-    G4MolecularConfiguration* O2m = G4MoleculeTable::Instance()->GetConfiguration("O2m");
+    G4MolecularConfiguration* O2   = G4MoleculeTable::Instance()->GetConfiguration("O2");
+    G4MolecularConfiguration* O2m  = G4MoleculeTable::Instance()->GetConfiguration("O2m");
 
       
  
     std::map<G4String, G4MolecularConfiguration*> reactions;
-    reactions["OH"] = OH;
-    reactions["OHm"] = OHm;
+    reactions["OH"]   = OH;
+    reactions["OHm"]  = OHm;
     reactions["e_aq"] = e_aq;
-    reactions["H2"] = H2;
+    reactions["H2"]   = H2;
     reactions["H3Op"] = H3Op;
-    reactions["H"] = H;
+    reactions["H"]    = H;
     reactions["H2O2"] = H2O2;
-    reactions["HO2"] = HO2;
+    reactions["HO2"]  = HO2;
     reactions["HO2m"] = HO2m;
-    reactions["O2"] = O2;
-    reactions["O2m"] = O2m;
+    reactions["O2"]   = O2;
+    reactions["O2m"]  = O2m;
 
     if ( fSetWaterConfiguration ) {
         G4MolecularConfiguration* H2O = G4MoleculeTable::Instance()->GetConfiguration("H2O");
