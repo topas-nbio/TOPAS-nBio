@@ -209,8 +209,8 @@ void TsEmDNAChemistryExtended::DefineParameters()
                 
                 for ( int j = 0; j < nbOfProduct; j++ ) {
                     product[j].toLower();
-                    if ( product[j] == "noproduct" ) // Note on comparison of strings: See comment on ConstructReactionTable()
-                        products.push_back("noproduct");
+                    if ( product[j] == "none" ) // Note on comparison of strings: See comment on ConstructReactionTable()
+                        products.push_back("none");
                     else if ( product[j] == "water") {
                         products.push_back("H2O");
                     } else {
@@ -633,7 +633,7 @@ void TsEmDNAChemistryExtended::ConstructReactionTable(G4DNAMolecularReactionTabl
     for ( size_t t = 0; t < fReactionSpecies.size(); t++ ) {
         reactionData = new G4DNAMolecularReactionData(fReactionRates[t], reactions[fReactionSpecies[t][0]], reactions[fReactionSpecies[t][1]]);
         for ( size_t u = 0; u < fReactionProducts[t].size(); u++ ) {
-            if ( "noproduct" != fReactionProducts[t][u] ) // This comparison crashes if the order is fReactionProducts[t][u] != "noproduct"
+            if ( "none" != fReactionProducts[t][u] ) // This comparison crashes if the order is fReactionProducts[t][u] != "none"
                 reactionData->AddProduct(reactions[ fReactionProducts[t][u] ] );
         }
         std::cout << " Re-set reaction kobs to : " << fReactionRates[t]/(1e-3*m3/(mole*s)) << "/M/s" << std::endl;  
