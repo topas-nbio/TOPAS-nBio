@@ -871,17 +871,7 @@ void TsIRT::ConductReactions() {
 					}
 				}
 				
-				contactReactions(newID);
-				if (!fReactedByContact) {
-					// Sample the New Molecule if it didn't reacted by contact
-					sampleReactions(newID);
-				}
-				else {
-					// Sample the products of the Molecule
-					for (size_t jProds = 0; jProds < fContactProducts.size(); jProds++) {
-						sampleReactions(fContactProducts[jProds]);
-					}
-				}
+				sampleReactions(newID);
 			}
 		} else {
 			break;
