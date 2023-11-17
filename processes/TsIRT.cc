@@ -426,14 +426,16 @@ void TsIRT::contactReactions(G4int i) {
 	G4ThreeVector thisPos = fChemicalSpecies[i].position;
 	FindBinIndexes(thisPos, 0.0);
 	
+    fUsed[i] = true;
 	for ( int ii = fxiniIndex; ii <= fxendIndex; ii++ ) {
 		for ( int jj = fyiniIndex; jj <= fyendIndex; jj++ ) {
 			for ( int kk = fziniIndex; kk <= fzendIndex; kk++ ) {
-				for (auto& IndexAndAlive:fSpaceBinned[ii][jj][kk]) {
-					G4int j = IndexAndAlive.first;
-
-					if (!MoleculeExists(j) || fReactedByContact) {continue;}
-					if (!fChemicalSpecies[j].isNew) {continue;}
+                for (auto& IndexAndAlive:fSpaceBinned[ii][jj][kk]) {
+                    G4int j = IndexAndAlive.first;
+                    
+                    if (!MoleculeExists(j) || fReactedByContact) {continue;}
+                    if (!fChemicalSpecies[j].isNew) {continue;}
+                    if (fUsed[j] && fSampleIRTatStart) {continue;}
 					
 					if ( j == i )
 						continue;
@@ -654,6 +656,11 @@ void TsIRT::TestForContactReactions() {
 			std::cout << "     -- After processing remained "
 			<< fChemicalSpecies.size() << " species " << std::endl;
 	}
+    
+    for (auto& IndexAndMol:fChemicalSpecies) {
+        G4int t   = IndexAndMol.first;
+        fUsed[t] = false;
+    }
 }
 
 void TsIRT::SampleIndependantReactionTimes() {
