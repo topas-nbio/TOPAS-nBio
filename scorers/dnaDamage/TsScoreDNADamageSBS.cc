@@ -45,6 +45,9 @@ TsScoreDNADamageSBS::TsScoreDNADamageSBS(TsParameterManager* pM, TsMaterialManag
 	// Add the basic hierarchical level (base pair)
 	fHierarchicalLevels.push_back("BasePair");
 
+    // Initialize contents
+    fChromosomeContents = {1};
+
 	//---------------
 	// Get parameters
 	//---------------
@@ -718,9 +721,9 @@ void TsScoreDNADamageSBS::UserHookForEndOfRun()
 	G4int numberOfLesions = 0;
 	for (unsigned int i = 0; i < fCollectionsOfHits.size(); i++)
 	{
-		G4int lesionsThisEvent = Analyze(fCollectionsOfHits[i], i);
+        G4int lesionsThisEvent = Analyze(fCollectionsOfHits[i], i);
 		numberOfLesions += lesionsThisEvent;
-		// Only fill if there is any damage
+        // Only fill if there is any damage
 		if (lesionsThisEvent > 0) fNtuple->Fill();
 	}
     // Adding damage and primary count at the end
@@ -750,11 +753,10 @@ G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
     {
         fDoseInThisExposure += fDoseInThisEvent;
     }
-
-	G4int numberOfLesions = 0;
+    G4int numberOfLesions = 0;
 	fDamageCalculator->ComputeStrandBreaks(hits);
-	std::map<G4int, std::vector<G4int>> initialPosDamageSites = fDamageCalculator->GetDamageSites();
-	numberOfLesions = fDamageCalculator->OutputSDDFile(initialPosDamageSites, eventID, fExposureID, fChromosomeContents);
+    std::map<G4int, std::vector<G4int>> initialPosDamageSites = fDamageCalculator->GetDamageSites();
+    numberOfLesions = fDamageCalculator->OutputSDDFile(initialPosDamageSites, eventID, fExposureID, fChromosomeContents);
 
 	fNumSB = fDamageCalculator->GetSB();
 	fNumSBDirect = fDamageCalculator->GetSBDirect();
@@ -778,6 +780,7 @@ G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
 	fNumSSBPlus = fDamageCalculator->GetSSBPlus();
 	fNumDSBPlus = fDamageCalculator->GetDSBPlus();
 	fNumDSBComplex = fDamageCalculator->GetDSBComplex();
+
 	if (fChromosomeContents.size() > 0)
 		CalculateYields();
 	// Get all DSB positions to score foci
@@ -793,7 +796,6 @@ G4int TsScoreDNADamageSBS::Analyze(std::vector<TsHitInDNA*> hits, G4int eventID)
 		if (numFoci.size() >= 4) fNumFoci4 = numFoci[3];
 		if (numFoci.size() >= 5) fNumFoci5 = numFoci[4];
 	}
-
 	return numberOfLesions;
 }
 
