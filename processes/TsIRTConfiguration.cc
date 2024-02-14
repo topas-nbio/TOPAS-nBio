@@ -1904,7 +1904,7 @@ G4int  TsIRTConfiguration::ContactFirstOrderAndBackgroundReactions(TsMolecule mo
 		std::mt19937 RandomGenerator(rd());
 		std::shuffle(std::begin(index),std::end(index),RandomGenerator);
 	}
-	
+	//Pimblott S M, 1991 Stochastic models of spur kinetics in water. International Journal of Radiation Applications and Instrumentation. Part 37 377–88
 	for ( size_t v = 0; v < sizeIndex; v++ ) {
 		size_t u = index[v];
 		G4double R  = fMoleculesDefinition[pdgA].radius;
