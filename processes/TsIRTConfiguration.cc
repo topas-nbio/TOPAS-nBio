@@ -1892,8 +1892,11 @@ G4double TsIRTConfiguration::SolveTime(TsMolecule, G4int indexOfReaction, G4doub
 G4int  TsIRTConfiguration::ContactFirstOrderAndBackgroundReactions(TsMolecule molA) {
 	G4int pdgA = molA.id;
 	std::vector<size_t> index;
-	for ( size_t u = fTotalBinaryReaction; u < fReactions.size(); u++ )
-		index.push_back(u);
+	for ( size_t u = 0; u < fReactions.size(); u++ ) {
+		if (fReactions[u].reactorA == pdgA && fReactions[u].reactionType == 6 ) {
+			index.push_back(u);
+		}
+	}
 	
 	size_t sizeIndex = index.size();
 	if ( 0 < sizeIndex ) {
@@ -1904,22 +1907,15 @@ G4int  TsIRTConfiguration::ContactFirstOrderAndBackgroundReactions(TsMolecule mo
 	
 	for ( size_t v = 0; v < sizeIndex; v++ ) {
 		size_t u = index[v];
-		if (pdgA == fReactions[u].reactorA) {
-			//G4double R  = fMoleculesDefinition[pdgA].radius/nm;
-			//G4double R3 = R*R*R;
-			G4double Cs = fReactions[u].concentration/fPm->GetUnitValue("M");
-			// nm3 to M multiply by 10^-24 Nav = 6.02214076×10^23x10^-24 = 0.602214076
-			//Cs *= 6.022140857e-1;
-			//G4double prob1 = std::exp(-4.0*CLHEP::pi*R3*Cs/3.);
-			G4double Ko = fReactions[u].kobs*fPm->GetUnitValue("M");
-			G4double Sc = Ko*Cs;
-			G4double Dt = 100*ps;
-			G4double prob2 = std::exp(-Sc*Dt);
-			//G4cout << 1 - prob1 << "  " << fReactions[u].concentration/fPm->GetUnitValue("M") << "  " << 1-prob2 << G4endl;
-			if ( G4UniformRand() < 1. - prob2 ) {
-				return (int)u;
-			}
-		}
+		G4double R  = fMoleculesDefinition[pdgA].radius;
+		G4double R3 = R*R*R;
+		G4double Cs = fReactions[u].concentration/fPm->GetUnitValue("M");
+		if (Cs > 50) {continue}          // No Contact Reactions with water molecules
+		Cs /= 6.022140857e-1*(nm*nm*nm); // nm3 to M multiply by 10^-24 Nav = 6.02214076×10^23x10^-24 = 0.602214076
+		G4double prob1 = std::exp(-1.33333333*CLHEP::pi*R3*Cs);
+		if ( G4UniformRand() < 1. - prob1 ) {
+			return (int)u;
+	}
 	}
 	
 	return -1;
@@ -1949,7 +1945,7 @@ std::vector<std::pair<G4int, G4double>> TsIRTConfiguration::SampleAllIRTFirstOrd
 	G4int pdgA = molA.id;
 	G4double scavengingCapacity, prob, time;
 	
-	for ( size_t u = fTotalBinaryReaction; u < fReactions.size(); u++ ) { // TODO-> Review this algorithm: use t or dt???
+	for ( size_t u = 0; u < fReactions.size(); u++ ) { // TODO-> Review this algorithm: use t or dt???
 		if ( fReactions[u].reactionType == 6 && pdgA == fReactions[u].reactorA) {
 			scavengingCapacity = fReactions[u].scavengingCapacity;
 			prob = G4UniformRand();
@@ -1976,7 +1972,7 @@ std::pair<G4int, G4double> TsIRTConfiguration::SampleIRTFirstOrderAndBackgroundR
 	
 	G4double scavengingCapacity, prob, time;
 	
-	for ( size_t u = fTotalBinaryReaction; u < fReactions.size(); u++ ) { // TODO-> Review this algorithm: use t or dt???
+	for ( size_t u = 0; u < fReactions.size(); u++ ) { // TODO-> Review this algorithm: use t or dt???
 		if ( fReactions[u].reactionType == 6 && pdgA == fReactions[u].reactorA) {
 			scavengingCapacity = fReactions[u].scavengingCapacity;
 			prob = G4UniformRand();

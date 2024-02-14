@@ -389,7 +389,7 @@ void TsIRT::initializeScorers() {
 }
 
 
-void TsIRT::contactReactions(G4int i) {
+void TsIRT::contactReactions(G4int i,,std::unordered_map<G4int, G4bool> used) {
 	fReactedByContact = false;
 	fContactProducts.clear();
 
@@ -426,7 +426,6 @@ void TsIRT::contactReactions(G4int i) {
 	G4ThreeVector thisPos = fChemicalSpecies[i].position;
 	FindBinIndexes(thisPos, 0.0);
 	
-    fUsed[i] = true;
 	for ( int ii = fxiniIndex; ii <= fxendIndex; ii++ ) {
 		for ( int jj = fyiniIndex; jj <= fyendIndex; jj++ ) {
 			for ( int kk = fziniIndex; kk <= fzendIndex; kk++ ) {
@@ -435,7 +434,7 @@ void TsIRT::contactReactions(G4int i) {
                     
                     if (!MoleculeExists(j) || fReactedByContact) {continue;}
                     if (!fChemicalSpecies[j].isNew) {continue;}
-                    if (fUsed[j] && fSampleIRTatStart) {continue;}
+                    if (used.count(j) >= 1) {continue;}
 					
 					if ( j == i )
 						continue;
@@ -642,25 +641,22 @@ void TsIRT::VoxelizeAndSortSpace() {
 }
 
 void TsIRT::TestForContactReactions() {
-	if ( fTestForContactReactions ) {
-		std::unordered_map<G4int, TsIRTConfiguration::TsMolecule> MockMap = fChemicalSpecies;
+	if (!fTestForContactReactions ) { return ; }
 
-		for (auto& IndexAndMol:MockMap) {
-			G4int i = IndexAndMol.first;
-			if ( fChemicalSpecies[i].isDNA ) { continue; }
-			if ( !fChemicalSpecies[i].isNew) { continue; }
-			contactReactions(i);
-		}
-		
-		if ( 1 < fVerbosity )
-			std::cout << "     -- After processing remained "
-			<< fChemicalSpecies.size() << " species " << std::endl;
+	std::unordered_map<G4int, TsIRTConfiguration::TsMolecule> MockMap = fChemicalSpecies;
+	std::unordered_map<G4int,G4bool> AlreadyContactSampled;
+
+	for (auto& IndexAndMol:MockMap) {
+		G4int i = IndexAndMol.first;
+		if ( fChemicalSpecies[i].isDNA ) { continue; }
+		if ( !fChemicalSpecies[i].isNew) { continue; }
+		contactReactions(i,AlreadyContactSampled);
+		AlreadyContactSampled[i] = true;
 	}
-    
-    for (auto& IndexAndMol:fChemicalSpecies) {
-        G4int t   = IndexAndMol.first;
-        fUsed[t] = false;
-    }
+	
+	if ( 1 < fVerbosity )
+		std::cout << "     -- After processing remained "
+		<< fChemicalSpecies.size() << " species " << std::endl;
 }
 
 void TsIRT::SampleIndependantReactionTimes() {
@@ -878,7 +874,18 @@ void TsIRT::ConductReactions() {
 					}
 				}
 				
-				sampleReactions(newID);
+				std::unordered_map<G4int, G4bool> emptyUsed;
+				contactReactions(newID,emptyUsed);
+				if (!fReactedByContact) {
+					// Sample the New Molecule if it didn't reacted by contact
+					sampleReactions(newID);
+				}
+				else {
+					// Sample the products of the Molecule
+					for (size_t jProds = 0; jProds < fContactProducts.size(); jProds++) {
+						sampleReactions(fContactProducts[jProds]);
+					}
+				}
 			}
 		} else {
 			break;

@@ -60,7 +60,7 @@ public:
 private:
 	void initializeScorers();
 	void FindBinIndexes(G4ThreeVector thisPos, G4double rcutOff);
-	void contactReactions(G4int i);
+	void contactReactions(G4int i,std::unordered_map<G4int, G4bool> j);
 	void sampleReactions(G4int i);
 	G4String GetFullParmName(G4String name);
 
