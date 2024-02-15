@@ -1910,8 +1910,8 @@ G4int  TsIRTConfiguration::ContactFirstOrderAndBackgroundReactions(TsMolecule mo
 		G4double R  = fMoleculesDefinition[pdgA].radius;
 		G4double R3 = R*R*R;
 		G4double Cs = fReactions[u].concentration/fPm->GetUnitValue("M");
-		if (Cs > 50) {continue}          // No Contact Reactions with water molecules
-		Cs /= 6.022140857e-1*(nm*nm*nm); // nm3 to M multiply by 10^-24 Nav = 6.02214076×10^23x10^-24 = 0.602214076
+		if (Cs > 50) {continue;}          // No Contact Reactions with water molecules
+		Cs /= 6.022140857e-1*(nm*nm*nm);  // nm3 to M multiply by 10^-24 Nav = 6.02214076×10^23x10^-24 = 0.602214076
 		G4double prob1 = std::exp(-1.33333333*CLHEP::pi*R3*Cs);
 		if ( G4UniformRand() < 1. - prob1 ) {
 			return (int)u;

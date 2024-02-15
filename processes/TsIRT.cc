@@ -389,7 +389,7 @@ void TsIRT::initializeScorers() {
 }
 
 
-void TsIRT::contactReactions(G4int i,,std::unordered_map<G4int, G4bool> used) {
+void TsIRT::contactReactions(G4int i,std::unordered_map<G4int, G4bool> used) {
 	fReactedByContact = false;
 	fContactProducts.clear();
 
