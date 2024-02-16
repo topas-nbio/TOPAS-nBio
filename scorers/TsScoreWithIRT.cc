@@ -49,7 +49,9 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyLossKill(0), fName(scorerName)
 	
 	fEnergyLossKill  = fPm->GetDoubleParameter(GetFullParmName("KillPrimaryIfEnergyLossExceeds"),"Energy");
 	fEnergyLossAbort = fPm->GetDoubleParameter(GetFullParmName("AbortEventIfPrimaryEnergyLossExceeds"),"Energy");
-	fMaximumTrackLength = fPm->GetDoubleParameter(GetFullParmName("KillPrimaryBasedOnTrackLength"), "Length");
+	fMaximumTrackLength = 1*cm;
+	if (fPm->ParameterExists(GetFullParmName("KillPrimaryBasedOnTrackLength")))
+		fMaximumTrackLength = fPm->GetDoubleParameter(GetFullParmName("KillPrimaryBasedOnTrackLength"), "Length");
 
 	G4double TMiddle = 10 * us;
 	if ( fPm->ParameterExists(GetFullParmName("IRTTimeEnd")) )
