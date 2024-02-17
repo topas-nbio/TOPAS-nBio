@@ -19,6 +19,7 @@ public:
     G4double erfcInv(G4double x);
     G4double erfcWxy(G4double c, G4double x, G4double y);
     G4double SampleTypeII(G4double alpha, G4double sigma, G4double r0, G4double D);
+    G4double SamplePDC(G4double a, G4double b);
     G4double Lambda(G4double x, G4double beta, G4double alphatilde);
     
     // Bin Index Finding Functions
