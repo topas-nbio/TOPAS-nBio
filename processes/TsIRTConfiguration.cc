@@ -841,6 +841,8 @@ void TsIRTConfiguration::ResolveRemainerReactionParameters() {
 				G4double r = reactionRadius/nm;
 				G4double reff = effectiveReactionRadius/nm;
 				G4double v = 0.93*kact/(4 * CLHEP::pi * std::pow(reff,2)*6.022140857e-1);
+//				G4double v = kact * exp(rc/r) / (4 * CLHEP::pi * std::pow(r,2) * 6.022140857e-1);
+
 				sumDiffCoeff /= nm*nm/s;
 				effectiveTildeReactionRadius =  rc/(std::exp(rc/r) * (1 + sumDiffCoeff*rc/(std::pow(r,2)*v))-1) * nm;
 				
@@ -1842,6 +1844,31 @@ void TsIRTConfiguration::TestSampling(G4int indexOfReaction, G4int nHistories) {
 
 
 G4double TsIRTConfiguration::SampleIRTPartiallyDiffusionControlled(TsMolecule molA, TsMolecule molB, G4int indexOfReaction) {
+
+	G4double r0 = (molA.position-molB.position).mag();
+
+	G4double sigma = 0;
+    G4double kdif = fReactions[indexOfReaction].kdif;
+    G4double kobs = fReactions[indexOfReaction].kobs;
+
+	if ( fReactions[indexOfReaction].reactionType == 2 ) {
+	    sigma = fReactions[indexOfReaction].reactionRadius;
+	} else {
+	    G4double rc = fReactions[indexOfReaction].OnsagerRadius;
+		sigma = fReactions[indexOfReaction].effectiveReactionRadius;
+		r0 = -rc/(1-std::exp(rc/r0));
+	}
+
+    if(sigma/r0 * kobs / kdif > G4UniformRand()) {
+        G4double kact = fReactions[indexOfReaction].kact;
+    	G4double D = fMoleculesDefinition[molA.id].diffusionCoefficient + fMoleculesDefinition[molB.id].diffusionCoefficient;
+    	G4double a = kact / kobs / sigma;
+    	G4double b = (r0 - sigma) /2;
+    	return fUtils->SamplePDC(a, b)/D;
+    }
+
+	return -1;
+/*
 	G4double r0 = (molA.position-molB.position).mag();
 	
 	G4double irt, prob = 0.0;
@@ -1866,7 +1893,7 @@ G4double TsIRTConfiguration::SampleIRTPartiallyDiffusionControlled(TsMolecule mo
 			irt = -1.0*ps;
 		}
 	}
-	return irt;
+	return irt;*/
 }
 
 

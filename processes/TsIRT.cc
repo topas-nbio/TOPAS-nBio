@@ -445,8 +445,6 @@ void TsIRT::contactReactions(G4int i,std::unordered_map<G4int, G4bool> used) {
 						TsIRTConfiguration::TsMolecularReaction binReaction = fReactionConf->GetReaction(indexOfReaction);
 						if (binReaction.index < 0) {continue;} 
 						G4double r = binReaction.effectiveReactionRadius;
-						if ( binReaction.reactionType == 4 )
-							r = binReaction.effectiveTildeReactionRadius;
 						
 						G4double p = binReaction.probabilityOfReaction;
 						G4double timeJ = fChemicalSpecies[j].time;

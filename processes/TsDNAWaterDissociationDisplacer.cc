@@ -137,10 +137,10 @@ vector<G4ThreeVector> TsDNAWaterDissociationDisplacer::GetProductsDisplacement(c
 
     G4int decayType = pDecayChannel->GetDisplacementType();
 
-    G4double theOHRMSDisplacement = 0.93 * nanometer;
-    G4double theH3OOHDisplacement = 0.93 * nanometer; // significant
-    G4double theOH2Displacement   = 0.93 * nanometer; // not significant at lowLET
-    G4double theHOHDisplacement   = 0.93 * nanometer; // significant at lowLET
+    G4double theOHRMSDisplacement = 0.62 * nanometer;
+    G4double theH3OOHDisplacement = 0.62 * nanometer; // significant
+    G4double theOH2Displacement   = 0.62 * nanometer; // not significant at lowLET
+    G4double theHOHDisplacement   = 0.62 * nanometer; // significant at lowLET
 
     switch (decayType)
     {
@@ -212,10 +212,10 @@ vector<G4ThreeVector> TsDNAWaterDissociationDisplacer::GetProductsDisplacement(c
                 auto pProduct = pDecayChannel->GetProduct(i);
                 if (pProduct->GetDefinition() == G4H2::Definition()) {
                     // H2
-                    theProductDisplacementVector[i] = -2. / 18. * RandDirection;
+                    theProductDisplacementVector[i] = -16. / 18. * RandDirection;
                 } else if (pProduct->GetDefinition() == G4OH::Definition()) {
                     // OH
-                    G4ThreeVector OxygenDisplacement = +16. / 18. * RandDirection;
+                    G4ThreeVector OxygenDisplacement = +2. / 18. * RandDirection;
                     G4double OHRMSDisplacement = 2.0/3.0*theOHRMSDisplacement;
 
                     auto OHDisplacement = radialDistributionOfProducts(OHRMSDisplacement);
@@ -308,10 +308,10 @@ vector<G4ThreeVector> TsDNAWaterDissociationDisplacer::GetProductsDisplacement(c
             for (G4int i = 0; i < nbProducts; ++i) {
                 auto pProduct = pDecayChannel->GetProduct(i);
                 if (pProduct->GetDefinition() == G4H2::Definition()) {
-                    theProductDisplacementVector[i] = -2. / 18. * RandDirection;
+                    theProductDisplacementVector[i] = -16. / 18. * RandDirection;
                 }
                 else if (pProduct->GetDefinition() == G4OH::Definition()) {
-                    G4ThreeVector OxygenDisplacement = +16. / 18. * RandDirection;
+                    G4ThreeVector OxygenDisplacement = +2. / 18. * RandDirection;
                     G4double OHRMSDisplacement = 2./3.*theOHRMSDisplacement;
 
                     auto OHDisplacement = radialDistributionOfProducts(OHRMSDisplacement);

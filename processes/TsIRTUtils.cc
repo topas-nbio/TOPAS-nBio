@@ -649,6 +649,37 @@ G4double TsIRTUtils::SampleTypeII(G4double alpha, G4double sigma, G4double r0, G
     }
 }
 
+G4double TsIRTUtils::SamplePDC(G4double a, G4double b) {
+    G4double p = 2.0 * std::sqrt(2.0*b/a);
+    G4double q = 2.0 / std::sqrt(2.0*b/a);
+    G4double M = std::max(1.0/(a*a), 3.0*b/a);
+
+
+    G4double X, U, lambdax;
+
+	G4int ntrials = 0;
+	while(1) {
+	   // Generate X
+		U = G4UniformRand();
+		if ( U < p/(p + q * M) ) X = pow(U * (p + q * M) / 2, 2);
+		else X = pow(2/((1-U)*(p+q*M)/M),2);
+
+		U = G4UniformRand();
+
+		lambdax = std::exp(-b*b/X) * ( 1.0 - a * std::sqrt(CLHEP::pi * X) * erfcx(b/std::sqrt(X) + a*std::sqrt(X)));
+
+		if ((X <= 2.0*b/a && U <= lambdax) ||
+			(X >= 2.0*b/a && U*M/X <= lambdax)) break;
+
+		ntrials++;
+
+		if ( ntrials > 10000 ){
+		  return -1.0;
+		}
+
+	}
+	return X;
+}
 
 G4double TsIRTUtils::Lambda(G4double x, G4double beta, G4double alphatilde) {
     return std::exp(-beta*beta/x) * ( 1.0 - alphatilde * std::sqrt(CLHEP::pi * x) * erfcx(beta/std::sqrt(x) + alphatilde*std::sqrt(x)));
