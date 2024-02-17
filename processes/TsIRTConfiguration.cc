@@ -840,8 +840,8 @@ void TsIRTConfiguration::ResolveRemainerReactionParameters() {
 				G4double kact = activationReactionRate/fPm->GetUnitValue("/M/s");
 				G4double r = reactionRadius/nm;
 				G4double reff = effectiveReactionRadius/nm;
-				G4double v = 0.93*kact/(4 * CLHEP::pi * std::pow(reff,2)*6.022140857e-1);
-//				G4double v = kact * exp(rc/r) / (4 * CLHEP::pi * std::pow(r,2) * 6.022140857e-1);
+				// G4double v = 0.93*kact/(4 * CLHEP::pi * std::pow(reff,2)*6.022140857e-1);
+				G4double v = kact * exp(rc/r) / (4 * CLHEP::pi * std::pow(r,2) * 6.022140857e-1);
 
 				sumDiffCoeff /= nm*nm/s;
 				effectiveTildeReactionRadius =  rc/(std::exp(rc/r) * (1 + sumDiffCoeff*rc/(std::pow(r,2)*v))-1) * nm;
