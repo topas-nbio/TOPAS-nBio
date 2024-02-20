@@ -10,7 +10,7 @@
 // ********************************************************************
 
 #include "TsScoreWithIRT.hh"
-#include "TsIRT.hh"
+#include "TsIRTManager.hh"
 #include "TsIRTConfiguration.hh"
 
 #include "G4ITTrackHolder.hh"
@@ -77,7 +77,7 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyLossKill(0), fName(scorerName)
 
 	fVolume = 0;
 
-	fIRT       = new TsIRT(fPm, fName);
+	fIRT       = new TsIRTManager(fPm, fName);
 	
 	fNbOfScoredEvents = 0;
 	fEnergyLoss = 0.0;
