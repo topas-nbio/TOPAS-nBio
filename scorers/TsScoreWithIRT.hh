@@ -20,7 +20,7 @@
 
 #include <stdint.h>
 
-class TsIRTManager;
+class TsIRT;
 
 class TsScoreWithIRT : public TsVNtupleScorer
 {
@@ -63,7 +63,7 @@ protected:
    
 private:
     TsParameterManager* fPm;
-	TsIRTManager* fIRT;
+	TsIRT* fIRT;
 
 	std::vector<TsIRTConfiguration::TsMolecule> fSpecies;
 
