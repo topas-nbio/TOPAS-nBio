@@ -1,0 +1,83 @@
+# TOPAS-nBio example : Linear DNA model
+# Linear DNA segment
+#
+# Single and double strand breaks are scored.
+
+b:Ge/QuitIfOverlapDetected="true"
+Ts/ShowHistoryCountAtInterval = 100
+
+d:Ge/World/HLX=1 um
+d:Ge/World/HLY=1 um
+d:Ge/World/HLZ=1 um
+b:Ge/World/Invisible = "True"
+s:Ge/World/Material="G4_WATER"
+
+s:Ge/MyDNA/Type="tslineardna"
+s:Ge/MyDNA/Parent="world"
+s:Ge/MyDNA/Material="G4_WATER"
+i:Ge/MyDNA/NumberOfBasePairs=1000
+
+
+# Material for volumes in strand 1
+s:Ma/G4_WATER_MODIFIED_1/CloneFromMaterial = "G4_WATER"
+d:Ma/G4_WATER_MODIFIED_1/CloneWithDensity  = 1.0 g/cm3
+
+# Auxiliar material for volumes in strand 2
+s:Ma/G4_WATER_MODIFIED_2/CloneFromMaterial = "G4_WATER_MODIFIED_1"
+d:Ma/G4_WATER_MODIFIED_2/CloneWithDensity  = 1.0 g/cm3
+
+#Modified water material is needed for scoring strand breaks:
+s:Ge/MyDNA/BasePair/Material="G4_WATER_MODIFIED_1"
+s:Ge/MyDNA/Backbone1/Material="G4_WATER_MODIFIED_1"
+s:Ge/MyDNA/Backbone2/Material="G4_WATER_MODIFIED_2"
+
+#Visualization 
+s:Ge/MyDNA/BasePair/DrawingStyle="solid"
+s:Ge/MyDNA/Backbone1/Color="red"
+s:Ge/MyDNA/Backbone1/DrawingStyle="solid"
+s:Ge/MyDNA/Backbone2/Color="blue"
+s:Ge/MyDNA/Backbone2/DrawingStyle="solid"
+
+#Set Physics:
+sv:Ph/Default/Modules = 1 "g4em-dna" 
+
+s:So/Disk/Type = "Beam" 
+s:So/Disk/Component =  "BeamPosition" 
+s:So/Disk/BeamParticle = "proton" 
+d:So/Disk/BeamEnergy = 2 MeV 
+u:So/Disk/BeamEnergySpread = 0
+s:So/Disk/BeamShape = "Rectangle"
+s:So/Disk/BeamPositionDistribution = "Flat"
+s:So/Disk/BeamAngularDistribution = "Gaussian"
+d:So/Disk/BeamAngularCutoffX = 10 deg
+d:So/Disk/BeamAngularCutoffY = 10 deg
+s:So/Disk/BeamPositionCutoffShape = "Rectangle"
+d:So/Disk/BeamPositionCutoffX = 2 nm
+d:So/Disk/BeamPositionCutoffY = 2 nm
+d:So/Disk/BeamAngularSpreadX = 0.01 deg
+d:So/Disk/BeamAngularSpreadY = 0.01 deg
+i:So/Disk/NumberOfHistoriesInRun=1
+
+#Score SSB and DSB in DNA
+
+# -- Scorer --
+s:Sc/DNADamageScorer/Quantity				= "DNADamageStepByStep"
+includeFile									= ../../scorers/DNAScorerStepByStep.txt
+s:Sc/DNADamageScorer/Component 				= "MyDNA"
+i:Sc/DNADamageScorer/NumberOfHistoriesInRun = So/Disk/NumberOfHistoriesInRun
+i:Sc/DNADamageScorer/BasePairPositionAtGeometricHierarchy = 0
+sv:Sc/DNADamageScorer/Strand1MaterialNames  = 1 "G4_WATER_MODIFIED_1"
+sv:Sc/DNADamageScorer/Strand2MaterialNames  = 1 "G4_WATER_MODIFIED_2"
+s:Sc/DNADamageScorer/PrimaryParticle		= So/Disk/BeamParticle
+d:Sc/DNADamageScorer/MeanEnergy				= So/Disk/BeamEnergy MeV
+
+
+
+s:Gr/ViewA/Type = "OpenGL"
+d:Gr/ViewA/Theta = 45 deg
+d:Gr/ViewA/Phi   = 45 deg
+i:Gr/ViewA/WindowSizeX = 900
+i:Gr/ViewA/WindowSizeY = 700
+
+Ts/PauseBeforeQuit = "False"
+b:Ts/ShowCPUTime = "True"

@@ -1,0 +1,82 @@
+#######################################################################
+##- Reactions from Table I in Pimblott J. Phys. Chem. 1992, 96(11). -##
+##- Rates are taken from Buxton compilation.                        -##
+##- Diffusion coefficients are from Plante et al. 2017              -##
+#######################################################################
+
+##########################################################
+################### - DIFFUSION RATES - ##################
+##########################################################
+
+sv:Ch/TOPASChemistry/DiffusionCoefficients/Molecules = 7 
+"SolvatedElectron" "Hydroxyl"  "Hydrogen"  "Hydronium" "DyHydrogen" "Hydroxide" "HydrogenPeroxide"
+dv:Ch/TOPASChemistry/DiffusionCoefficients/Values    = 7  
+4.900e9             2.30e9      8.0e9      9.46e9      4.8e9        5.3e9       2.3e9 nm2/s
+
+b:Ch/TOPASChemistry/SetWaterMolecularConfiguration = "False"
+
+##########################################################
+############### - TOPAS DEFAULT REACTIONS - ##############
+##########################################################
+
+# R1: eaq + eaq -> OH- + OH- + H2
+sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/SolvatedElectron/Products    = 3 "Hydroxide" "Hydroxide" "Dyhydrogen"
+d:Ch/TOPASChemistry/Reaction/SolvatedElectron/SolvatedElectron/ReactionRate = 1.10e10 /M/s 
+i:Ch/TOPASChemistry/Reaction/SolvatedElectron/SolvatedElectron/ReactionType = 3
+b:Ch/TOPASChemistry/Reaction/SolvatedElectron/SolvatedElectron/CompatibleWithStepByStep = "True"
+
+# R2: eaq + H+ -> H
+sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydronium/Products    = 1 "Hydrogen"
+d:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydronium/ReactionRate = 2.3e10 /M/s
+i:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydronium/ReactionType = 4
+b:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydronium/CompatibleWithStepByStep = "True"
+
+# R3: eaq + H -> OH- + H2
+sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydrogen/Products    = 2 "Hydroxide" "Dyhydrogen"
+d:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydrogen/ReactionRate = 2.5e10 /M/s
+i:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydrogen/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydrogen/CompatibleWithStepByStep = "True"
+
+# R4: eaq + OH -> OH-
+sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydroxyl/Products    = 1 "Hydroxide"
+d:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydroxyl/ReactionRate = 3.0e10 /M/s
+i:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydroxyl/ReactionType = 2
+b:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydroxyl/CompatibleWithStepByStep = "True"
+
+# R5: eaq + H2O2 -> OH- + OH
+sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/HydrogenPeroxide/Products    = 2 "Hydroxide" "Hydroxyl"
+d:Ch/TOPASChemistry/Reaction/SolvatedElectron/HydrogenPeroxide/ReactionRate = 1.1e10 /M/s
+i:Ch/TOPASChemistry/Reaction/SolvatedElectron/HydrogenPeroxide/ReactionType = 2
+b:Ch/TOPASChemistry/Reaction/SolvatedElectron/HydrogenPeroxide/CompatibleWithStepByStep = "True"
+
+# R6: H+ + OH- -> H2O
+sv:Ch/TOPASChemistry/Reaction/Hydronium/Hydroxide/Products    = 1 "None" #Water"
+d:Ch/TOPASChemistry/Reaction/Hydronium/Hydroxide/ReactionRate = 14.3e10 /M/s 
+i:Ch/TOPASChemistry/Reaction/Hydronium/Hydroxide/ReactionType = 3
+b:Ch/TOPASChemistry/Reaction/Hydronium/Hydroxide/CompatibleWithStepByStep = "True"
+
+# R7: H + H -> H2
+sv:Ch/TOPASChemistry/Reaction/Hydrogen/Hydrogen/Products    = 1 "Dyhydrogen"
+d:Ch/TOPASChemistry/Reaction/Hydrogen/Hydrogen/ReactionRate = 1.56e10 /M/s
+i:Ch/TOPASChemistry/Reaction/Hydrogen/Hydrogen/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/Hydrogen/Hydrogen/CompatibleWithStepByStep = "True"
+
+# R8: OH + H -> H2O
+sv:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydrogen/Products    = 1 "None"
+d:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydrogen/ReactionRate = 1.55e10 /M/s #2.0e10 /M/s
+i:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydrogen/ReactionType = 2
+b:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydrogen/CompatibleWithStepByStep = "True"
+
+# R9: H + H2O2 -> OH + H2O
+sv:Ch/TOPASChemistry/Reaction/Hydrogen/HydrogenPeroxide/Products    = 1 "Hydroxyl"
+d:Ch/TOPASChemistry/Reaction/Hydrogen/HydrogenPeroxide/ReactionRate = 9.0e7 /M/s
+i:Ch/TOPASChemistry/Reaction/Hydrogen/HydrogenPeroxide/ReactionType = 2
+b:Ch/TOPASChemistry/Reaction/Hydrogen/HydrogenPeroxide/CompatibleWithStepByStep = "True"
+
+# R10: OH + OH -> H2O2
+sv:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydroxyl/Products    = 1 "HydrogenPeroxide"
+d:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydroxyl/ReactionRate = 0.55e10 /M/s 
+i:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydroxyl/ReactionType = 2
+b:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydroxyl/CompatibleWithStepByStep = "True"
+
+##########################################################

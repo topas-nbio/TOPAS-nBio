@@ -1,0 +1,84 @@
+# TOPAS-nBio example : Circular DNA Plasmid
+# DNA plasmid is placed in a box and irradiated by protons.
+# ntuple scorer is used to score energy deposition in the DNA segment
+# Geant4-DNA processes are only activated within the DNA plasmid ring
+
+
+b:Ge/QuitIfOverlapDetected="true"
+
+#World volume
+d:Ge/World/HLX=150 nm
+d:Ge/World/HLY=150 nm
+d:Ge/World/HLZ=150 nm
+b:Ge/World/Invisible="true"
+s:Ge/World/Material="G4_WATER"
+
+#Circular DNA plasmid
+s:Ge/MyDNA/Type="tscircularplasmid"
+s:Ge/MyDNA/Parent="World"
+s:Ge/MyDNA/Material="G4_WATER"
+
+#Define the number of base pairs in the ring
+i:Ge/MyDNA/NumberOfBasePairs=200
+
+# Material for volumes in strand 1
+s:Ma/G4_WATER_MODIFIED_1/CloneFromMaterial = "G4_WATER"
+d:Ma/G4_WATER_MODIFIED_1/CloneWithDensity  = 1.0 g/cm3
+
+# Auxiliar material for volumes in strand 2
+s:Ma/G4_WATER_MODIFIED_2/CloneFromMaterial = "G4_WATER_MODIFIED_1"
+d:Ma/G4_WATER_MODIFIED_2/CloneWithDensity  = 1.0 g/cm3
+
+s:Ge/MyDNA/Base/Material="G4_WATER"
+s:Ge/MyDNA/BasePair/Material="G4_WATER_MODIFIED_1"
+s:Ge/MyDNA/BasePair/Color="yellow"
+s:Ge/MyDNA/BasePair/DrawingStyle="solid"
+s:Ge/MyDNA/Backbone1/Material="G4_WATER_MODIFIED_1"
+s:Ge/MyDNA/Backbone1/Color="green"
+s:Ge/MyDNA/Backbone1/DrawingStyle="solid"
+s:Ge/MyDNA/Backbone2/Material="G4_WATER_MODIFIED_2"
+s:Ge/MyDNA/Backbone2/Color="blue"
+s:Ge/MyDNA/Backbone2/DrawingStyle="solid"
+
+sv:Ph/Default/Modules = 1 "g4em-dna"
+
+#Define a beam type
+s:So/Disk/Type = "Beam" 
+s:So/Disk/Component =  "BeamPosition" 
+s:So/Disk/BeamParticle = "proton" #gamma
+d:So/Disk/BeamEnergy = 10 MeV 
+s:So/Disk/BeamShape = "Rectangle"
+s:So/Disk/BeamPositionDistribution = "Flat"
+s:So/Disk/BeamAngularDistribution = "Gaussian"
+d:So/Disk/BeamAngularCutoffX = 10 deg
+d:So/Disk/BeamAngularCutoffY = 10 deg
+s:So/Disk/BeamPositionCutoffShape = "Rectangle"
+d:So/Disk/BeamPositionCutoffX = 15 nm
+d:So/Disk/BeamPositionCutoffY = 15 nm
+u:So/Disk/BeamEnergySpread = 0 
+d:So/Disk/BeamAngularSpreadX = 0.01 deg
+d:So/Disk/BeamAngularSpreadY = 0.01 deg
+i:So/Disk/NumberOfHistoriesInRun=500
+
+# -- Scorer --
+s:Sc/DNADamageScorer/Quantity				= "DNADamageStepByStep"
+includeFile									= ../../scorers/DNAScorerStepByStep.txt
+s:Sc/DNADamageScorer/Component 				= "MyDNA"
+i:Sc/DNADamageScorer/NumberOfHistoriesInRun = So/Disk/NumberOfHistoriesInRun
+i:Sc/DNADamageScorer/BasePairPositionAtGeometricHierarchy = 0
+sv:Sc/DNADamageScorer/Strand1MaterialNames  = 1 "G4_WATER_MODIFIED_1"
+sv:Sc/DNADamageScorer/Strand2MaterialNames  = 1 "G4_WATER_MODIFIED_2"
+s:Sc/DNADamageScorer/PrimaryParticle		= So/Disk/BeamParticle
+d:Sc/DNADamageScorer/MeanEnergy				= So/Disk/BeamEnergy MeV
+
+#Visualization
+s:Gr/ViewA/Type="OpenGL"
+i:Gr/ViewA/WindowSizeX = 1500
+i:Gr/ViewA/WindowSizeY = 1500
+d:Gr/ViewA/Theta = 55 deg
+d:Gr/ViewA/Phi = 20 deg
+d:Gr/ViewA/PerspectiveAngle = 30 deg
+
+Ts/PauseBeforeQuit = "false"
+b:Ts/ShowCPUTime = "True"
+
