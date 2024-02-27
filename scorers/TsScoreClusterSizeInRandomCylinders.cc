@@ -25,7 +25,7 @@
 
 TsScoreClusterSizeInRandomCylinders::TsScoreClusterSizeInRandomCylinders(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
                                                                          G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer)
-:TsVNtupleScorer(pM, mM, gM, scM, eM, scorerName, quantity, outFileName, isSubScorer)
+:TsVNtupleScorer(pM, mM, gM, scM, eM, scorerName, quantity, outFileName, isSubScorer), fPm(pM)
 {
     SetUnit("");
     
@@ -37,6 +37,11 @@ TsScoreClusterSizeInRandomCylinders::TsScoreClusterSizeInRandomCylinders(TsParam
     fNtuple->RegisterColumnI(&fTClusterFreq, "TotalClusterFreq");
       
     fElectron = G4Electron::ElectronDefinition();
+    
+    fRepeatedGeometry = false;
+    if (fPm->ParameterExists(GetFullParmName("IsRepeatedGeometry"))){
+        fRepeatedGeometry = fPm->GetBooleanParameter(GetFullParmName("IsRepeatedGeometry"));
+    }
 
 }
 
@@ -72,10 +77,10 @@ G4bool TsScoreClusterSizeInRandomCylinders::ProcessHits(G4Step* aStep, G4Touchab
 
     if ( scoreIon || scoreExc ) { 
 	G4int index = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();  
-        if ( index == 0 )
+        if ( fRepeatedGeometry && index == 0 )
             return false;
 
-	G4int indexParent = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);  
+	G4int indexParent = fRepeatedGeometry ? aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1):0;  
 
 	if ( scoreIon ) 
 	   fIonisations[indexParent][index]++; 
