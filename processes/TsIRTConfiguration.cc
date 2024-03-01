@@ -1745,6 +1745,30 @@ std::vector<G4ThreeVector> TsIRTConfiguration::GetPositionOfProducts(TsMolecule 
 	
 }
 
+
+std::vector<G4ThreeVector> TsIRTConfiguration::GetBackgroundPositionOfProducts(TsMolecule molA, G4int index) {
+	std::vector<G4ThreeVector> Result;
+	
+	G4double D1   = fMoleculesDefinition[molA.id].diffusionCoefficient;
+	G4double kobs = fReactions[index].kobs;
+	G4ThreeVector CurrentPos = molA.position;
+	std::vector<G4int> Products = fReactions[index].products;
+
+	for (size_t i = 0; i < Products.size(); i++) {
+		G4double r  = kobs / (4*CLHEP::pi*(2*D1));
+		G4double theta = 2 * CLHEP::pi * G4UniformRand();
+		G4double phi   = acos(1 - 2 * G4UniformRand());
+		G4double x = r * sin(phi) * cos(theta);
+		G4double y = r * sin(phi) * sin(theta);
+		G4double z = r * cos(phi);
+		G4ThreeVector NewPos = G4ThreeVector(x,y,z);
+		Result.push_back(CurrentPos+NewPos);
+	}
+
+	return Result;
+}
+
+
 G4double TsIRTConfiguration::GetRCutOff(G4double tCutOff) {
 	G4double probabilityOfReaction = 0.01;
 	G4double maximumReactionRadius = 1.45*nm;
