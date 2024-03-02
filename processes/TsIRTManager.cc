@@ -1,6 +1,7 @@
 // Extra Class for TsEmDNAChemistry
 #include "TsIRTManager.hh"
 #include "TsIRT.hh"
+#include "TsHybridIRT.hh"
 #include "TsParameterManager.hh"
 
 TsIRTManager::TsIRTManager(TsParameterManager* pM, G4String parmName)
@@ -15,8 +16,8 @@ TsIRTManager::TsIRTManager(TsParameterManager* pM, G4String parmName)
 	IRTType.toLower();
 	if (IRTType == "pure")
 		fIRTProcedure = new TsIRT(fPm,fName);
-	//else if (IRTType == "hybrid")
-	//	fIRTProcedure = new TsIRTHybrid(fPm,fName);
+	else if (IRTType == "hybrid")
+		fIRTProcedure = new TsHybridIRT(fPm,fName);
 	//else if (IRTType == "continuous")
 	//	fIRTProcedure = new TsIRTContinuous(fPm,fName);
 	else {

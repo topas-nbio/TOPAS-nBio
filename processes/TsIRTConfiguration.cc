@@ -144,7 +144,7 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 	
 	for ( int i = 0; i < numberOfReactions; i++ ) {
 		G4String aparName = (*reactionNames)[i];
-		if ( aparName.contains("BackgroundReaction"))
+		if ( aparName.contains("BackgroundReaction") || aparName.contains("/DissociationReaction/"))
 			continue;
 		
 		if ( fPm->ParameterExists(aparName.substr(0,aparName.find("Products")-1) + "/Active") &&
@@ -205,7 +205,7 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 	prefixLength = G4String("Ch/" + chemistryList + "/BackgroundReaction/").length();
 	for ( int i = 0; i < numberOfReactions; i++ ) {
 		G4String aparName = (*reactionNames)[i];
-		if ( aparName.contains("/Reaction/"))
+		if ( aparName.contains("/Reaction/") || aparName.contains("/DissociationReaction/"))
 			continue;
 		
 		if ( fPm->ParameterExists(aparName.substr(0,aparName.find("Products")-1) + "/Active") &&
@@ -276,6 +276,46 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 					 "Scavenging model does not exists in TOPAS-nBio database\n Use ExponentialSingleFactor or ExponentialDoubleFactor");
 			}
 		}
+	}
+
+	// Dissociation Reaction
+	prefixLength = G4String("Ch/" + chemistryList + "/DissociationReaction/").length();
+	for ( int i = 0; i < numberOfReactions; i++ ) {
+		G4String aparName = (*reactionNames)[i];
+		if ( aparName.contains("/Reaction/") || aparName.contains("/BackgroundReaction/"))
+			continue;
+		
+		if ( fPm->ParameterExists(aparName.substr(0,aparName.find("Products")-1) + "/Active") &&
+			!fPm->GetBooleanParameter(aparName.substr(0,aparName.find("Products")-1) + "/Active") )
+			continue;
+		
+		G4String reactions = aparName.substr(prefixLength, aparName.find("Products")-prefixLength-1);
+		G4String reactorA = reactions.substr(0, reactions.find("/"));
+		G4String reactorB = "none";
+		reactorA.toLower();
+		G4String* product = fPm->GetStringVector(aparName);
+		G4int nbOfProduct = fPm->GetVectorLength(aparName);
+		std::vector<G4String> vProduct;
+		
+		for ( int j = 0; j < nbOfProduct; j++ ) {
+			product[j].toLower();
+			vProduct.push_back(product[j]);
+		}
+		
+		reactorA.toLower();
+		
+		G4double concentration = 0;
+		G4double reactionRate = fPm->GetDoubleParameter(aparName.substr(0,aparName.find("Products")-1) +"/DissociationRate","perTime");
+		reactionRate /= fPm->GetUnitValue("M");
+		
+		if ( nbOfProduct == 1 )
+			InsertBackgroundReaction(reactorA, reactorB,product[0],"None","None",reactionRate,concentration,false);
+		else if ( nbOfProduct == 2 )
+			InsertBackgroundReaction(reactorA, reactorB,product[0],product[1],"None",reactionRate,concentration,false);
+		else if (nbOfProduct == 3)
+			InsertBackgroundReaction(reactorA, reactorB,product[0],product[1],product[2],reactionRate,concentration,false);
+		else
+			InsertBackgroundReaction(reactorA, reactorB,vProduct,reactionRate,concentration,false);
 	}
 	
 	// Reactions for quality check of the IRT loop.
@@ -2306,6 +2346,182 @@ G4bool TsIRTConfiguration::Inside(G4ThreeVector p ) {
 							          std::abs(p.z())-fDz);
 	if (dist > delta) return false;
 	return true;
+}
+
+
+G4bool TsIRTConfiguration::MakeReaction(std::unordered_map<G4int,TsMolecule> &initialSpecies, G4int& speciesIndex,
+										std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int,G4bool>>>> &spaceBinned,
+										G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin,
+										G4double YMax, G4double ZMin, G4double ZMax,
+										std::map<G4int, std::map<G4int, G4int>> &theGvalue,
+										std::vector<G4double> timeSteps,
+										G4int iM, G4int indexOfReaction, G4double irt,
+										std::unordered_map<G4int,G4bool> &used, std::vector<G4int>& prods, std::unordered_map<G4int,std::unordered_map<G4int,G4bool>>& specKind) {
+	
+	G4ThreeVector positions = initialSpecies[iM].position;
+	std::vector<G4int> products = (GetReaction(indexOfReaction)).products;
+	G4int tBin = fUtils->FindBin(irt, timeSteps);
+	if ( tBin < 0 ) return false;
+	
+	for ( size_t u = 0; u < products.size(); u++ ) {
+		TsMolecule aProd;
+		aProd.id = products[u];
+		aProd.position = positions;
+		aProd.time = irt;
+		aProd.trackID = 0;
+		aProd.reacted = false;
+		aProd.isDNA = false;
+		aProd.isNew = true;
+		if ( products[u] == 1 || products[u] == 5)
+			aProd.spin = G4UniformRand() > 0.5 ? 1 : 0;
+		else
+			aProd.spin = -1;
+		
+		G4int i = fUtils->FindBin(NX, XMin, XMax, positions.x());
+		G4int j = fUtils->FindBin(NY, YMin, YMax, positions.y());
+		G4int k = fUtils->FindBin(NZ, ZMin, ZMax, positions.z());
+		
+		spaceBinned[i][j][k][speciesIndex] = true;
+		initialSpecies[speciesIndex] = aProd;
+		used[speciesIndex] = false;
+		prods.push_back(speciesIndex);
+		specKind[products[u]][speciesIndex] = true;
+		speciesIndex++;
+		
+		for ( int ti = tBin; ti < (int)timeSteps.size(); ti++ ) {
+			theGvalue[aProd.id][ti]++;
+		}
+	}
+	for ( int ti = tBin; ti < (int)timeSteps.size(); ti++ )
+		theGvalue[initialSpecies[iM].id][ti]--;
+	
+	initialSpecies[iM].reacted = true;
+	return true;
+}
+
+
+G4bool TsIRTConfiguration::MakeReaction(std::unordered_map<G4int,TsMolecule> &initialSpecies, G4int& speciesIndex,
+										std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int,G4bool>>>> &spaceBinned,
+										G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin,
+										G4double YMax, G4double ZMin, G4double ZMax,
+										std::map<G4int, std::map<G4int, G4int>> &theGvalue,
+										std::vector<G4double> timeSteps,
+										G4int iM, G4int jM, G4int indexOfReaction, G4double irt,
+										G4double probabilityOfReaction, std::unordered_map<G4int,G4bool> &used, std::vector<G4int>& prods, std::unordered_map<G4int,std::unordered_map<G4int,G4bool>>& specKind) {
+	
+	if ( G4UniformRand() < probabilityOfReaction ) {
+		std::vector<G4ThreeVector> positions = GetPositionOfProducts(initialSpecies[iM], initialSpecies[jM], indexOfReaction);
+		std::vector<G4int> products = (GetReaction(indexOfReaction)).products;
+		G4int tBin = fUtils->FindBin(irt, timeSteps);
+		if ( tBin < 0 ) return false;
+		
+		for ( size_t u = 0; u < products.size(); u++ ) {
+			TsMolecule aProd;
+			aProd.id = products[u];
+			aProd.position = positions[u];
+			aProd.time = irt;
+			aProd.trackID = 0;
+			aProd.reacted = false;
+			aProd.isDNA = false;
+			aProd.isNew = true;
+			if ( products[u] == 1 || products[u] == 5)
+				aProd.spin = G4UniformRand() > 0.5 ? 1 : 0;
+			else
+				aProd.spin = -1;
+			
+			G4int i = fUtils->FindBin(NX, XMin, XMax, positions[u].x());
+			G4int j = fUtils->FindBin(NY, YMin, YMax, positions[u].y());
+			G4int k = fUtils->FindBin(NZ, ZMin, ZMax, positions[u].z());
+			
+			spaceBinned[i][j][k][speciesIndex] = true;
+			initialSpecies[speciesIndex] = aProd;
+			used[speciesIndex] = false;
+			prods.push_back(speciesIndex);
+			specKind[products[u]][speciesIndex] = true;
+			speciesIndex++;
+			
+			for ( int ti = tBin; ti < (int)timeSteps.size(); ti++ ) {
+				theGvalue[aProd.id][ti]++;
+			}
+		}
+		for ( int ti = tBin; ti < (int)timeSteps.size(); ti++ ) {
+			theGvalue[initialSpecies[iM].id][ti]--;
+			theGvalue[initialSpecies[jM].id][ti]--;
+		}
+		initialSpecies[iM].reacted = true;
+		initialSpecies[jM].reacted = true;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+G4bool TsIRTConfiguration::MakeReaction(std::unordered_map<G4int,TsMolecule> &initialSpecies, G4int& speciesIndex,
+										std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int,G4bool>>>> &spaceBinned,
+										G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin,
+										G4double YMax, G4double ZMin, G4double ZMax,
+										std::map<G4int, std::map<G4int, G4int>> &theGvalue,
+										std::map<G4int, std::map<G4int, G4int>> &theGvalueInVolume,
+										std::vector<G4double> timeSteps,
+										G4int iM, G4int jM, G4int indexOfReaction, G4double irt,
+										G4double probabilityOfReaction, std::unordered_map<G4int,G4bool> &used, std::vector<G4int>& prods, std::unordered_map<G4int,std::unordered_map<G4int,G4bool>>& specKind) {
+	
+	if ( G4UniformRand() < probabilityOfReaction ) {
+		std::vector<G4ThreeVector> positions = GetPositionOfProducts(initialSpecies[iM], initialSpecies[jM], indexOfReaction);
+		std::vector<G4int> products = (GetReaction(indexOfReaction)).products;
+		G4int tBin = fUtils->FindBin(irt, timeSteps);
+		if ( tBin < 0 ) return false;
+		
+		G4bool inVolume = false;
+		if ( Inside(initialSpecies[iM].position) || Inside(initialSpecies[jM].position))  // at least one specie is at scoring region
+			inVolume = true;
+		
+		for ( size_t u = 0; u < products.size(); u++ ) {
+			TsMolecule aProd;
+			aProd.id = products[u];
+			aProd.position = positions[u];
+			aProd.time = irt;
+			aProd.trackID = 0;
+			aProd.reacted = false;
+			aProd.isDNA = false;
+			aProd.isNew = true;
+			if ( products[u] == 1 || products[u] == 5)
+				aProd.spin = G4UniformRand() > 0.5 ? 1 : 0;
+			else
+				aProd.spin = -1;
+			
+			G4int i = fUtils->FindBin(NX, XMin, XMax, positions[u].x());
+			G4int j = fUtils->FindBin(NY, YMin, YMax, positions[u].y());
+			G4int k = fUtils->FindBin(NZ, ZMin, ZMax, positions[u].z());
+			
+			spaceBinned[i][j][k][speciesIndex] = true;;
+			initialSpecies[speciesIndex] = aProd;
+			used[speciesIndex] = false;
+			prods.push_back(speciesIndex);
+			specKind[products[u]][speciesIndex] = true;
+			speciesIndex++;
+			
+			for ( int ti = tBin; ti < (int)timeSteps.size(); ti++ ) {
+				theGvalue[aProd.id][ti]++;
+				if ( inVolume )
+					theGvalueInVolume[aProd.id][ti]++;
+			}
+		}
+		for ( int ti = tBin; ti < (int)timeSteps.size(); ti++ ) {
+			theGvalue[initialSpecies[iM].id][ti]--;
+			theGvalue[initialSpecies[jM].id][ti]--;
+			if ( inVolume ) {
+				theGvalueInVolume[initialSpecies[iM].id][ti]--;
+				theGvalueInVolume[initialSpecies[jM].id][ti]--;
+			}
+		}
+		initialSpecies[iM].reacted = true;
+		initialSpecies[jM].reacted = true;
+		return true;
+	} else {
+		return false;
+	}
 }
 
 

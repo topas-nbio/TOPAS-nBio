@@ -41,7 +41,6 @@ public:
 	std::map<G4String, std::map<G4double, G4int>> GetGValues() {return fGValues;}
 	std::map<G4int, std::map<G4double, G4int>>    GetDeltaGValues() {return fDeltaGValues;}
 	std::map<G4String, std::map<G4double, G4int>> GetGValuesInVolume() {return fGValuesInVolume;}
-	std::map<G4int, std::pair<G4int,G4int>>       GetReactedDNA() {return fReactedDNA;}
 	
 	std::pair<G4String, G4String> GetReactants(G4int index) {return fReactionConf->GetReactants(index);}
 	std::vector<G4String> GetProducts(G4int index) {return fReactionConf->GetProducts(index);}
@@ -110,7 +109,6 @@ private:
 	std::map<G4String, std::map<G4double, G4int>> fGValues;
 	std::map<G4int, std::map<G4double, G4int>> fDeltaGValues;
 	std::map<G4String, std::map<G4double, G4int>> fGValuesInVolume;
-	std::map<G4int, std::pair<G4int,G4int>> fReactedDNA;
 	
 	G4bool fUseSpinScaled;
 	G4bool fHighTimeScavenger;

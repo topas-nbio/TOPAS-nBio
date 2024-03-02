@@ -101,10 +101,7 @@ TsHybridIRT::TsHybridIRT(TsParameterManager* pM, G4String parmName)
 	if ( fVerbosity > 0 && fTestForContactReactions )
 		std::cout << " Going to test tracks by reaction at contact. " << G4endl;
 
-	fUseHomogeneous = false;
-	if (fPm->ParameterExists(GetFullParmName("IRTHomogeneous"))) {
-		fUseHomogeneous = fPm->GetBooleanParameter(GetFullParmName("IRTHomogeneous"));
-	}
+	fUseHomogeneous = true;
 	
 	fXMin = 1e9*nm;
 	fYMin = 1e9*nm;
@@ -321,7 +318,6 @@ void TsHybridIRT::Clean() {
 	fConcentrationsAtThisTime.clear();
 
 	fGValues.clear();
-	fReactedDNA.clear();
 	
 	if (fReportDelta)
 		fDeltaGValues.clear();
@@ -433,9 +429,6 @@ void TsHybridIRT::contactReactions(G4int i,std::unordered_map<G4int, G4bool> use
 																			j, indexOfReaction, fChemicalSpecies[i].time, p, fUsed, fContactProducts, fSpeciesOfAKind);
 							
 							if ( fReactedByContact ) {
-								if ( fChemicalSpecies[j].isDNA )
-									fReactedDNA[fChemicalSpecies[j].trackID] = std::make_pair(fChemicalSpecies[j].id,fChemicalSpecies[i].id);
-								
 								if ( fReportDelta ) {
 									G4int tdBin = fUtils->FindBin(fChemicalSpecies[i].time, fStepTimes);
 									if ( -1 < tdBin ) {
@@ -742,27 +735,12 @@ void TsHybridIRT::ConductReactions() {
 			
 			// 5.2 sample the position of the reactants using position approach Clifford et al 1986
 			if ( !fIRTIsBackground[idx] ) {
-				if ( !fChemicalSpecies[iM].isDNA && !fChemicalSpecies[jM].isDNA ) { // None is DNA
-					fChemicalSpecies[jM].position = fIRTPositions[idx].second;
-					fChemicalSpecies[jM].time = fIRTOrigTime[idx];
-					
-					fReactionConf->ResampleReactantsPosition(fChemicalSpecies[iM], fChemicalSpecies[jM],indexOfReaction, irt);
-					
-					positions = fReactionConf->GetPositionOfProducts(fChemicalSpecies[iM],fChemicalSpecies[jM], indexOfReaction);
-				} else { // at least one is DNA. Set product positions as the DNA molecule position.
-					// Score the base pair ID, and molecule that caused the damage.
-					if ( fChemicalSpecies[iM].isDNA ) {
-						for ( int ip = 0; ip < 3; ip++ )
-							positions.push_back(fChemicalSpecies[iM].position);
-						
-						fReactedDNA[fChemicalSpecies[iM].trackID] = std::make_pair(fChemicalSpecies[iM].id,fChemicalSpecies[jM].id);
-					} else {
-						for ( int ip = 0; ip < 3; ip++ )
-							positions.push_back(fChemicalSpecies[jM].position);
-						
-						fReactedDNA[fChemicalSpecies[jM].trackID] = std::make_pair(fChemicalSpecies[jM].id,fChemicalSpecies[iM].id);
-					}
-				}
+				fChemicalSpecies[jM].position = fIRTPositions[idx].second;
+				fChemicalSpecies[jM].time = fIRTOrigTime[idx];
+				
+				fReactionConf->ResampleReactantsPosition(fChemicalSpecies[iM], fChemicalSpecies[jM],indexOfReaction, irt);
+				
+				positions = fReactionConf->GetPositionOfProducts(fChemicalSpecies[iM],fChemicalSpecies[jM], indexOfReaction);
 				
 				TsIRTConfiguration::TsMolecularReaction binReaction = fReactionConf->GetReaction(indexOfReaction);
 				if (binReaction.index < 0) {continue;}
