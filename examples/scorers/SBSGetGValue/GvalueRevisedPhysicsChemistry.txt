@@ -9,8 +9,6 @@ includeFile = TOPASDefaultReactions.txt
 
 b:Ch/TOPASChemistry/ChemicalStageTransportActive     = "True"
 d:Ch/TOPASChemistry/ChemicalStageTimeEnd             = 1 us
-dv:Ch/TOPASChemistry/ChemicalStageTimeStepsHighEdges = 7 0.1 1.0  3.0   10.0   100  100 100 ps
-dv:Ch/TOPASChemistry/ChemicalStageTimeStepsResolutions = 7 1.0 10.0 100.0 1000.0 10000.0 100000.0 999999 ps
 
 d:Ge/World/HLX= 10 cm
 d:Ge/World/HLY= 10 cm
