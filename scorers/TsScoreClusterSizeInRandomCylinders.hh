@@ -17,7 +17,7 @@
 #include <fstream>
 
 class TsScoringManager;
-
+class TsParameterManager;
 class TsScoreClusterSizeInRandomCylinders : public TsVNtupleScorer
 {
 public:
@@ -35,7 +35,9 @@ protected:
 	void Clear();
 
 private:
+    TsParameterManager* fPm;
     G4double fTotalPath;
+    G4bool fRepeatedGeometry;
 
     G4int fNbOfAlgo;
     G4int fClusterSize;
