@@ -21,7 +21,7 @@ public:
 	TsIRT(TsParameterManager* pM, G4String parmName);
 	~TsIRT();
 
-	void SampleIndependantReactionTimes();
+	void SetContainersForNextPulse();
 };
 #endif
 

@@ -27,3 +27,5 @@
 
 TsIRT::TsIRT(TsParameterManager* pM, G4String parmName): TsVIRTProcedure(pM,parmName){;}
 TsIRT::~TsIRT() {;}
+
+void TsIRT::SetContainersForNextPulse() {;}

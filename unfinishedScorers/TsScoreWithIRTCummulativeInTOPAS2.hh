@@ -1,15 +1,3 @@
-//
-// ********************************************************************
-// *                                                                  *
-// * This  code  implementation is the  intellectual property  of the *
-// * TOPAS collaboration.                                             *
-// * Use or redistribution of this code is not permitted without the  *
-// * explicit approval of the TOPAS collaboration.                    *
-// * Contact: Joseph Perl, perl@slac.stanford.edu                     *
-// *                                                                  *
-// ********************************************************************
-//
-
 #ifndef TsScoreWithIRTCummulativeInTOPAS2_hh
 #define TsScoreWithIRTCummulativeInTOPAS2_hh
 
@@ -19,7 +7,7 @@
 
 #include <stdint.h>
 
-class TsHybridIRT;
+class TsIRTManager;
 class TsIRTUtils;
 
 class TsScoreWithIRTCummulativeInTOPAS2 : public TsVNtupleScorer
@@ -60,7 +48,7 @@ private:
 	G4bool Inside(G4ThreeVector);
 	
 	TsParameterManager* fPm;
-	TsHybridIRT* fIRT;
+	TsIRTManager* fIRT;
 	TsIRTUtils* fUtils;
 	
 	std::vector<std::pair<G4double,G4double>> fPulseInformation;

@@ -112,7 +112,6 @@ private:
 	
 	G4bool fUseSpinScaled;
 	G4bool fHighTimeScavenger;
-	G4bool fUseHomogeneous;
 	G4bool fReportDelta;
 	G4double fRCutOff;
 	G4double fBinWidth;

@@ -19,7 +19,7 @@ public:
 	TsVIRTProcedure(TsParameterManager*, G4String);
 	~TsVIRTProcedure();
 	
-	void runIRT(G4double startTime = -1, G4double finalTime = -1);
+	void runIRT(G4double startTime = -1, G4double finalTime = -1, G4double transTime=-1, G4bool isContinuation=false);
 	
 	void AddMolecule(TsIRTConfiguration::TsMolecule);
 	void AddMolecule(G4Step*, G4double, G4int, G4ThreeVector);
@@ -58,6 +58,8 @@ public:
 	std::map<G4int,G4int> GetEscapeYields();
 	std::map<G4int,G4int> GetDeltaYields();
 
+	void SetContainersForNextPulse() {;}
+
 private:
 	void initializeScorers();
 	void FindBinIndexes(G4ThreeVector thisPos, G4double rcutOff);
@@ -72,7 +74,6 @@ private:
 	void ConductReactions();
 	void CleanIRTVariables();
 	void UpdateGValues();
-	void CleanReactedMolecules();
 	void AddToIRT(G4double Time, G4int Reaction, G4int molA, G4int molB, G4double OrigTime, G4ThreeVector aPos, G4ThreeVector bPos, G4bool isBack);
 	void AddIRTinAscendantOrder(G4double Time);
 	void RemoveFirstIRTElement();

@@ -1,18 +1,7 @@
 // Scorer for IRTDoseInTOPAS2
-//
-// ********************************************************************
-// *                                                                  *
-// * This  code  implementation is the  intellectual property  of the *
-// * TOPAS collaboration.                                             *
-// * Use or redistribution of this code is not permitted without the  *
-// * explicit approval of the TOPAS collaboration.                    *
-// * Contact: Joseph Perl, perl@slac.stanford.edu                     *
-// *                                                                  *
-// ********************************************************************
-//
 
 #include "TsScoreWithIRTCummulativeInTOPAS2.hh"
-#include "TsHybridIRT.hh"
+#include "TsIRTManager.hh"
 #include "TsIRTConfiguration.hh"
 #include "TsIRTUtils.hh"
 
@@ -39,7 +28,7 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
 {
     SetUnit("");
     
-    fIRT       = new TsHybridIRT(fPm, fName);
+    fIRT       = new TsIRTManager(fPm, fName);
     fUtils     = fIRT->GetUtils();
     fStepTimes = fIRT->GetStepTimes();
     

@@ -9,17 +9,22 @@ TsIRTManager::TsIRTManager(TsParameterManager* pM, G4String parmName)
 	G4String chemistryList = fPm->GetStringParameter("Ch/ChemistryName");
 
 	G4String parName = "Ch/" + chemistryList + "/IRTProcedure";
+	
 	G4String IRTType = "pure";
+	fIRTType = 0;
 	if ( fPm->ParameterExists(parName) )
 		IRTType = fPm->GetStringParameter(parName);
 
 	IRTType.toLower();
 	if (IRTType == "pure")
 		fIRTProcedure = new TsIRT(fPm,fName);
-	else if (IRTType == "hybrid")
+	else if (IRTType == "hybrid") {
 		fIRTProcedure = new TsHybridIRT(fPm,fName);
-	//else if (IRTType == "continuous")
+		fIRTType      = 1;
+	}
+	//else if (IRTType == "continuous")                  // This is Wook-Geun Implementation
 	//	fIRTProcedure = new TsIRTContinuous(fPm,fName);
+
 	else {
 		G4cout << "- Error in TOPAS-nBio IRT Manager!" << G4endl;
 		G4cout << "   There is no " << IRTType << " IRT Type" << G4endl;
@@ -33,8 +38,12 @@ TsIRTManager::~TsIRTManager() {
 	delete fIRTProcedure;
 }
 
-void TsIRTManager::runIRT() {
-	fIRTProcedure->runIRT();
+void TsIRTManager::runIRT(G4double startTime, G4double finalTime, G4double transTime, G4bool isContinuation) {
+	if (fIRTType == 0)
+		fIRTProcedure->runIRT();
+
+	else
+		fIRTProcedure->runIRT(startTime,finalTime,transTime,isContinuation);
 }
 
 std::pair<G4String, G4String> TsIRTManager::GetReactants(G4int reactIndex) {
@@ -45,7 +54,15 @@ std::vector<G4String> TsIRTManager::GetProducts(G4int reactIndex) {
 	return fIRTProcedure->GetProducts(reactIndex);
 }
 
+void TsIRTManager::AddMolecule(TsIRTConfiguration::TsMolecule aMol) {
+	fIRTProcedure->AddMolecule(aMol);
+}
+
 void TsIRTManager::AddMolecule(G4Track* aTrack, G4double time, G4int moleculeID, G4ThreeVector offset) {
+	fIRTProcedure->AddMolecule(aTrack, time, moleculeID, offset);
+}
+
+void TsIRTManager::AddMolecule(const G4Track* aTrack, G4double time, G4int moleculeID, G4ThreeVector offset) {
 	fIRTProcedure->AddMolecule(aTrack, time, moleculeID, offset);
 }
 
@@ -57,9 +74,30 @@ void TsIRTManager::Clean() {
 	fIRTProcedure->Clean();
 }
 
+void TsIRTManager::SetContainersForNextPulse() {
+	fIRTProcedure->SetContainersForNextPulse();
+}
+
+TsIRTUtils* TsIRTManager::GetUtils() {
+	return fIRTProcedure->GetUtils();
+}
+
+std::vector<G4double> TsIRTManager::GetStepTimes() {
+	return fIRTProcedure->GetStepTimes();
+}
+
+TsIRTConfiguration::TsMolecule TsIRTManager::ConstructMolecule(G4Track* aTrack, G4double time, G4int moleculeID, G4ThreeVector offset) {
+	return fIRTProcedure->ConstructMolecule(aTrack, time, moleculeID, offset);
+}
+
+TsIRTConfiguration* TsIRTManager::GetIRTConfiguration() {
+	return fIRTProcedure->GetIRTConfiguration();
+}
+
 std::map<G4String, std::map<G4double, G4int>> TsIRTManager::GetGValues() {
 	return fIRTProcedure->GetGValues();
 }
+
 std::map<G4int, std::map<G4double, G4int>>    TsIRTManager::GetDeltaGValues() {
 	return fIRTProcedure->GetDeltaGValues();
 }

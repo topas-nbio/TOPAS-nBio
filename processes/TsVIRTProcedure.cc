@@ -591,14 +591,7 @@ void TsVIRTProcedure::sampleReactions(G4int i) {
 }
 
 
-void TsVIRTProcedure::runIRT(G4double startTime, G4double finalTime) {
-	fMinTime = 0;
-	fTimeCut = fStepTimes[fStepTimes.size()-1];
-	if (startTime != -1)
-		fMinTime = startTime;
-	if (finalTime != -1)
-		fTimeCut = finalTime;
-		
+void TsVIRTProcedure::runIRT(G4double, G4double, G4double, G4bool) {	
 	// Voxelize and Sort the Chemical Species Space
 	VoxelizeAndSortSpace();
 

@@ -5,6 +5,8 @@
 #include <map>
 #include "G4Track.hh"
 #include "G4ThreeVector.hh"
+#include "TsIRTUtils.hh"
+#include "TsIRTConfiguration.hh"
 
 class TsVIRTProcedure;
 class TsParameterManager;
@@ -14,10 +16,18 @@ public:
 	TsIRTManager(TsParameterManager*, G4String);
 	~TsIRTManager();
 
-	void runIRT();
+	void runIRT(G4double startTime = -1, G4double finalTime = -1, G4double transTime=-1, G4bool isContinuation=false);
+	void AddMolecule(TsIRTConfiguration::TsMolecule);
 	void AddMolecule(G4Track*, G4double, G4int, G4ThreeVector);
+	void AddMolecule(const G4Track*, G4double, G4int, G4ThreeVector);
 	void AddMolecule(G4Track*, G4double, G4int, G4ThreeVector, G4bool);
 	void Clean();
+	void SetContainersForNextPulse();
+
+	TsIRTUtils* GetUtils();
+	std::vector<G4double> GetStepTimes();
+	TsIRTConfiguration::TsMolecule ConstructMolecule(G4Track*, G4double, G4int, G4ThreeVector);
+	TsIRTConfiguration* GetIRTConfiguration();
 
 	std::pair<G4String, G4String> GetReactants(G4int);
 	std::vector<G4String> GetProducts(G4int);
@@ -29,6 +39,8 @@ private:
 	G4String fName;
 	TsVIRTProcedure* fIRTProcedure;
 	TsParameterManager* fPm;
+
+	G4int fIRTType;
 };
 
 #endif

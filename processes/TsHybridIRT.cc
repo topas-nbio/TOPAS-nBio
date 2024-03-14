@@ -100,8 +100,6 @@ TsHybridIRT::TsHybridIRT(TsParameterManager* pM, G4String parmName)
 	
 	if ( fVerbosity > 0 && fTestForContactReactions )
 		std::cout << " Going to test tracks by reaction at contact. " << G4endl;
-
-	fUseHomogeneous = true;
 	
 	fXMin = 1e9*nm;
 	fYMin = 1e9*nm;
@@ -526,22 +524,6 @@ void TsHybridIRT::sampleReactions(G4int i) {
 			}
 		}
 	}
-	
-	// Sampling of Type VI Reactions via exponential method
-	if (!fUseHomogeneous) {
-		std::pair<G4int, G4double> tnIscav = fReactionConf->SampleIRTFirstOrderAndBackgroundReactions(fChemicalSpecies[i]);
-		G4double tscav = tnIscav.second;
-		G4double gTime = fChemicalSpecies[i].time;
-
-		if (gTime + tscav < fMinTime) {
-			gTime = fMinTime;
-		}
-
-		if ((fHighTimeScavenger && 0 < tscav && tscav+gTime <= fTimeCut) || (0 < tscav && tscav+gTime <= fMinTime + 1e6*ps)) {
-			tscav += gTime;
-			AddToIRT(tscav,tnIscav.first,i,i,fChemicalSpecies[i].time,fChemicalSpecies[i].position,fChemicalSpecies[i].position,true);
-		}
-	}
 }
 
 
@@ -560,10 +542,8 @@ void TsHybridIRT::runIRT(G4double startTime, G4double finalTime, G4double transT
 	else
 		fTransCut = DBL_MAX;
 
-	if (fUseHomogeneous) {
-		fInitialBackgroundConcentrations = fReactionConf->GetBackgroundConcentrations();
-		if (!isContinuation) {fCurrentBackgroundConcentrations=fInitialBackgroundConcentrations;}
-	}
+	fInitialBackgroundConcentrations = fReactionConf->GetBackgroundConcentrations();
+	if (!isContinuation) {fCurrentBackgroundConcentrations=fInitialBackgroundConcentrations;}
 		
 	// Voxelize and Sort the Chemical Species Space
 	VoxelizeAndSortSpace();
@@ -681,16 +661,14 @@ void TsHybridIRT::ConductReactions() {
 		std::vector<G4int> dnaInfo = {-1,-1,-1};
 		G4double irt = fIRTValues[currentIRT].first;
 
-		if (fUseHomogeneous) {
-			UpdateGillespieDirect(currentTime);
-			if ((fHomogeneousTimeStep + currentTime < irt)      &&
-				(fHomogeneousTimeStep + currentTime < fTimeCut) &&
-				(fHomogeneousReactIndex >= 0)) {
-				G4bool Success = DoGillespieDirect(fHomogeneousTimeStep+currentTime);
-				if (Success) {
-					currentTime  += fHomogeneousTimeStep;
-					continue;
-				}
+		UpdateGillespieDirect(currentTime);
+		if ((fHomogeneousTimeStep + currentTime < irt)      &&
+			(fHomogeneousTimeStep + currentTime < fTimeCut) &&
+			(fHomogeneousReactIndex >= 0)) {
+			G4bool Success = DoGillespieDirect(fHomogeneousTimeStep+currentTime);
+			if (Success) {
+				currentTime  += fHomogeneousTimeStep;
+				continue;
 			}
 		}
 
@@ -863,21 +841,15 @@ void TsHybridIRT::ConductReactions() {
 	fConcentrationsAtThisTime.clear();
 
 	G4int Tries = 0;
-	if (fUseHomogeneous) {
-		while (currentTime < fTimeCut) {
-			//G4cout << "2 " << currentTime /s << G4endl;
-			UpdateGillespieTauLeaping(currentTime);
-			//if (fHomogeneousReactIndex >= 0) {
-				G4bool Success = DoGillespieTauLeaping(currentTime + fHomogeneousTimeStep);
-				if (Success) {
-					currentTime  += fHomogeneousTimeStep; 
-					Tries = 0; 
-				}
-				else {Tries++;}
-				if (Tries == 100) {break;}
-			//}
-			//else { break; }
+	while (currentTime < fTimeCut) {
+		UpdateGillespieTauLeaping(currentTime);
+		G4bool Success = DoGillespieTauLeaping(currentTime + fHomogeneousTimeStep);
+		if (Success) {
+			currentTime  += fHomogeneousTimeStep; 
+			Tries = 0; 
 		}
+		else {Tries++;}
+		if (Tries == 100) {break;}
 	}
 }
 
