@@ -1,0 +1,5 @@
+# Data From Elliot A, Chenier MP, Ouellette DC. Temperature dependence of g val-ues for H2O and D2O irradiated with low linear energy transfer radia-tion.J Chem Soc Faraday Trans. 1993;89:1193–1197.Medical Physics, 0 (0), xxxx11Ramos-M ́endezet al.: Independent reaction times method in Geant4-DNA11
+# | Unrestricted LET (keV/um) | G Values (Species/100 eV) at 1 us | G Values STD (Species/100 eV) at 1 us |
+		  3.22288e+1  					      9.53551e-1 						0.044914
+		  3.99922e+1 						  9.67946e-1					    0.046065
+		  9.04691e+1 						  9.90403e-1 						0.048944

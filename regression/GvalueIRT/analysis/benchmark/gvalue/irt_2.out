@@ -1,0 +1,313 @@
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.5_expanded)
+
+TOPAS is distributed under a Single User License described at:
+http://www.topasmc.org/registration
+Every user must have their own, individual, valid license to run TOPAS.
+
+Loading parameters starting from: runme_2.txt
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Users/ramosj/Applications/Geant4/G4Data
+
+**************************************************************
+ Geant4 version Name: geant4-10-06-patch-02 [MT]   (29-May-2020)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 6
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 10 nm, and radial tolerance = 10 nm.
+Checking overlaps for volume sWorld (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 2e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+Solvation model selected: 1
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s)r (nm)  Preact    
+========================================================================================================================
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)Kdif (/M/s)  Kact (/M/s)  r (nm)  Preact    alpha (/nm)
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   9e+07     2.81516e+10  9.02887e+07  0.4     0.001346152.50802    
+ II    OH^-1   + H2O2^0  -> HO2^-1                 1.3e+10   3.10576e+10  2.23589e+10  0.54    0.200983  3.18503    
+ II    OH^0    + H^0     -> None                   2e+10     2.85452e+10  6.68101e+10  0.41    0.492292  8.14757    
+ II    OH^0    + OH^0    -> H2O2^0                 5.5e+09   7.32548e+09  2.2071e+10   0.44    0.544815  9.12023    
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           1.1e+10   3.86858e+10  1.53705e+10  0.71    0.103317  1.96805    
+ II    e_aq^-1 + OH^0    -> OH^-1                  3e+10     3.86858e+10  1.33617e+11  0.72    0.497921  6.18599    
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)r (nm)  reff (nm)Preact    
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   1.43e+11  0.8768051.28023 1         
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  1.1e+10   0.5816540.2966441         
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)Kdif (/M/s)  Kact (/M/s)  r (nm)  reff (nm)reff1 (nm)Preact    
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    2.3e+10   1.26196e+11  2.81262e+10  0.75    1.16126 0.2119760.0426379 
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)r (nm)  reff (nm)Preact    
+========================================================================================================================
+ V     H^0     + H^0     -> H_2^0                  1.56e+10  1.17795 1.17795 0.25      
+ V     e_aq^-1 + H^0     -> OH^-1 + H_2^0          2.5e+10   1.11043 1.11043 0.25      
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ExplicitAssignament
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger cascade flag: 1
+### ===  Ignore cuts flag:   1
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 100 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 100 keV to 500 MeV in 27 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Meesungnoen2002 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      RangeFactor= 0.04, stepLimType: 3, latDisp: 1, skin= 1, geomFactor= 2.5
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+
+eIoni:  for e+  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 1, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+
+eBrem:  for e+  SubType=3
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      LPM flag: 1 for E > 0.5 GeV,  VertexHighEnergyTh(GeV)= 100000
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+annihil:  for e+, integral:1  SubType=5 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            eplus2gg : Emin=    0 eV  Emax=  500 MeV
+
+proton_G4DNAElastic:  for proton SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+proton_G4DNAExcitation:  for proton SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+DNABornExcitationModel : Emin=  500 keV Emax=  100 MeV
+
+proton_G4DNAIonisation:  for proton SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 keV  deltaRudd Fluo
+DNABornIonisationModel : Emin=  500 keV Emax=  100 MeV  deltaBorn Fluo
+DNARuddIonisationExtendedModel : Emin=  100 MeV Emax=  500 MeV  deltaRudd Fluo
+
+proton_G4DNAChargeDecrease:  for proton SubType=56 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeDecreaseModel : Emin=    0 eV  Emax=  100 MeV
+
+GenericIon_G4DNAIonisation:  for GenericIon SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha_G4DNAElastic:  for alpha SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha_G4DNAExcitation:  for alpha SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha_G4DNAIonisation:  for alpha SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha_G4DNAChargeDecrease:  for alpha SubType=56 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeDecreaseModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha+_G4DNAElastic:  for alpha+ SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha+_G4DNAExcitation:  for alpha+ SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha+_G4DNAIonisation:  for alpha+ SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha+_G4DNAChargeDecrease:  for alpha+ SubType=56 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeDecreaseModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha+_G4DNAChargeIncrease:  for alpha+ SubType=57 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeIncreaseModel : Emin=    0 eV  Emax=  400 MeV
+
+helium_G4DNAElastic:  for helium SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+helium_G4DNAExcitation:  for helium SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+helium_G4DNAIonisation:  for helium SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+helium_G4DNAChargeIncrease:  for helium SubType=57 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeIncreaseModel : Emin=    0 eV  Emax=  400 MeV
+
+hydrogen_G4DNAElastic:  for hydrogen SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+hydrogen_G4DNAExcitation:  for hydrogen SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+
+hydrogen_G4DNAIonisation:  for hydrogen SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+hydrogen_G4DNAChargeIncrease:  for hydrogen SubType=57 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeIncreaseModel : Emin=    0 eV  Emax=  100 MeV
+G4WT1 > Begin processing for Run: 0, History: 0
+G4WT2 > Begin processing for Run: 0, History: 100
+G4WT4 > Begin processing for Run: 0, History: 200
+G4WT3 > Begin processing for Run: 0, History: 300
+G4WT5 > Begin processing for Run: 0, History: 400
+G4WT5 > Begin processing for Run: 0, History: 500
+G4WT3 > Begin processing for Run: 0, History: 600
+G4WT2 > Begin processing for Run: 0, History: 700
+G4WT5 > Begin processing for Run: 0, History: 800
+G4WT3 > Begin processing for Run: 0, History: 900
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+
+**** Effective number of histories:           564
+**** LET per history:                         0.0842525 keV/um +/- 0.0075591 keV/um (RMS) 
+**** Averaged IRT-execution-time per history: 16.5614 s +/- 10.3616 s 
+
+
+Note that TOPAS interrupted one or more histories during this session
+due to errors reported by Geant4.
+For details on each of these errors, see the console log for "G4Exception"
+If only a very small proportion of your histories were affected,
+you may be able to still use the overall result,
+but this is a judgement call you need to make for yourself.
+The total number of affected histories was: 436
+You can set TOPAS to exit if it exceeds a given number of interrupted histories
+through the parmameter i:Ts/MaxInterruptedHistories
+This limit is current set to: 1000
+
+Elapsed times:
+Parameter Reading : User=0.010000s Real=0.003060s Sys=0.010000s [Cpu=653.7%]
+    Initialization: User=0.020000s Real=0.026072s Sys=0.000000s [Cpu=76.7%]
+         Execution: User=1828.910000s Real=318.534402s Sys=2.910000s [Cpu=575.1%]
+      Finalization: User=0.030000s Real=0.070304s Sys=0.040000s [Cpu=99.6%]
+             Total: User=1828.97s Real=318.634s Sys=2.96s
+      319.77 real      1830.01 user         3.18 sys

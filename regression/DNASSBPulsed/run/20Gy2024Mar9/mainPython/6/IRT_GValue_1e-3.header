@@ -1,0 +1,10 @@
+
+Columns of data are as follows:
+1: GValue
+2: GValue Error
+3: Total Number of molecules
+4: Error of Number of molecules
+5: EnergyDeposit
+6: Time [picosecond]
+7: MoleculeName
+

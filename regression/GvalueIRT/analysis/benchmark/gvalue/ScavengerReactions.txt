@@ -1,0 +1,46 @@
+# Methanol
+s:Mo/CH3OH/Symbol = "CH3OH"
+d:Mo/CH3OH/DiffusionCoefficient = 0 nm2/s
+u:Mo/CH3OH/Charge = 0
+d:Mo/CH3OH/Radius = 0.5 nm
+
+s:Mo/CH2OH/Symbol = "CH2OH"
+d:Mo/CH2OH/DiffusionCoefficient = 0 nm2/s
+u:Mo/CH2OH/Charge = 0
+d:Mo/CH2OH/Radius = 0.5 nm
+
+# Nitrate
+s:Mo/NO3m/Symbol = "NO32m"
+d:Mo/NO3m/DiffusionCoefficient = 0 nm2/s
+u:Mo/NO3m/Charge = 0
+d:Mo/NO3m/Radius = 0.5 nm
+
+s:Mo/HNO3m/Symbol = "HNO32m"
+d:Mo/HNO3m/DiffusionCoefficient = 0 nm2/s
+u:Mo/HNO3m/Charge = 0
+d:Mo/HNO3m/Radius = 0.5 nm
+
+# CH3OH + OH -> CH2OH + H2O
+sv:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/CH3OH/Products = 1 "CH2OH"
+d:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/CH3OH/Concentration = 1 M 
+d:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/CH3OH/ReactionRate  = 9.7e8 /M/s 
+i:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/CH3OH/ReactionType = 6
+s:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/CH3OH/ScavengingModel = "ExponentialSingleFactor"
+b:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/CH3OH/CompatibleWithStepByStep = "False"
+
+# NO3-  +  e-aq  ->  NO3^2- 
+sv:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/NO3m/Products = 1 "NO32m"
+d:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/NO3m/Concentration = 1 M 
+d:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/NO3m/ReactionRate  = 9.7e9 /M/s 
+i:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/NO3m/ReactionType = 6
+s:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/NO3m/ScavengingModel = "ExponentialSingleFactor"
+b:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/NO3m/CompatibleWithStepByStep = "False"
+
+# NO3-  +  e-aq  ->  NO3^2- 
+sv:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/NO3m/Products = 1 "HNO3m"
+d:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/NO3m/Concentration = 1 M 
+d:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/NO3m/ReactionRate  = 1.4e6 /M/s 
+i:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/NO3m/ReactionType = 6
+s:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/NO3m/ScavengingModel = "ExponentialSingleFactor"
+b:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/NO3m/CompatibleWithStepByStep = "False"
+

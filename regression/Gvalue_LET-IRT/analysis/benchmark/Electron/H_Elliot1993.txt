@@ -1,0 +1,3 @@
+# Elliot A, Chenier MP, Ouellette DC. Temperature dependence of g val-ues for H2O and D2O irradiated with low linear energy transfer radia-tion.J Chem Soc Faraday Trans. 1993;89:1193–1197.Medical Physics.
+# | Unrestricted LET (keV/um) | G Values (Species/100 eV) at 1 us | G Values STD (Species/100 eV) at 1 us |
+		  2.96497e-1   						5.60189e-1 								0.07835

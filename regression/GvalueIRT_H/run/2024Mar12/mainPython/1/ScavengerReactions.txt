@@ -1,0 +1,80 @@
+# Bromide
+s:Mo/Br/Symbol = "Br"
+d:Mo/Br/DiffusionCoefficient = 0 nm2/s
+u:Mo/Br/Charge = 0
+d:Mo/Br/Radius = 0.5 nm
+
+# Nitrate
+s:Mo/NO3m/Symbol = "NO3m"
+d:Mo/NO3m/DiffusionCoefficient = 0 nm2/s
+u:Mo/NO3m/Charge = 0
+d:Mo/NO3m/Radius = 0.5 nm
+
+s:Mo/NO32m/Symbol = "NO32m"
+d:Mo/NO32m/DiffusionCoefficient = 0 nm2/s
+u:Mo/NO32m/Charge = 0
+d:Mo/NO32m/Radius = 0.5 nm
+
+s:Mo/HNO32m/Symbol = "HNO32m"
+d:Mo/HNO32m/DiffusionCoefficient = 0 nm2/s
+u:Mo/HNO32m/Charge = 0
+d:Mo/HNO32m/Radius = 0.5 nm
+
+# Formate
+s:Mo/HCO2m/Symbol = "HCO2m"
+d:Mo/HCO2m/DiffusionCoefficient = 0 nm2/s
+u:Mo/HCO2m/Charge = 0
+d:Mo/HCO2m/Radius = 0.5 nm
+
+# Carbon dioxide
+s:Mo/CO2m/Symbol = "CO2m"
+d:Mo/CO2m/DiffusionCoefficient = 0 nm2/s
+u:Mo/CO2m/Charge = 0
+d:Mo/CO2m/Radius = 0.5 nm
+
+## Br + OH -> 
+sv:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/Br/Products = 1 "None" 
+d:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/Br/Concentration = 1e-3 M 
+d:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/Br/ReactionRate  = 1.1e10 /M/s  #Pastina Laverne Dependence of Molecular
+i:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/Br/ReactionType = 6
+s:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/Br/ScavengingModel = "ExponentialSingleFactor"
+b:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/Br/CompatibleWithStepByStep = "False"
+b:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/Br/Active = "False"
+
+# e-aq + NO3-  ->  NO3^2- 
+sv:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/NO3m/Products = 1 "NO32m"
+d:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/NO3m/Concentration = 1e-3 M 
+d:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/NO3m/ReactionRate  = 9.7e9 /M/s 
+i:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/NO3m/ReactionType = 6
+s:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/NO3m/ScavengingModel = "ExponentialSingleFactor"
+b:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/NO3m/CompatibleWithStepByStep = "False"
+b:Ch/TOPASChemistry/BackgroundReaction/SolvatedElectron/NO3m/Active = "False"
+
+# H + HCO2- -> H2 + CO2m
+sv:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/HCO2m/Products = 2 "DyHydrogen" "CO2m"
+d:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/HCO2m/Concentration = 1 M 
+d:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/HCO2m/ReactionRate  = 2.1e8 /M/s 
+i:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/HCO2m/ReactionType = 6
+s:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/HCO2m/ScavengingModel = "ExponentialSingleFactor"
+b:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/HCO2m/CompatibleWithStepByStep = "False"
+b:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/HCO2m/Active = "False"
+
+##### Extra reactions not in R. M. 2021
+
+# H + NO3-  ->  HNO3^2- 
+sv:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/NO3m/Products = 1 "HNO32m"
+d:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/NO3m/Concentration = 1e-3 M 
+d:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/NO3m/ReactionRate  = 1.4e6 /M/s 
+i:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/NO3m/ReactionType = 6
+s:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/NO3m/ScavengingModel = "ExponentialSingleFactor"
+b:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/NO3m/CompatibleWithStepByStep = "False"
+b:Ch/TOPASChemistry/BackgroundReaction/Hydrogen/NO3m/Active = "False"
+
+# OH + HCO2- -> CO2m
+sv:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/HCO2m/Products = 1 "CO2m"
+d:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/HCO2m/ReactionRate = 3.2e9 /M/s
+d:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/HCO2m/Concentration = 1 M
+i:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/HCO2m/ReactionType = 6
+s:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/HCO2m/ScavengingModel = "ExponentialSingleFactor"
+b:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/HCO2m/CompatibleWithStepByStep = "False"
+b:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/HCO2m/Active = "False"

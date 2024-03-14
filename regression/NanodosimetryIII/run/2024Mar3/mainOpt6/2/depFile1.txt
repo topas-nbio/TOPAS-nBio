@@ -1,0 +1,70 @@
+# 
+# Geometry
+d:Ge/World/HLX= 100 nm  
+d:Ge/World/HLY= 100 nm  
+d:Ge/World/HLZ= 100 nm  
+s:Ge/World/Material ="G4_WATER"
+b:Ge/World/Invisible = "True"
+
+# Cylindrical envelope
+s:Ge/CylindricalEnvelope/Parent            = "World"
+s:Ge/CylindricalEnvelope/Type              = "TsRandomCylindersInComponent"
+s:Ge/CylindricalEnvelope/Material          = "G4_WATER"
+s:Ge/CylindricalEnvelope/EnvelopeShape     = "TsCylinder"
+d:Ge/CylindricalEnvelope/HL                = 80.5 nm 
+d:Ge/CylindricalEnvelope/RMax              = 15.2 nm
+b:Ge/CylindricalEnvelope/GenerateCylinders = "False"
+i:Ge/CylindricalEnvelope/NumberOfCylinders = 1800 
+s:Ge/CylindricalEnvelope/InputFile        = "depFile2.txt"
+d:Ge/CylindricalEnvelope/Cylinders/RMax    = 1.15 nm
+d:Ge/CylindricalEnvelope/Cylinders/HL      = 1.70 nm
+s:Ge/CylindricalEnvelope/Cylinders/Material = "G4_WATER"
+s:Ge/CylindricalEnvelope/Cylinders/Color    = "grass"
+s:Ge/CylindricalEnvelope/Cylinders/DrawingStyle = "Solid"
+s:Ge/CylindricalEnvelope/Color    = "blue"
+
+s:Sc/ID/Quantity = "ClusterSizeInRandomCylinders"
+b:Sc/ID/IsRepeatedGeometry = "True"
+s:Sc/ID/Component = "CylindricalEnvelope"
+s:Sc/ID/OutputType = "ASCII"
+s:Sc/ID/OutputFile = "ID"
+s:Sc/ID/IfOutputFileAlreadyExists = "Overwrite"
+b:Sc/ID/OutputAfterRun = "True"
+
+s:So/Demo/Type = "VolumeOrSurface"
+s:So/Demo/Component = "CylindricalEnvelope"
+s:So/Demo/DistributePrimariesAtVolumeRegion = "surface"
+s:So/Demo/DirectPrimariesTo = "inside"
+s:So/Demo/BeamParticle = Tf/particles/Value 
+u:So/Demo/BeamEnergySpread = 0
+d:So/Demo/BeamEnergy = Tf/energies/Value MeV
+i:So/Demo/NumberOfHistoriesInRun = 100 * Tf/histories/Value 
+i:Ts/ShowHistoryCountAtInterval  = 100
+
+s:Tf/histories/Function = "Step"
+dv:Tf/histories/Times = 8 
+1 2 3 4 5 6 7 8 ms
+iv:Tf/histories/Values = 8
+100 100 80 60 50 40 20 20
+
+s:Tf/energies/Function = "Step"
+dv:Tf/energies/Times = 8 
+1 2 3 4 5 6 7 8 ms
+dv:Tf/energies/Values = 8
+1 4 7 9 11 12 14 16 MeV
+
+s:Tf/particles/Function = "Step"
+dv:Tf/particles/Times = 8 
+1 2 3 4 5 6 7 8 ms
+sv:Tf/particles/Values = 8
+"proton" "alpha" 
+"GenericIon(3,7)" "GenericIon(4,9)"
+"GenericIon(5,11)" "GenericIon(6,12)"
+"GenericIon(7,14)" "GenericIon(8,16)"
+
+d:Tf/TimelineEnd = 8 ms
+i:Tf/NumberOfSequentialTimes = 8
+
+i:Ts/NumberOfThreads = 1 
+b:Ts/ShowCPUTime = "True"
+

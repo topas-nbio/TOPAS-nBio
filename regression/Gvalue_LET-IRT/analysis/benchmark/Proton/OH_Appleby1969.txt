@@ -1,0 +1,4 @@
+# Data From Appleby A, Schwarz HA. Radical and molecular yields in water irradi-ated by.gamma.-rays and heavy ions.J Phys Chem. 1969;73:1937–1941
+# | Unrestricted LET (keV/um) | G Values (Species/100 eV) at 1 us | G Values STD (Species/100 eV) at 1 us |
+               2.28721e+1                       8.92349e-1                     0.02640799
+               4.68896e+1                       5.27861e-1                     0.01760600

@@ -1,0 +1,31 @@
+# This example shows how to setup the DBSCAN for 
+# scoring SSB and DSB. The output is a tuple with 
+# SSB, DBS Complex SB and SSB's cluster size distribution
+#  
+includeFile = depFile1.txt
+
+i:Ts/NumberOfThreads = 1
+b:Ts/ShowCPUTime = "True"
+
+sv:Ph/Default/Modules = 1 "TsEmDNAPhysics"
+s:Ph/Default/Electron/SetElasticScatteringModel = "ELSEPA"
+
+d:So/Demo/BeamEnergy   = Tf/energies/Value MeV
+i:So/Demo/NumberOfHistoriesInRun = 5 * Tf/histories/Value 
+
+b:Sc/DBSCAN/OutputAfterRun = "True"
+
+s:Tf/energies/Function = "Step"
+dv:Tf/energies/Times   = 7 1  2  3  4  5  6  7 ms
+dv:Tf/energies/Values  = 7 0.5  1.1  2.3  5  10.8  23.2  50  MeV
+
+s:Tf/histories/Function = "Step"
+dv:Tf/histories/Times   = 7 1  2  3  4  5  6  7 ms
+iv:Tf/histories/Values  = 7 50 50 50 200 200 500 1000 
+
+i:Ts/ShowHistoryCountAtInterval = 1000
+
+d:Tf/TimelineEnd             = 7 ms 
+i:Tf/NumberOfSequentialTimes = 7
+ 
+Ts/Seed = 19245

@@ -13,7 +13,7 @@ s:Ph/Default/SolvatedElectronThermalizationModel =  "Meesungnoen"
 
 s:Ch/ChemistryName = "TOPASChemistry"
 b:Ch/TOPASChemistry/ChemicalStageTransportActive = "True"
-d:Ch/TOPASChemistry/ChemicalStageTimeEnd    = 1.00001 us
+d:Ch/TOPASChemistry/ChemicalStageTimeEnd    = 1.00001 ps
 b:Ch/TOPASChemistry/TestForContactReactions = "True"
 
 includeFile = TOPASDNAReactions.txt

@@ -59,7 +59,7 @@ foreach LINE ( $OPTION )
 
 #!/bin/bash
 cd $DIR
-time python3 $INFILE.py topas > log.out
+nohup time python3 $INFILE.py topas > log.out &
 EOF
     chmod +x $SCRIPT
     bash $SCRIPT 

@@ -1,0 +1,15 @@
+# Branching ratios for ionised and excited water molecules
+u:Ch/TOPASChemistry/BranchingRatios/IonizationStates/DissociativeDecay = 1.00
+
+u:Ch/TOPASChemistry/BranchingRatios/A1B1/DissociativeDecay = 0.65
+u:Ch/TOPASChemistry/BranchingRatios/A1B1/Relaxation        = 0.35
+
+u:Ch/TOPASChemistry/BranchingRatios/B1A1/AutoIonization    = 0.55
+u:Ch/TOPASChemistry/BranchingRatios/B1A1/DissociativeDecay = 0.15
+u:Ch/TOPASChemistry/BranchingRatios/B1A1/Relaxation        = 0.30
+
+u:Ch/TOPASChemistry/BranchingRatios/RydbergStatesAndDiffuseBands/AutoIoinisation = 0.5
+u:Ch/TOPASChemistry/BranchingRatios/RydbergStatesAndDiffuseBands/Relaxation      = 0.5
+
+u:Ch/TOPASChemistry/BranchingRatios/DissociativeAttachment = 1.0
+

@@ -1,0 +1,42 @@
+#
+d:Ge/World/HLX = 0.25 um
+d:Ge/World/HLY = 0.25 um
+d:Ge/World/HLZ = 100 nm + Ge/CylindricalTarget/RMax 
+s:Ge/World/Material = "G4_WATER"
+b:Ge/World/Invisible = "True"
+
+# Cylindrical envelope
+s:Ge/CylindricalTarget/Parent            = "World"
+s:Ge/CylindricalTarget/Type              = "TsCylinder"
+s:Ge/CylindricalTarget/Material          = "G4_WATER"
+s:Ge/CylindricalTarget/EnvelopeShape     = "TsBox"
+# Dimensions for random cylinders
+d:Ge/CylindricalTarget/RotX    = 90 deg
+d:Ge/CylindricalTarget/RMax    = 1.15 nm
+d:Ge/CylindricalTarget/HL      = 3.05 nm
+s:Ge/CylindricalTarget/Color    = "blue"
+
+s:Sc/ID/Quantity = "ClusterSizeInRandomCylinders"
+b:Sc/ID/IsRepeatedGeometry = "False"
+s:Sc/ID/Component = "CylindricalTarget"
+s:Sc/ID/OutputType = "ASCII" 
+s:Sc/ID/OutputFile = "CarbonIon_88MeV"
+s:Sc/ID/IfOutputFileAlreadyExists = "Overwrite"
+# b:Sc/ID/IncludeChemicalTrack = "False"
+# b:Sc/ID/IncludeEventID = "True"
+# sv:Sc/ID/OnlyIncludeIfInteractionProcess = 2 "GenericIon_G4DNAIonisation" "e-_G4DNAIonisation"
+
+s:So/Demo/BeamParticle = "GenericIon(6,12)"
+d:So/Demo/BeamEnergy1   = 88 MeV
+d:So/Demo/BeamEnergy   = 0.0191142416643 MeV + So/Demo/BeamEnergy1 
+u:So/Demo/BeamEnergySpread = 0
+s:So/Demo/BeamPositionDistribution = "none"
+s:So/Demo/BeamAngularDistribution = "none"
+i:So/Demo/NumberOfHistoriesInRun = 2000 * Ts/ShowHistoryCountAtInterval 
+
+d:Ge/BeamPosition/TransX = 0.0 nm 
+d:Ge/BeamPosition/TransZ = -1.0 * Ge/World/HLZ nm 
+d:Ge/BeamPosition/RotX = 0 deg
+
+i:Ts/NumberOfThreads = 1
+b:Ts/ShowCPUTime = "True"

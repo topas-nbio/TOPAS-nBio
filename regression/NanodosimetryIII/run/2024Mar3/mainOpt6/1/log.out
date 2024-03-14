@@ -1,0 +1,960 @@
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: mainOpt6.txt
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4DATA
+
+**************************************************************
+ Geant4 version Name: geant4-11-01-patch-03 [MT]   (10-November-2023)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 1
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 1e-09 nm, and radial tolerance = 1e-09 nm.
+Checking overlaps for volume CylindricalEnvelope:0 (G4Tubs) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+Visualization verbosity changed to quiet (0)
+=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                0
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 eV 
+Max kinetic energy for tables                      500 MeV
+Number of bins per decade of a table               20
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 0.01 mm)
+Step function for muons/hadrons                    (0.1, 0.05 mm)
+Step function for light ions                       (0.1, 0.02 mm)
+Step function for general ions                     (0.1, 0.001 mm)
+Lowest e+e- kinetic energy                         0 eV 
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    1
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Universal
+Use built-in Birks satuaration                     0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 1
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           2
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.08
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      3
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              1
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+======                 Atomic Deexcitation Parameters          ========
+=======================================================================
+Fluorescence enabled                               1
+Directory in G4LEDATA for fluorescence data files  fluor
+Auger electron cascade enabled                     1
+PIXE atomic de-excitation enabled                  0
+De-excitation module ignores cuts                  1
+Type of PIXE cross section for hadrons             Empirical
+Type of PIXE cross section for e+-                 Livermore
+=======================================================================
+======                 DNA Physics Parameters                  ========
+=======================================================================
+Use fast sampling in DNA models                    1
+Use Stationary option in DNA models                0
+Use DNA with multiple scattering of e-             0
+Use DNA e- solvation model type                    11003
+=======================================================================
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger flag: 1
+### ===  Ignore cuts flag:   1
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 71 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 21 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 56 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LowEPComptonModel : Emin=    0 eV  Emax=   20 MeV Fluo
+        KleinNishina : Emin=   20 MeV Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+     BetheHeitlerLPM : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 150 keV, 21 bins/decade, spline: 0
+      LambdaPrime table from 150 keV to 500 MeV in 74 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+msc:  for e-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    1 MeV Emax=  500 MeV Nbins=60   1 MeV - 500 MeV
+          StepLim=SafetyPlus Rfact=0.08 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=3 Llim=1 mm
+
+eIoni:  for e-  XStype:1  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 140 bins
+      Lambda tables from threshold to 500 MeV, 20 bins/decade, spline: 1
+      StepFunction=(0.2, 0.01 mm), integ: 1, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    1 MeV Emax=  500 MeV  deltaVI
+
+eBrem:  for e-  XStype:4  SubType=3
+      dE/dx and range tables from 100 eV  to 500 MeV in 140 bins
+      Lambda tables from threshold to 500 MeV, 20 bins/decade, spline: 1
+      LPM flag: 1 for E > 0.5 GeV,  VertexHighEnergyTh(GeV)= 100000
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB : Emin=    1 MeV Emax=  500 MeV  AngularGen2BS
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Meesungnoen2002 : Emin=    0 eV  Emax=   11 eV 
+          DummyModel : Emin=   11 eV  Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNACPA100ElasticModel : Emin=    0 eV  Emax=  250 keV
+DNAChampionElasticModel : Emin=  250 keV Emax=    1 MeV
+          DummyModel : Emin=    1 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNACPA100ExcitationModel : Emin=    0 eV  Emax=  250 keV
+DNABornExcitationModel : Emin=  250 keV Emax=    1 MeV
+          DummyModel : Emin=    1 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNACPA100IonisationModel : Emin=    0 eV  Emax=  250 keV Fluo
+DNABornIonisationModel : Emin=  250 keV Emax=    1 MeV  deltaBorn Fluo
+          DummyModel : Emin=    1 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=140 100 eV  - 500 MeV
+          StepLim=SafetyPlus Rfact=0.08 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=3 Llim=1 mm
+
+eIoni:  for e+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 140 bins
+      Lambda tables from threshold to 500 MeV, 20 bins/decade, spline: 1
+      StepFunction=(0.2, 0.01 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV  deltaVI
+
+eBrem:  for e+  XStype:4  SubType=3
+      dE/dx and range tables from 100 eV  to 500 MeV in 140 bins
+      Lambda tables from threshold to 500 MeV, 20 bins/decade, spline: 1
+      LPM flag: 1 for E > 0.5 GeV,  VertexHighEnergyTh(GeV)= 100000
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB : Emin=    0 eV  Emax=  500 MeV  AngularGen2BS
+
+annihil:  for e+ XStype:2 SubType=5 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            eplus2gg : Emin=    0 eV  Emax=  500 MeV
+
+msc:  for proton  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    1 MeV Emax=  500 MeV Nbins=60   1 MeV - 500 MeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=3 Llim=1 mm
+
+hIoni:  for proton  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 140 bins
+      Lambda tables from threshold to 500 MeV, 20 bins/decade, spline: 1
+      StepFunction=(0.1, 0.05 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+          BetheBloch : Emin=  300 MeV Emax=  500 MeV  deltaVI
+
+proton_G4DNAElastic:  for proton SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+          DummyModel : Emin=    1 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+proton_G4DNAExcitation:  for proton SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+DNABornExcitationModel : Emin=  500 keV Emax=  100 MeV
+DNARPWBAExcitationModel : Emin=  100 MeV Emax=  300 MeV
+          DummyModel : Emin=  300 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+proton_G4DNAIonisation:  for proton SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationModel : Emin=    0 eV  Emax=  500 keV  deltaRudd Fluo
+DNABornIonisationModel : Emin=  500 keV Emax=  100 MeV  deltaBorn Fluo
+DNARPWBAIonisationModel : Emin=  100 MeV Emax=  300 MeV  deltaBorn Fluo
+          DummyModel : Emin=  300 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+proton_G4DNAChargeDecrease:  for proton SubType=56 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeDecreaseModel : Emin=    0 eV  Emax=  500 MeV
+
+msc:  for GenericIon  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    1 MeV Emax=  500 MeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=3 Llim=1 mm
+
+ionIoni:  for GenericIon  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 140 bins
+      Lambda tables from threshold to 500 MeV, 20 bins/decade, spline: 1
+      StepFunction=(0.1, 0.001 mm), integ: 3, fluct: 1, linLossLim= 0.02
+      Stopping Power data for 17 ion/material pairs
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+          BetheBloch : Emin=  300 MeV Emax=  500 MeV  deltaVI
+
+GenericIon_G4DNAIonisation:  for GenericIon SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  300 MeV  deltaRudd Fluo
+          DummyModel : Emin=  300 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+msc:  for alpha  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    1 MeV Emax=  500 MeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=3 Llim=1 mm
+
+ionIoni:  for alpha  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 140 bins
+      Lambda tables from threshold to 500 MeV, 20 bins/decade, spline: 1
+      StepFunction=(0.1, 0.02 mm), integ: 3, fluct: 1, linLossLim= 0.02
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+          BetheBloch : Emin=  300 MeV Emax=  500 MeV  deltaVI
+
+alpha_G4DNAElastic:  for alpha SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+          DummyModel : Emin=    1 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+alpha_G4DNAExcitation:  for alpha SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  300 MeV
+          DummyModel : Emin=  300 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+alpha_G4DNAIonisation:  for alpha SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationModel : Emin=    0 eV  Emax=  300 MeV  deltaRudd Fluo
+          DummyModel : Emin=  300 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+alpha_G4DNAChargeDecrease:  for alpha SubType=56 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeDecreaseModel : Emin=    0 eV  Emax=  500 MeV
+
+msc:  for alpha+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    1 MeV Emax=  500 MeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=3 Llim=1 mm
+
+hIoni:  for alpha+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 140 bins
+      Lambda tables from threshold to 500 MeV, 20 bins/decade, spline: 1
+      StepFunction=(0.1, 0.05 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+          BetheBloch : Emin=  300 MeV Emax=  500 MeV  deltaVI
+
+alpha+_G4DNAElastic:  for alpha+ SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+          DummyModel : Emin=    1 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+alpha+_G4DNAExcitation:  for alpha+ SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  300 MeV
+          DummyModel : Emin=  300 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+alpha+_G4DNAIonisation:  for alpha+ SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationModel : Emin=    0 eV  Emax=  300 MeV  deltaRudd Fluo
+          DummyModel : Emin=  300 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+alpha+_G4DNAChargeIncrease:  for alpha+ SubType=57 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeIncreaseModel : Emin=    0 eV  Emax=  500 MeV
+
+alpha+_G4DNAChargeDecrease:  for alpha+ SubType=56 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeDecreaseModel : Emin=    0 eV  Emax=  500 MeV
+
+msc:  for anti_proton  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  500 MeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=3 Llim=1 mm
+
+hIoni:  for anti_proton  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 140 bins
+      Lambda tables from threshold to 500 MeV, 20 bins/decade, spline: 1
+      StepFunction=(0.1, 0.05 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO : Emin=    0 eV  Emax=    2 MeV  deltaVI
+          BetheBloch : Emin=    2 MeV Emax=  500 MeV  deltaVI
+
+helium_G4DNAElastic:  for helium SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+          DummyModel : Emin=    1 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+helium_G4DNAExcitation:  for helium SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  300 MeV
+          DummyModel : Emin=  300 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+helium_G4DNAIonisation:  for helium SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationModel : Emin=    0 eV  Emax=  300 MeV  deltaRudd Fluo
+          DummyModel : Emin=  300 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+helium_G4DNAChargeIncrease:  for helium SubType=57 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeIncreaseModel : Emin=    0 eV  Emax=  500 MeV
+
+hydrogen_G4DNAElastic:  for hydrogen SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+          DummyModel : Emin=    1 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+hydrogen_G4DNAExcitation:  for hydrogen SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  300 MeV
+          DummyModel : Emin=  300 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+hydrogen_G4DNAIonisation:  for hydrogen SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationModel : Emin=    0 eV  Emax=  300 MeV  deltaRudd Fluo
+          DummyModel : Emin=  300 MeV Emax=  500 MeV
+          StepLim=UseSafety Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+hydrogen_G4DNAChargeIncrease:  for hydrogen SubType=57 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeIncreaseModel : Emin=    0 eV  Emax=  500 MeV
+
+msc:  for kaon+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  500 MeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=3 Llim=1 mm
+
+hIoni:  for kaon+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 140 bins
+      Lambda tables from threshold to 500 MeV, 20 bins/decade, spline: 1
+      StepFunction=(0.1, 0.05 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=1.05231 MeV  deltaVI
+          BetheBloch : Emin=1.05231 MeV Emax=  500 MeV  deltaVI
+
+msc:  for kaon-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  500 MeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=3 Llim=1 mm
+
+hIoni:  for kaon-  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 140 bins
+      Lambda tables from threshold to 500 MeV, 20 bins/decade, spline: 1
+      StepFunction=(0.1, 0.05 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO : Emin=    0 eV  Emax=1.05231 MeV  deltaVI
+          BetheBloch : Emin=1.05231 MeV Emax=  500 MeV  deltaVI
+
+msc:  for mu+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  500 MeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=3 Llim=1 mm
+
+hIoni:  for mu+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 140 bins
+      Lambda tables from threshold to 500 MeV, 20 bins/decade, spline: 1
+      StepFunction=(0.1, 0.05 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=225.219 keV  deltaVI
+          BetheBloch : Emin=225.219 keV Emax=  500 MeV  deltaVI
+
+msc:  for mu-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  500 MeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=3 Llim=1 mm
+
+hIoni:  for mu-  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 140 bins
+      Lambda tables from threshold to 500 MeV, 20 bins/decade, spline: 1
+      StepFunction=(0.1, 0.05 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO : Emin=    0 eV  Emax=225.219 keV  deltaVI
+          BetheBloch : Emin=225.219 keV Emax=  500 MeV  deltaVI
+
+msc:  for pi+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  500 MeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=3 Llim=1 mm
+
+hIoni:  for pi+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 140 bins
+      Lambda tables from threshold to 500 MeV, 20 bins/decade, spline: 1
+      StepFunction=(0.1, 0.05 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg : Emin=    0 eV  Emax=297.505 keV  deltaVI
+          BetheBloch : Emin=297.505 keV Emax=  500 MeV  deltaVI
+
+msc:  for pi-  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        WentzelVIUni : Emin=    0 eV  Emax=  500 MeV
+          StepLim=Minimal Rfact=0.2 Gfact=2.5 Sfact=0.6 DispFlag:0 Skin=3 Llim=1 mm
+
+hIoni:  for pi-  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 140 bins
+      Lambda tables from threshold to 500 MeV, 20 bins/decade, spline: 1
+      StepFunction=(0.1, 0.05 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO : Emin=    0 eV  Emax=297.505 keV  deltaVI
+          BetheBloch : Emin=297.505 keV Emax=  500 MeV  deltaVI
+G4WT0 > Begin processing for Run: 0, History: 0
+G4WT0 > Begin processing for Run: 0, History: 100
+G4WT0 > Begin processing for Run: 0, History: 200
+G4WT0 > Begin processing for Run: 0, History: 300
+G4WT0 > Begin processing for Run: 0, History: 400
+G4WT0 > Begin processing for Run: 0, History: 500
+G4WT0 > Begin processing for Run: 0, History: 600
+G4WT0 > Begin processing for Run: 0, History: 700
+G4WT0 > Begin processing for Run: 0, History: 800
+G4WT0 > Begin processing for Run: 0, History: 900
+G4WT0 > Begin processing for Run: 0, History: 1000
+G4WT0 > Begin processing for Run: 0, History: 1100
+G4WT0 > Begin processing for Run: 0, History: 1200
+G4WT0 > Begin processing for Run: 0, History: 1300
+G4WT0 > Begin processing for Run: 0, History: 1400
+G4WT0 > Begin processing for Run: 0, History: 1500
+G4WT0 > Begin processing for Run: 0, History: 1600
+G4WT0 > Begin processing for Run: 0, History: 1700
+G4WT0 > Begin processing for Run: 0, History: 1800
+G4WT0 > Begin processing for Run: 0, History: 1900
+G4WT0 > Begin processing for Run: 0, History: 2000
+G4WT0 > Begin processing for Run: 0, History: 2100
+G4WT0 > Begin processing for Run: 0, History: 2200
+G4WT0 > Begin processing for Run: 0, History: 2300
+G4WT0 > Begin processing for Run: 0, History: 2400
+G4WT0 > Begin processing for Run: 0, History: 2500
+G4WT0 > Begin processing for Run: 0, History: 2600
+G4WT0 > Begin processing for Run: 0, History: 2700
+G4WT0 > Begin processing for Run: 0, History: 2800
+G4WT0 > Begin processing for Run: 0, History: 2900
+G4WT0 > Begin processing for Run: 0, History: 3000
+G4WT0 > Begin processing for Run: 0, History: 3100
+G4WT0 > Begin processing for Run: 0, History: 3200
+G4WT0 > Begin processing for Run: 0, History: 3300
+G4WT0 > Begin processing for Run: 0, History: 3400
+G4WT0 > Begin processing for Run: 0, History: 3500
+G4WT0 > Begin processing for Run: 0, History: 3600
+G4WT0 > Begin processing for Run: 0, History: 3700
+G4WT0 > Begin processing for Run: 0, History: 3800
+G4WT0 > Begin processing for Run: 0, History: 3900
+G4WT0 > Begin processing for Run: 0, History: 4000
+G4WT0 > Begin processing for Run: 0, History: 4100
+G4WT0 > Begin processing for Run: 0, History: 4200
+G4WT0 > Begin processing for Run: 0, History: 4300
+G4WT0 > Begin processing for Run: 0, History: 4400
+G4WT0 > Begin processing for Run: 0, History: 4500
+G4WT0 > Begin processing for Run: 0, History: 4600
+G4WT0 > Begin processing for Run: 0, History: 4700
+G4WT0 > Begin processing for Run: 0, History: 4800
+G4WT0 > Begin processing for Run: 0, History: 4900
+G4WT0 > Begin processing for Run: 0, History: 5000
+G4WT0 > Begin processing for Run: 0, History: 5100
+G4WT0 > Begin processing for Run: 0, History: 5200
+G4WT0 > Begin processing for Run: 0, History: 5300
+G4WT0 > Begin processing for Run: 0, History: 5400
+G4WT0 > Begin processing for Run: 0, History: 5500
+G4WT0 > Begin processing for Run: 0, History: 5600
+G4WT0 > Begin processing for Run: 0, History: 5700
+G4WT0 > Begin processing for Run: 0, History: 5800
+G4WT0 > Begin processing for Run: 0, History: 5900
+G4WT0 > Begin processing for Run: 0, History: 6000
+G4WT0 > Begin processing for Run: 0, History: 6100
+G4WT0 > Begin processing for Run: 0, History: 6200
+G4WT0 > Begin processing for Run: 0, History: 6300
+G4WT0 > Begin processing for Run: 0, History: 6400
+G4WT0 > Begin processing for Run: 0, History: 6500
+G4WT0 > Begin processing for Run: 0, History: 6600
+G4WT0 > Begin processing for Run: 0, History: 6700
+G4WT0 > Begin processing for Run: 0, History: 6800
+G4WT0 > Begin processing for Run: 0, History: 6900
+G4WT0 > Begin processing for Run: 0, History: 7000
+G4WT0 > Begin processing for Run: 0, History: 7100
+G4WT0 > Begin processing for Run: 0, History: 7200
+G4WT0 > Begin processing for Run: 0, History: 7300
+G4WT0 > Begin processing for Run: 0, History: 7400
+G4WT0 > Begin processing for Run: 0, History: 7500
+G4WT0 > Begin processing for Run: 0, History: 7600
+G4WT0 > Begin processing for Run: 0, History: 7700
+G4WT0 > Begin processing for Run: 0, History: 7800
+G4WT0 > Begin processing for Run: 0, History: 7900
+G4WT0 > Begin processing for Run: 0, History: 8000
+G4WT0 > Begin processing for Run: 0, History: 8100
+G4WT0 > Begin processing for Run: 0, History: 8200
+G4WT0 > Begin processing for Run: 0, History: 8300
+G4WT0 > Begin processing for Run: 0, History: 8400
+G4WT0 > Begin processing for Run: 0, History: 8500
+G4WT0 > Begin processing for Run: 0, History: 8600
+G4WT0 > Begin processing for Run: 0, History: 8700
+G4WT0 > Begin processing for Run: 0, History: 8800
+G4WT0 > Begin processing for Run: 0, History: 8900
+G4WT0 > Begin processing for Run: 0, History: 9000
+G4WT0 > Begin processing for Run: 0, History: 9100
+G4WT0 > Begin processing for Run: 0, History: 9200
+G4WT0 > Begin processing for Run: 0, History: 9300
+G4WT0 > Begin processing for Run: 0, History: 9400
+G4WT0 > Begin processing for Run: 0, History: 9500
+G4WT0 > Begin processing for Run: 0, History: 9600
+G4WT0 > Begin processing for Run: 0, History: 9700
+G4WT0 > Begin processing for Run: 0, History: 9800
+G4WT0 > Begin processing for Run: 0, History: 9900
+G4WT0 > Begin processing for Run: 1, History: 0
+G4WT0 > Begin processing for Run: 1, History: 100
+G4WT0 > Begin processing for Run: 1, History: 200
+G4WT0 > Begin processing for Run: 1, History: 300
+G4WT0 > Begin processing for Run: 1, History: 400
+G4WT0 > Begin processing for Run: 1, History: 500
+G4WT0 > Begin processing for Run: 1, History: 600
+G4WT0 > Begin processing for Run: 1, History: 700
+G4WT0 > Begin processing for Run: 1, History: 800
+G4WT0 > Begin processing for Run: 1, History: 900
+G4WT0 > Begin processing for Run: 1, History: 1000
+G4WT0 > Begin processing for Run: 1, History: 1100
+G4WT0 > Begin processing for Run: 1, History: 1200
+G4WT0 > Begin processing for Run: 1, History: 1300
+G4WT0 > Begin processing for Run: 1, History: 1400
+G4WT0 > Begin processing for Run: 1, History: 1500
+G4WT0 > Begin processing for Run: 1, History: 1600
+G4WT0 > Begin processing for Run: 1, History: 1700
+G4WT0 > Begin processing for Run: 1, History: 1800
+G4WT0 > Begin processing for Run: 1, History: 1900
+G4WT0 > Begin processing for Run: 1, History: 2000
+G4WT0 > Begin processing for Run: 1, History: 2100
+G4WT0 > Begin processing for Run: 1, History: 2200
+G4WT0 > Begin processing for Run: 1, History: 2300
+G4WT0 > Begin processing for Run: 1, History: 2400
+G4WT0 > Begin processing for Run: 1, History: 2500
+G4WT0 > Begin processing for Run: 1, History: 2600
+G4WT0 > Begin processing for Run: 1, History: 2700
+G4WT0 > Begin processing for Run: 1, History: 2800
+G4WT0 > Begin processing for Run: 1, History: 2900
+G4WT0 > Begin processing for Run: 1, History: 3000
+G4WT0 > Begin processing for Run: 1, History: 3100
+G4WT0 > Begin processing for Run: 1, History: 3200
+G4WT0 > Begin processing for Run: 1, History: 3300
+G4WT0 > Begin processing for Run: 1, History: 3400
+G4WT0 > Begin processing for Run: 1, History: 3500
+G4WT0 > Begin processing for Run: 1, History: 3600
+G4WT0 > Begin processing for Run: 1, History: 3700
+G4WT0 > Begin processing for Run: 1, History: 3800
+G4WT0 > Begin processing for Run: 1, History: 3900
+G4WT0 > Begin processing for Run: 1, History: 4000
+G4WT0 > Begin processing for Run: 1, History: 4100
+G4WT0 > Begin processing for Run: 1, History: 4200
+G4WT0 > Begin processing for Run: 1, History: 4300
+G4WT0 > Begin processing for Run: 1, History: 4400
+G4WT0 > Begin processing for Run: 1, History: 4500
+G4WT0 > Begin processing for Run: 1, History: 4600
+G4WT0 > Begin processing for Run: 1, History: 4700
+G4WT0 > Begin processing for Run: 1, History: 4800
+G4WT0 > Begin processing for Run: 1, History: 4900
+G4WT0 > Begin processing for Run: 1, History: 5000
+G4WT0 > Begin processing for Run: 1, History: 5100
+G4WT0 > Begin processing for Run: 1, History: 5200
+G4WT0 > Begin processing for Run: 1, History: 5300
+G4WT0 > Begin processing for Run: 1, History: 5400
+G4WT0 > Begin processing for Run: 1, History: 5500
+G4WT0 > Begin processing for Run: 1, History: 5600
+G4WT0 > Begin processing for Run: 1, History: 5700
+G4WT0 > Begin processing for Run: 1, History: 5800
+G4WT0 > Begin processing for Run: 1, History: 5900
+G4WT0 > Begin processing for Run: 1, History: 6000
+G4WT0 > Begin processing for Run: 1, History: 6100
+G4WT0 > Begin processing for Run: 1, History: 6200
+G4WT0 > Begin processing for Run: 1, History: 6300
+G4WT0 > Begin processing for Run: 1, History: 6400
+G4WT0 > Begin processing for Run: 1, History: 6500
+G4WT0 > Begin processing for Run: 1, History: 6600
+G4WT0 > Begin processing for Run: 1, History: 6700
+G4WT0 > Begin processing for Run: 1, History: 6800
+G4WT0 > Begin processing for Run: 1, History: 6900
+G4WT0 > Begin processing for Run: 1, History: 7000
+G4WT0 > Begin processing for Run: 1, History: 7100
+G4WT0 > Begin processing for Run: 1, History: 7200
+G4WT0 > Begin processing for Run: 1, History: 7300
+G4WT0 > Begin processing for Run: 1, History: 7400
+G4WT0 > Begin processing for Run: 1, History: 7500
+G4WT0 > Begin processing for Run: 1, History: 7600
+G4WT0 > Begin processing for Run: 1, History: 7700
+G4WT0 > Begin processing for Run: 1, History: 7800
+G4WT0 > Begin processing for Run: 1, History: 7900
+G4WT0 > Begin processing for Run: 1, History: 8000
+G4WT0 > Begin processing for Run: 1, History: 8100
+G4WT0 > Begin processing for Run: 1, History: 8200
+G4WT0 > Begin processing for Run: 1, History: 8300
+G4WT0 > Begin processing for Run: 1, History: 8400
+G4WT0 > Begin processing for Run: 1, History: 8500
+G4WT0 > Begin processing for Run: 1, History: 8600
+G4WT0 > Begin processing for Run: 1, History: 8700
+G4WT0 > Begin processing for Run: 1, History: 8800
+G4WT0 > Begin processing for Run: 1, History: 8900
+G4WT0 > Begin processing for Run: 1, History: 9000
+G4WT0 > Begin processing for Run: 1, History: 9100
+G4WT0 > Begin processing for Run: 1, History: 9200
+G4WT0 > Begin processing for Run: 1, History: 9300
+G4WT0 > Begin processing for Run: 1, History: 9400
+G4WT0 > Begin processing for Run: 1, History: 9500
+G4WT0 > Begin processing for Run: 1, History: 9600
+G4WT0 > Begin processing for Run: 1, History: 9700
+G4WT0 > Begin processing for Run: 1, History: 9800
+G4WT0 > Begin processing for Run: 1, History: 9900
+G4WT0 > Begin processing for Run: 2, History: 0
+G4WT0 > Begin processing for Run: 2, History: 100
+G4WT0 > Begin processing for Run: 2, History: 200
+G4WT0 > Begin processing for Run: 2, History: 300
+G4WT0 > Begin processing for Run: 2, History: 400
+G4WT0 > Begin processing for Run: 2, History: 500
+G4WT0 > Begin processing for Run: 2, History: 600
+G4WT0 > Begin processing for Run: 2, History: 700
+G4WT0 > Begin processing for Run: 2, History: 800
+G4WT0 > Begin processing for Run: 2, History: 900
+G4WT0 > Begin processing for Run: 2, History: 1000
+G4WT0 > Begin processing for Run: 2, History: 1100
+G4WT0 > Begin processing for Run: 2, History: 1200
+G4WT0 > Begin processing for Run: 2, History: 1300
+G4WT0 > Begin processing for Run: 2, History: 1400
+G4WT0 > Begin processing for Run: 2, History: 1500
+G4WT0 > Begin processing for Run: 2, History: 1600
+G4WT0 > Begin processing for Run: 2, History: 1700
+G4WT0 > Begin processing for Run: 2, History: 1800
+G4WT0 > Begin processing for Run: 2, History: 1900
+G4WT0 > Begin processing for Run: 2, History: 2000
+G4WT0 > Begin processing for Run: 2, History: 2100
+G4WT0 > Begin processing for Run: 2, History: 2200
+G4WT0 > Begin processing for Run: 2, History: 2300
+G4WT0 > Begin processing for Run: 2, History: 2400
+G4WT0 > Begin processing for Run: 2, History: 2500
+G4WT0 > Begin processing for Run: 2, History: 2600
+G4WT0 > Begin processing for Run: 2, History: 2700
+G4WT0 > Begin processing for Run: 2, History: 2800
+G4WT0 > Begin processing for Run: 2, History: 2900
+G4WT0 > Begin processing for Run: 2, History: 3000
+G4WT0 > Begin processing for Run: 2, History: 3100
+G4WT0 > Begin processing for Run: 2, History: 3200
+G4WT0 > Begin processing for Run: 2, History: 3300
+G4WT0 > Begin processing for Run: 2, History: 3400
+G4WT0 > Begin processing for Run: 2, History: 3500
+G4WT0 > Begin processing for Run: 2, History: 3600
+G4WT0 > Begin processing for Run: 2, History: 3700
+G4WT0 > Begin processing for Run: 2, History: 3800
+G4WT0 > Begin processing for Run: 2, History: 3900
+G4WT0 > Begin processing for Run: 2, History: 4000
+G4WT0 > Begin processing for Run: 2, History: 4100
+G4WT0 > Begin processing for Run: 2, History: 4200
+G4WT0 > Begin processing for Run: 2, History: 4300
+G4WT0 > Begin processing for Run: 2, History: 4400
+G4WT0 > Begin processing for Run: 2, History: 4500
+G4WT0 > Begin processing for Run: 2, History: 4600
+G4WT0 > Begin processing for Run: 2, History: 4700
+G4WT0 > Begin processing for Run: 2, History: 4800
+G4WT0 > Begin processing for Run: 2, History: 4900
+G4WT0 > Begin processing for Run: 2, History: 5000
+G4WT0 > Begin processing for Run: 2, History: 5100
+G4WT0 > Begin processing for Run: 2, History: 5200
+G4WT0 > Begin processing for Run: 2, History: 5300
+G4WT0 > Begin processing for Run: 2, History: 5400
+G4WT0 > Begin processing for Run: 2, History: 5500
+G4WT0 > Begin processing for Run: 2, History: 5600
+G4WT0 > Begin processing for Run: 2, History: 5700
+G4WT0 > Begin processing for Run: 2, History: 5800
+G4WT0 > Begin processing for Run: 2, History: 5900
+G4WT0 > Begin processing for Run: 2, History: 6000
+G4WT0 > Begin processing for Run: 2, History: 6100
+G4WT0 > Begin processing for Run: 2, History: 6200
+G4WT0 > Begin processing for Run: 2, History: 6300
+G4WT0 > Begin processing for Run: 2, History: 6400
+G4WT0 > Begin processing for Run: 2, History: 6500
+G4WT0 > Begin processing for Run: 2, History: 6600
+G4WT0 > Begin processing for Run: 2, History: 6700
+G4WT0 > Begin processing for Run: 2, History: 6800
+G4WT0 > Begin processing for Run: 2, History: 6900
+G4WT0 > Begin processing for Run: 2, History: 7000
+G4WT0 > Begin processing for Run: 2, History: 7100
+G4WT0 > Begin processing for Run: 2, History: 7200
+G4WT0 > Begin processing for Run: 2, History: 7300
+G4WT0 > Begin processing for Run: 2, History: 7400
+G4WT0 > Begin processing for Run: 2, History: 7500
+G4WT0 > Begin processing for Run: 2, History: 7600
+G4WT0 > Begin processing for Run: 2, History: 7700
+G4WT0 > Begin processing for Run: 2, History: 7800
+G4WT0 > Begin processing for Run: 2, History: 7900
+G4WT0 > Begin processing for Run: 3, History: 0
+G4WT0 > Begin processing for Run: 3, History: 100
+G4WT0 > Begin processing for Run: 3, History: 200
+G4WT0 > Begin processing for Run: 3, History: 300
+G4WT0 > Begin processing for Run: 3, History: 400
+G4WT0 > Begin processing for Run: 3, History: 500
+G4WT0 > Begin processing for Run: 3, History: 600
+G4WT0 > Begin processing for Run: 3, History: 700
+G4WT0 > Begin processing for Run: 3, History: 800
+G4WT0 > Begin processing for Run: 3, History: 900
+G4WT0 > Begin processing for Run: 3, History: 1000
+G4WT0 > Begin processing for Run: 3, History: 1100
+G4WT0 > Begin processing for Run: 3, History: 1200
+G4WT0 > Begin processing for Run: 3, History: 1300
+G4WT0 > Begin processing for Run: 3, History: 1400
+G4WT0 > Begin processing for Run: 3, History: 1500
+G4WT0 > Begin processing for Run: 3, History: 1600
+G4WT0 > Begin processing for Run: 3, History: 1700
+G4WT0 > Begin processing for Run: 3, History: 1800
+G4WT0 > Begin processing for Run: 3, History: 1900
+G4WT0 > Begin processing for Run: 3, History: 2000
+G4WT0 > Begin processing for Run: 3, History: 2100
+G4WT0 > Begin processing for Run: 3, History: 2200
+G4WT0 > Begin processing for Run: 3, History: 2300
+G4WT0 > Begin processing for Run: 3, History: 2400
+G4WT0 > Begin processing for Run: 3, History: 2500
+G4WT0 > Begin processing for Run: 3, History: 2600
+G4WT0 > Begin processing for Run: 3, History: 2700
+G4WT0 > Begin processing for Run: 3, History: 2800
+G4WT0 > Begin processing for Run: 3, History: 2900
+G4WT0 > Begin processing for Run: 3, History: 3000
+G4WT0 > Begin processing for Run: 3, History: 3100
+G4WT0 > Begin processing for Run: 3, History: 3200
+G4WT0 > Begin processing for Run: 3, History: 3300
+G4WT0 > Begin processing for Run: 3, History: 3400
+G4WT0 > Begin processing for Run: 3, History: 3500
+G4WT0 > Begin processing for Run: 3, History: 3600
+G4WT0 > Begin processing for Run: 3, History: 3700
+G4WT0 > Begin processing for Run: 3, History: 3800
+G4WT0 > Begin processing for Run: 3, History: 3900
+G4WT0 > Begin processing for Run: 3, History: 4000
+G4WT0 > Begin processing for Run: 3, History: 4100
+G4WT0 > Begin processing for Run: 3, History: 4200
+G4WT0 > Begin processing for Run: 3, History: 4300
+G4WT0 > Begin processing for Run: 3, History: 4400
+G4WT0 > Begin processing for Run: 3, History: 4500
+G4WT0 > Begin processing for Run: 3, History: 4600
+G4WT0 > Begin processing for Run: 3, History: 4700
+G4WT0 > Begin processing for Run: 3, History: 4800
+G4WT0 > Begin processing for Run: 3, History: 4900
+G4WT0 > Begin processing for Run: 3, History: 5000
+G4WT0 > Begin processing for Run: 3, History: 5100
+G4WT0 > Begin processing for Run: 3, History: 5200
+G4WT0 > Begin processing for Run: 3, History: 5300
+G4WT0 > Begin processing for Run: 3, History: 5400
+G4WT0 > Begin processing for Run: 3, History: 5500
+G4WT0 > Begin processing for Run: 3, History: 5600
+G4WT0 > Begin processing for Run: 3, History: 5700
+G4WT0 > Begin processing for Run: 3, History: 5800
+G4WT0 > Begin processing for Run: 3, History: 5900
+G4WT0 > Begin processing for Run: 4, History: 0
+G4WT0 > Begin processing for Run: 4, History: 100
+G4WT0 > Begin processing for Run: 4, History: 200
+G4WT0 > Begin processing for Run: 4, History: 300
+G4WT0 > Begin processing for Run: 4, History: 400
+G4WT0 > Begin processing for Run: 4, History: 500
+G4WT0 > Begin processing for Run: 4, History: 600
+G4WT0 > Begin processing for Run: 4, History: 700
+G4WT0 > Begin processing for Run: 4, History: 800
+G4WT0 > Begin processing for Run: 4, History: 900
+G4WT0 > Begin processing for Run: 4, History: 1000
+G4WT0 > Begin processing for Run: 4, History: 1100
+G4WT0 > Begin processing for Run: 4, History: 1200
+G4WT0 > Begin processing for Run: 4, History: 1300
+G4WT0 > Begin processing for Run: 4, History: 1400
+G4WT0 > Begin processing for Run: 4, History: 1500
+G4WT0 > Begin processing for Run: 4, History: 1600
+G4WT0 > Begin processing for Run: 4, History: 1700
+G4WT0 > Begin processing for Run: 4, History: 1800
+G4WT0 > Begin processing for Run: 4, History: 1900
+G4WT0 > Begin processing for Run: 4, History: 2000
+G4WT0 > Begin processing for Run: 4, History: 2100
+G4WT0 > Begin processing for Run: 4, History: 2200
+G4WT0 > Begin processing for Run: 4, History: 2300
+G4WT0 > Begin processing for Run: 4, History: 2400
+G4WT0 > Begin processing for Run: 4, History: 2500
+G4WT0 > Begin processing for Run: 4, History: 2600
+G4WT0 > Begin processing for Run: 4, History: 2700
+G4WT0 > Begin processing for Run: 4, History: 2800
+G4WT0 > Begin processing for Run: 4, History: 2900
+G4WT0 > Begin processing for Run: 4, History: 3000
+G4WT0 > Begin processing for Run: 4, History: 3100
+G4WT0 > Begin processing for Run: 4, History: 3200
+G4WT0 > Begin processing for Run: 4, History: 3300
+G4WT0 > Begin processing for Run: 4, History: 3400
+G4WT0 > Begin processing for Run: 4, History: 3500
+G4WT0 > Begin processing for Run: 4, History: 3600
+G4WT0 > Begin processing for Run: 4, History: 3700
+G4WT0 > Begin processing for Run: 4, History: 3800
+G4WT0 > Begin processing for Run: 4, History: 3900
+G4WT0 > Begin processing for Run: 4, History: 4000
+G4WT0 > Begin processing for Run: 4, History: 4100
+G4WT0 > Begin processing for Run: 4, History: 4200
+G4WT0 > Begin processing for Run: 4, History: 4300
+G4WT0 > Begin processing for Run: 4, History: 4400
+G4WT0 > Begin processing for Run: 4, History: 4500
+G4WT0 > Begin processing for Run: 4, History: 4600
+G4WT0 > Begin processing for Run: 4, History: 4700
+G4WT0 > Begin processing for Run: 4, History: 4800
+G4WT0 > Begin processing for Run: 4, History: 4900
+G4WT0 > Begin processing for Run: 5, History: 0
+G4WT0 > Begin processing for Run: 5, History: 100
+G4WT0 > Begin processing for Run: 5, History: 200
+G4WT0 > Begin processing for Run: 5, History: 300
+G4WT0 > Begin processing for Run: 5, History: 400
+G4WT0 > Begin processing for Run: 5, History: 500
+G4WT0 > Begin processing for Run: 5, History: 600
+G4WT0 > Begin processing for Run: 5, History: 700
+G4WT0 > Begin processing for Run: 5, History: 800
+G4WT0 > Begin processing for Run: 5, History: 900
+G4WT0 > Begin processing for Run: 5, History: 1000
+G4WT0 > Begin processing for Run: 5, History: 1100
+G4WT0 > Begin processing for Run: 5, History: 1200
+G4WT0 > Begin processing for Run: 5, History: 1300
+G4WT0 > Begin processing for Run: 5, History: 1400
+G4WT0 > Begin processing for Run: 5, History: 1500
+G4WT0 > Begin processing for Run: 5, History: 1600
+G4WT0 > Begin processing for Run: 5, History: 1700
+G4WT0 > Begin processing for Run: 5, History: 1800
+G4WT0 > Begin processing for Run: 5, History: 1900
+G4WT0 > Begin processing for Run: 5, History: 2000
+G4WT0 > Begin processing for Run: 5, History: 2100
+G4WT0 > Begin processing for Run: 5, History: 2200
+G4WT0 > Begin processing for Run: 5, History: 2300
+G4WT0 > Begin processing for Run: 5, History: 2400
+G4WT0 > Begin processing for Run: 5, History: 2500
+G4WT0 > Begin processing for Run: 5, History: 2600
+G4WT0 > Begin processing for Run: 5, History: 2700
+G4WT0 > Begin processing for Run: 5, History: 2800
+G4WT0 > Begin processing for Run: 5, History: 2900
+G4WT0 > Begin processing for Run: 5, History: 3000
+G4WT0 > Begin processing for Run: 5, History: 3100
+G4WT0 > Begin processing for Run: 5, History: 3200
+G4WT0 > Begin processing for Run: 5, History: 3300
+G4WT0 > Begin processing for Run: 5, History: 3400
+G4WT0 > Begin processing for Run: 5, History: 3500
+G4WT0 > Begin processing for Run: 5, History: 3600
+G4WT0 > Begin processing for Run: 5, History: 3700
+G4WT0 > Begin processing for Run: 5, History: 3800
+G4WT0 > Begin processing for Run: 5, History: 3900
+G4WT0 > Begin processing for Run: 6, History: 0
+G4WT0 > Begin processing for Run: 6, History: 100
+G4WT0 > Begin processing for Run: 6, History: 200
+G4WT0 > Begin processing for Run: 6, History: 300
+G4WT0 > Begin processing for Run: 6, History: 400
+G4WT0 > Begin processing for Run: 6, History: 500
+G4WT0 > Begin processing for Run: 6, History: 600
+G4WT0 > Begin processing for Run: 6, History: 700
+G4WT0 > Begin processing for Run: 6, History: 800
+G4WT0 > Begin processing for Run: 6, History: 900
+G4WT0 > Begin processing for Run: 6, History: 1000
+G4WT0 > Begin processing for Run: 6, History: 1100
+G4WT0 > Begin processing for Run: 6, History: 1200
+G4WT0 > Begin processing for Run: 6, History: 1300
+G4WT0 > Begin processing for Run: 6, History: 1400
+G4WT0 > Begin processing for Run: 6, History: 1500
+G4WT0 > Begin processing for Run: 6, History: 1600
+G4WT0 > Begin processing for Run: 6, History: 1700
+G4WT0 > Begin processing for Run: 6, History: 1800
+G4WT0 > Begin processing for Run: 6, History: 1900
+G4WT0 > Begin processing for Run: 7, History: 0
+G4WT0 > Begin processing for Run: 7, History: 100
+G4WT0 > Begin processing for Run: 7, History: 200
+G4WT0 > Begin processing for Run: 7, History: 300
+G4WT0 > Begin processing for Run: 7, History: 400
+G4WT0 > Begin processing for Run: 7, History: 500
+G4WT0 > Begin processing for Run: 7, History: 600
+G4WT0 > Begin processing for Run: 7, History: 700
+G4WT0 > Begin processing for Run: 7, History: 800
+G4WT0 > Begin processing for Run: 7, History: 900
+G4WT0 > Begin processing for Run: 7, History: 1000
+G4WT0 > Begin processing for Run: 7, History: 1100
+G4WT0 > Begin processing for Run: 7, History: 1200
+G4WT0 > Begin processing for Run: 7, History: 1300
+G4WT0 > Begin processing for Run: 7, History: 1400
+G4WT0 > Begin processing for Run: 7, History: 1500
+G4WT0 > Begin processing for Run: 7, History: 1600
+G4WT0 > Begin processing for Run: 7, History: 1700
+G4WT0 > Begin processing for Run: 7, History: 1800
+G4WT0 > Begin processing for Run: 7, History: 1900
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 47000
+
+Elapsed times:
+Parameter Reading : User=0.000000s Real=0.000913s Sys=0.000000s [Cpu=0.0%]
+    Initialization: User=0.020000s Real=0.022719s Sys=0.000000s [Cpu=88.0%]
+         Execution: User=2686.570000s Real=2705.451388s Sys=6.360000s [Cpu=99.5%]
+      Finalization: User=0.000000s Real=0.000005s Sys=0.000000s [Cpu=0.0%]
+             Total: User=2686.59s Real=2705.48s Sys=6.36s
+     2705.67 real      2686.78 user         6.39 sys

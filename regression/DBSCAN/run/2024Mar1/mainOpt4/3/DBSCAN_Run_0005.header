@@ -1,0 +1,11 @@
+Number of Original Histories: 2500
+Number of Scored Entries: 5250
+
+Columns of data are as follows:
+1: Event number
+2: Single strand breaks
+3: Double strand breaks
+4: Complex strand breaks
+5: Clusters sizes
+6: Clusters size weights
+

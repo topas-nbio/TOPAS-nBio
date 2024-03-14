@@ -1,0 +1,24 @@
+\beamer@sectionintoc {1}{DBSCAN - TsEmDNAPhysics}{4}{0}{1}
+\beamer@sectionintoc {2}{DBSCAN - g4em-dna$\_$opt2}{5}{0}{2}
+\beamer@sectionintoc {3}{DBSCAN - g4em-dna$\_$opt4}{6}{0}{3}
+\beamer@sectionintoc {4}{DBSCAN - g4em-dna\_opt6}{7}{0}{4}
+\beamer@sectionintoc {5}{LET I}{8}{0}{5}
+\beamer@sectionintoc {6}{LET II}{9}{0}{6}
+\beamer@sectionintoc {7}{Fricke: IRT}{10}{0}{7}
+\beamer@sectionintoc {8}{G-value: step-by-step}{11}{0}{8}
+\beamer@sectionintoc {9}{G-value vs. LET: step-by-step}{12}{0}{9}
+\beamer@sectionintoc {10}{G-value: IRT}{13}{0}{10}
+\beamer@sectionintoc {11}{G-value vs. LET: IRT}{14}{0}{11}
+\beamer@sectionintoc {12}{G-value of H$_2$O$_2$: IRT}{15}{0}{12}
+\beamer@sectionintoc {13}{G-value of H: IRT}{16}{0}{13}
+\beamer@sectionintoc {14}{G-value and Temperature I: IRT}{17}{0}{14}
+\beamer@sectionintoc {15}{G-value and Temperature II: IRT}{18}{0}{15}
+\beamer@sectionintoc {16}{Nanodosimetry I: TsEmDNAPhysics and g4em-dna\_opt2}{19}{0}{16}
+\beamer@sectionintoc {17}{Nanodosimetry I: g4em-dna\_opt4 and g4em-dna\_opt6}{20}{0}{17}
+\beamer@sectionintoc {18}{Nanodosimetry II: TsEmDNAPhysics and g4em-dna\_opt2}{21}{0}{18}
+\beamer@sectionintoc {19}{Nanodosimetry II: g4em-dna\_opt4 and g4em-dna\_opt6}{22}{0}{19}
+\beamer@sectionintoc {20}{Nanodosimetry III: TsEmDNAPhysics}{23}{0}{20}
+\beamer@sectionintoc {21}{Nanodosimetry III: g4em-dna\_opt2}{24}{0}{21}
+\beamer@sectionintoc {22}{Nanodosimetry III: g4em-dna\_opt4}{25}{0}{22}
+\beamer@sectionintoc {23}{Nanodosimetry III: g4em-dna\_opt6}{26}{0}{23}
+\beamer@sectionintoc {24}{SSBs as a function of DMSO: pulsed beam}{27}{0}{24}

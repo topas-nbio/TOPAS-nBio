@@ -1,0 +1,7 @@
+includeFile = depFile1.txt
+
+Ph/Default/Modules = 1 "g4em-dna_opt2"
+
+Ts/ShowHistoryCountAtInterval = 100
+
+Ts/Seed = 14054

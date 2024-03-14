@@ -1,0 +1,3270 @@
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.5_expanded)
+
+TOPAS is distributed under a Single User License described at:
+http://www.topasmc.org/registration
+Every user must have their own, individual, valid license to run TOPAS.
+
+Loading parameters starting from: GvalueRevisedPhysicsChemistry.txt
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Users/ramosj/Applications/Geant4/G4Data
+
+**************************************************************
+ Geant4 version Name: geant4-10-06-patch-02 [MT]   (29-May-2020)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 24
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 10 nm, and radial tolerance = 10 nm.
+Checking overlaps for volume subWorld (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 2e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+Solvation model selected: 1
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+Visualization verbosity changed to quiet (0)
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger cascade flag: 1
+### ===  Ignore cuts flag:   1
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 100 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 100 keV to 500 MeV in 27 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Meesungnoen2002 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      RangeFactor= 0.04, stepLimType: 3, latDisp: 1, skin= 1, geomFactor= 2.5
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+
+eIoni:  for e+  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 0.1 mm), integ: 1, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+
+eBrem:  for e+  SubType=3
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      LPM flag: 1 for E > 0.5 GeV,  VertexHighEnergyTh(GeV)= 100000
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+annihil:  for e+, integral:1  SubType=5 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            eplus2gg : Emin=    0 eV  Emax=  500 MeV
+
+proton_G4DNAElastic:  for proton SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+proton_G4DNAExcitation:  for proton SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+DNABornExcitationModel : Emin=  500 keV Emax=  100 MeV
+
+proton_G4DNAIonisation:  for proton SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 keV  deltaRudd Fluo
+DNABornIonisationModel : Emin=  500 keV Emax=  100 MeV  deltaBorn Fluo
+DNARuddIonisationExtendedModel : Emin=  100 MeV Emax=  500 MeV  deltaRudd Fluo
+
+proton_G4DNAChargeDecrease:  for proton SubType=56 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeDecreaseModel : Emin=    0 eV  Emax=  100 MeV
+
+GenericIon_G4DNAIonisation:  for GenericIon SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha_G4DNAElastic:  for alpha SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha_G4DNAExcitation:  for alpha SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha_G4DNAIonisation:  for alpha SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha_G4DNAChargeDecrease:  for alpha SubType=56 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeDecreaseModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha+_G4DNAElastic:  for alpha+ SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha+_G4DNAExcitation:  for alpha+ SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha+_G4DNAIonisation:  for alpha+ SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha+_G4DNAChargeDecrease:  for alpha+ SubType=56 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeDecreaseModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha+_G4DNAChargeIncrease:  for alpha+ SubType=57 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeIncreaseModel : Emin=    0 eV  Emax=  400 MeV
+
+helium_G4DNAElastic:  for helium SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+helium_G4DNAExcitation:  for helium SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+helium_G4DNAIonisation:  for helium SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+helium_G4DNAChargeIncrease:  for helium SubType=57 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeIncreaseModel : Emin=    0 eV  Emax=  400 MeV
+
+hydrogen_G4DNAElastic:  for hydrogen SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+hydrogen_G4DNAExcitation:  for hydrogen SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+
+hydrogen_G4DNAIonisation:  for hydrogen SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+hydrogen_G4DNAChargeIncrease:  for hydrogen SubType=57 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeIncreaseModel : Emin=    0 eV  Emax=  100 MeV
+G4WT17 > Begin processing for Run: 0, History: 0
+ -- Killing primary track of event 88
+ -- Killing primary track of event 242
+ -- Killing primary track of event 99
+ -- Killing primary track of event 165
+ -- Killing primary track of event 176
+ -- Aborting event 198
+ -- Killing primary track of event 66
+ -- Aborting event 132
+ -- Aborting event 121
+ -- Aborting event 143
+ -- Killing primary track of event 55
+ -- Killing primary track of event 44
+ -- Aborting event 253
+ -- Killing primary track of event 110
+ -- Killing primary track of event 11
+ -- Killing primary track of event 0
+ -- Aborting event 209
+ -- Killing primary track of event 231
+ -- Killing primary track of event 33
+ -- Killing primary track of event 187
+ -- Killing primary track of event 220
+ -- Killing primary track of event 77
+ -- Aborting event 154
+ -- Killing primary track of event 22
+ -- Killing primary track of event 210
+ -- Killing primary track of event 144
+ -- Killing primary track of event 122
+ -- Killing primary track of event 199
+ -- Aborting event 133
+ -- Aborting event 254
+ -- Killing primary track of event 155
+ -- Aborting event 134
+ -- Aborting event 135
+ -- Aborting event 136
+ -- Aborting event 255
+ -- Aborting event 256
+ -- Aborting event 137
+ -- Aborting event 138
+ -- Killing primary track of event 139
+ -- Killing primary track of event 257
+ -- Aborting event 78
+ -- Aborting event 79
+ -- Aborting event 80
+ -- Aborting event 81
+ -- Killing primary track of event 82
+ -- Killing primary track of event 221
+ -- Aborting event 188
+ -- Killing primary track of event 189
+ -- Killing primary track of event 1
+ -- Aborting event 111
+ -- Aborting event 112
+ -- Aborting event 113
+ -- Killing primary track of event 114
+ -- Killing primary track of event 140
+ -- Aborting event 123
+ -- Killing primary track of event 124
+ -- Killing primary track of event 23
+ -- Killing primary track of event 156
+ -- Aborting event 232
+ -- Aborting event 211
+ -- Aborting event 212
+ -- Aborting event 213
+ -- Aborting event 214
+ -- Killing primary track of event 233
+ -- Aborting event 215
+ -- Killing primary track of event 216
+ -- Aborting event 145
+ -- Killing primary track of event 146
+ -- Aborting event 34
+ -- Aborting event 35
+ -- Killing primary track of event 36
+ -- Killing primary track of event 258
+ -- Killing primary track of event 12
+ -- Killing primary track of event 200
+ -- Killing primary track of event 243
+ -- Killing primary track of event 45
+ -- Aborting event 67
+ -- Killing primary track of event 68
+ -- Killing primary track of event 56
+ -- Killing primary track of event 177
+ -- Aborting event 166
+ -- Killing primary track of event 167
+ -- Killing primary track of event 89
+ -- Killing primary track of event 100
+ -- Aborting event 83
+ -- Aborting event 84
+ -- Aborting event 85
+ -- Killing primary track of event 86
+ -- Killing primary track of event 125
+ -- Aborting event 13
+ -- Aborting event 14
+ -- Killing primary track of event 15
+ -- Aborting event 141
+ -- Aborting event 142
+ -- Killing primary track of event 264
+ -- Killing primary track of event 190
+ -- Aborting event 217
+ -- Aborting event 218
+ -- Killing primary track of event 219
+ -- Aborting event 2
+ -- Killing primary track of event 3
+ -- Killing primary track of event 115
+ -- Killing primary track of event 222
+ -- Aborting event 244
+ -- Aborting event 245
+ -- Killing primary track of event 246
+ -- Aborting event 201
+ -- Killing primary track of event 259
+ -- Aborting event 202
+ -- Killing primary track of event 203
+ -- Killing primary track of event 157
+ -- Aborting event 147
+ -- Aborting event 148
+ -- Aborting event 149
+ -- Aborting event 37
+ -- Aborting event 150
+ -- Killing primary track of event 38
+ -- Killing primary track of event 151
+ -- Killing primary track of event 46
+ -- Aborting event 24
+ -- Killing primary track of event 25
+ -- Killing primary track of event 178
+ -- Aborting event 69
+ -- Aborting event 70
+ -- Aborting event 71
+ -- Aborting event 72
+ -- Aborting event 73
+ -- Aborting event 74
+ -- Aborting event 75
+ -- Killing primary track of event 76
+ -- Killing primary track of event 168
+ -- Killing primary track of event 234
+ -- Killing primary track of event 57
+ -- Aborting event 90
+ -- Killing primary track of event 91
+ -- Aborting event 101
+ -- Killing primary track of event 102
+ -- Aborting event 126
+ -- Aborting event 127
+ -- Aborting event 128
+ -- Killing primary track of event 129
+ -- Aborting event 116
+ -- Killing primary track of event 117
+ -- Killing primary track of event 275
+ -- Aborting event 87
+ -- Aborting event 260
+ -- Killing primary track of event 286
+ -- Aborting event 261
+ -- Aborting event 262
+ -- Killing primary track of event 263
+ -- Aborting event 265
+ -- Killing primary track of event 266
+ -- Killing primary track of event 223
+ -- Killing primary track of event 4
+ -- Aborting event 152
+ -- Aborting event 153
+ -- Aborting event 297
+ -- Killing primary track of event 298
+ -- Killing primary track of event 247
+ -- Killing primary track of event 179
+ -- Aborting event 204
+ -- Aborting event 205
+ -- Killing primary track of event 206
+ -- Aborting event 39
+ -- Killing primary track of event 40
+ -- Aborting event 26
+ -- Aborting event 27
+ -- Aborting event 28
+ -- Killing primary track of event 29
+ -- Killing primary track of event 191
+ -- Killing primary track of event 47
+ -- Aborting event 16
+ -- Aborting event 17
+ -- Killing primary track of event 18
+ -- Aborting event 58
+ -- Aborting event 59
+ -- Killing primary track of event 60
+ -- Killing primary track of event 92
+ -- Aborting event 158
+ -- Aborting event 159
+ -- Aborting event 160
+ -- Killing primary track of event 161
+ -- Aborting event 308
+ -- Aborting event 309
+ -- Killing primary track of event 103
+ -- Killing primary track of event 310
+ -- Killing primary track of event 235
+ -- Aborting event 169
+ -- Aborting event 170
+ -- Killing primary track of event 171
+ -- Aborting event 287
+ -- Aborting event 288
+ -- Aborting event 289
+ -- Aborting event 290
+ -- Aborting event 291
+ -- Killing primary track of event 292
+ -- Aborting event 130
+ -- Aborting event 118
+ -- Aborting event 131
+ -- Killing primary track of event 119
+ -- Killing primary track of event 319
+ -- Aborting event 276
+ -- Killing primary track of event 277
+ -- Aborting event 41
+ -- Killing primary track of event 42
+ -- Aborting event 248
+ -- Aborting event 249
+ -- Aborting event 250
+ -- Aborting event 251
+ -- Aborting event 192
+ -- Aborting event 193
+ -- Aborting event 299
+ -- Aborting event 252
+ -- Aborting event 194
+ -- Aborting event 195
+G4WT0 > Begin processing for Run: 0, History: 300
+ -- Aborting event 300
+ -- Killing primary track of event 301
+ -- Killing primary track of event 330
+ -- Aborting event 196
+ -- Aborting event 197
+ -- Aborting event 341
+ -- Aborting event 342
+ -- Aborting event 267
+ -- Killing primary track of event 268
+ -- Aborting event 343
+ -- Killing primary track of event 344
+ -- Aborting event 352
+ -- Aborting event 353
+ -- Killing primary track of event 354
+ -- Aborting event 5
+ -- Aborting event 6
+ -- Aborting event 7
+ -- Aborting event 8
+ -- Killing primary track of event 9
+ -- Aborting event 224
+ -- Killing primary track of event 225
+ -- Aborting event 30
+ -- Killing primary track of event 31
+ -- Killing primary track of event 180
+ -- Aborting event 48
+ -- Aborting event 49
+ -- Killing primary track of event 50
+ -- Aborting event 61
+ -- Killing primary track of event 62
+ -- Aborting event 311
+ -- Aborting event 312
+ -- Killing primary track of event 313
+ -- Killing primary track of event 93
+ -- Aborting event 207
+ -- Aborting event 208
+ -- Killing primary track of event 363
+ -- Killing primary track of event 236
+ -- Aborting event 104
+ -- Killing primary track of event 105
+ -- Aborting event 172
+ -- Aborting event 173
+ -- Aborting event 174
+ -- Aborting event 175
+ -- Aborting event 374
+ -- Killing primary track of event 375
+ -- Killing primary track of event 162
+ -- Aborting event 19
+ -- Killing primary track of event 20
+ -- Killing primary track of event 320
+ -- Killing primary track of event 293
+ -- Aborting event 10
+ -- Aborting event 385
+ -- Killing primary track of event 386
+ -- Aborting event 302
+ -- Aborting event 303
+ -- Aborting event 304
+ -- Aborting event 305
+ -- Killing primary track of event 306
+ -- Aborting event 331
+ -- Aborting event 332
+ -- Killing primary track of event 333
+ -- Aborting event 43
+ -- Aborting event 396
+ -- Aborting event 397
+ -- Killing primary track of event 398
+ -- Aborting event 278
+ -- Killing primary track of event 279
+ -- Aborting event 120
+ -- Aborting event 407
+ -- Aborting event 355
+ -- Aborting event 408
+ -- Killing primary track of event 269
+ -- Aborting event 356
+ -- Killing primary track of event 409
+ -- Killing primary track of event 357
+ -- Killing primary track of event 94
+ -- Killing primary track of event 106
+ -- Killing primary track of event 345
+ -- Killing primary track of event 364
+ -- Killing primary track of event 63
+ -- Aborting event 181
+ -- Aborting event 182
+ -- Killing primary track of event 183
+ -- Killing primary track of event 376
+ -- Aborting event 314
+ -- Killing primary track of event 315
+ -- Killing primary track of event 32
+ -- Aborting event 237
+ -- Killing primary track of event 238
+ -- Aborting event 226
+ -- Aborting event 227
+ -- Aborting event 228
+ -- Aborting event 229
+ -- Killing primary track of event 230
+ -- Aborting event 51
+ -- Aborting event 52
+ -- Aborting event 53
+ -- Aborting event 54
+ -- Killing primary track of event 418
+ -- Killing primary track of event 21
+ -- Aborting event 163
+ -- Aborting event 164
+ -- Aborting event 429
+ -- Aborting event 430
+ -- Killing primary track of event 431
+ -- Aborting event 387
+ -- Aborting event 388
+ -- Killing primary track of event 389
+ -- Killing primary track of event 399
+ -- Aborting event 334
+ -- Killing primary track of event 335
+ -- Aborting event 321
+ -- Killing primary track of event 322
+ -- Killing primary track of event 107
+ -- Aborting event 280
+ -- Killing primary track of event 281
+ -- Aborting event 307
+ -- Aborting event 294
+ -- Aborting event 440
+ -- Aborting event 295
+ -- Aborting event 441
+ -- Killing primary track of event 296
+ -- Aborting event 442
+ -- Aborting event 358
+ -- Aborting event 443
+ -- Killing primary track of event 359
+ -- Aborting event 239
+ -- Aborting event 444
+ -- Killing primary track of event 445
+ -- Killing primary track of event 240
+ -- Killing primary track of event 410
+ -- Aborting event 270
+ -- Killing primary track of event 271
+ -- Killing primary track of event 346
+ -- Killing primary track of event 64
+ -- Aborting event 95
+ -- Aborting event 96
+ -- Aborting event 97
+ -- Aborting event 98
+ -- Aborting event 451
+ -- Aborting event 452
+ -- Aborting event 453
+ -- Aborting event 454
+ -- Killing primary track of event 455
+ -- Killing primary track of event 365
+ -- Killing primary track of event 462
+ -- Killing primary track of event 316
+ -- Killing primary track of event 377
+ -- Aborting event 473
+ -- Killing primary track of event 474
+ -- Killing primary track of event 484
+ -- Killing primary track of event 184
+ -- Killing primary track of event 419
+ -- Killing primary track of event 432
+ -- Aborting event 400
+ -- Killing primary track of event 401
+ -- Killing primary track of event 323
+ -- Killing primary track of event 390
+ -- Aborting event 446
+ -- Aborting event 447
+ -- Killing primary track of event 448
+ -- Aborting event 272
+ -- Killing primary track of event 273
+ -- Aborting event 360
+ -- Aborting event 361
+ -- Aborting event 362
+ -- Killing primary track of event 495
+ -- Killing primary track of event 108
+ -- Aborting event 506
+ -- Killing primary track of event 366
+ -- Aborting event 507
+ -- Aborting event 508
+ -- Aborting event 509
+ -- Killing primary track of event 510
+ -- Aborting event 347
+ -- Aborting event 348
+ -- Killing primary track of event 349
+ -- Killing primary track of event 241
+ -- Killing primary track of event 456
+ -- Killing primary track of event 411
+ -- Aborting event 65
+ -- Aborting event 517
+ -- Aborting event 518
+ -- Killing primary track of event 519
+ -- Aborting event 317
+ -- Killing primary track of event 318
+ -- Killing primary track of event 420
+ -- Killing primary track of event 475
+ -- Aborting event 463
+ -- Aborting event 464
+ -- Aborting event 465
+ -- Aborting event 466
+ -- Killing primary track of event 282
+ -- Killing primary track of event 467
+ -- Aborting event 378
+ -- Killing primary track of event 379
+ -- Aborting event 433
+ -- Killing primary track of event 434
+ -- Killing primary track of event 485
+ -- Killing primary track of event 336
+ -- Killing primary track of event 185
+ -- Aborting event 324
+ -- Aborting event 325
+ -- Aborting event 326
+ -- Aborting event 327
+ -- Aborting event 328
+ -- Killing primary track of event 329
+ -- Aborting event 402
+ -- Killing primary track of event 403
+ -- Killing primary track of event 391
+ -- Killing primary track of event 367
+ -- Killing primary track of event 274
+ -- Killing primary track of event 449
+ -- Aborting event 511
+ -- Killing primary track of event 512
+ -- Aborting event 350
+ -- Killing primary track of event 351
+ -- Aborting event 520
+ -- Killing primary track of event 521
+ -- Aborting event 109
+ -- Killing primary track of event 528
+ -- Killing primary track of event 283
+ -- Killing primary track of event 421
+ -- Aborting event 380
+ -- Killing primary track of event 381
+ -- Killing primary track of event 539
+ -- Aborting event 337
+ -- Aborting event 338
+ -- Killing primary track of event 339
+ -- Killing primary track of event 496
+ -- Killing primary track of event 468
+ -- Aborting event 457
+ -- Aborting event 458
+ -- Aborting event 459
+ -- Aborting event 460
+ -- Killing primary track of event 461
+ -- Killing primary track of event 476
+ -- Killing primary track of event 435
+ -- Aborting event 412
+ -- Aborting event 413
+ -- Killing primary track of event 414
+ -- Aborting event 186
+ -- Aborting event 550
+ -- Aborting event 551
+ -- Killing primary track of event 552
+ -- Aborting event 486
+ -- Killing primary track of event 561
+ -- Killing primary track of event 487
+ -- Aborting event 513
+ -- Killing primary track of event 514
+ -- Aborting event 572
+ -- Killing primary track of event 573
+ -- Aborting event 404
+ -- Aborting event 405
+ -- Aborting event 406
+ -- Killing primary track of event 583
+ -- Killing primary track of event 392
+ -- Killing primary track of event 497
+ -- Killing primary track of event 529
+ -- Killing primary track of event 594
+ -- Aborting event 368
+ -- Killing primary track of event 369
+ -- Killing primary track of event 522
+ -- Aborting event 382
+ -- Killing primary track of event 383
+ -- Killing primary track of event 540
+ -- Aborting event 450
+ -- Killing primary track of event 605
+ -- Killing primary track of event 340
+ -- Killing primary track of event 616
+ -- Aborting event 284
+ -- Killing primary track of event 285
+ -- Killing primary track of event 469
+ -- Aborting event 436
+ -- Aborting event 437
+ -- Killing primary track of event 438
+ -- Killing primary track of event 422
+ -- Killing primary track of event 627
+ -- Aborting event 562
+ -- Aborting event 563
+ -- Aborting event 553
+ -- Aborting event 554
+ -- Aborting event 564
+ -- Killing primary track of event 555
+ -- Aborting event 565
+ -- Aborting event 566
+ -- Killing primary track of event 567
+ -- Aborting event 415
+ -- Aborting event 416
+ -- Killing primary track of event 417
+ -- Killing primary track of event 488
+ -- Aborting event 584
+ -- Aborting event 585
+ -- Aborting event 586
+ -- Aborting event 587
+ -- Aborting event 588
+ -- Killing primary track of event 589
+ -- Killing primary track of event 477
+ -- Aborting event 515
+ -- Aborting event 516
+ -- Killing primary track of event 638
+ -- Killing primary track of event 370
+ -- Killing primary track of event 649
+ -- Aborting event 393
+ -- Aborting event 394
+ -- Killing primary track of event 395
+ -- Killing primary track of event 574
+ -- Aborting event 384
+ -- Aborting event 660
+ -- Aborting event 661
+ -- Aborting event 662
+ -- Aborting event 663
+ -- Killing primary track of event 664
+ -- Aborting event 470
+ -- Aborting event 471
+ -- Aborting event 472
+ -- Killing primary track of event 671
+ -- Killing primary track of event 595
+ -- Aborting event 523
+ -- Aborting event 524
+ -- Killing primary track of event 525
+ -- Killing primary track of event 530
+ -- Aborting event 498
+ -- Killing primary track of event 499
+ -- Aborting event 541
+ -- Aborting event 542
+ -- Aborting event 543
+ -- Aborting event 544
+ -- Killing primary track of event 545
+ -- Aborting event 617
+ -- Aborting event 618
+ -- Aborting event 619
+ -- Killing primary track of event 620
+ -- Killing primary track of event 682
+ -- Aborting event 556
+ -- Aborting event 557
+ -- Killing primary track of event 558
+ -- Killing primary track of event 606
+ -- Aborting event 423
+ -- Aborting event 424
+ -- Killing primary track of event 425
+ -- Aborting event 693
+ -- Aborting event 694
+ -- Aborting event 695
+ -- Aborting event 696
+ -- Killing primary track of event 697
+ -- Aborting event 489
+ -- Aborting event 490
+ -- Killing primary track of event 491
+ -- Killing primary track of event 439
+ -- Killing primary track of event 568
+ -- Aborting event 590
+ -- Aborting event 591
+ -- Killing primary track of event 592
+ -- Killing primary track of event 639
+ -- Aborting event 628
+ -- Aborting event 629
+ -- Aborting event 630
+ -- Aborting event 631
+ -- Aborting event 632
+ -- Aborting event 633
+ -- Aborting event 634
+ -- Aborting event 635
+ -- Killing primary track of event 636
+ -- Aborting event 478
+ -- Killing primary track of event 479
+ -- Aborting event 704
+ -- Aborting event 705
+ -- Aborting event 706
+ -- Aborting event 707
+ -- Killing primary track of event 708
+ -- Killing primary track of event 650
+ -- Aborting event 371
+ -- Killing primary track of event 372
+ -- Aborting event 665
+ -- Aborting event 666
+ -- Killing primary track of event 667
+ -- Killing primary track of event 575
+ -- Aborting event 672
+ -- Aborting event 621
+ -- Killing primary track of event 673
+ -- Killing primary track of event 622
+ -- Killing primary track of event 531
+ -- Aborting event 607
+ -- Aborting event 608
+ -- Aborting event 609
+ -- Killing primary track of event 610
+ -- Aborting event 526
+ -- Aborting event 527
+ -- Killing primary track of event 715
+ -- Killing primary track of event 546
+ -- Aborting event 596
+ -- Aborting event 597
+ -- Killing primary track of event 598
+ -- Aborting event 500
+ -- Killing primary track of event 501
+ -- Killing primary track of event 698
+ -- Aborting event 559
+ -- Aborting event 560
+ -- Aborting event 726
+ -- Killing primary track of event 727
+ -- Aborting event 683
+ -- Killing primary track of event 684
+ -- Killing primary track of event 492
+ -- Killing primary track of event 737
+ -- Killing primary track of event 637
+ -- Killing primary track of event 640
+ -- Killing primary track of event 569
+ -- Aborting event 426
+ -- Killing primary track of event 427
+ -- Aborting event 593
+ -- Killing primary track of event 748
+ -- Aborting event 480
+ -- Killing primary track of event 481
+ -- Aborting event 709
+ -- Killing primary track of event 710
+ -- Killing primary track of event 651
+ -- Killing primary track of event 373
+ -- Killing primary track of event 668
+ -- Aborting event 532
+ -- Killing primary track of event 533
+ -- Killing primary track of event 623
+ -- Killing primary track of event 502
+ -- Aborting event 576
+ -- Killing primary track of event 577
+ -- Aborting event 547
+ -- Aborting event 548
+ -- Killing primary track of event 549
+ -- Killing primary track of event 674
+ -- Killing primary track of event 611
+ -- Killing primary track of event 599
+ -- Aborting event 685
+ -- Aborting event 686
+ -- Killing primary track of event 687
+ -- Killing primary track of event 716
+ -- Aborting event 728
+ -- Aborting event 729
+ -- Aborting event 730
+ -- Killing primary track of event 731
+ -- Killing primary track of event 759
+ -- Killing primary track of event 493
+ -- Aborting event 570
+ -- Aborting event 571
+ -- Killing primary track of event 770
+ -- Aborting event 699
+ -- Aborting event 700
+ -- Killing primary track of event 701
+ -- Aborting event 738
+ -- Aborting event 739
+ -- Killing primary track of event 740
+ -- Killing primary track of event 641
+ -- Aborting event 428
+ -- Killing primary track of event 781
+ -- Aborting event 749
+ -- Aborting event 750
+ -- Killing primary track of event 751
+ -- Aborting event 503
+ -- Killing primary track of event 504
+ -- Killing primary track of event 482
+ -- Killing primary track of event 534
+ -- Aborting event 652
+ -- Aborting event 653
+ -- Killing primary track of event 654
+ -- Killing primary track of event 624
+ -- Aborting event 792
+ -- Aborting event 793
+ -- Aborting event 794
+ -- Killing primary track of event 795
+ -- Killing primary track of event 578
+ -- Aborting event 612
+ -- Killing primary track of event 613
+ -- Aborting event 717
+ -- Aborting event 718
+ -- Killing primary track of event 675
+ -- Aborting event 719
+ -- Aborting event 720
+ -- Killing primary track of event 721
+ -- Aborting event 711
+ -- Aborting event 712
+ -- Killing primary track of event 669
+ -- Aborting event 713
+ -- Killing primary track of event 714
+G4WT20 > Begin processing for Run: 0, History: 600
+ -- Aborting event 600
+ -- Aborting event 601
+ -- Killing primary track of event 602
+ -- Killing primary track of event 688
+ -- Aborting event 494
+ -- Killing primary track of event 803
+ -- Aborting event 814
+ -- Killing primary track of event 815
+ -- Aborting event 732
+ -- Aborting event 733
+ -- Killing primary track of event 734
+ -- Aborting event 760
+ -- Aborting event 761
+ -- Aborting event 762
+ -- Killing primary track of event 763
+ -- Killing primary track of event 771
+ -- Aborting event 741
+ -- Aborting event 742
+ -- Aborting event 743
+ -- Aborting event 744
+ -- Killing primary track of event 745
+ -- Aborting event 782
+ -- Killing primary track of event 783
+ -- Killing primary track of event 702
+ -- Killing primary track of event 535
+ -- Killing primary track of event 505
+ -- Killing primary track of event 752
+ -- Killing primary track of event 655
+ -- Aborting event 642
+ -- Killing primary track of event 643
+ -- Killing primary track of event 483
+ -- Killing primary track of event 796
+ -- Aborting event 625
+ -- Killing primary track of event 626
+ -- Aborting event 689
+ -- Aborting event 690
+ -- Killing primary track of event 691
+ -- Killing primary track of event 579
+ -- Aborting event 722
+ -- Killing primary track of event 723
+ -- Killing primary track of event 603
+ -- Killing primary track of event 825
+ -- Aborting event 676
+ -- Killing primary track of event 677
+ -- Aborting event 670
+ -- Killing primary track of event 836
+ -- Killing primary track of event 614
+ -- Aborting event 804
+ -- Aborting event 805
+ -- Aborting event 806
+ -- Aborting event 807
+ -- Killing primary track of event 808
+ -- Aborting event 816
+ -- Killing primary track of event 817
+ -- Killing primary track of event 772
+ -- Killing primary track of event 746
+ -- Aborting event 536
+ -- Killing primary track of event 537
+ -- Aborting event 735
+ -- Aborting event 736
+ -- Killing primary track of event 847
+ -- Killing primary track of event 784
+ -- Aborting event 764
+ -- Killing primary track of event 765
+ -- Killing primary track of event 858
+ -- Aborting event 703
+ -- Aborting event 869
+ -- Killing primary track of event 870
+ -- Killing primary track of event 644
+ -- Aborting event 753
+ -- Killing primary track of event 754
+ -- Aborting event 880
+ -- Killing primary track of event 881
+ -- Killing primary track of event 656
+ -- Aborting event 891
+ -- Aborting event 892
+ -- Aborting event 893
+ -- Aborting event 894
+ -- Killing primary track of event 895
+ -- Aborting event 724
+ -- Aborting event 725
+ -- Killing primary track of event 902
+ -- Killing primary track of event 692
+ -- Killing primary track of event 615
+ -- Killing primary track of event 797
+ -- Killing primary track of event 837
+ -- Aborting event 809
+ -- Killing primary track of event 810
+ -- Aborting event 580
+ -- Aborting event 581
+ -- Aborting event 582
+ -- Killing primary track of event 913
+ -- Killing primary track of event 604
+ -- Killing primary track of event 826
+ -- Aborting event 678
+ -- Aborting event 679
+ -- Aborting event 680
+ -- Aborting event 681
+ -- Aborting event 924
+ -- Killing primary track of event 925
+ -- Aborting event 773
+ -- Killing primary track of event 774
+ -- Killing primary track of event 818
+ -- Aborting event 645
+ -- Killing primary track of event 646
+ -- Aborting event 785
+ -- Killing primary track of event 786
+ -- Aborting event 848
+ -- Killing primary track of event 849
+ -- Aborting event 538
+ -- Aborting event 935
+ -- Killing primary track of event 936
+ -- Aborting event 755
+ -- Aborting event 756
+ -- Aborting event 757
+ -- Aborting event 758
+ -- Aborting event 946
+ -- Aborting event 947
+ -- Killing primary track of event 948
+ -- Aborting event 871
+ -- Aborting event 872
+ -- Killing primary track of event 766
+ -- Killing primary track of event 873
+ -- Killing primary track of event 882
+ -- Killing primary track of event 747
+ -- Killing primary track of event 657
+ -- Killing primary track of event 859
+ -- Killing primary track of event 838
+ -- Aborting event 896
+ -- Killing primary track of event 897
+ -- Aborting event 957
+ -- Aborting event 958
+ -- Killing primary track of event 959
+ -- Aborting event 926
+ -- Aborting event 927
+ -- Killing primary track of event 798
+ -- Aborting event 928
+ -- Killing primary track of event 929
+ -- Killing primary track of event 968
+ -- Aborting event 827
+ -- Aborting event 828
+ -- Killing primary track of event 829
+ -- Killing primary track of event 914
+ -- Killing primary track of event 903
+ -- Aborting event 811
+ -- Killing primary track of event 812
+ -- Aborting event 979
+ -- Killing primary track of event 980
+ -- Killing primary track of event 819
+ -- Aborting event 949
+ -- Killing primary track of event 950
+ -- Killing primary track of event 787
+ -- Aborting event 767
+ -- Killing primary track of event 768
+ -- Aborting event 860
+ -- Killing primary track of event 861
+ -- Aborting event 775
+ -- Killing primary track of event 776
+ -- Aborting event 874
+ -- Aborting event 875
+ -- Aborting event 876
+ -- Aborting event 877
+ -- Killing primary track of event 878
+ -- Killing primary track of event 883
+ -- Aborting event 839
+ -- Killing primary track of event 840
+ -- Killing primary track of event 898
+ -- Killing primary track of event 647
+ -- Killing primary track of event 937
+ -- Aborting event 850
+ -- Aborting event 851
+ -- Killing primary track of event 852
+ -- Killing primary track of event 658
+ -- Aborting event 990
+ -- Killing primary track of event 991
+ -- Killing primary track of event 960
+ -- Killing primary track of event 799
+ -- Killing primary track of event 930
+ -- Aborting event 915
+ -- Killing primary track of event 916
+ -- Aborting event 969
+ -- Killing primary track of event 970
+ -- Killing primary track of event 813
+ -- Aborting event 830
+ -- Killing primary track of event 831
+ -- Killing primary track of event 788
+ -- Aborting event 862
+ -- Killing primary track of event 863
+ -- Killing primary track of event 769
+ -- Killing primary track of event 951
+ -- Aborting event 904
+ -- Aborting event 905
+ -- Killing primary track of event 906
+ -- Aborting event 820
+ -- Aborting event 821
+ -- Killing primary track of event 822
+ -- Killing primary track of event 981
+ -- Aborting event 899
+G4WT19 > Begin processing for Run: 0, History: 900
+ -- Killing primary track of event 900
+ -- Aborting event 879
+ -- Aborting event 1001
+ -- Aborting event 1002
+ -- Killing primary track of event 1003
+ -- Aborting event 841
+ -- Killing primary track of event 842
+ -- Killing primary track of event 938
+ -- Killing primary track of event 648
+ -- Aborting event 777
+ -- Aborting event 778
+ -- Aborting event 779
+ -- Killing primary track of event 780
+ -- Killing primary track of event 992
+ -- Aborting event 659
+ -- Aborting event 1012
+ -- Killing primary track of event 1013
+ -- Aborting event 884
+ -- Killing primary track of event 885
+ -- Killing primary track of event 853
+ -- Aborting event 931
+ -- Killing primary track of event 932
+ -- Aborting event 971
+ -- Aborting event 972
+ -- Aborting event 973
+ -- Aborting event 974
+ -- Aborting event 975
+ -- Aborting event 976
+ -- Killing primary track of event 977
+ -- Killing primary track of event 961
+ -- Killing primary track of event 864
+ -- Aborting event 917
+ -- Killing primary track of event 918
+ -- Killing primary track of event 800
+ -- Aborting event 1023
+ -- Killing primary track of event 1024
+ -- Killing primary track of event 789
+ -- Aborting event 1034
+ -- Aborting event 1035
+ -- Aborting event 1036
+ -- Killing primary track of event 1037
+ -- Killing primary track of event 952
+ -- Aborting event 982
+ -- Killing primary track of event 983
+ -- Killing primary track of event 907
+ -- Aborting event 823
+ -- Aborting event 824
+ -- Aborting event 1045
+ -- Aborting event 1046
+ -- Killing primary track of event 1047
+ -- Aborting event 832
+ -- Killing primary track of event 833
+ -- Killing primary track of event 1004
+ -- Aborting event 1056
+ -- Killing primary track of event 1057
+ -- Aborting event 993
+ -- Aborting event 994
+ -- Aborting event 995
+ -- Aborting event 996
+ -- Killing primary track of event 997
+ -- Aborting event 843
+ -- Killing primary track of event 844
+ -- Killing primary track of event 939
+ -- Killing primary track of event 886
+ -- Killing primary track of event 1067
+ -- Aborting event 1014
+ -- Aborting event 1015
+ -- Aborting event 1016
+ -- Killing primary track of event 854
+ -- Aborting event 1017
+ -- Killing primary track of event 1018
+ -- Killing primary track of event 901
+ -- Killing primary track of event 962
+ -- Aborting event 919
+ -- Aborting event 920
+ -- Killing primary track of event 921
+ -- Killing primary track of event 933
+ -- Aborting event 978
+ -- Aborting event 1078
+ -- Killing primary track of event 1079
+ -- Killing primary track of event 790
+ -- Aborting event 801
+ -- Killing primary track of event 802
+ -- Killing primary track of event 984
+ -- Killing primary track of event 865
+ -- Aborting event 1038
+ -- Killing primary track of event 1039
+ -- Aborting event 1025
+ -- Aborting event 1026
+ -- Aborting event 1027
+ -- Aborting event 1028
+ -- Killing primary track of event 1029
+ -- Aborting event 908
+ -- Aborting event 909
+ -- Aborting event 834
+ -- Aborting event 910
+ -- Killing primary track of event 835
+ -- Killing primary track of event 911
+ -- Killing primary track of event 953
+ -- Killing primary track of event 1048
+ -- Aborting event 940
+ -- Killing primary track of event 941
+ -- Aborting event 998
+ -- Killing primary track of event 999
+ -- Killing primary track of event 855
+ -- Killing primary track of event 1089
+ -- Aborting event 1005
+ -- Killing primary track of event 1006
+ -- Killing primary track of event 887
+ -- Killing primary track of event 791
+ -- Aborting event 963
+ -- Killing primary track of event 964
+ -- Killing primary track of event 1068
+ -- Killing primary track of event 1019
+ -- Aborting event 845
+ -- Killing primary track of event 846
+ -- Killing primary track of event 1058
+ -- Killing primary track of event 922
+ -- Killing primary track of event 1080
+ -- Killing primary track of event 985
+ -- Aborting event 1100
+ -- Killing primary track of event 1101
+ -- Aborting event 1111
+ -- Killing primary track of event 1112
+ -- Killing primary track of event 866
+ -- Aborting event 1040
+ -- Killing primary track of event 1041
+ -- Aborting event 934
+ -- Killing primary track of event 1122
+ -- Killing primary track of event 1030
+ -- Aborting event 912
+ -- Aborting event 1133
+ -- Aborting event 1134
+ -- Killing primary track of event 1135
+ -- Aborting event 1049
+ -- Aborting event 1050
+ -- Aborting event 1051
+ -- Aborting event 1052
+ -- Killing primary track of event 1053
+ -- Aborting event 954
+ -- Killing primary track of event 955
+ -- Aborting event 1144
+ -- Killing primary track of event 1145
+ -- Killing primary track of event 942
+ -- Killing primary track of event 888
+ -- Aborting event 1000
+ -- Aborting event 1155
+ -- Killing primary track of event 1156
+ -- Killing primary track of event 856
+ -- Aborting event 1090
+ -- Killing primary track of event 1091
+ -- Aborting event 1069
+ -- Aborting event 1070
+ -- Aborting event 1071
+ -- Aborting event 1072
+ -- Aborting event 1073
+ -- Aborting event 1074
+ -- Killing primary track of event 1075
+ -- Killing primary track of event 965
+ -- Aborting event 1102
+ -- Aborting event 1103
+ -- Aborting event 1104
+ -- Aborting event 1105
+ -- Aborting event 1106
+ -- Aborting event 1081
+ -- Killing primary track of event 1107
+ -- Killing primary track of event 1082
+ -- Aborting event 1020
+ -- Killing primary track of event 1021
+ -- Killing primary track of event 1059
+ -- Killing primary track of event 1166
+ -- Killing primary track of event 1113
+ -- Killing primary track of event 923
+ -- Aborting event 1007
+ -- Aborting event 1008
+ -- Aborting event 1009
+ -- Killing primary track of event 1010
+ -- Killing primary track of event 986
+ -- Killing primary track of event 867
+ -- Killing primary track of event 1136
+ -- Aborting event 1042
+ -- Killing primary track of event 1031
+ -- Killing primary track of event 1043
+ -- Killing primary track of event 1123
+ -- Aborting event 1157
+ -- Aborting event 1158
+ -- Aborting event 1159
+ -- Aborting event 1160
+ -- Aborting event 1161
+ -- Killing primary track of event 1162
+ -- Aborting event 956
+ -- Killing primary track of event 1177
+ -- Killing primary track of event 1092
+ -- Aborting event 1054
+ -- Aborting event 1055
+ -- Killing primary track of event 1188
+ -- Aborting event 889
+ -- Aborting event 890
+ -- Killing primary track of event 1199
+ -- Aborting event 1146
+ -- Killing primary track of event 966
+ -- Killing primary track of event 1147
+ -- Aborting event 857
+ -- Killing primary track of event 1210
+ -- Killing primary track of event 1083
+ -- Aborting event 943
+ -- Aborting event 944
+ -- Aborting event 945
+ -- Killing primary track of event 1221
+ -- Killing primary track of event 1011
+ -- Killing primary track of event 1076
+ -- Killing primary track of event 1060
+ -- Aborting event 1232
+ -- Killing primary track of event 1108
+ -- Killing primary track of event 1233
+ -- Aborting event 1167
+ -- Aborting event 1022
+ -- Aborting event 1243
+ -- Killing primary track of event 1244
+ -- Killing primary track of event 1124
+ -- Aborting event 1168
+ -- Killing primary track of event 1169
+ -- Aborting event 1044
+ -- Killing primary track of event 1254
+ -- Aborting event 1137
+ -- Killing primary track of event 1138
+ -- Killing primary track of event 987
+ -- Killing primary track of event 868
+ -- Killing primary track of event 1178
+ -- Killing primary track of event 1114
+ -- Aborting event 1032
+ -- Killing primary track of event 1033
+ -- Killing primary track of event 1163
+G4WT3 > Begin processing for Run: 0, History: 1200
+ -- Aborting event 1200
+ -- Killing primary track of event 1201
+ -- Aborting event 1189
+ -- Killing primary track of event 1190
+ -- Killing primary track of event 1148
+ -- Aborting event 1084
+ -- Killing primary track of event 1085
+ -- Aborting event 1211
+ -- Aborting event 1212
+ -- Aborting event 1213
+ -- Killing primary track of event 1214
+ -- Killing primary track of event 1170
+ -- Killing primary track of event 1093
+ -- Aborting event 1234
+ -- Killing primary track of event 1235
+ -- Aborting event 1077
+ -- Killing primary track of event 1265
+ -- Killing primary track of event 967
+ -- Aborting event 988
+ -- Killing primary track of event 989
+ -- Killing primary track of event 1276
+ -- Killing primary track of event 1061
+ -- Killing primary track of event 1255
+ -- Aborting event 1222
+ -- Aborting event 1223
+ -- Aborting event 1224
+ -- Killing primary track of event 1225
+ -- Killing primary track of event 1139
+ -- Killing primary track of event 1287
+ -- Aborting event 1245
+ -- Aborting event 1246
+ -- Aborting event 1247
+ -- Killing primary track of event 1248
+ -- Killing primary track of event 1115
+ -- Killing primary track of event 1109
+ -- Aborting event 1125
+ -- Aborting event 1126
+ -- Aborting event 1127
+ -- Aborting event 1128
+ -- Aborting event 1129
+ -- Aborting event 1130
+ -- Killing primary track of event 1131
+ -- Aborting event 1179
+ -- Killing primary track of event 1180
+ -- Aborting event 1298
+ -- Killing primary track of event 1299
+ -- Killing primary track of event 1236
+ -- Killing primary track of event 1202
+ -- Aborting event 1191
+ -- Aborting event 1192
+ -- Aborting event 1193
+ -- Killing primary track of event 1194
+ -- Aborting event 1164
+ -- Killing primary track of event 1165
+ -- Killing primary track of event 1215
+ -- Killing primary track of event 1149
+ -- Killing primary track of event 1086
+ -- Killing primary track of event 1094
+ -- Aborting event 1171
+ -- Killing primary track of event 1172
+ -- Aborting event 1062
+ -- Killing primary track of event 1063
+ -- Aborting event 1266
+ -- Killing primary track of event 1267
+ -- Aborting event 1309
+ -- Aborting event 1310
+ -- Killing primary track of event 1311
+ -- Killing primary track of event 1320
+ -- Aborting event 1277
+ -- Aborting event 1278
+ -- Aborting event 1279
+ -- Killing primary track of event 1280
+ -- Killing primary track of event 1249
+ -- Aborting event 1110
+ -- Killing primary track of event 1140
+ -- Killing primary track of event 1331
+ -- Killing primary track of event 1288
+ -- Killing primary track of event 1226
+ -- Aborting event 1116
+ -- Aborting event 1117
+ -- Aborting event 1118
+ -- Aborting event 1119
+ -- Killing primary track of event 1120
+ -- Aborting event 1256
+ -- Aborting event 1257
+ -- Aborting event 1258
+ -- Killing primary track of event 1259
+ -- Aborting event 1181
+ -- Aborting event 1182
+ -- Aborting event 1183
+ -- Killing primary track of event 1184
+ -- Killing primary track of event 1300
+ -- Killing primary track of event 1342
+ -- Aborting event 1132
+ -- Aborting event 1353
+ -- Aborting event 1354
+ -- Aborting event 1355
+ -- Aborting event 1195
+ -- Aborting event 1356
+ -- Killing primary track of event 1357
+ -- Killing primary track of event 1196
+ -- Aborting event 1237
+ -- Killing primary track of event 1203
+ -- Aborting event 1238
+ -- Killing primary track of event 1239
+ -- Killing primary track of event 1150
+ -- Aborting event 1087
+ -- Killing primary track of event 1088
+ -- Killing primary track of event 1095
+ -- Aborting event 1216
+ -- Killing primary track of event 1217
+ -- Aborting event 1173
+ -- Killing primary track of event 1174
+ -- Killing primary track of event 1064
+ -- Killing primary track of event 1268
+ -- Aborting event 1141
+ -- Killing primary track of event 1142
+ -- Killing primary track of event 1321
+ -- Aborting event 1312
+ -- Killing primary track of event 1313
+ -- Killing primary track of event 1289
+ -- Killing primary track of event 1227
+ -- Aborting event 1281
+ -- Aborting event 1282
+ -- Aborting event 1283
+ -- Killing primary track of event 1284
+ -- Aborting event 1121
+ -- Aborting event 1364
+ -- Killing primary track of event 1365
+ -- Killing primary track of event 1260
+ -- Killing primary track of event 1332
+ -- Killing primary track of event 1250
+ -- Killing primary track of event 1343
+ -- Aborting event 1301
+ -- Killing primary track of event 1302
+ -- Killing primary track of event 1240
+ -- Aborting event 1185
+ -- Aborting event 1186
+ -- Killing primary track of event 1187
+ -- Aborting event 1358
+ -- Aborting event 1359
+ -- Aborting event 1360
+ -- Aborting event 1361
+ -- Aborting event 1362
+ -- Killing primary track of event 1363
+ -- Killing primary track of event 1218
+ -- Aborting event 1204
+ -- Aborting event 1205
+ -- Aborting event 1206
+ -- Killing primary track of event 1207
+ -- Killing primary track of event 1151
+ -- Aborting event 1375
+ -- Aborting event 1175
+ -- Killing primary track of event 1176
+ -- Killing primary track of event 1376
+ -- Killing primary track of event 1197
+ -- Aborting event 1096
+ -- Killing primary track of event 1097
+ -- Aborting event 1065
+ -- Killing primary track of event 1066
+ -- Killing primary track of event 1143
+ -- Aborting event 1228
+ -- Aborting event 1229
+ -- Aborting event 1230
+ -- Aborting event 1231
+ -- Aborting event 1386
+ -- Killing primary track of event 1387
+ -- Killing primary track of event 1261
+ -- Aborting event 1290
+ -- Killing primary track of event 1291
+ -- Aborting event 1322
+ -- Killing primary track of event 1323
+ -- Aborting event 1366
+ -- Aborting event 1367
+ -- Killing primary track of event 1368
+ -- Aborting event 1333
+ -- Killing primary track of event 1334
+ -- Aborting event 1285
+ -- Aborting event 1286
+ -- Killing primary track of event 1397
+ -- Killing primary track of event 1314
+ -- Aborting event 1251
+ -- Killing primary track of event 1252
+ -- Killing primary track of event 1269
+ -- Aborting event 1303
+ -- Killing primary track of event 1304
+ -- Killing primary track of event 1344
+ -- Aborting event 1152
+ -- Aborting event 1153
+ -- Killing primary track of event 1154
+ -- Aborting event 1219
+ -- Killing primary track of event 1220
+ -- Killing primary track of event 1241
+ -- Aborting event 1408
+ -- Killing primary track of event 1409
+ -- Killing primary track of event 1208
+ -- Aborting event 1419
+ -- Aborting event 1420
+ -- Killing primary track of event 1421
+ -- Aborting event 1430
+ -- Killing primary track of event 1431
+ -- Killing primary track of event 1441
+ -- Killing primary track of event 1377
+ -- Aborting event 1198
+ -- Aborting event 1452
+ -- Killing primary track of event 1453
+ -- Aborting event 1098
+ -- Aborting event 1099
+ -- Killing primary track of event 1463
+ -- Aborting event 1474
+ -- Aborting event 1475
+ -- Aborting event 1476
+ -- Aborting event 1477
+ -- Killing primary track of event 1478
+ -- Killing primary track of event 1262
+ -- Killing primary track of event 1398
+ -- Killing primary track of event 1315
+ -- Killing primary track of event 1335
+ -- Aborting event 1292
+ -- Aborting event 1293
+ -- Aborting event 1294
+ -- Aborting event 1295
+ -- Killing primary track of event 1296
+ -- Killing primary track of event 1253
+ -- Aborting event 1388
+ -- Aborting event 1389
+ -- Aborting event 1390
+ -- Killing primary track of event 1391
+ -- Killing primary track of event 1369
+ -- Aborting event 1270
+ -- Killing primary track of event 1271
+ -- Killing primary track of event 1305
+ -- Aborting event 1324
+ -- Killing primary track of event 1325
+ -- Killing primary track of event 1345
+ -- Killing primary track of event 1410
+ -- Killing primary track of event 1432
+ -- Aborting event 1485
+ -- Killing primary track of event 1486
+ -- Killing primary track of event 1378
+ -- Killing primary track of event 1442
+ -- Aborting event 1496
+ -- Aborting event 1497
+ -- Aborting event 1498
+ -- Aborting event 1499
+G4WT1 > Begin processing for Run: 0, History: 1500
+ -- Killing primary track of event 1500
+ -- Killing primary track of event 1242
+ -- Killing primary track of event 1464
+ -- Killing primary track of event 1454
+ -- Aborting event 1422
+ -- Aborting event 1423
+ -- Killing primary track of event 1424
+ -- Killing primary track of event 1263
+ -- Killing primary track of event 1209
+ -- Aborting event 1479
+ -- Aborting event 1480
+ -- Aborting event 1481
+ -- Killing primary track of event 1482
+ -- Killing primary track of event 1306
+ -- Aborting event 1316
+ -- Aborting event 1317
+ -- Killing primary track of event 1318
+ -- Aborting event 1272
+ -- Aborting event 1273
+ -- Killing primary track of event 1392
+ -- Killing primary track of event 1274
+ -- Killing primary track of event 1370
+ -- Aborting event 1297
+ -- Killing primary track of event 1507
+ -- Aborting event 1336
+ -- Killing primary track of event 1337
+ -- Killing primary track of event 1518
+ -- Killing primary track of event 1326
+ -- Killing primary track of event 1346
+ -- Killing primary track of event 1399
+ -- Killing primary track of event 1379
+ -- Killing primary track of event 1443
+ -- Killing primary track of event 1411
+ -- Killing primary track of event 1529
+ -- Aborting event 1508
+ -- Aborting event 1509
+ -- Aborting event 1510
+ -- Killing primary track of event 1307
+ -- Aborting event 1511
+ -- Aborting event 1512
+ -- Aborting event 1513
+ -- Killing primary track of event 1514
+ -- Killing primary track of event 1433
+ -- Aborting event 1455
+ -- Killing primary track of event 1456
+ -- Killing primary track of event 1465
+ -- Killing primary track of event 1487
+ -- Killing primary track of event 1501
+ -- Killing primary track of event 1425
+ -- Aborting event 1540
+ -- Killing primary track of event 1541
+ -- Killing primary track of event 1264
+ -- Killing primary track of event 1275
+ -- Aborting event 1319
+ -- Aborting event 1551
+ -- Killing primary track of event 1552
+ -- Aborting event 1483
+ -- Killing primary track of event 1484
+ -- Killing primary track of event 1371
+ -- Aborting event 1393
+ -- Killing primary track of event 1394
+ -- Killing primary track of event 1338
+ -- Killing primary track of event 1519
+ -- Aborting event 1327
+ -- Aborting event 1328
+ -- Killing primary track of event 1329
+ -- Killing primary track of event 1380
+ -- Aborting event 1444
+ -- Aborting event 1445
+ -- Aborting event 1446
+ -- Aborting event 1447
+ -- Killing primary track of event 1448
+ -- Aborting event 1400
+ -- Aborting event 1401
+ -- Killing primary track of event 1402
+ -- Aborting event 1347
+ -- Killing primary track of event 1348
+ -- Killing primary track of event 1434
+ -- Aborting event 1530
+ -- Aborting event 1531
+ -- Aborting event 1532
+ -- Aborting event 1533
+ -- Aborting event 1534
+ -- Aborting event 1535
+ -- Killing primary track of event 1536
+ -- Killing primary track of event 1488
+ -- Killing primary track of event 1426
+ -- Killing primary track of event 1412
+ -- Aborting event 1502
+ -- Aborting event 1503
+ -- Aborting event 1504
+ -- Aborting event 1505
+ -- Killing primary track of event 1506
+ -- Aborting event 1542
+ -- Killing primary track of event 1543
+ -- Killing primary track of event 1308
+ -- Aborting event 1562
+ -- Killing primary track of event 1563
+ -- Aborting event 1573
+ -- Aborting event 1574
+ -- Killing primary track of event 1372
+ -- Aborting event 1575
+ -- Aborting event 1576
+ -- Aborting event 1577
+ -- Aborting event 1578
+ -- Killing primary track of event 1579
+ -- Aborting event 1457
+ -- Killing primary track of event 1458
+ -- Killing primary track of event 1466
+ -- Aborting event 1520
+ -- Killing primary track of event 1521
+ -- Killing primary track of event 1584
+ -- Aborting event 1553
+ -- Aborting event 1554
+ -- Killing primary track of event 1555
+ -- Killing primary track of event 1515
+ -- Killing primary track of event 1395
+ -- Killing primary track of event 1330
+ -- Killing primary track of event 1339
+ -- Aborting event 1381
+ -- Killing primary track of event 1382
+ -- Killing primary track of event 1403
+ -- Aborting event 1595
+ -- Killing primary track of event 1596
+ -- Aborting event 1435
+ -- Killing primary track of event 1436
+ -- Killing primary track of event 1349
+ -- Killing primary track of event 1449
+ -- Killing primary track of event 1564
+ -- Aborting event 1606
+ -- Aborting event 1607
+ -- Aborting event 1608
+ -- Aborting event 1609
+ -- Aborting event 1610
+ -- Killing primary track of event 1544
+ -- Aborting event 1611
+ -- Aborting event 1612
+ -- Aborting event 1580
+ -- Killing primary track of event 1613
+ -- Aborting event 1581
+ -- Aborting event 1582
+ -- Killing primary track of event 1583
+ -- Aborting event 1413
+ -- Aborting event 1414
+ -- Aborting event 1415
+ -- Aborting event 1416
+ -- Killing primary track of event 1417
+ -- Aborting event 1489
+ -- Aborting event 1490
+ -- Killing primary track of event 1491
+ -- Killing primary track of event 1373
+ -- Killing primary track of event 1427
+ -- Killing primary track of event 1537
+ -- Killing primary track of event 1459
+ -- Aborting event 1467
+ -- Killing primary track of event 1468
+ -- Aborting event 1585
+ -- Aborting event 1586
+ -- Aborting event 1587
+ -- Killing primary track of event 1588
+ -- Aborting event 1522
+ -- Aborting event 1523
+ -- Aborting event 1524
+ -- Aborting event 1525
+ -- Aborting event 1516
+ -- Aborting event 1517
+ -- Aborting event 1526
+ -- Aborting event 1617
+ -- Aborting event 1527
+ -- Aborting event 1618
+ -- Aborting event 1619
+ -- Aborting event 1528
+ -- Aborting event 1620
+ -- Aborting event 1621
+ -- Killing primary track of event 1628
+ -- Aborting event 1622
+ -- Killing primary track of event 1623
+ -- Aborting event 1639
+ -- Aborting event 1640
+ -- Killing primary track of event 1641
+ -- Aborting event 1556
+ -- Aborting event 1557
+ -- Aborting event 1558
+ -- Aborting event 1559
+ -- Aborting event 1560
+ -- Aborting event 1561
+ -- Aborting event 1650
+ -- Aborting event 1651
+ -- Killing primary track of event 1652
+ -- Aborting event 1340
+ -- Aborting event 1341
+ -- Aborting event 1396
+ -- Aborting event 1661
+ -- Aborting event 1672
+ -- Aborting event 1662
+ -- Aborting event 1673
+ -- Aborting event 1663
+ -- Killing primary track of event 1674
+ -- Aborting event 1664
+ -- Killing primary track of event 1665
+ -- Killing primary track of event 1383
+ -- Killing primary track of event 1545
+ -- Aborting event 1450
+ -- Killing primary track of event 1451
+ -- Aborting event 1437
+ -- Killing primary track of event 1438
+ -- Aborting event 1350
+ -- Killing primary track of event 1351
+ -- Aborting event 1597
+ -- Killing primary track of event 1598
+ -- Killing primary track of event 1404
+ -- Killing primary track of event 1565
+ -- Aborting event 1492
+ -- Aborting event 1493
+ -- Killing primary track of event 1494
+ -- Killing primary track of event 1374
+ -- Aborting event 1418
+ -- Killing primary track of event 1683
+ -- Aborting event 1694
+ -- Aborting event 1695
+ -- Killing primary track of event 1696
+ -- Killing primary track of event 1428
+ -- Killing primary track of event 1589
+ -- Killing primary track of event 1614
+ -- Aborting event 1538
+ -- Aborting event 1539
+ -- Aborting event 1705
+ -- Aborting event 1706
+ -- Aborting event 1707
+ -- Killing primary track of event 1629
+ -- Aborting event 1708
+ -- Killing primary track of event 1709
+ -- Aborting event 1624
+ -- Aborting event 1625
+ -- Killing primary track of event 1626
+ -- Killing primary track of event 1460
+ -- Aborting event 1653
+ -- Aborting event 1654
+ -- Aborting event 1655
+ -- Aborting event 1656
+ -- Killing primary track of event 1657
+ -- Killing primary track of event 1666
+ -- Aborting event 1384
+ -- Killing primary track of event 1385
+ -- Killing primary track of event 1469
+ -- Aborting event 1642
+ -- Killing primary track of event 1643
+ -- Killing primary track of event 1439
+ -- Aborting event 1675
+ -- Aborting event 1676
+ -- Killing primary track of event 1677
+ -- Aborting event 1716
+ -- Killing primary track of event 1717
+ -- Killing primary track of event 1727
+ -- Aborting event 1546
+ -- Aborting event 1547
+ -- Killing primary track of event 1548
+ -- Aborting event 1566
+ -- Killing primary track of event 1567
+ -- Aborting event 1495
+ -- Aborting event 1738
+ -- Killing primary track of event 1739
+ -- Killing primary track of event 1352
+ -- Killing primary track of event 1429
+ -- Killing primary track of event 1599
+ -- Aborting event 1684
+ -- Killing primary track of event 1685
+ -- Killing primary track of event 1615
+ -- Aborting event 1658
+ -- Aborting event 1659
+ -- Killing primary track of event 1660
+ -- Aborting event 1630
+ -- Killing primary track of event 1405
+ -- Killing primary track of event 1631
+ -- Killing primary track of event 1697
+ -- Killing primary track of event 1710
+ -- Aborting event 1590
+ -- Aborting event 1591
+ -- Aborting event 1592
+ -- Killing primary track of event 1593
+ -- Aborting event 1627
+ -- Killing primary track of event 1749
+ -- Killing primary track of event 1760
+ -- Killing primary track of event 1461
+ -- Aborting event 1644
+ -- Killing primary track of event 1645
+ -- Killing primary track of event 1667
+ -- Aborting event 1470
+ -- Killing primary track of event 1471
+ -- Killing primary track of event 1718
+ -- Aborting event 1549
+ -- Killing primary track of event 1550
+ -- Killing primary track of event 1440
+ -- Aborting event 1568
+ -- Killing primary track of event 1569
+ -- Aborting event 1678
+ -- Aborting event 1679
+ -- Killing primary track of event 1680
+ -- Killing primary track of event 1740
+ -- Killing primary track of event 1771
+ -- Aborting event 1600
+ -- Killing primary track of event 1601
+ -- Killing primary track of event 1728
+ -- Killing primary track of event 1616
+ -- Aborting event 1782
+ -- Aborting event 1783
+ -- Killing primary track of event 1784
+ -- Aborting event 1406
+ -- Killing primary track of event 1407
+ -- Killing primary track of event 1793
+ -- Aborting event 1632
+ -- Killing primary track of event 1633
+ -- Aborting event 1761
+ -- Aborting event 1762
+ -- Killing primary track of event 1763
+ -- Aborting event 1686
+ -- Killing primary track of event 1687
+ -- Killing primary track of event 1698
+ -- Killing primary track of event 1646
+ -- Killing primary track of event 1750
+ -- Killing primary track of event 1472
+ -- Killing primary track of event 1594
+ -- Killing primary track of event 1711
+ -- Killing primary track of event 1462
+ -- Aborting event 1668
+ -- Killing primary track of event 1669
+ -- Aborting event 1602
+ -- Killing primary track of event 1603
+ -- Killing primary track of event 1804
+ -- Killing primary track of event 1815
+ -- Killing primary track of event 1772
+ -- Aborting event 1741
+ -- Aborting event 1742
+ -- Aborting event 1743
+ -- Aborting event 1681
+ -- Aborting event 1682
+ -- Aborting event 1744
+ -- Aborting event 1745
+ -- Aborting event 1746
+ -- Killing primary track of event 1747
+ -- Killing primary track of event 1826
+ -- Aborting event 1570
+ -- Aborting event 1571
+ -- Killing primary track of event 1572
+ -- Killing primary track of event 1719
+ -- Killing primary track of event 1729
+ -- Killing primary track of event 1794
+ -- Aborting event 1837
+ -- Aborting event 1838
+ -- Killing primary track of event 1839
+ -- Aborting event 1634
+ -- Aborting event 1635
+ -- Killing primary track of event 1636
+ -- Aborting event 1764
+ -- Killing primary track of event 1765
+ -- Aborting event 1688
+ -- Aborting event 1848
+ -- Aborting event 1849
+ -- Aborting event 1689
+ -- Killing primary track of event 1850
+ -- Killing primary track of event 1690
+ -- Aborting event 1785
+ -- Aborting event 1786
+ -- Killing primary track of event 1787
+ -- Aborting event 1751
+ -- Aborting event 1752
+ -- Aborting event 1753
+ -- Killing primary track of event 1754
+ -- Aborting event 1699
+ -- Killing primary track of event 1700
+ -- Aborting event 1473
+ -- Killing primary track of event 1859
+ -- Killing primary track of event 1647
+ -- Aborting event 1870
+ -- Killing primary track of event 1871
+ -- Aborting event 1881
+ -- Aborting event 1882
+ -- Killing primary track of event 1883
+ -- Aborting event 1670
+ -- Aborting event 1671
+ -- Killing primary track of event 1892
+ -- Killing primary track of event 1773
+ -- Aborting event 1827
+ -- Aborting event 1828
+ -- Killing primary track of event 1829
+ -- Killing primary track of event 1805
+ -- Killing primary track of event 1816
+ -- Killing primary track of event 1604
+ -- Killing primary track of event 1712
+ -- Aborting event 1851
+ -- Killing primary track of event 1852
+ -- Killing primary track of event 1748
+ -- Aborting event 1720
+ -- Aborting event 1721
+ -- Killing primary track of event 1722
+ -- Aborting event 1691
+ -- Aborting event 1692
+ -- Killing primary track of event 1693
+ -- Aborting event 1903
+ -- Killing primary track of event 1904
+ -- Killing primary track of event 1840
+ -- Aborting event 1730
+ -- Killing primary track of event 1731
+ -- Killing primary track of event 1637
+ -- Killing primary track of event 1701
+ -- Aborting event 1766
+ -- Killing primary track of event 1767
+ -- Aborting event 1755
+ -- Aborting event 1756
+ -- Aborting event 1757
+ -- Aborting event 1758
+ -- Killing primary track of event 1759
+ -- Killing primary track of event 1795
+ -- Killing primary track of event 1648
+ -- Killing primary track of event 1788
+ -- Aborting event 1860
+ -- Aborting event 1861
+ -- Killing primary track of event 1862
+ -- Killing primary track of event 1817
+ -- Killing primary track of event 1713
+ -- Aborting event 1605
+ -- Killing primary track of event 1914
+ -- Killing primary track of event 1872
+ -- Killing primary track of event 1884
+ -- Killing primary track of event 1830
+ -- Killing primary track of event 1806
+ -- Killing primary track of event 1723
+ -- Killing primary track of event 1853
+ -- Killing primary track of event 1925
+ -- Killing primary track of event 1936
+ -- Aborting event 1893
+ -- Killing primary track of event 1894
+ -- Aborting event 1732
+ -- Killing primary track of event 1733
+ -- Killing primary track of event 1841
+ -- Killing primary track of event 1774
+ -- Killing primary track of event 1905
+ -- Aborting event 1768
+ -- Aborting event 1769
+ -- Aborting event 1770
+ -- Killing primary track of event 1947
+ -- Killing primary track of event 1796
+ -- Killing primary track of event 1702
+ -- Aborting event 1958
+ -- Aborting event 1959
+ -- Killing primary track of event 1960
+ -- Killing primary track of event 1638
+ -- Killing primary track of event 1649
+ -- Aborting event 1885
+ -- Killing primary track of event 1886
+ -- Aborting event 1937
+ -- Killing primary track of event 1938
+ -- Aborting event 1714
+ -- Killing primary track of event 1854
+ -- Killing primary track of event 1715
+ -- Killing primary track of event 1789
+ -- Aborting event 1915
+ -- Killing primary track of event 1916
+ -- Killing primary track of event 1863
+ -- Aborting event 1873
+ -- Killing primary track of event 1874
+ -- Killing primary track of event 1818
+ -- Killing primary track of event 1807
+ -- Killing primary track of event 1831
+ -- Aborting event 1842
+ -- Killing primary track of event 1843
+ -- Killing primary track of event 1724
+ -- Aborting event 1734
+ -- Aborting event 1735
+ -- Killing primary track of event 1736
+ -- Aborting event 1926
+ -- Aborting event 1927
+ -- Aborting event 1928
+ -- Aborting event 1929
+ -- Aborting event 1930
+ -- Killing primary track of event 1931
+ -- Killing primary track of event 1703
+ -- Killing primary track of event 1895
+ -- Killing primary track of event 1775
+ -- Aborting event 1797
+ -- Killing primary track of event 1798
+ -- Killing primary track of event 1906
+ -- Killing primary track of event 1969
+ -- Aborting event 1961
+ -- Aborting event 1962
+ -- Killing primary track of event 1963
+ -- Aborting event 1948
+ -- Aborting event 1949
+ -- Killing primary track of event 1950
+ -- Aborting event 1980
+ -- Killing primary track of event 1981
+ -- Killing primary track of event 1917
+ -- Killing primary track of event 1939
+ -- Aborting event 1991
+ -- Aborting event 1992
+ -- Aborting event 1993
+ -- Aborting event 1855
+ -- Aborting event 1994
+ -- Aborting event 1856
+ -- Aborting event 1995
+ -- Killing primary track of event 1996
+ -- Killing primary track of event 1857
+ -- Aborting event 1887
+ -- Aborting event 1888
+ -- Killing primary track of event 1889
+ -- Aborting event 1725
+ -- Aborting event 1726
+ -- Killing primary track of event 2002
+ -- Aborting event 1808
+ -- Killing primary track of event 1809
+ -- Aborting event 1790
+ -- Aborting event 1791
+ -- Aborting event 1864
+ -- Killing primary track of event 1865
+ -- Killing primary track of event 1792
+ -- Killing primary track of event 1704
+ -- Aborting event 1776
+ -- Aborting event 1777
+ -- Aborting event 1778
+ -- Aborting event 1819
+ -- Aborting event 1779
+ -- Killing primary track of event 1780
+ -- Killing primary track of event 1820
+ -- Killing primary track of event 1832
+ -- Aborting event 1844
+ -- Aborting event 1845
+ -- Aborting event 1846
+ -- Aborting event 1847
+ -- Killing primary track of event 2013
+ -- Killing primary track of event 1896
+ -- Killing primary track of event 1932
+ -- Killing primary track of event 1875
+ -- Killing primary track of event 1737
+ -- Aborting event 1907
+ -- Killing primary track of event 1908
+ -- Aborting event 1951
+ -- Killing primary track of event 1952
+ -- Aborting event 1982
+ -- Killing primary track of event 1983
+ -- Killing primary track of event 1964
+ -- Killing primary track of event 1799
+ -- Aborting event 1970
+ -- Killing primary track of event 1971
+ -- Aborting event 1940
+ -- Aborting event 1941
+ -- Aborting event 1942
+ -- Aborting event 1943
+ -- Aborting event 1944
+ -- Killing primary track of event 1945
+ -- Killing primary track of event 1866
+ -- Aborting event 1858
+ -- Aborting event 2003
+ -- Killing primary track of event 2024
+ -- Aborting event 2004
+ -- Aborting event 2005
+ -- Aborting event 2006
+ -- Aborting event 2007
+ -- Aborting event 2008
+ -- Killing primary track of event 2009
+ -- Aborting event 1821
+ -- Killing primary track of event 1822
+ -- Aborting event 1918
+ -- Aborting event 1919
+ -- Killing primary track of event 1920
+ -- Aborting event 1997
+ -- Aborting event 1998
+ -- Aborting event 1999
+ -- Killing primary track of event 2000
+ -- Aborting event 1890
+ -- Killing primary track of event 1891
+ -- Killing primary track of event 2014
+ -- Aborting event 1897
+ -- Aborting event 2035
+ -- Aborting event 2036
+ -- Killing primary track of event 1898
+ -- Killing primary track of event 2037
+ -- Aborting event 1965
+ -- Aborting event 1966
+ -- Killing primary track of event 1967
+ -- Killing primary track of event 1833
+ -- Aborting event 2046
+ -- Killing primary track of event 2047
+ -- Killing primary track of event 1953
+ -- Killing primary track of event 1876
+ -- Aborting event 1984
+ -- Aborting event 1985
+ -- Aborting event 1986
+ -- Aborting event 1987
+ -- Aborting event 1988
+ -- Killing primary track of event 1989
+ -- Aborting event 1972
+ -- Aborting event 1973
+ -- Killing primary track of event 1974
+ -- Killing primary track of event 1810
+ -- Killing primary track of event 1933
+ -- Killing primary track of event 1781
+ -- Aborting event 1909
+ -- Aborting event 1910
+ -- Aborting event 2057
+ -- Killing primary track of event 1911
+ -- Killing primary track of event 2058
+G4WT20 > Begin processing for Run: 0, History: 1800
+ -- Aborting event 1800
+ -- Killing primary track of event 1801
+ -- Killing primary track of event 1921
+ -- Killing primary track of event 1946
+ -- Aborting event 2025
+ -- Killing primary track of event 2026
+ -- Killing primary track of event 1823
+ -- Aborting event 2068
+ -- Aborting event 2069
+ -- Aborting event 2070
+ -- Killing primary track of event 2071
+ -- Killing primary track of event 1867
+ -- Aborting event 2001
+ -- Aborting event 2079
+ -- Killing primary track of event 2080
+ -- Killing primary track of event 2038
+ -- Aborting event 2059
+ -- Aborting event 2060
+ -- Killing primary track of event 2061
+ -- Aborting event 1975
+ -- Killing primary track of event 2010
+ -- Killing primary track of event 1976
+ -- Killing primary track of event 2015
+ -- Aborting event 1899
+ -- Aborting event 1900
+ -- Killing primary track of event 1901
+ -- Killing primary track of event 1834
+ -- Aborting event 1968
+ -- Aborting event 2090
+ -- Killing primary track of event 2091
+ -- Killing primary track of event 2101
+ -- Killing primary track of event 1934
+ -- Aborting event 1877
+ -- Aborting event 1878
+ -- Killing primary track of event 1879
+ -- Killing primary track of event 1811
+ -- Killing primary track of event 1912
+ -- Aborting event 2048
+ -- Aborting event 2049
+ -- Killing primary track of event 2050
+ -- Killing primary track of event 1954
+ -- Aborting event 1802
+ -- Aborting event 1803
+ -- Killing primary track of event 2112
+ -- Killing primary track of event 1990
+ -- Aborting event 2123
+ -- Killing primary track of event 2124
+ -- Aborting event 2027
+ -- Aborting event 2028
+ -- Aborting event 2029
+ -- Killing primary track of event 2030
+ -- Killing primary track of event 1922
+ -- Aborting event 2039
+ -- Killing primary track of event 2040
+ -- Aborting event 2062
+ -- Killing primary track of event 2063
+ -- Aborting event 2092
+ -- Aborting event 2093
+ -- Killing primary track of event 2094
+ -- Aborting event 2072
+ -- Killing primary track of event 2073
+ -- Aborting event 2011
+ -- Aborting event 2012
+ -- Aborting event 2134
+ -- Killing primary track of event 2135
+ -- Aborting event 2081
+ -- Killing primary track of event 2082
+ -- Killing primary track of event 1868
+ -- Killing primary track of event 1824
+ -- Aborting event 1835
+ -- Aborting event 1836
+ -- Killing primary track of event 2145
+ -- Aborting event 1812
+ -- Killing primary track of event 1813
+ -- Aborting event 1880
+ -- Aborting event 2156
+ -- Aborting event 2157
+ -- Aborting event 2158
+ -- Killing primary track of event 2159
+ -- Killing primary track of event 2016
+ -- Killing primary track of event 1977
+ -- Killing primary track of event 2051
+ -- Killing primary track of event 1935
+ -- Killing primary track of event 1902
+ -- Aborting event 2102
+ -- Killing primary track of event 2103
+ -- Killing primary track of event 1955
+ -- Aborting event 2125
+ -- Aborting event 2126
+ -- Killing primary track of event 2127
+ -- Aborting event 2031
+ -- Aborting event 2032
+ -- Aborting event 2033
+ -- Aborting event 2034
+ -- Aborting event 2167
+ -- Aborting event 2168
+ -- Aborting event 2169
+ -- Killing primary track of event 2113
+ -- Aborting event 2170
+ -- Killing primary track of event 2171
+ -- Killing primary track of event 1913
+ -- Aborting event 2178
+ -- Killing primary track of event 2179
+ -- Aborting event 2136
+ -- Killing primary track of event 2137
+ -- Killing primary track of event 1923
+ -- Killing primary track of event 2095
+ -- Killing primary track of event 2074
+ -- Aborting event 1814
+ -- Killing primary track of event 2189
+ -- Killing primary track of event 2041
+ -- Aborting event 2064
+ -- Aborting event 2065
+ -- Killing primary track of event 2066
+ -- Killing primary track of event 2160
+ -- Killing primary track of event 1825
+ -- Aborting event 2200
+ -- Killing primary track of event 2201
+ -- Killing primary track of event 2017
+ -- Killing primary track of event 2052
+ -- Killing primary track of event 2083
+ -- Killing primary track of event 2211
+ -- Killing primary track of event 1869
+ -- Killing primary track of event 2114
+ -- Killing primary track of event 2172
+ -- Killing primary track of event 1978
+ -- Killing primary track of event 2146
+ -- Killing primary track of event 2128
+ -- Killing primary track of event 2180
+ -- Killing primary track of event 2104
+ -- Killing primary track of event 1956
+ -- Aborting event 1924
+ -- Aborting event 2222
+ -- Killing primary track of event 2223
+ -- Aborting event 2233
+ -- Killing primary track of event 2234
+ -- Aborting event 2075
+ -- Aborting event 2076
+ -- Killing primary track of event 2077
+ -- Killing primary track of event 2138
+ -- Aborting event 2161
+ -- Aborting event 2162
+ -- Killing primary track of event 2163
+ -- Killing primary track of event 2067
+ -- Killing primary track of event 2096
+ -- Aborting event 2212
+ -- Killing primary track of event 2213
+ -- Killing primary track of event 2147
+ -- Killing primary track of event 2042
+ -- Aborting event 2202
+ -- Aborting event 2203
+ -- Killing primary track of event 2204
+ -- Aborting event 2190
+ -- Killing primary track of event 2191
+ -- Aborting event 2173
+ -- Aborting event 2174
+ -- Killing primary track of event 2175
+ -- Killing primary track of event 2115
+ -- Killing primary track of event 2244
+ -- Killing primary track of event 2018
+ -- Aborting event 2255
+ -- Aborting event 2256
+ -- Killing primary track of event 2257
+ -- Killing primary track of event 2053
+ -- Aborting event 2084
+ -- Aborting event 2085
+ -- Aborting event 2086
+ -- Killing primary track of event 2087
+ -- Killing primary track of event 1979
+ -- Killing primary track of event 2129
+ -- Killing primary track of event 2181
+ -- Killing primary track of event 2078
+ -- Killing primary track of event 1957
+ -- Aborting event 2105
+ -- Aborting event 2106
+ -- Killing primary track of event 2107
+ -- Killing primary track of event 2224
+ -- Aborting event 2235
+ -- Aborting event 2236
+ -- Killing primary track of event 2237
+ -- Killing primary track of event 2097
+ -- Killing primary track of event 2139
+ -- Aborting event 2164
+ -- Aborting event 2165
+ -- Killing primary track of event 2166
+ -- Killing primary track of event 2148
+ -- Killing primary track of event 2214
+ -- Aborting event 2054
+ -- Aborting event 2055
+ -- Killing primary track of event 2056
+ -- Killing primary track of event 2088
+ -- Aborting event 2176
+ -- Killing primary track of event 2177
+ -- Aborting event 2258
+ -- Killing primary track of event 2259
+ -- Killing primary track of event 2192
+ -- Aborting event 2205
+ -- Killing primary track of event 2206
+ -- Aborting event 2266
+ -- Killing primary track of event 2267
+ -- Aborting event 2116
+ -- Killing primary track of event 2117
+ -- Aborting event 2245
+ -- Aborting event 2246
+ -- Killing primary track of event 2247
+ -- Aborting event 2043
+ -- Aborting event 2044
+ -- Aborting event 2045
+ -- Killing primary track of event 2277
+ -- Killing primary track of event 2288
+ -- Killing primary track of event 2130
+ -- Aborting event 2019
+ -- Killing primary track of event 2020
+ -- Killing primary track of event 2098
+ -- Aborting event 2182
+ -- Killing primary track of event 2183
+ -- Aborting event 2108
+ -- Killing primary track of event 2109
+ -- Aborting event 2238
+ -- Aborting event 2239
+ -- Killing primary track of event 2240
+ -- Aborting event 2225
+ -- Aborting event 2226
+ -- Killing primary track of event 2227
+ -- Aborting event 2299
+ -- Killing primary track of event 2300
+ -- Aborting event 2310
+ -- Killing primary track of event 2311
+ -- Killing primary track of event 2140
+ -- Killing primary track of event 2268
+ -- Killing primary track of event 2260
+ -- Killing primary track of event 2321
+ -- Aborting event 2149
+ -- Killing primary track of event 2150
+ -- Killing primary track of event 2289
+ -- Aborting event 2215
+ -- Killing primary track of event 2216
+ -- Aborting event 2332
+ -- Killing primary track of event 2333
+ -- Aborting event 2248
+ -- Killing primary track of event 2249
+ -- Killing primary track of event 2089
+ -- Killing primary track of event 2343
+ -- Aborting event 2278
+ -- Aborting event 2279
+ -- Killing primary track of event 2280
+ -- Aborting event 2110
+ -- Aborting event 2118
+ -- Aborting event 2111
+ -- Aborting event 2119
+ -- Killing primary track of event 2354
+ -- Aborting event 2120
+ -- Killing primary track of event 2121
+ -- Aborting event 2193
+ -- Aborting event 2194
+ -- Aborting event 2195
+ -- Aborting event 2196
+ -- Aborting event 2197
+ -- Killing primary track of event 2198
+ -- Aborting event 2131
+ -- Killing primary track of event 2132
+ -- Aborting event 2207
+ -- Killing primary track of event 2208
+ -- Killing primary track of event 2301
+ -- Aborting event 2099
+G4WT18 > Begin processing for Run: 0, History: 2100
+ -- Killing primary track of event 2100
+ -- Killing primary track of event 2021
+ -- Aborting event 2184
+ -- Aborting event 2185
+ -- Killing primary track of event 2186
+ -- Aborting event 2228
+ -- Aborting event 2229
+ -- Killing primary track of event 2230
+ -- Aborting event 2241
+ -- Killing primary track of event 2242
+ -- Aborting event 2141
+ -- Killing primary track of event 2142
+ -- Killing primary track of event 2312
+ -- Killing primary track of event 2269
+ -- Aborting event 2261
+ -- Killing primary track of event 2262
+ -- Aborting event 2217
+ -- Aborting event 2218
+ -- Killing primary track of event 2219
+ -- Aborting event 2334
+ -- Aborting event 2335
+ -- Aborting event 2336
+ -- Killing primary track of event 2337
+ -- Aborting event 2344
+ -- Killing primary track of event 2345
+ -- Aborting event 2151
+ -- Aborting event 2152
+ -- Killing primary track of event 2153
+ -- Killing primary track of event 2199
+ -- Killing primary track of event 2322
+ -- Killing primary track of event 2290
+ -- Aborting event 2250
+ -- Aborting event 2122
+ -- Aborting event 2365
+ -- Aborting event 2251
+ -- Aborting event 2366
+ -- Aborting event 2252
+ -- Aborting event 2253
+ -- Killing primary track of event 2367
+ -- Aborting event 2254
+ -- Killing primary track of event 2376
+ -- Aborting event 2281
+ -- Aborting event 2282
+ -- Aborting event 2283
+ -- Killing primary track of event 2284
+ -- Killing primary track of event 2133
+ -- Aborting event 2209
+ -- Aborting event 2210
+ -- Killing primary track of event 2387
+ -- Aborting event 2398
+ -- Aborting event 2399
+G4WT13 > Begin processing for Run: 0, History: 2400
+ -- Killing primary track of event 2400
+ -- Aborting event 2302
+ -- Aborting event 2303
+ -- Aborting event 2304
+ -- Killing primary track of event 2305
+ -- Aborting event 2409
+ -- Killing primary track of event 2410
+ -- Aborting event 2231
+ -- Aborting event 2232
+ -- Aborting event 2420
+ -- Aborting event 2421
+ -- Aborting event 2422
+ -- Killing primary track of event 2423
+ -- Aborting event 2187
+ -- Killing primary track of event 2188
+ -- Killing primary track of event 2355
+ -- Aborting event 2313
+ -- Killing primary track of event 2314
+ -- Killing primary track of event 2143
+ -- Killing primary track of event 2022
+ -- Aborting event 2243
+ -- Aborting event 2431
+ -- Killing primary track of event 2432
+ -- Killing primary track of event 2291
+ -- Killing primary track of event 2270
+ -- Killing primary track of event 2442
+ -- Aborting event 2263
+ -- Aborting event 2220
+ -- Killing primary track of event 2221
+ -- Killing primary track of event 2264
+ -- Killing primary track of event 2154
+ -- Aborting event 2346
+ -- Aborting event 2347
+ -- Aborting event 2348
+ -- Killing primary track of event 2349
+ -- Killing primary track of event 2368
+ -- Aborting event 2285
+ -- Aborting event 2338
+ -- Aborting event 2286
+ -- Aborting event 2287
+ -- Killing primary track of event 2339
+ -- Killing primary track of event 2453
+ -- Aborting event 2377
+ -- Aborting event 2323
+ -- Aborting event 2324
+ -- Aborting event 2378
+ -- Killing primary track of event 2379
+ -- Killing primary track of event 2325
+ -- Aborting event 2306
+ -- Killing primary track of event 2307
+ -- Killing primary track of event 2411
+ -- Killing primary track of event 2464
+ -- Aborting event 2401
+ -- Aborting event 2402
+ -- Killing primary track of event 2403
+ -- Aborting event 2388
+ -- Killing primary track of event 2389
+ -- Killing primary track of event 2424
+ -- Aborting event 2433
+ -- Aborting event 2434
+ -- Killing primary track of event 2435
+ -- Aborting event 2356
+ -- Killing primary track of event 2315
+ -- Aborting event 2357
+ -- Killing primary track of event 2358
+ -- Killing primary track of event 2023
+ -- Aborting event 2475
+ -- Killing primary track of event 2476
+ -- Aborting event 2144
+ -- Aborting event 2486
+ -- Aborting event 2487
+ -- Aborting event 2488
+ -- Killing primary track of event 2489
+ -- Aborting event 2271
+ -- Aborting event 2272
+ -- Aborting event 2273
+ -- Killing primary track of event 2274
+ -- Aborting event 2292
+ -- Killing primary track of event 2293
+ -- Killing primary track of event 2155
+ -- Aborting event 2369
+ -- Aborting event 2370
+ -- Aborting event 2371
+ -- Killing primary track of event 2443
+ -- Aborting event 2372
+ -- Killing primary track of event 2373
+ -- Killing primary track of event 2265
+ -- Aborting event 2326
+ -- Aborting event 2327
+ -- Aborting event 2328
+ -- Killing primary track of event 2329
+ -- Aborting event 2350
+ -- Killing primary track of event 2351
+ -- Aborting event 2497
+ -- Killing primary track of event 2498
+ -- Aborting event 2308
+ -- Killing primary track of event 2309
+ -- Aborting event 2412
+ -- Killing primary track of event 2413
+ -- Killing primary track of event 2380
+ -- Killing primary track of event 2404
+ -- Killing primary track of event 2454
+ -- Aborting event 2465
+ -- Aborting event 2466
+ -- Killing primary track of event 2467
+ -- Aborting event 2340
+ -- Killing primary track of event 2341
+ -- Aborting event 2436
+ -- Killing primary track of event 2437
+ -- Aborting event 2390
+ -- Killing primary track of event 2391
+ -- Killing primary track of event 2508
+ -- Killing primary track of event 2359
+ -- Killing primary track of event 2425
+ -- Killing primary track of event 2316
+ -- Killing primary track of event 2477
+ -- Aborting event 2275
+ -- Killing primary track of event 2276
+ -- Aborting event 2294
+ -- Aborting event 2295
+ -- Aborting event 2296
+ -- Killing primary track of event 2297
+ -- Killing primary track of event 2490
+ -- Killing primary track of event 2519
+ -- Aborting event 2374
+ -- Killing primary track of event 2375
+ -- Killing primary track of event 2444
+ -- Killing primary track of event 2530
+ -- Aborting event 2541
+ -- Aborting event 2542
+ -- Killing primary track of event 2543
+ -- Killing primary track of event 2405
+ -- Killing primary track of event 2499
+ -- Aborting event 2330
+ -- Killing primary track of event 2331
+ -- Killing primary track of event 2352
+ -- Killing primary track of event 2414
+ -- Aborting event 2381
+ -- Killing primary track of event 2382
+ -- Killing primary track of event 2455
+ -- Aborting event 2509
+ -- Aborting event 2510
+ -- Aborting event 2511
+ -- Killing primary track of event 2512
+ -- Aborting event 2468
+ -- Aborting event 2469
+ -- Killing primary track of event 2470
+ -- Killing primary track of event 2317
+ -- Aborting event 2342
+ -- Killing primary track of event 2552
+ -- Killing primary track of event 2438
+ -- Aborting event 2426
+ -- Killing primary track of event 2427
+ -- Aborting event 2478
+ -- Aborting event 2479
+ -- Aborting event 2480
+ -- Killing primary track of event 2481
+ -- Killing primary track of event 2360
+ -- Aborting event 2392
+ -- Aborting event 2393
+ -- Killing primary track of event 2394
+ -- Killing primary track of event 2298
+ -- Aborting event 2491
+ -- Killing primary track of event 2492
+ -- Killing primary track of event 2563
+ -- Aborting event 2574
+ -- Aborting event 2575
+ -- Aborting event 2576
+ -- Aborting event 2577
+ -- Killing primary track of event 2578
+ -- Aborting event 2520
+ -- Aborting event 2521
+ -- Aborting event 2522
+ -- Killing primary track of event 2523
+ -- Killing primary track of event 2500
+ -- Killing primary track of event 2585
+ -- Aborting event 2406
+ -- Aborting event 2407
+ -- Aborting event 2408
+ -- Aborting event 2596
+ -- Killing primary track of event 2597
+ -- Aborting event 2544
+ -- Aborting event 2545
+ -- Aborting event 2546
+ -- Aborting event 2547
+ -- Killing primary track of event 2548
+ -- Aborting event 2353
+ -- Aborting event 2607
+ -- Killing primary track of event 2445
+ -- Aborting event 2608
+ -- Killing primary track of event 2609
+ -- Killing primary track of event 2531
+ -- Killing primary track of event 2383
+ -- Killing primary track of event 2456
+ -- Aborting event 2415
+ -- Aborting event 2416
+ -- Aborting event 2417
+ -- Aborting event 2418
+ -- Killing primary track of event 2419
+ -- Killing primary track of event 2482
+ -- Killing primary track of event 2513
+ -- Aborting event 2439
+ -- Killing primary track of event 2440
+ -- Killing primary track of event 2553
+ -- Killing primary track of event 2361
+ -- Aborting event 2318
+ -- Aborting event 2319
+ -- Aborting event 2471
+ -- Killing primary track of event 2320
+ -- Killing primary track of event 2472
+ -- Aborting event 2395
+ -- Aborting event 2396
+ -- Killing primary track of event 2397
+ -- Aborting event 2564
+ -- Aborting event 2565
+ -- Killing primary track of event 2566
+ -- Aborting event 2428
+ -- Killing primary track of event 2429
+ -- Killing primary track of event 2493
+ -- Aborting event 2618
+ -- Aborting event 2619
+ -- Killing primary track of event 2620
+ -- Killing primary track of event 2579
+ -- Aborting event 2524
+ -- Killing primary track of event 2525
+ -- Killing primary track of event 2598
+ -- Killing primary track of event 2586
+ -- Killing primary track of event 2549
+ -- Aborting event 2501
+ -- Killing primary track of event 2502
+ -- Aborting event 2446
+ -- Killing primary track of event 2447
+ -- Killing primary track of event 2629
+ -- Aborting event 2610
+ -- Killing primary track of event 2611
+ -- Aborting event 2532
+ -- Killing primary track of event 2533
+ -- Aborting event 2554
+ -- Killing primary track of event 2555
+ -- Killing primary track of event 2457
+ -- Aborting event 2441
+ -- Aborting event 2640
+ -- Aborting event 2641
+ -- Aborting event 2642
+ -- Aborting event 2643
+ -- Killing primary track of event 2644
+ -- Aborting event 2483
+ -- Killing primary track of event 2484
+ -- Aborting event 2384
+ -- Killing primary track of event 2385
+ -- Killing primary track of event 2514
+ -- Aborting event 2473
+ -- Aborting event 2474
+ -- Aborting event 2651
+ -- Killing primary track of event 2652
+ -- Killing primary track of event 2662
+ -- Aborting event 2567
+ -- Killing primary track of event 2568
+ -- Aborting event 2580
+ -- Killing primary track of event 2581
+ -- Killing primary track of event 2673
+ -- Aborting event 2621
+ -- Killing primary track of event 2622
+ -- Aborting event 2362
+ -- Aborting event 2363
+ -- Aborting event 2364
+ -- Killing primary track of event 2684
+ -- Aborting event 2599
+ -- Aborting event 2600
+ -- Killing primary track of event 2601
+ -- Aborting event 2494
+ -- Killing primary track of event 2495
+ -- Aborting event 2430
+ -- Aborting event 2695
+ -- Aborting event 2696
+ -- Aborting event 2697
+ -- Killing primary track of event 2698
+ -- Aborting event 2587
+ -- Killing primary track of event 2588
+ -- Aborting event 2526
+ -- Aborting event 2527
+ -- Aborting event 2528
+ -- Aborting event 2529
+ -- Aborting event 2706
+ -- Killing primary track of event 2707
+ -- Aborting event 2448
+ -- Killing primary track of event 2449
+ -- Killing primary track of event 2503
+ -- Killing primary track of event 2556
+ -- Aborting event 2612
+ -- Aborting event 2613
+ -- Aborting event 2614
+ -- Killing primary track of event 2615
+ -- Killing primary track of event 2550
+ -- Killing primary track of event 2630
+ -- Aborting event 2485
+ -- Aborting event 2717
+ -- Aborting event 2718
+ -- Aborting event 2719
+ -- Aborting event 2720
+ -- Killing primary track of event 2653
+ -- Killing primary track of event 2721
+ -- Aborting event 2645
+ -- Killing primary track of event 2646
+ -- Aborting event 2458
+ -- Killing primary track of event 2459
+ -- Aborting event 2534
+ -- Killing primary track of event 2535
+ -- Killing primary track of event 2386
+ -- Aborting event 2663
+ -- Killing primary track of event 2664
+ -- Killing primary track of event 2515
+ -- Aborting event 2623
+ -- Aborting event 2624
+ -- Killing primary track of event 2582
+ -- Aborting event 2625
+ -- Aborting event 2626
+ -- Aborting event 2627
+ -- Killing primary track of event 2628
+ -- Aborting event 2569
+ -- Killing primary track of event 2570
+ -- Killing primary track of event 2674
+ -- Killing primary track of event 2602
+ -- Killing primary track of event 2699
+ -- Killing primary track of event 2685
+ -- Killing primary track of event 2496
+ -- Aborting event 2504
+ -- Aborting event 2505
+ -- Killing primary track of event 2506
+ -- Aborting event 2631
+ -- Killing primary track of event 2632
+ -- Aborting event 2450
+ -- Killing primary track of event 2451
+ -- Killing primary track of event 2708
+ -- Killing primary track of event 2589
+ -- Killing primary track of event 2654
+ -- Killing primary track of event 2460
+ -- Aborting event 2647
+ -- Killing primary track of event 2648
+ -- Killing primary track of event 2665
+ -- Aborting event 2557
+ -- Killing primary track of event 2558
+ -- Killing primary track of event 2616
+ -- Aborting event 2536
+ -- Killing primary track of event 2537
+ -- Killing primary track of event 2551
+ -- Aborting event 2722
+ -- Aborting event 2723
+ -- Killing primary track of event 2724
+ -- Aborting event 2728
+ -- Killing primary track of event 2729
+ -- Aborting event 2516
+ -- Killing primary track of event 2517
+ -- Aborting event 2603
+ -- Aborting event 2604
+ -- Aborting event 2739
+ -- Killing primary track of event 2605
+ -- Killing primary track of event 2740
+ -- Aborting event 2571
+ -- Aborting event 2572
+ -- Killing primary track of event 2573
+ -- Aborting event 2686
+ -- Killing primary track of event 2687
+ -- Aborting event 2583
+ -- Killing primary track of event 2584
+G4WT9 > Begin processing for Run: 0, History: 2700
+ -- Killing primary track of event 2700
+ -- Killing primary track of event 2675
+ -- Killing primary track of event 2750
+ -- Killing primary track of event 2633
+ -- Killing primary track of event 2649
+ -- Killing primary track of event 2507
+ -- Aborting event 2461
+ -- Killing primary track of event 2709
+ -- Aborting event 2462
+ -- Aborting event 2463
+ -- Aborting event 2761
+ -- Aborting event 2762
+ -- Aborting event 2763
+ -- Aborting event 2764
+ -- Aborting event 2765
+ -- Aborting event 2766
+ -- Aborting event 2767
+ -- Killing primary track of event 2768
+ -- Aborting event 2452
+ -- Killing primary track of event 2772
+ -- Killing primary track of event 2730
+ -- Aborting event 2655
+ -- Killing primary track of event 2656
+ -- Aborting event 2783
+ -- Aborting event 2590
+ -- Aborting event 2784
+ -- Aborting event 2591
+ -- Aborting event 2785
+ -- Killing primary track of event 2786
+ -- Killing primary track of event 2592
+ -- Aborting event 2666
+ -- Killing primary track of event 2667
+ -- Killing primary track of event 2559
+ -- Killing primary track of event 2606
+ -- Aborting event 2518
+ -- Killing primary track of event 2794
+ -- Killing primary track of event 2701
+ -- Killing primary track of event 2538
+ -- Killing primary track of event 2805
+ -- Aborting event 2688
+ -- Killing primary track of event 2689
+ -- Killing primary track of event 2617
+ -- Aborting event 2816
+ -- Killing primary track of event 2817
+ -- Aborting event 2725
+ -- Aborting event 2726
+ -- Killing primary track of event 2727
+ -- Killing primary track of event 2751
+ -- Aborting event 2741
+ -- Killing primary track of event 2742
+ -- Killing primary track of event 2676
+ -- Killing primary track of event 2827
+ -- Aborting event 2710
+ -- Killing primary track of event 2711
+ -- Aborting event 2650
+ -- Killing primary track of event 2838
+ -- Aborting event 2634
+ -- Aborting event 2635
+ -- Aborting event 2636
+ -- Aborting event 2637
+ -- Aborting event 2638
+ -- Killing primary track of event 2639
+ -- Aborting event 2787
+ -- Killing primary track of event 2788
+ -- Killing primary track of event 2773
+ -- Aborting event 2795
+ -- Aborting event 2796
+ -- Aborting event 2797
+ -- Aborting event 2798
+ -- Killing primary track of event 2799
+ -- Killing primary track of event 2769
+ -- Aborting event 2668
+ -- Killing primary track of event 2669
+ -- Aborting event 2560
+ -- Aborting event 2702
+ -- Aborting event 2703
+ -- Killing primary track of event 2561
+ -- Aborting event 2704
+ -- Killing primary track of event 2705
+ -- Aborting event 2690
+ -- Aborting event 2691
+ -- Killing primary track of event 2752
+ -- Aborting event 2692
+ -- Killing primary track of event 2693
+ -- Killing primary track of event 2731
+ -- Killing primary track of event 2657
+ -- Aborting event 2849
+ -- Killing primary track of event 2850
+ -- Aborting event 2539
+ -- Killing primary track of event 2540
+ -- Aborting event 2860
+ -- Killing primary track of event 2861
+ -- Aborting event 2806
+ -- Killing primary track of event 2807
+ -- Killing primary track of event 2593
+ -- Killing primary track of event 2871
+ -- Aborting event 2818
+ -- Aborting event 2819
+ -- Aborting event 2820
+ -- Aborting event 2821
+ -- Killing primary track of event 2822
+ -- Aborting event 2712
+ -- Aborting event 2713
+ -- Killing primary track of event 2714
+ -- Killing primary track of event 2677
+ -- Killing primary track of event 2828
+ -- Aborting event 2743
+ -- Aborting event 2744
+ -- Aborting event 2745
+ -- Aborting event 2746
+ -- Aborting event 2747
+ -- Aborting event 2748
+ -- Killing primary track of event 2749
+ -- Aborting event 2882
+ -- Aborting event 2883
+ -- Aborting event 2884
+ -- Killing primary track of event 2789
+ -- Killing primary track of event 2885
+ -- Aborting event 2753
+ -- Aborting event 2754
+ -- Aborting event 2755
+ -- Aborting event 2756
+ -- Aborting event 2757
+ -- Killing primary track of event 2758
+ -- Aborting event 2839
+ -- Killing primary track of event 2840
+ -- Killing primary track of event 2893
+ -- Killing primary track of event 2694
+ -- Aborting event 2851
+ -- Aborting event 2852
+ -- Killing primary track of event 2853
+ -- Aborting event 2770
+ -- Killing primary track of event 2771
+ -- Killing primary track of event 2562
+ -- Aborting event 2658
+ -- Killing primary track of event 2659
+ -- Aborting event 2670
+ -- Killing primary track of event 2671
+ -- Killing primary track of event 2904
+ -- Killing primary track of event 2774
+ -- Aborting event 2800
+ -- Aborting event 2801
+ -- Killing primary track of event 2802
+ -- Aborting event 2732
+ -- Aborting event 2733
+ -- Killing primary track of event 2734
+ -- Aborting event 2823
+ -- Aborting event 2824
+ -- Aborting event 2825
+ -- Aborting event 2826
+ -- Killing primary track of event 2915
+ -- Killing primary track of event 2594
+ -- Aborting event 2872
+ -- Aborting event 2873
+ -- Killing primary track of event 2874
+ -- Killing primary track of event 2829
+ -- Killing primary track of event 2862
+ -- Aborting event 2715
+ -- Killing primary track of event 2716
+ -- Killing primary track of event 2678
+ -- Killing primary track of event 2808
+ -- Killing primary track of event 2894
+ -- Killing primary track of event 2926
+ -- Killing primary track of event 2886
+ -- Killing primary track of event 2854
+ -- Aborting event 2905
+ -- Killing primary track of event 2803
+ -- Aborting event 2906
+ -- Aborting event 2907
+ -- Aborting event 2908
+ -- Aborting event 2909
+ -- Aborting event 2910
+ -- Aborting event 2911
+ -- Aborting event 2912
+ -- Aborting event 2841
+ -- Killing primary track of event 2913
+ -- Killing primary track of event 2842
+ -- Killing primary track of event 2759
+ -- Aborting event 2790
+ -- Aborting event 2791
+ -- Aborting event 2792
+ -- Killing primary track of event 2793
+ -- Killing primary track of event 2937
+ -- Killing primary track of event 2672
+ -- Aborting event 2948
+ -- Killing primary track of event 2949
+ -- Aborting event 2660
+ -- Killing primary track of event 2661
+ -- Aborting event 2916
+ -- Killing primary track of event 2917
+ -- Aborting event 2775
+ -- Killing primary track of event 2776
+ -- Aborting event 2595
+ -- Aborting event 2959
+ -- Killing primary track of event 2960
+ -- Killing primary track of event 2970
+ -- Killing primary track of event 2863
+ -- Aborting event 2735
+ -- Aborting event 2736
+ -- Killing primary track of event 2737
+ -- Aborting event 2809
+ -- Aborting event 2810
+ -- Aborting event 2811
+ -- Aborting event 2812
+ -- Killing primary track of event 2813
+ -- Aborting event 2830
+ -- Killing primary track of event 2831
+ -- Killing primary track of event 2927
+ -- Aborting event 2981
+ -- Aborting event 2982
+ -- Aborting event 2983
+ -- Aborting event 2984
+ -- Killing primary track of event 2985
+ -- Aborting event 2875
+ -- Killing primary track of event 2876
+ -- Aborting event 2895
+ -- Killing primary track of event 2896
+ -- Aborting event 2679
+ -- Aborting event 2680
+ -- Aborting event 2681
+ -- Aborting event 2682
+ -- Aborting event 2683
+ -- Killing primary track of event 2992
+ -- Aborting event 2855
+ -- Aborting event 2856
+ -- Killing primary track of event 2857
+ -- Aborting event 2887
+ -- Aborting event 2888
+ -- Aborting event 2889
+ -- Killing primary track of event 2890
+ -- Killing primary track of event 2843
+ -- Killing primary track of event 2938
+ -- Killing primary track of event 2760
+ -- Aborting event 2914
+ -- Aborting event 2804
+ -- Killing primary track of event 2961
+ -- Killing primary track of event 2950
+ -- Killing primary track of event 2832
+ -- Killing primary track of event 2928
+ -- Aborting event 2864
+ -- Aborting event 2865
+ -- Aborting event 2866
+ -- Killing primary track of event 2986
+ -- Killing primary track of event 2867
+ -- Killing primary track of event 2777
+ -- Killing primary track of event 2918
+ -- Aborting event 2897
+ -- Killing primary track of event 2898
+ -- Aborting event 2738
+ -- Killing primary track of event 2971
+ -- Aborting event 2814
+ -- Aborting event 2815
+ -- Killing primary track of event 2877
+ -- Killing primary track of event 2858
+ -- Killing primary track of event 2939
+ -- Aborting event 2962
+ -- Killing primary track of event 2963
+ -- Aborting event 2844
+ -- Aborting event 2845
+ -- Aborting event 2846
+ -- Aborting event 2847
+ -- Killing primary track of event 2848
+ -- Killing primary track of event 2993
+ -- Aborting event 2891
+ -- Aborting event 2892
+ -- Killing primary track of event 2987
+ -- Aborting event 2919
+ -- Aborting event 2920
+ -- Killing primary track of event 2921
+ -- Aborting event 2951
+ -- Aborting event 2952
+ -- Killing primary track of event 2953
+ -- Killing primary track of event 2833
+ -- Killing primary track of event 2778
+ -- Aborting event 2899
+ -- Killing primary track of event 2900
+ -- Aborting event 2868
+ -- Aborting event 2869
+ -- Aborting event 2870
+ -- Aborting event 2929
+ -- Aborting event 2930
+ -- Killing primary track of event 2931
+ -- Aborting event 2972
+ -- Killing primary track of event 2973
+ -- Killing primary track of event 2859
+ -- Killing primary track of event 2964
+ -- Aborting event 2878
+ -- Aborting event 2879
+ -- Killing primary track of event 2880
+ -- Killing primary track of event 2988
+ -- Aborting event 2940
+ -- Killing primary track of event 2941
+ -- Killing primary track of event 2954
+ -- Killing primary track of event 2994
+ -- Killing primary track of event 2779
+ -- Killing primary track of event 2834
+ -- Killing primary track of event 2901
+ -- Killing primary track of event 2922
+ -- Killing primary track of event 2974
+ -- Aborting event 2932
+ -- Aborting event 2933
+ -- Killing primary track of event 2934
+ -- Aborting event 2989
+ -- Aborting event 2990
+ -- Killing primary track of event 2991
+ -- Aborting event 2881
+ -- Killing primary track of event 2965
+ -- Killing primary track of event 2995
+ -- Aborting event 2955
+ -- Aborting event 2956
+ -- Aborting event 2957
+ -- Aborting event 2958
+ -- Killing primary track of event 2902
+ -- Aborting event 2923
+ -- Aborting event 2924
+ -- Aborting event 2925
+ -- Killing primary track of event 2942
+ -- Killing primary track of event 2780
+ -- Killing primary track of event 2835
+ -- Aborting event 2935
+ -- Aborting event 2936
+ -- Killing primary track of event 2975
+ -- Killing primary track of event 2966
+ -- Aborting event 2996
+ -- Aborting event 2997
+ -- Killing primary track of event 2998
+ -- Killing primary track of event 2903
+ -- Aborting event 2781
+ -- Aborting event 2782
+ -- Killing primary track of event 2943
+ -- Killing primary track of event 2836
+ -- Aborting event 2976
+ -- Aborting event 2977
+ -- Aborting event 2978
+ -- Aborting event 2979
+ -- Aborting event 2980
+ -- Killing primary track of event 2967
+ -- Aborting event 2999
+ -- Aborting event 2837
+ -- Killing primary track of event 2944
+ -- Killing primary track of event 2968
+ -- Aborting event 2945
+ -- Killing primary track of event 2946
+ -- Killing primary track of event 2969
+ -- Killing primary track of event 2947
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 3000
+
+Note that TOPAS interrupted one or more histories during this session
+due to errors reported by Geant4.
+For details on each of these errors, see the console log for "G4Exception"
+If only a very small proportion of your histories were affected,
+you may be able to still use the overall result,
+but this is a judgement call you need to make for yourself.
+The total number of affected histories was: 1523
+You can set TOPAS to exit if it exceeds a given number of interrupted histories
+through the parmameter i:Ts/MaxInterruptedHistories
+This limit is current set to: 3000
+
+Elapsed times:
+Parameter Reading : User=0.000000s Real=0.007294s Sys=0.000000s [Cpu=0.0%]
+    Initialization: User=0.020000s Real=0.037178s Sys=0.010000s [Cpu=80.7%]
+         Execution: User=1134166.690000s Real=49867.644188s Sys=1408.580000s [Cpu=2277.2%]
+      Finalization: User=0.000000s Real=0.013645s Sys=0.010000s [Cpu=73.3%]
+             Total: User=1.13417e+06s Real=49867.7s Sys=1408.6s

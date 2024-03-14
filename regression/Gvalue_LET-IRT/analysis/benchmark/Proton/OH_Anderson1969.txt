@@ -1,0 +1,14 @@
+# Data From Anderson AR, Hart EJ. Molecular product and free radical yields in thedecomposition of water by protons, deuterons, and helium ions.RadiatRes. 1961;14:689–704.
+# | Unrestricted LET (keV/um) | G Values (Species/100 eV) at 1 us | G Values STD (Species/100 eV) at 1 us |
+         4.85615e+0                       1.88563                                0.0264099
+         5.11510e+0                       1.91634                                0.0330199
+         6.43573e+0                       1.78826                                0.0264100
+         5.93435e+0                       1.67618                                0.0264100
+         6.50840e+0                       1.72662                                0.0109799
+         6.89195e+0                       1.66049                                0.0198100
+         7.55112e+0                       1.49526                                0.0198100
+         7.81474e+0                       1.44678                                0.0264100
+         8.86415e+0                       1.30789                                0.0286100
+         1.00015e+1                       1.27245                                0.0286200
+         1.10849e+1                       1.10500                                0.0242100
+         1.22237e+1                       1.09161                                0.0220099

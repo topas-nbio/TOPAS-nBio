@@ -1,0 +1,76 @@
+#
+d:Ge/World/HLX = 10 nm
+d:Ge/World/HLY = 10 nm
+d:Ge/World/HLZ = 10 nm
+s:Ge/World/Material = "G4_WATER"
+
+d:R1 = 1.5 nm
+s:Ge/Target/Parent = "World"
+s:Ge/Target/Material = "G4_WATER"
+s:Ge/Target/Type = "TsCylinder"
+d:Ge/Target/HL     = 0.5 * R1 nm 
+d:Ge/Target/RMax   = Ge/Target/HL nm 
+d:Ge/Target/RotX   = 90 deg
+
+d:Ge/BeamPosition/TransZ = -1.0 * Ge/World/HLZ nm 
+d:Ge/BeamPosition/RotX = 0 deg
+
+d:So/TotalEnergy =  Tf/EnergyValues/Value MeV * Tf/multiplyBy/Value
+s:So/Demo/BeamParticle = Tf/particles/Value 
+s:So/Demo/BeamPositionDistribution = "None"
+s:So/Demo/BeamAngularDistribution = "None"
+d:So/Demo/BeamEnergy = So/TotalEnergy MeV 
+i:So/Demo/NumberOfHistoriesInRun = 10 * Tf/Histories/Value
+i:Ts/ShowHistoryCountAtInterval =  10000
+
+s:Tf/particles/Function = "Step"
+dv:Tf/particles/Times = 2 20 40 ms
+sv:Tf/particles/Values = 2 "alpha" "proton"
+
+s:Tf/multiplyBy/Function = "Step"
+dv:Tf/multiplyBy/Times = 2 20 40 ms
+iv:Tf/multiplyBy/Values = 2 4 1 
+
+s:Tf/Histories/Function = "Step"
+dv:Tf/Histories/Times = 20 
+1  2  3  4  5 
+6  7  8  9  10 
+11 12 13 14 15 
+16 17 18 19 20 ms
+iv:Tf/Histories/Values = 20 
+100 1000 1000 1000 1000 1000
+1000 1000 1000 10000 10000 10000
+10000 10000 10000 10000 10000 10000
+10000 10000 
+
+s:Tf/EnergyValues/Function = "Step"
+dv:Tf/EnergyValues/Times = 20 
+1  2  3  4  5 
+6  7  8  9  10 
+11 12 13 14 15 
+16 17 18 19 20 ms
+dv:Tf/EnergyValues/Values = 20 
+0.50   5.74   10.97  16.21  21.45  
+26.68  31.92  37.16  42.39  47.63  
+52.87  58.11  63.34  68.58  73.82  
+79.05  84.29  89.53  94.76  100.00 MeV 
+
+s:Sc/ID/Quantity = "Tuple" 
+s:Sc/ID/Component = "Target"
+s:Sc/ID/OutputType = "Binary"
+b:Sc/ID/IncludeChemicalTrack = "False"
+b:Sc/ID/IncludeEventID = "True"
+s:Sc/ID/IfOutputFileAlreadyExists = "Overwrite"
+sv:Sc/ID/OnlyIncludeIfInteractionProcess = 6
+"e-_G4DNAIonisation" "alpha_G4DNAIonisation" 
+"alpha+_G4DNAIonisation" "helium_G4DNAIonisation" 
+"proton_G4DNAIonisation" "hydrogen_G4DNAIonisation"
+
+b:Sc/ID/OutputAfterRun = "True"
+
+d:Tf/TimeLineEnd = 40 ms
+i:Tf/NumberOfSequentialTimes = 40
+
+b:Ts/ShowCPUTime = "True"
+i:Ts/NumberOfThreads = 1
+

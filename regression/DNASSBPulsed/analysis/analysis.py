@@ -145,7 +145,7 @@ def plot_results(sut_dir, ref_dir, args):
                 
     fig = plt.figure(figsize=(5,6))
 
-    concentrations = ['1e-4', '1e-3', '1e-2', '1e-1', '1e0']
+    concentrations = ['1e-4', '1e-3', '1e-2', '1e-1', '1e-0']
     #concentrations = ['1e-3']
 
     sut = np.zeros([len(concentrations),2])
@@ -158,7 +158,7 @@ def plot_results(sut_dir, ref_dir, args):
         gvalue, ssb, ssb_err =  average_results(namePrefix)
 
         oFile = open(join(args.outdir, 'sut.csv'), 'w')
-        print(gvalue.keys())
+        #print(gvalue.keys())
         for key in gvalue:
             for k in range(gvalue[key].shape[0]):
                 oFile.write('%1.5e  %1.5e  %1.5e  %1.5e  %s\n' % (gvalue[key][k,0], gvalue[key][k,1], gvalue[key][k,2], gvalue[key][k,3], key))
@@ -221,7 +221,7 @@ def plot_results(sut_dir, ref_dir, args):
                       )
 
     plt.tight_layout() 
-    plt.savefig(join(args.outdir, 'SSB_vs_DMSO.eps'), bbox_inches='tight')
+    plt.savefig(join(args.outdir, 'SSB_vs_DMSO.pdf'), bbox_inches='tight')
     
 if __name__ == '__main__':
     parser = ArgumentParser()

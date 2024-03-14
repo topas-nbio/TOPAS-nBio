@@ -1,0 +1,9 @@
+includeFile = depFile1.txt
+
+sv:Ph/Default/Modules = 1 "TsEmDNAPhysics"
+s:Ph/Default/Electron/SetElasticScatteringModel = "ELSEPA"
+s:Ph/Default/SolvatedElectronThermalizationModel = "Meesungnoen"
+
+Ts/ShowHistoryCountAtInterval = 100
+
+Ts/Seed = 22406
