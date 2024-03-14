@@ -1,5 +1,5 @@
 ### A regression system for TOPAS-nBio-dev                          ###
-### Jose Ramos-Mendez, Naoki D. Kondo and Thongchai A. M. Masilela    #
+### Jose Ramos-Mendez, Naoki D. Kondo, and Thongchai A. M. Masilela   #
 ### Department of Radiation Oncology                                  #
 ### University of California San Francisco.                           #
 ### Jose.RamosMendez@ucsf.edu                                         #
