@@ -199,6 +199,11 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 				G4cout << "WARNING: Advance Reaction Options Only available for reations type II or IV" << G4endl;
 			}
 		}
+
+		if (fPm->ParameterExists(aparName.substr(0,aparName.find("Products")-1)+"/PositionSensitive")) {
+			G4bool posSensitive = fPm->GetBooleanParameter(aparName.substr(0,aparName.find("Products")-1)+"/PositionSensitive");
+			fReactions[fReactionID-1].positionSensitive = posSensitive;
+		}
 	}
 	
 	// Declare And Insert Background Reactions

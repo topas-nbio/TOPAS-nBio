@@ -176,6 +176,7 @@ private:
 	G4int    fHomogeneousReactIndex;
 	G4double fHomogeneousTimeStep;
 	G4double fTotalPropensityAtThisTime;
+	G4bool fGillespieFinalTau;
 
 	// Adaptative Tau Leaping Method
 	std::unordered_map<G4int,G4double> fMuForMolecule;

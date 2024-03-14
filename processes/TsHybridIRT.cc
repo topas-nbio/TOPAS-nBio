@@ -115,6 +115,10 @@ TsHybridIRT::TsHybridIRT(TsParameterManager* pM, G4String parmName)
 	fSampleIRTatStart = true;
 	fMinTime = 0;
 	fCubicVolume = 0;
+
+	fGillespieFinalTau = true;
+	if (fPm->ParameterExists("Ch/"+chemistryList+"/EndChemistryWithTau")) 
+		fGillespieFinalTau = fPm->GetBooleanParameter("Ch/"+chemistryList+"/EndChemistryWithTau");
 }
 
 
@@ -831,25 +835,39 @@ void TsHybridIRT::ConductReactions() {
 		RemoveFirstIRTElement();
 	}
 
-	// Convert Chemical Species to Homogeneous
-	G4int tBin = fUtils->FindBin(currentTime, fStepTimes);
-	for (auto& IndexAndConcentrations:fSpeciesOfAKind) {
-		G4int Index = IndexAndConcentrations.first;
-		fHomogeneousConcentrations[Index] += fSpeciesOfAKind[Index].size() + fConcentrationsAtThisTime[Index].size();
-	}
-	fSpeciesOfAKind.clear();
-	fConcentrationsAtThisTime.clear();
-
-	G4int Tries = 0;
-	while (currentTime < fTimeCut) {
-		UpdateGillespieTauLeaping(currentTime);
-		G4bool Success = DoGillespieTauLeaping(currentTime + fHomogeneousTimeStep);
-		if (Success) {
-			currentTime  += fHomogeneousTimeStep; 
-			Tries = 0; 
+	if (fGillespieFinalTau) {
+		// Convert Chemical Species to Homogeneous
+		for (auto& IndexAndConcentrations:fSpeciesOfAKind) {
+			G4int Index = IndexAndConcentrations.first;
+			fHomogeneousConcentrations[Index] += fSpeciesOfAKind[Index].size() + fConcentrationsAtThisTime[Index].size();
 		}
-		else {Tries++;}
-		if (Tries == 100) {break;}
+		fSpeciesOfAKind.clear();
+		fConcentrationsAtThisTime.clear();
+
+		G4int Tries = 0;
+		while (currentTime < fTimeCut) {
+			UpdateGillespieTauLeaping(currentTime);
+			G4bool Success = DoGillespieTauLeaping(currentTime + fHomogeneousTimeStep);
+			if (Success) {
+				currentTime  += fHomogeneousTimeStep; 
+				Tries = 0; 
+			}
+			else {Tries++;}
+			if (Tries == 100) {break;}
+		}
+	}
+
+	else {
+		while (currentTime < fTimeCut) {
+			UpdateGillespieDirect(currentTime);
+			if ((fHomogeneousTimeStep + currentTime < fTimeCut) && (fHomogeneousReactIndex >= 0)) {
+				G4bool Success = DoGillespieDirect(fHomogeneousTimeStep+currentTime);
+				if (Success) {
+					currentTime  += fHomogeneousTimeStep;
+					continue;
+				}
+			}
+		}
 	}
 }
 
