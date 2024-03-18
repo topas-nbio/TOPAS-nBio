@@ -1,0 +1,3213 @@
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run2.tps
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4DATA
+
+**************************************************************
+ Geant4 version Name: geant4-11-01-patch-03 [MT]   (10-November-2023)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 24
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 0.001 nm, and radial tolerance = 0.001 nm.
+Checking overlaps for volume Target:0 (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+Default
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Auto-ionization probability 0
+-- Branching ratio: B1A1 Dissociative decay2 probability 0
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay1 probability 0.15
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay2 probability 0.55
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay3 probability 0
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay4 probability 0.3
+Solvation model selected: 11003
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 2e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s)    r (nm)    Preact       
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  8.30249e+09    0.257676  1            
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          1.49094e+10    0.316354  1            
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    Preact       alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   4.9964e+07     1.65933e+10    2.8784e+07     0.4       0.000728538  2.50434      
+ II    OH^0    + H^0     -> None                   1.02461e+10    1.70081e+10    2.45422e+10    0.41      0.37414      5.95847      
+ II    OH^0    + OH^0    -> H2O2^0                 3.51148e+09    4.07592e+09    2.53573e+10    0.44      0.711936     16.4119      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           5.83245e+09    1.71615e+10    1.31657e+10    0.71      0.181989     2.48896      
+ II    e_aq^-1 + OH^0    -> OH^-1                  1.55932e+10    1.74032e+10    1.41957e+11    0.72      0.700786     12.718       
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    r (nm)    reff (nm) Preact       
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   7.7629e+10     0.873054     1.26571      1               
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  5.19875e+09    0.633691     0.348716     1               
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    reff (nm) reff1 (nm)Preact       
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    1.5841e+10     4.42899e+10    2.16091e+10    0.75      1.14993   0.287055  0.0894709    
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ExplicitAssignament
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                0
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 eV 
+Max kinetic energy for tables                      500 MeV
+Number of bins per decade of a table               7
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 1 mm)
+Step function for muons/hadrons                    (0.2, 0.1 mm)
+Step function for light ions                       (0.2, 0.1 mm)
+Step function for general ions                     (0.2, 0.1 mm)
+Lowest e+e- kinetic energy                         1 keV
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    0
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Universal
+Use built-in Birks satuaration                     0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 0
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           3
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.04
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      1
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              0
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+======                 Atomic Deexcitation Parameters          ========
+=======================================================================
+Fluorescence enabled                               1
+Directory in G4LEDATA for fluorescence data files  fluor
+Auger electron cascade enabled                     1
+PIXE atomic de-excitation enabled                  0
+De-excitation module ignores cuts                  1
+Type of PIXE cross section for hadrons             Empirical
+Type of PIXE cross section for e+-                 Livermore
+=======================================================================
+======                 DNA Physics Parameters                  ========
+=======================================================================
+Use fast sampling in DNA models                    0
+Use Stationary option in DNA models                0
+Use DNA with multiple scattering of e-             0
+Use DNA e- solvation model type                    11003
+=======================================================================
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger flag: 1
+### ===  Ignore cuts flag:   1
+G4DNAELSEPAElasticModel: high energy limit decreased from 500 MeV to 1 MeV
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 150 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 150 keV to 500 MeV in 26 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=  500 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Meesungnoen2002 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+          StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+G4WT13 > Begin processing for Run: 0, History: 0
+G4WT8 > Begin processing for Run: 0, History: 200
+G4WT20 > Begin processing for Run: 0, History: 100
+G4WT12 > Begin processing for Run: 0, History: 300
+G4WT10 > Begin processing for Run: 0, History: 400
+G4WT15 > Begin processing for Run: 0, History: 600
+G4WT16 > Begin processing for Run: 0, History: 500
+G4WT4 > Begin processing for Run: 0, History: 700
+G4WT13 > Begin processing for Run: 0, History: 900
+G4WT7 > Begin processing for Run: 0, History: 800
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (148 histories): 2.69155 s +/- 0.895015 s 
+
+Note that TOPAS interrupted one or more histories during this session
+due to errors reported by Geant4.
+The total number of interrupted histories was: 852
+For details on each of these errors, see the console log for "G4Exception"
+If only a very small proportion of your histories were affected,
+you may be able to still use the overall result,
+but this is a judgement call you need to make for yourself.
+You can set TOPAS to limit the number of messages about interrupted histories by setting
+the parameter Ts/InterruptedHistoryMaxReports
+You can set TOPAS to exit if it exceeds a given number of interrupted histories by setting
+the parmameter Ts/MaxInterruptedHistories
+
+Elapsed times:
+Parameter Reading : User=0.000000s Real=0.000983s Sys=0.000000s [Cpu=0.0%]
+    Initialization: User=0.010000s Real=0.026338s Sys=0.000000s [Cpu=38.0%]
+         Execution: User=130.010000s Real=28.968508s Sys=1.310000s [Cpu=453.3%]
+      Finalization: User=0.000000s Real=0.004628s Sys=0.010000s [Cpu=216.1%]
+             Total: User=130.02s Real=29.0005s Sys=1.32s
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run2.tps
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4DATA
+
+**************************************************************
+ Geant4 version Name: geant4-11-01-patch-03 [MT]   (10-November-2023)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 24
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 0.001 nm, and radial tolerance = 0.001 nm.
+Checking overlaps for volume Target:0 (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+Default
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Auto-ionization probability 0
+-- Branching ratio: B1A1 Dissociative decay2 probability 0
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay1 probability 0.15
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay2 probability 0.55
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay3 probability 0
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay4 probability 0.3
+Solvation model selected: 11003
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 2e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s)    r (nm)    Preact       
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  1.16726e+10    0.257676  1            
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          1.85357e+10    0.271011  1            
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    Preact       alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   6.40188e+07    2.33288e+10    3.68752e+07    0.4       0.000663901  2.50395      
+ II    OH^0    + H^0     -> None                   1.27789e+10    2.3912e+10     2.63211e+10    0.41      0.313198     5.12377      
+ II    OH^0    + OH^0    -> H2O2^0                 4.4878e+09     5.73041e+09    2.06959e+10    0.44      0.589279     10.4809      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           7.82145e+09    2.56436e+10    1.63678e+10    0.71      0.15619      2.30744      
+ II    e_aq^-1 + OH^0    -> OH^-1                  2.19171e+10    2.60048e+10    1.34437e+11    0.72      0.597484     8.56904      
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    r (nm)    reff (nm) Preact       
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   1.01794e+11    0.882554     1.27948      1               
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  7.12842e+09    0.591776     0.308657     1               
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    reff (nm) reff1 (nm)Preact       
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    1.8535e+10     5.99746e+10    2.37114e+10    0.75      1.15485   0.246482  0.0735196    
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ExplicitAssignament
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                0
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 eV 
+Max kinetic energy for tables                      500 MeV
+Number of bins per decade of a table               7
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 1 mm)
+Step function for muons/hadrons                    (0.2, 0.1 mm)
+Step function for light ions                       (0.2, 0.1 mm)
+Step function for general ions                     (0.2, 0.1 mm)
+Lowest e+e- kinetic energy                         1 keV
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    0
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Universal
+Use built-in Birks satuaration                     0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 0
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           3
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.04
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      1
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              0
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+======                 Atomic Deexcitation Parameters          ========
+=======================================================================
+Fluorescence enabled                               1
+Directory in G4LEDATA for fluorescence data files  fluor
+Auger electron cascade enabled                     1
+PIXE atomic de-excitation enabled                  0
+De-excitation module ignores cuts                  1
+Type of PIXE cross section for hadrons             Empirical
+Type of PIXE cross section for e+-                 Livermore
+=======================================================================
+======                 DNA Physics Parameters                  ========
+=======================================================================
+Use fast sampling in DNA models                    0
+Use Stationary option in DNA models                0
+Use DNA with multiple scattering of e-             0
+Use DNA e- solvation model type                    11003
+=======================================================================
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger flag: 1
+### ===  Ignore cuts flag:   1
+G4DNAELSEPAElasticModel: high energy limit decreased from 500 MeV to 1 MeV
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 150 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 150 keV to 500 MeV in 26 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=  500 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Meesungnoen2002 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+          StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+G4WT5 > Begin processing for Run: 0, History: 0
+G4WT23 > Begin processing for Run: 0, History: 200
+G4WT0 > Begin processing for Run: 0, History: 100
+G4WT6 > Begin processing for Run: 0, History: 300
+G4WT5 > Begin processing for Run: 0, History: 400
+G4WT0 > Begin processing for Run: 0, History: 600
+G4WT10 > Begin processing for Run: 0, History: 500
+G4WT7 > Begin processing for Run: 0, History: 700
+G4WT15 > Begin processing for Run: 0, History: 900
+G4WT8 > Begin processing for Run: 0, History: 800
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (148 histories): 2.81615 s +/- 0.898514 s 
+
+Note that TOPAS interrupted one or more histories during this session
+due to errors reported by Geant4.
+The total number of interrupted histories was: 852
+For details on each of these errors, see the console log for "G4Exception"
+If only a very small proportion of your histories were affected,
+you may be able to still use the overall result,
+but this is a judgement call you need to make for yourself.
+You can set TOPAS to limit the number of messages about interrupted histories by setting
+the parameter Ts/InterruptedHistoryMaxReports
+You can set TOPAS to exit if it exceeds a given number of interrupted histories by setting
+the parmameter Ts/MaxInterruptedHistories
+
+Elapsed times:
+Parameter Reading : User=0.000000s Real=0.000934s Sys=0.000000s [Cpu=0.0%]
+    Initialization: User=0.010000s Real=0.011161s Sys=0.000000s [Cpu=89.6%]
+         Execution: User=131.930000s Real=29.086397s Sys=1.350000s [Cpu=458.2%]
+      Finalization: User=0.000000s Real=0.008105s Sys=0.000000s [Cpu=0.0%]
+             Total: User=131.94s Real=29.1066s Sys=1.35s
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run2.tps
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4DATA
+
+**************************************************************
+ Geant4 version Name: geant4-11-01-patch-03 [MT]   (10-November-2023)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 24
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 0.001 nm, and radial tolerance = 0.001 nm.
+Checking overlaps for volume Target:0 (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+Default
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Auto-ionization probability 0
+-- Branching ratio: B1A1 Dissociative decay2 probability 0
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay1 probability 0.15
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay2 probability 0.55
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay3 probability 0
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay4 probability 0.3
+Solvation model selected: 11003
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 2e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s)    r (nm)    Preact       
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  1.56e+10       0.257676  1            
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          2.27043e+10    0.245112  1            
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    Preact       alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   8.06516e+07    3.1178e+10     4.64516e+07    0.4       0.000625792  2.50372      
+ II    OH^0    + H^0     -> None                   1.52485e+10    3.19574e+10    2.80945e+10    0.41      0.266974     4.58322      
+ II    OH^0    + OH^0    -> H2O2^0                 5.45332e+09    7.65846e+09    1.89395e+10    0.44      0.495569     7.89321      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           9.99352e+09    3.51388e+10    2.00488e+10    0.71      0.141972     2.21206      
+ II    e_aq^-1 + OH^0    -> OH^-1                  2.80266e+10    3.56337e+10    1.27789e+11    0.72      0.507316     6.36972      
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    r (nm)    reff (nm) Preact       
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   1.28672e+11    0.893211     1.29493      1               
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  9.56611e+09    0.582868     0.298132     1               
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    reff (nm) reff1 (nm)Preact       
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    2.1456e+10     7.72599e+10    2.63903e+10    0.75      1.16038   0.221664  0.0639316    
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ExplicitAssignament
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                0
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 eV 
+Max kinetic energy for tables                      500 MeV
+Number of bins per decade of a table               7
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 1 mm)
+Step function for muons/hadrons                    (0.2, 0.1 mm)
+Step function for light ions                       (0.2, 0.1 mm)
+Step function for general ions                     (0.2, 0.1 mm)
+Lowest e+e- kinetic energy                         1 keV
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    0
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Universal
+Use built-in Birks satuaration                     0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 0
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           3
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.04
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      1
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              0
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+======                 Atomic Deexcitation Parameters          ========
+=======================================================================
+Fluorescence enabled                               1
+Directory in G4LEDATA for fluorescence data files  fluor
+Auger electron cascade enabled                     1
+PIXE atomic de-excitation enabled                  0
+De-excitation module ignores cuts                  1
+Type of PIXE cross section for hadrons             Empirical
+Type of PIXE cross section for e+-                 Livermore
+=======================================================================
+======                 DNA Physics Parameters                  ========
+=======================================================================
+Use fast sampling in DNA models                    0
+Use Stationary option in DNA models                0
+Use DNA with multiple scattering of e-             0
+Use DNA e- solvation model type                    11003
+=======================================================================
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger flag: 1
+### ===  Ignore cuts flag:   1
+G4DNAELSEPAElasticModel: high energy limit decreased from 500 MeV to 1 MeV
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 150 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 150 keV to 500 MeV in 26 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=  500 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Meesungnoen2002 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+          StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+G4WT21 > Begin processing for Run: 0, History: 0
+G4WT13 > Begin processing for Run: 0, History: 200
+G4WT15 > Begin processing for Run: 0, History: 100
+G4WT14 > Begin processing for Run: 0, History: 300
+G4WT11 > Begin processing for Run: 0, History: 400
+G4WT8 > Begin processing for Run: 0, History: 600
+G4WT15 > Begin processing for Run: 0, History: 500
+G4WT9 > Begin processing for Run: 0, History: 700
+G4WT1 > Begin processing for Run: 0, History: 900
+G4WT15 > Begin processing for Run: 0, History: 800
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (148 histories): 3.14905 s +/- 1.06876 s 
+
+Note that TOPAS interrupted one or more histories during this session
+due to errors reported by Geant4.
+The total number of interrupted histories was: 852
+For details on each of these errors, see the console log for "G4Exception"
+If only a very small proportion of your histories were affected,
+you may be able to still use the overall result,
+but this is a judgement call you need to make for yourself.
+You can set TOPAS to limit the number of messages about interrupted histories by setting
+the parameter Ts/InterruptedHistoryMaxReports
+You can set TOPAS to exit if it exceeds a given number of interrupted histories by setting
+the parmameter Ts/MaxInterruptedHistories
+
+Elapsed times:
+Parameter Reading : User=0.000000s Real=0.001050s Sys=0.000000s [Cpu=0.0%]
+    Initialization: User=0.010000s Real=0.011553s Sys=0.000000s [Cpu=86.6%]
+         Execution: User=135.540000s Real=29.264742s Sys=1.340000s [Cpu=467.7%]
+      Finalization: User=0.000000s Real=0.004995s Sys=0.000000s [Cpu=0.0%]
+             Total: User=135.55s Real=29.2823s Sys=1.34s
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run2.tps
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4DATA
+
+**************************************************************
+ Geant4 version Name: geant4-11-01-patch-03 [MT]   (10-November-2023)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 24
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 0.001 nm, and radial tolerance = 0.001 nm.
+Checking overlaps for volume Target:0 (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+Default
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Auto-ionization probability 0
+-- Branching ratio: B1A1 Dissociative decay2 probability 0
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay1 probability 0.15
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay2 probability 0.55
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay3 probability 0
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay4 probability 0.3
+Solvation model selected: 11003
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 2e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s)    r (nm)    Preact       
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  2.00223e+10    0.257676  1            
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          2.74405e+10    0.228532  1            
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    Preact       alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   1.00069e+08    4.00164e+10    5.76325e+07    0.4       0.000604945  2.5036       
+ II    OH^0    + H^0     -> None                   1.76237e+10    4.10168e+10    2.98586e+10    0.41      0.231705     4.21454      
+ II    OH^0    + OH^0    -> H2O2^0                 6.38297e+09    9.82949e+09    1.82043e+10    0.44      0.423873     6.48183      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           1.24194e+10    4.59427e+10    2.42311e+10    0.71      0.132661     2.1513       
+ II    e_aq^-1 + OH^0    -> OH^-1                  3.39021e+10    4.65897e+10    1.21878e+11    0.72      0.428937     5.02219      
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    r (nm)    reff (nm) Preact       
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   1.57857e+11    0.904994     1.31201      1               
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  1.25907e+10    0.58501      0.297162     1               
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    reff (nm) reff1 (nm)Preact       
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    2.45987e+10    9.64463e+10    2.94353e+10    0.75      1.1665    0.204555  0.057286     
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ExplicitAssignament
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                0
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 eV 
+Max kinetic energy for tables                      500 MeV
+Number of bins per decade of a table               7
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 1 mm)
+Step function for muons/hadrons                    (0.2, 0.1 mm)
+Step function for light ions                       (0.2, 0.1 mm)
+Step function for general ions                     (0.2, 0.1 mm)
+Lowest e+e- kinetic energy                         1 keV
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    0
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Universal
+Use built-in Birks satuaration                     0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 0
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           3
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.04
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      1
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              0
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+======                 Atomic Deexcitation Parameters          ========
+=======================================================================
+Fluorescence enabled                               1
+Directory in G4LEDATA for fluorescence data files  fluor
+Auger electron cascade enabled                     1
+PIXE atomic de-excitation enabled                  0
+De-excitation module ignores cuts                  1
+Type of PIXE cross section for hadrons             Empirical
+Type of PIXE cross section for e+-                 Livermore
+=======================================================================
+======                 DNA Physics Parameters                  ========
+=======================================================================
+Use fast sampling in DNA models                    0
+Use Stationary option in DNA models                0
+Use DNA with multiple scattering of e-             0
+Use DNA e- solvation model type                    11003
+=======================================================================
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger flag: 1
+### ===  Ignore cuts flag:   1
+G4DNAELSEPAElasticModel: high energy limit decreased from 500 MeV to 1 MeV
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 150 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 150 keV to 500 MeV in 26 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=  500 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Meesungnoen2002 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+          StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+G4WT1 > Begin processing for Run: 0, History: 0
+G4WT0 > Begin processing for Run: 0, History: 200
+G4WT7 > Begin processing for Run: 0, History: 100
+G4WT23 > Begin processing for Run: 0, History: 300
+G4WT17 > Begin processing for Run: 0, History: 400
+G4WT11 > Begin processing for Run: 0, History: 600
+G4WT4 > Begin processing for Run: 0, History: 500
+G4WT19 > Begin processing for Run: 0, History: 700
+G4WT15 > Begin processing for Run: 0, History: 900
+G4WT17 > Begin processing for Run: 0, History: 800
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (148 histories): 2.81764 s +/- 0.946998 s 
+
+Note that TOPAS interrupted one or more histories during this session
+due to errors reported by Geant4.
+The total number of interrupted histories was: 852
+For details on each of these errors, see the console log for "G4Exception"
+If only a very small proportion of your histories were affected,
+you may be able to still use the overall result,
+but this is a judgement call you need to make for yourself.
+You can set TOPAS to limit the number of messages about interrupted histories by setting
+the parameter Ts/InterruptedHistoryMaxReports
+You can set TOPAS to exit if it exceeds a given number of interrupted histories by setting
+the parmameter Ts/MaxInterruptedHistories
+
+Elapsed times:
+Parameter Reading : User=0.000000s Real=0.000877s Sys=0.000000s [Cpu=0.0%]
+    Initialization: User=0.020000s Real=0.012736s Sys=0.000000s [Cpu=157.0%]
+         Execution: User=137.130000s Real=29.387662s Sys=1.340000s [Cpu=471.2%]
+      Finalization: User=0.000000s Real=0.005800s Sys=0.010000s [Cpu=172.4%]
+             Total: User=137.15s Real=29.4071s Sys=1.35s
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run2.tps
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4DATA
+
+**************************************************************
+ Geant4 version Name: geant4-11-01-patch-03 [MT]   (10-November-2023)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 24
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 0.001 nm, and radial tolerance = 0.001 nm.
+Checking overlaps for volume Target:0 (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+Default
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Auto-ionization probability 0
+-- Branching ratio: B1A1 Dissociative decay2 probability 0
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay1 probability 0.15
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay2 probability 0.55
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay3 probability 0
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay4 probability 0.3
+Solvation model selected: 11003
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 2e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s)    r (nm)    Preact       
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  2.48769e+10    0.257676  1            
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          3.2766e+10     0.217032  1            
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    Preact       alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   1.22463e+08    4.97187e+10    7.05281e+07    0.4       0.000595844  2.50355      
+ II    OH^0    + H^0     -> None                   1.98977e+10    5.09616e+10    3.16104e+10    0.41      0.204437     3.9519       
+ II    OH^0    + OH^0    -> H2O2^0                 7.26531e+09    1.22127e+10    1.79345e+10    0.44      0.368439     5.61024      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           1.51425e+10    5.83505e+10    2.89337e+10    0.71      0.125721     2.10685      
+ II    e_aq^-1 + OH^0    -> OH^-1                  3.94807e+10    5.91724e+10    1.16591e+11    0.72      0.361328     4.12551      
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    r (nm)    reff (nm) Preact       
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   1.88989e+11    0.917879     1.33069      1               
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  1.62833e+10    0.590813     0.299163     1               
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    reff (nm) reff1 (nm)Preact       
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    2.79565e+10    1.17885e+11    3.27518e+10    0.75      1.17323   0.191618  0.0521895    
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ExplicitAssignament
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                0
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 eV 
+Max kinetic energy for tables                      500 MeV
+Number of bins per decade of a table               7
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 1 mm)
+Step function for muons/hadrons                    (0.2, 0.1 mm)
+Step function for light ions                       (0.2, 0.1 mm)
+Step function for general ions                     (0.2, 0.1 mm)
+Lowest e+e- kinetic energy                         1 keV
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    0
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Universal
+Use built-in Birks satuaration                     0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 0
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           3
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.04
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      1
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              0
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+======                 Atomic Deexcitation Parameters          ========
+=======================================================================
+Fluorescence enabled                               1
+Directory in G4LEDATA for fluorescence data files  fluor
+Auger electron cascade enabled                     1
+PIXE atomic de-excitation enabled                  0
+De-excitation module ignores cuts                  1
+Type of PIXE cross section for hadrons             Empirical
+Type of PIXE cross section for e+-                 Livermore
+=======================================================================
+======                 DNA Physics Parameters                  ========
+=======================================================================
+Use fast sampling in DNA models                    0
+Use Stationary option in DNA models                0
+Use DNA with multiple scattering of e-             0
+Use DNA e- solvation model type                    11003
+=======================================================================
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger flag: 1
+### ===  Ignore cuts flag:   1
+G4DNAELSEPAElasticModel: high energy limit decreased from 500 MeV to 1 MeV
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 150 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 150 keV to 500 MeV in 26 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=  500 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Meesungnoen2002 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+          StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+G4WT1 > Begin processing for Run: 0, History: 0
+G4WT18 > Begin processing for Run: 0, History: 200
+G4WT16 > Begin processing for Run: 0, History: 100
+G4WT8 > Begin processing for Run: 0, History: 300
+G4WT0 > Begin processing for Run: 0, History: 400
+G4WT23 > Begin processing for Run: 0, History: 600
+G4WT7 > Begin processing for Run: 0, History: 500
+G4WT12 > Begin processing for Run: 0, History: 700
+G4WT13 > Begin processing for Run: 0, History: 900
+G4WT21 > Begin processing for Run: 0, History: 800
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (148 histories): 3.02608 s +/- 1.01961 s 
+
+Note that TOPAS interrupted one or more histories during this session
+due to errors reported by Geant4.
+The total number of interrupted histories was: 852
+For details on each of these errors, see the console log for "G4Exception"
+If only a very small proportion of your histories were affected,
+you may be able to still use the overall result,
+but this is a judgement call you need to make for yourself.
+You can set TOPAS to limit the number of messages about interrupted histories by setting
+the parameter Ts/InterruptedHistoryMaxReports
+You can set TOPAS to exit if it exceeds a given number of interrupted histories by setting
+the parmameter Ts/MaxInterruptedHistories
+
+Elapsed times:
+Parameter Reading : User=0.000000s Real=0.000954s Sys=0.000000s [Cpu=0.0%]
+    Initialization: User=0.010000s Real=0.011014s Sys=0.000000s [Cpu=90.8%]
+         Execution: User=142.750000s Real=29.822253s Sys=1.330000s [Cpu=483.1%]
+      Finalization: User=0.000000s Real=0.004327s Sys=0.000000s [Cpu=0.0%]
+             Total: User=142.76s Real=29.8385s Sys=1.33s
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run2.tps
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4DATA
+
+**************************************************************
+ Geant4 version Name: geant4-11-01-patch-03 [MT]   (10-November-2023)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 24
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 0.001 nm, and radial tolerance = 0.001 nm.
+Checking overlaps for volume Target:0 (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+Default
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Auto-ionization probability 0
+-- Branching ratio: B1A1 Dissociative decay2 probability 0
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay1 probability 0.15
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay2 probability 0.55
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay3 probability 0
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay4 probability 0.3
+Solvation model selected: 11003
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 2e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s)    r (nm)    Preact       
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  3.0108e+10     0.257676  1            
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          3.86978e+10    0.208505  1            
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    Preact       alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   1.48007e+08    6.01734e+10    8.52389e+07    0.4       0.000595009  2.50354      
+ II    OH^0    + H^0     -> None                   2.20755e+10    6.16778e+10    3.3347e+10     0.41      0.183        3.75772      
+ II    OH^0    + OH^0    -> H2O2^0                 8.09754e+09    1.47808e+10    1.79086e+10    0.44      0.324929     5.02639      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           1.8195e+10     7.26631e+10    3.41717e+10    0.71      0.120013     2.07081      
+ II    e_aq^-1 + OH^0    -> OH^-1                  4.46796e+10    7.36865e+10    1.11841e+11    0.72      0.303525     3.49693      
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    r (nm)    reff (nm) Preact       
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   2.21771e+11    0.931851     1.35095      1               
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  2.07264e+10    0.597252     0.301466     1               
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    reff (nm) reff1 (nm)Preact       
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    3.15221e+10    1.41987e+11    3.62853e+10    0.75      1.18054   0.181066  0.0479789    
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ExplicitAssignament
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                0
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 eV 
+Max kinetic energy for tables                      500 MeV
+Number of bins per decade of a table               7
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 1 mm)
+Step function for muons/hadrons                    (0.2, 0.1 mm)
+Step function for light ions                       (0.2, 0.1 mm)
+Step function for general ions                     (0.2, 0.1 mm)
+Lowest e+e- kinetic energy                         1 keV
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    0
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Universal
+Use built-in Birks satuaration                     0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 0
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           3
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.04
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      1
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              0
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+======                 Atomic Deexcitation Parameters          ========
+=======================================================================
+Fluorescence enabled                               1
+Directory in G4LEDATA for fluorescence data files  fluor
+Auger electron cascade enabled                     1
+PIXE atomic de-excitation enabled                  0
+De-excitation module ignores cuts                  1
+Type of PIXE cross section for hadrons             Empirical
+Type of PIXE cross section for e+-                 Livermore
+=======================================================================
+======                 DNA Physics Parameters                  ========
+=======================================================================
+Use fast sampling in DNA models                    0
+Use Stationary option in DNA models                0
+Use DNA with multiple scattering of e-             0
+Use DNA e- solvation model type                    11003
+=======================================================================
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger flag: 1
+### ===  Ignore cuts flag:   1
+G4DNAELSEPAElasticModel: high energy limit decreased from 500 MeV to 1 MeV
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 150 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 150 keV to 500 MeV in 26 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=  500 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Meesungnoen2002 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+          StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+G4WT6 > Begin processing for Run: 0, History: 0
+G4WT5 > Begin processing for Run: 0, History: 200
+G4WT1 > Begin processing for Run: 0, History: 100
+G4WT20 > Begin processing for Run: 0, History: 300
+G4WT22 > Begin processing for Run: 0, History: 400
+G4WT16 > Begin processing for Run: 0, History: 600
+G4WT22 > Begin processing for Run: 0, History: 500
+G4WT12 > Begin processing for Run: 0, History: 700
+G4WT1 > Begin processing for Run: 0, History: 900
+G4WT23 > Begin processing for Run: 0, History: 800
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (148 histories): 2.75858 s +/- 0.916901 s 
+
+Note that TOPAS interrupted one or more histories during this session
+due to errors reported by Geant4.
+The total number of interrupted histories was: 852
+For details on each of these errors, see the console log for "G4Exception"
+If only a very small proportion of your histories were affected,
+you may be able to still use the overall result,
+but this is a judgement call you need to make for yourself.
+You can set TOPAS to limit the number of messages about interrupted histories by setting
+the parameter Ts/InterruptedHistoryMaxReports
+You can set TOPAS to exit if it exceeds a given number of interrupted histories by setting
+the parmameter Ts/MaxInterruptedHistories
+
+Elapsed times:
+Parameter Reading : User=0.010000s Real=0.001401s Sys=0.000000s [Cpu=713.6%]
+    Initialization: User=0.010000s Real=0.010959s Sys=0.000000s [Cpu=91.2%]
+         Execution: User=140.660000s Real=30.122896s Sys=1.490000s [Cpu=471.9%]
+      Finalization: User=0.000000s Real=0.004076s Sys=0.000000s [Cpu=0.0%]
+             Total: User=140.68s Real=30.1393s Sys=1.49s
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run2.tps
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4DATA
+
+**************************************************************
+ Geant4 version Name: geant4-11-01-patch-03 [MT]   (10-November-2023)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 24
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 0.001 nm, and radial tolerance = 0.001 nm.
+Checking overlaps for volume Target:0 (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+Default
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Auto-ionization probability 0
+-- Branching ratio: B1A1 Dissociative decay2 probability 0
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay1 probability 0.15
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay2 probability 0.55
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay3 probability 0
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay4 probability 0.3
+Solvation model selected: 11003
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 2e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s)    r (nm)    Preact       
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  3.56703e+10    0.257676  1            
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          4.52491e+10    0.201776  1            
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    Preact       alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   1.76856e+08    7.12902e+10    1.01854e+08    0.4       0.000600121  2.50357      
+ II    OH^0    + H^0     -> None                   2.41671e+10    7.30724e+10    3.50663e+10    0.41      0.165839     3.60947      
+ II    OH^0    + OH^0    -> H2O2^0                 8.88151e+09    1.75115e+10    1.80219e+10    0.44      0.290195     4.61169      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           2.16027e+10    8.91895e+10    3.99569e+10    0.71      0.114981     2.03944      
+ II    e_aq^-1 + OH^0    -> OH^-1                  4.94169e+10    9.04457e+10    1.07552e+11    0.72      0.25453      3.04047      
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    r (nm)    reff (nm) Preact       
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   2.5598e+11     0.9469       1.37277      1               
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  2.60025e+10    0.603084     0.302977     1               
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    reff (nm) reff1 (nm)Preact       
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    3.52873e+10    1.69223e+11    3.99986e+10    0.75      1.18845   0.171926  0.0443092    
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ExplicitAssignament
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                0
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 eV 
+Max kinetic energy for tables                      500 MeV
+Number of bins per decade of a table               7
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 1 mm)
+Step function for muons/hadrons                    (0.2, 0.1 mm)
+Step function for light ions                       (0.2, 0.1 mm)
+Step function for general ions                     (0.2, 0.1 mm)
+Lowest e+e- kinetic energy                         1 keV
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    0
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Universal
+Use built-in Birks satuaration                     0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 0
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           3
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.04
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      1
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              0
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+======                 Atomic Deexcitation Parameters          ========
+=======================================================================
+Fluorescence enabled                               1
+Directory in G4LEDATA for fluorescence data files  fluor
+Auger electron cascade enabled                     1
+PIXE atomic de-excitation enabled                  0
+De-excitation module ignores cuts                  1
+Type of PIXE cross section for hadrons             Empirical
+Type of PIXE cross section for e+-                 Livermore
+=======================================================================
+======                 DNA Physics Parameters                  ========
+=======================================================================
+Use fast sampling in DNA models                    0
+Use Stationary option in DNA models                0
+Use DNA with multiple scattering of e-             0
+Use DNA e- solvation model type                    11003
+=======================================================================
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger flag: 1
+### ===  Ignore cuts flag:   1
+G4DNAELSEPAElasticModel: high energy limit decreased from 500 MeV to 1 MeV
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 150 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 150 keV to 500 MeV in 26 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=  500 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Meesungnoen2002 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+          StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+G4WT13 > Begin processing for Run: 0, History: 0
+G4WT14 > Begin processing for Run: 0, History: 200
+G4WT19 > Begin processing for Run: 0, History: 100
+G4WT8 > Begin processing for Run: 0, History: 300
+G4WT3 > Begin processing for Run: 0, History: 400
+G4WT7 > Begin processing for Run: 0, History: 600
+G4WT19 > Begin processing for Run: 0, History: 500
+G4WT13 > Begin processing for Run: 0, History: 700
+G4WT23 > Begin processing for Run: 0, History: 900
+G4WT3 > Begin processing for Run: 0, History: 800
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (148 histories): 2.6423 s +/- 0.910201 s 
+
+Note that TOPAS interrupted one or more histories during this session
+due to errors reported by Geant4.
+The total number of interrupted histories was: 852
+For details on each of these errors, see the console log for "G4Exception"
+If only a very small proportion of your histories were affected,
+you may be able to still use the overall result,
+but this is a judgement call you need to make for yourself.
+You can set TOPAS to limit the number of messages about interrupted histories by setting
+the parameter Ts/InterruptedHistoryMaxReports
+You can set TOPAS to exit if it exceeds a given number of interrupted histories by setting
+the parmameter Ts/MaxInterruptedHistories
+
+Elapsed times:
+Parameter Reading : User=0.000000s Real=0.002141s Sys=0.000000s [Cpu=0.0%]
+    Initialization: User=0.010000s Real=0.011479s Sys=0.000000s [Cpu=87.1%]
+         Execution: User=136.760000s Real=30.600761s Sys=1.420000s [Cpu=451.6%]
+      Finalization: User=0.000000s Real=0.005438s Sys=0.000000s [Cpu=0.0%]
+             Total: User=136.77s Real=30.6198s Sys=1.42s
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run2.tps
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4DATA
+
+**************************************************************
+ Geant4 version Name: geant4-11-01-patch-03 [MT]   (10-November-2023)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 24
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 0.001 nm, and radial tolerance = 0.001 nm.
+Checking overlaps for volume Target:0 (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+Default
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Auto-ionization probability 0
+-- Branching ratio: B1A1 Dissociative decay2 probability 0
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay1 probability 0.15
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay2 probability 0.55
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay3 probability 0
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay4 probability 0.3
+Solvation model selected: 11003
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 2e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s)    r (nm)    Preact       
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  4.15303e+10    0.257676  1            
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          5.24295e+10    0.196144  1            
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    Preact       alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   2.09145e+08    8.30019e+10    1.20453e+08    0.4       0.000609559  2.50363      
+ II    OH^0    + H^0     -> None                   2.61832e+10    8.50769e+10    3.67663e+10    0.41      0.151849     3.49306      
+ II    OH^0    + OH^0    -> H2O2^0                 9.62123e+09    2.03883e+10    1.82185e+10    0.44      0.261983     4.30358      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           2.53867e+10    1.08248e+11    4.62974e+10    0.71      0.110346     2.01084      
+ II    e_aq^-1 + OH^0    -> OH^-1                  5.36268e+10    1.09773e+11    1.03664e+11    0.72      0.213311     2.70049      
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    r (nm)    reff (nm) Preact       
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   2.91465e+11    0.963022     1.39614      1               
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  3.21933e+10    0.607896     0.303342     1               
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    reff (nm) reff1 (nm)Preact       
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    3.92433e+10    2.00133e+11    4.38643e+10    0.75      1.19695   0.163643  0.0409934    
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ExplicitAssignament
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                0
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 eV 
+Max kinetic energy for tables                      500 MeV
+Number of bins per decade of a table               7
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 1 mm)
+Step function for muons/hadrons                    (0.2, 0.1 mm)
+Step function for light ions                       (0.2, 0.1 mm)
+Step function for general ions                     (0.2, 0.1 mm)
+Lowest e+e- kinetic energy                         1 keV
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    0
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Universal
+Use built-in Birks satuaration                     0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 0
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           3
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.04
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      1
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              0
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+======                 Atomic Deexcitation Parameters          ========
+=======================================================================
+Fluorescence enabled                               1
+Directory in G4LEDATA for fluorescence data files  fluor
+Auger electron cascade enabled                     1
+PIXE atomic de-excitation enabled                  0
+De-excitation module ignores cuts                  1
+Type of PIXE cross section for hadrons             Empirical
+Type of PIXE cross section for e+-                 Livermore
+=======================================================================
+======                 DNA Physics Parameters                  ========
+=======================================================================
+Use fast sampling in DNA models                    0
+Use Stationary option in DNA models                0
+Use DNA with multiple scattering of e-             0
+Use DNA e- solvation model type                    11003
+=======================================================================
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger flag: 1
+### ===  Ignore cuts flag:   1
+G4DNAELSEPAElasticModel: high energy limit decreased from 500 MeV to 1 MeV
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 150 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 150 keV to 500 MeV in 26 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=  500 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Meesungnoen2002 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+          StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+G4WT18 > Begin processing for Run: 0, History: 0
+G4WT23 > Begin processing for Run: 0, History: 200
+G4WT13 > Begin processing for Run: 0, History: 100
+G4WT11 > Begin processing for Run: 0, History: 300
+G4WT6 > Begin processing for Run: 0, History: 400
+G4WT0 > Begin processing for Run: 0, History: 600
+G4WT4 > Begin processing for Run: 0, History: 500
+G4WT18 > Begin processing for Run: 0, History: 700
+G4WT1 > Begin processing for Run: 0, History: 900
+G4WT14 > Begin processing for Run: 0, History: 800
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (148 histories): 2.2102 s +/- 0.808939 s 
+
+Note that TOPAS interrupted one or more histories during this session
+due to errors reported by Geant4.
+The total number of interrupted histories was: 852
+For details on each of these errors, see the console log for "G4Exception"
+If only a very small proportion of your histories were affected,
+you may be able to still use the overall result,
+but this is a judgement call you need to make for yourself.
+You can set TOPAS to limit the number of messages about interrupted histories by setting
+the parameter Ts/InterruptedHistoryMaxReports
+You can set TOPAS to exit if it exceeds a given number of interrupted histories by setting
+the parmameter Ts/MaxInterruptedHistories
+
+Elapsed times:
+Parameter Reading : User=0.010000s Real=0.001701s Sys=0.000000s [Cpu=587.8%]
+    Initialization: User=0.010000s Real=0.011139s Sys=0.000000s [Cpu=89.8%]
+         Execution: User=118.040000s Real=35.458122s Sys=1.430000s [Cpu=336.9%]
+      Finalization: User=0.000000s Real=0.003972s Sys=0.000000s [Cpu=0.0%]
+             Total: User=118.06s Real=35.4749s Sys=1.43s
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run2.tps
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4DATA
+
+**************************************************************
+ Geant4 version Name: geant4-11-01-patch-03 [MT]   (10-November-2023)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 24
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 0.001 nm, and radial tolerance = 0.001 nm.
+Checking overlaps for volume Target:0 (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+Default
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Auto-ionization probability 0
+-- Branching ratio: B1A1 Dissociative decay2 probability 0
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay1 probability 0.15
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay2 probability 0.55
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay3 probability 0
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay4 probability 0.3
+Solvation model selected: 11003
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 2e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s)    r (nm)    Preact      
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  4.76656e+10    0.257676  1           
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          6.02447e+10    0.19117   1           
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    Preact      alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   2.44993e+08    9.52638e+10    1.41103e+08    0.4       0.00062214  2.5037       
+ II    OH^0    + H^0     -> None                   2.8134e+10     9.76454e+10    3.84456e+10    0.41      0.14024     3.39933      
+ II    OH^0    + OH^0    -> H2O2^0                 1.03214e+10    2.34003e+10    1.84667e+10    0.44      0.238677    4.06628      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           2.95643e+10    1.30166e+11    5.31986e+10    0.71      0.105963    1.98408      
+ II    e_aq^-1 + OH^0    -> OH^-1                  5.72694e+10    1.32e+11       1.00125e+11    0.72      0.178843    2.4424       
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    r (nm)    reff (nm) Preact      
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   3.28139e+11    0.980223     1.42108      1              
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  3.93788e+10    0.611672     0.302554     1              
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    reff (nm) reff1 (nm)Preact      
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    4.33809e+10    2.35322e+11    4.78612e+10    0.75      1.20606   0.155901  0.0379295   
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ExplicitAssignament
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                0
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 eV 
+Max kinetic energy for tables                      500 MeV
+Number of bins per decade of a table               7
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 1 mm)
+Step function for muons/hadrons                    (0.2, 0.1 mm)
+Step function for light ions                       (0.2, 0.1 mm)
+Step function for general ions                     (0.2, 0.1 mm)
+Lowest e+e- kinetic energy                         1 keV
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    0
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Universal
+Use built-in Birks satuaration                     0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 0
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           3
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.04
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      1
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              0
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+======                 Atomic Deexcitation Parameters          ========
+=======================================================================
+Fluorescence enabled                               1
+Directory in G4LEDATA for fluorescence data files  fluor
+Auger electron cascade enabled                     1
+PIXE atomic de-excitation enabled                  0
+De-excitation module ignores cuts                  1
+Type of PIXE cross section for hadrons             Empirical
+Type of PIXE cross section for e+-                 Livermore
+=======================================================================
+======                 DNA Physics Parameters                  ========
+=======================================================================
+Use fast sampling in DNA models                    0
+Use Stationary option in DNA models                0
+Use DNA with multiple scattering of e-             0
+Use DNA e- solvation model type                    11003
+=======================================================================
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger flag: 1
+### ===  Ignore cuts flag:   1
+G4DNAELSEPAElasticModel: high energy limit decreased from 500 MeV to 1 MeV
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 150 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 150 keV to 500 MeV in 26 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=  500 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Meesungnoen2002 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+          StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+G4WT6 > Begin processing for Run: 0, History: 0
+G4WT0 > Begin processing for Run: 0, History: 200
+G4WT10 > Begin processing for Run: 0, History: 100
+G4WT10 > Begin processing for Run: 0, History: 300
+G4WT19 > Begin processing for Run: 0, History: 400
+G4WT6 > Begin processing for Run: 0, History: 600
+G4WT1 > Begin processing for Run: 0, History: 500
+G4WT3 > Begin processing for Run: 0, History: 700
+G4WT0 > Begin processing for Run: 0, History: 900
+G4WT14 > Begin processing for Run: 0, History: 800
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (148 histories): 2.43588 s +/- 0.853909 s 
+
+Note that TOPAS interrupted one or more histories during this session
+due to errors reported by Geant4.
+The total number of interrupted histories was: 852
+For details on each of these errors, see the console log for "G4Exception"
+If only a very small proportion of your histories were affected,
+you may be able to still use the overall result,
+but this is a judgement call you need to make for yourself.
+You can set TOPAS to limit the number of messages about interrupted histories by setting
+the parameter Ts/InterruptedHistoryMaxReports
+You can set TOPAS to exit if it exceeds a given number of interrupted histories by setting
+the parmameter Ts/MaxInterruptedHistories
+
+Elapsed times:
+Parameter Reading : User=0.000000s Real=0.002548s Sys=0.000000s [Cpu=0.0%]
+    Initialization: User=0.010000s Real=0.017612s Sys=0.000000s [Cpu=56.8%]
+         Execution: User=75.520000s Real=34.867490s Sys=1.350000s [Cpu=220.5%]
+      Finalization: User=0.000000s Real=0.004119s Sys=0.000000s [Cpu=0.0%]
+             Total: User=75.53s Real=34.8918s Sys=1.35s
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run2.tps
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4DATA
+
+**************************************************************
+ Geant4 version Name: geant4-11-01-patch-03 [MT]   (10-November-2023)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 24
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 0.001 nm, and radial tolerance = 0.001 nm.
+Checking overlaps for volume Target:0 (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+Default
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Auto-ionization probability 0
+-- Branching ratio: B1A1 Dissociative decay2 probability 0
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay1 probability 0.15
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay2 probability 0.55
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay3 probability 0
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay4 probability 0.3
+Solvation model selected: 11003
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 2e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s)    r (nm)    Preact       
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  5.40637e+10    0.257676  1            
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          6.86972e+10    0.186576  1            
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    Preact       alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   2.84495e+08    1.08051e+11    1.6386e+08     0.4       0.000636967  2.50379      
+ II    OH^0    + H^0     -> None                   3.00282e+10    1.10752e+11    4.01027e+10    0.41      0.130442     3.32218      
+ II    OH^0    + OH^0    -> H2O2^0                 1.09866e+10    2.65413e+10    1.87468e+10    0.44      0.219112     3.87801      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           3.41493e+10    1.55279e+11    6.06624e+10    0.71      0.101764     1.95869      
+ II    e_aq^-1 + OH^0    -> OH^-1                  6.03333e+10    1.57466e+11    9.68918e+10    0.72      0.150148     2.2435       
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    r (nm)    reff (nm) Preact       
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   3.65972e+11    0.998515     1.44759      1               
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  4.76366e+10    0.614571     0.300762     1               
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    reff (nm) reff1 (nm)Preact       
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    4.76908e+10    2.75462e+11    5.19729e+10    0.75      1.21579   0.148526  0.0350631    
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ExplicitAssignament
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                0
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 eV 
+Max kinetic energy for tables                      500 MeV
+Number of bins per decade of a table               7
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 1 mm)
+Step function for muons/hadrons                    (0.2, 0.1 mm)
+Step function for light ions                       (0.2, 0.1 mm)
+Step function for general ions                     (0.2, 0.1 mm)
+Lowest e+e- kinetic energy                         1 keV
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    0
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Universal
+Use built-in Birks satuaration                     0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 0
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           3
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.04
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      1
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              0
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+======                 Atomic Deexcitation Parameters          ========
+=======================================================================
+Fluorescence enabled                               1
+Directory in G4LEDATA for fluorescence data files  fluor
+Auger electron cascade enabled                     1
+PIXE atomic de-excitation enabled                  0
+De-excitation module ignores cuts                  1
+Type of PIXE cross section for hadrons             Empirical
+Type of PIXE cross section for e+-                 Livermore
+=======================================================================
+======                 DNA Physics Parameters                  ========
+=======================================================================
+Use fast sampling in DNA models                    0
+Use Stationary option in DNA models                0
+Use DNA with multiple scattering of e-             0
+Use DNA e- solvation model type                    11003
+=======================================================================
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger flag: 1
+### ===  Ignore cuts flag:   1
+G4DNAELSEPAElasticModel: high energy limit decreased from 500 MeV to 1 MeV
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 150 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 150 keV to 500 MeV in 26 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=  500 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Meesungnoen2002 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+          StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+G4WT0 > Begin processing for Run: 0, History: 0
+G4WT2 > Begin processing for Run: 0, History: 200
+G4WT14 > Begin processing for Run: 0, History: 100
+G4WT14 > Begin processing for Run: 0, History: 300
+G4WT0 > Begin processing for Run: 0, History: 400
+G4WT11 > Begin processing for Run: 0, History: 600
+G4WT19 > Begin processing for Run: 0, History: 500
+G4WT7 > Begin processing for Run: 0, History: 700
+G4WT1 > Begin processing for Run: 0, History: 900
+G4WT16 > Begin processing for Run: 0, History: 800
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (148 histories): 2.21169 s +/- 0.771842 s 
+
+Note that TOPAS interrupted one or more histories during this session
+due to errors reported by Geant4.
+The total number of interrupted histories was: 852
+For details on each of these errors, see the console log for "G4Exception"
+If only a very small proportion of your histories were affected,
+you may be able to still use the overall result,
+but this is a judgement call you need to make for yourself.
+You can set TOPAS to limit the number of messages about interrupted histories by setting
+the parameter Ts/InterruptedHistoryMaxReports
+You can set TOPAS to exit if it exceeds a given number of interrupted histories by setting
+the parmameter Ts/MaxInterruptedHistories
+
+Elapsed times:
+Parameter Reading : User=0.000000s Real=0.001643s Sys=0.000000s [Cpu=0.0%]
+    Initialization: User=0.010000s Real=0.011007s Sys=0.000000s [Cpu=90.9%]
+         Execution: User=72.740000s Real=34.950117s Sys=1.280000s [Cpu=211.8%]
+      Finalization: User=0.000000s Real=0.006986s Sys=0.010000s [Cpu=143.1%]
+             Total: User=72.75s Real=34.9698s Sys=1.29s
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run2.tps
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4DATA
+
+**************************************************************
+ Geant4 version Name: geant4-11-01-patch-03 [MT]   (10-November-2023)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 24
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 0.001 nm, and radial tolerance = 0.001 nm.
+Checking overlaps for volume Target:0 (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+Default
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Auto-ionization probability 0
+-- Branching ratio: B1A1 Dissociative decay2 probability 0
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay1 probability 0.15
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay2 probability 0.55
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay3 probability 0
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay4 probability 0.3
+Solvation model selected: 11003
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 2e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s)    r (nm)    Preact       
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  6.07205e+10    0.257676  1            
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          7.77862e+10    0.182187  1            
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    Preact       alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   3.2773e+08     1.21355e+11    1.8877e+08     0.4       0.000653339  2.50389      
+ II    OH^0    + H^0     -> None                   3.18733e+10    1.24389e+11    4.17368e+10    0.41      0.122042     3.2574       
+ II    OH^0    + OH^0    -> H2O2^0                 1.16212e+10    2.98093e+10    1.90464e+10    0.44      0.202441     3.72487      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           3.9152e+10     1.83927e+11    6.86884e+10    0.71      0.0977186    1.93444      
+ II    e_aq^-1 + OH^0    -> OH^-1                  6.28342e+10    1.86518e+11    9.39283e+10    0.72      0.126328     2.08832      
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    r (nm)    reff (nm) Preact       
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   4.04982e+11    1.01792      1.47572      1               
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  5.70412e+10    0.616804     0.298161     1               
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)    Kact (/M/s)    r (nm)    reff (nm) reff1 (nm)Preact       
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    5.21633e+10    3.213e+11      5.6187e+10     0.75      1.22615   0.141427  0.0323663    
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ExplicitAssignament
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                0
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 eV 
+Max kinetic energy for tables                      500 MeV
+Number of bins per decade of a table               7
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 1 mm)
+Step function for muons/hadrons                    (0.2, 0.1 mm)
+Step function for light ions                       (0.2, 0.1 mm)
+Step function for general ions                     (0.2, 0.1 mm)
+Lowest e+e- kinetic energy                         1 keV
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    0
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Universal
+Use built-in Birks satuaration                     0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 0
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           3
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.04
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      1
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              0
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+======                 Atomic Deexcitation Parameters          ========
+=======================================================================
+Fluorescence enabled                               1
+Directory in G4LEDATA for fluorescence data files  fluor
+Auger electron cascade enabled                     1
+PIXE atomic de-excitation enabled                  0
+De-excitation module ignores cuts                  1
+Type of PIXE cross section for hadrons             Empirical
+Type of PIXE cross section for e+-                 Livermore
+=======================================================================
+======                 DNA Physics Parameters                  ========
+=======================================================================
+Use fast sampling in DNA models                    0
+Use Stationary option in DNA models                0
+Use DNA with multiple scattering of e-             0
+Use DNA e- solvation model type                    11003
+=======================================================================
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger flag: 1
+### ===  Ignore cuts flag:   1
+G4DNAELSEPAElasticModel: high energy limit decreased from 500 MeV to 1 MeV
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 150 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 150 keV to 500 MeV in 26 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=  500 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Meesungnoen2002 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+          StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+G4WT8 > Begin processing for Run: 0, History: 0
+G4WT20 > Begin processing for Run: 0, History: 200
+G4WT0 > Begin processing for Run: 0, History: 100
+G4WT13 > Begin processing for Run: 0, History: 300
+G4WT6 > Begin processing for Run: 0, History: 400
+G4WT8 > Begin processing for Run: 0, History: 600
+G4WT21 > Begin processing for Run: 0, History: 500
+G4WT9 > Begin processing for Run: 0, History: 700
+G4WT2 > Begin processing for Run: 0, History: 900
+G4WT19 > Begin processing for Run: 0, History: 800
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (148 histories): 2.38432 s +/- 0.863276 s 
+
+Note that TOPAS interrupted one or more histories during this session
+due to errors reported by Geant4.
+The total number of interrupted histories was: 852
+For details on each of these errors, see the console log for "G4Exception"
+If only a very small proportion of your histories were affected,
+you may be able to still use the overall result,
+but this is a judgement call you need to make for yourself.
+You can set TOPAS to limit the number of messages about interrupted histories by setting
+the parameter Ts/InterruptedHistoryMaxReports
+You can set TOPAS to exit if it exceeds a given number of interrupted histories by setting
+the parmameter Ts/MaxInterruptedHistories
+
+Elapsed times:
+Parameter Reading : User=0.000000s Real=0.001848s Sys=0.000000s [Cpu=0.0%]
+    Initialization: User=0.010000s Real=0.031480s Sys=0.000000s [Cpu=31.8%]
+         Execution: User=92.980000s Real=36.411331s Sys=1.350000s [Cpu=259.1%]
+      Finalization: User=0.000000s Real=0.004328s Sys=0.000000s [Cpu=0.0%]
+             Total: User=92.99s Real=36.449s Sys=1.35s
+      375.57 real      1323.03 user        22.19 sys

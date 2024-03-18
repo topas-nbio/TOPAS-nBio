@@ -31,7 +31,9 @@ foreach LINE ( $OPTION )
     cp ParameterFiles/depFile*txt $DIR
     cp $LINE $DIR
    
-    set SEED = `bash -c 'echo $RANDOM'` 
+    #set SEED = `bash -c 'echo $RANDOM'` 
+    @ COUNT = $COUNT + 1
+    set SEED = $COUNT
     echo Ts/Seed = $SEED >> $DIR/$INFILE.txt    
 
 
@@ -41,10 +43,9 @@ foreach LINE ( $OPTION )
 
 #!/bin/bash
 cd $DIR
-nohup time topas $INFILE.txt > log.out &
+nohup time nBio_dev_noIRTManager $INFILE.txt > log.out &
 EOF
     chmod +x $SCRIPT
     bash $SCRIPT 
-    @ COUNT = $COUNT + 1
   end
 end

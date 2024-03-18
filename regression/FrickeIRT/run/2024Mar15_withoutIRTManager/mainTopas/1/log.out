@@ -1,0 +1,1379 @@
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: mainTopas.txt
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4DATA
+
+**************************************************************
+ Geant4 version Name: geant4-11-01-patch-03 [MT]   (10-November-2023)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 1
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 10 nm, and radial tolerance = 10 nm.
+Checking overlaps for volume sWorld:0 (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+Default
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Auto-ionization probability 0
+-- Branching ratio: B1A1 Dissociative decay2 probability 0
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay1 probability 0.15
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay2 probability 0.55
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay3 probability 0
+-- Branching ratio: H2O Electron Hole Recombination Dissociative decay4 probability 0.3
+Solvation model selected: 11003
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 7e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.2e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 7.8e+09/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 2e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+-- Adjust for Concentration of H2SO4 
+
+ ###-------- pH Scaling Starts ---------###
+ Reaction Type: 1 | Reaction: OH^-1 + SO4^-1 -> OH^0 + SO4^-2
+ ---- kobs: 8.3e+07 ---> 1.56379e+08
+
+ Reaction Type: 1 | Reaction: SO4^-1 + SO4^-1 -> S2O8^-2
+ ---- kobs: 4.4e+08 ---> 8.28999e+08
+
+ Reaction Type: 1 | Reaction: e_aq^-1 + S2O8^-2 -> SO4^-1 + SO4^-2
+ ---- kobs: 1.2e+10 ---> 4.25975e+10
+
+ Reaction Type: 3 | Reaction: H3O^1 + OH^-1
+ ---- kobs: 1.43e+11 ---> 7.58988e+10
+
+ Reaction Type: 4 | Reaction: e_aq^-1 + H3O^1 -> H^0
+ ---- kobs: 2.3e+10 ---> 1.22075e+10
+
+ Reaction Type: 6 | Reaction: OH^0 + HSO4^-1 -> SO4^-1
+ ---- scav: 150000 ---> 58504.5
+
+========= 6
+ Reaction Type: 6 | Reaction: SO4^-1 + Fe2 -> Fe3 + SO4^-2
+ ---- scav: 2.79e+08 ---> 1.395e+06
+
+ Reaction Type: 6 | Reaction: SO4^-1 + OH^-1 -> OH^0 + SO4^-2
+ ---- scav: 8.3 ---> 3.81738e-06
+
+ Reaction Type: 6 | Reaction: HO2^-1 + H3O^1 -> H2O2^0
+ ---- scav: 4950 ---> 1.07626e+10
+
+ Reaction Type: 6 | Reaction: H2O2^0 + OH^-1 -> HO2^-1
+ ---- scav: 46.6 ---> 1.13755e-05
+
+ Reaction Type: 6 | Reaction: H3O^1 + OH^-1
+ ---- scav: 11200 ---> 0.00145112
+
+ Reaction Type: 6 | Reaction: HO2^0 + OH^-1 -> O2^-1
+ ---- scav: 624 ---> 0.000152325
+
+ Reaction Type: 6 | Reaction: OH^-1 + H3O^1
+ ---- scav: 11200 ---> 2.43518e+10
+
+ Reaction Type: 6 | Reaction: OH^0 + OH^-1 -> O^-1
+ ---- scav: 624 ---> 0.000152325
+
+ Reaction Type: 6 | Reaction: O^-1 + H3O^1 -> OH^0
+ ---- scav: 4730 ---> 1.02843e+10
+
+ Reaction Type: 6 | Reaction: e_aq^-1 + H3O^1 -> H^0
+ ---- scav: 2090 ---> 4.54421e+09
+
+ Reaction Type: 6 | Reaction: O2^-1 + H3O^1 -> HO2^0
+ ---- scav: 4730 ---> 1.02843e+10
+
+ Reaction Type: 6 | Reaction: O3^-1 + H3O^1 -> OH^0 + O2^0
+ ---- scav: 8910 ---> 1.93727e+10
+
+ ###-------- pH Scaling Ends ---------###
+
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s)    r (nm)        Preact         
+========================================================================================================================
+ I     H^0     + S2O8^-2 -> SO4^-1 + HSO4^-1       2.5e+07        0.000405591   1              
+ I     H^0     + SO4^-1  -> HSO4^-1                1e+10          0.157593      1              
+ I     H2O2^0  + SO4^-1  -> HO2^0 + HSO4^-1        1.2e+07        0.000430312   1              
+ I     OH^-1   + SO4^-1  -> OH^0 + SO4^-2          1.56379e+08    0.117146      1              
+ I     OH^0    + HSO4^-1 -> SO4^-1                 150000         5.52893e-06   1              
+ I     SO4^-1  + SO4^-1  -> S2O8^-2                8.28999e+08    0.246437      1              
+ I     e_aq^-1 + S2O8^-2 -> SO4^-1 + SO4^-2        4.25975e+10    0.765067      1              
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)     Kact (/M/s)      r (nm)        Preact         alpha (/nm)   
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   9e+07          2.81516e+10     9.02887e+07      0.4           0.00134615     2.50802       
+ II    OH^0    + H^0     -> None                   2e+10          2.85452e+10     6.68101e+10      0.41          0.492293       8.14758       
+ II    OH^0    + OH^0    -> H2O2^0                 5.5e+09        7.32548e+09     2.2071e+10       0.44          0.544815       9.12024       
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           1.1e+10        3.86858e+10     1.53705e+10      0.71          0.103317       1.96805       
+ II    e_aq^-1 + OH^0    -> OH^-1                  3e+10          3.86858e+10     1.33617e+11      0.72          0.497921       6.18599       
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    r (nm)        reff (nm)     Preact         
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   7.58988e+10    0.876805         1.28023          1                 
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  5.5e+09        0.404914         0.148322         1                 
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    Kdif (/M/s)     Kact (/M/s)      r (nm)        reff (nm)     reff1 (nm)    Preact         
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    1.22075e+10    1.26196e+11     2.81262e+10      0.75          1.16126       0.211647      0.0426379      
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s)    r (nm)        reff (nm)     Preact         
+========================================================================================================================
+ V     H^0     + H^0     -> H_2^0                  7.8e+09        0.588974      0.588974      0.25           
+ V     e_aq^-1 + H^0     -> OH^-1 + H_2^0          2.5e+10        1.11043       1.11043       0.25           
+
+========================================================================================================================
+Type   Molecules        Products                      Scavenging capacity /s
+========================================================================================================================
+ VI    O3P^0   + O2^0    -> O3^0                   1e+06           Single factor 
+ VI    H^0     + Fe2     -> Fe3 + H_2^0            65000           Single factor 
+ VI    H^0     + O2^0    -> HO2^0                  5.25e+06        Single factor 
+ VI    H2O2^0  + Fe2     -> Fe3 + OH^0 + OH^-1     0.26            Single factor 
+ VI    HO2^0   + Fe2     -> Fe3 + HO2^-1           4500            Single factor 
+ VI    OH^0    + Fe2     -> Fe3 + OH^-1            1.7e+06         Single factor 
+ VI    OH^0    + HSO4^-1 -> SO4^-1                 58504.5         Single factor 
+ VI    O2^0    + O^-1    -> O3^-1                  925000          Single factor 
+ VI    SO4^-1  + Fe2     -> Fe3 + SO4^-2           1.395e+06       Single factor 
+ VI    SO4^-1  + OH^-1   -> OH^0 + SO4^-2          3.81738e-06     Single factor 
+ VI    e_aq^-1 + O2^0    -> O2^-1                  4.35e+06        Single factor 
+ VI    HO2^-1  + H3O^1   -> H2O2^0                 1.07626e+10     Single factor 
+ VI    H2O2^0  + OH^-1   -> HO2^-1                 1.13755e-05     Single factor 
+ VI    H3O^1   + OH^-1   -> None                   0.00145112      Single factor 
+ VI    HO2^0   + OH^-1   -> O2^-1                  0.000152325     Single factor 
+ VI    OH^-1   + H3O^1   -> None                   2.43518e+10     Single factor 
+ VI    OH^0    + OH^-1   -> O^-1                   0.000152325     Single factor 
+ VI    O^-1    + H3O^1   -> OH^0                   1.02843e+10     Single factor 
+ VI    e_aq^-1 + H3O^1   -> H^0                    4.54421e+09     Single factor 
+ VI    O2^-1   + H3O^1   -> HO2^0                  1.02843e+10     Single factor 
+ VI    O3^-1   + H3O^1   -> OH^0 + O2^0            1.93727e+10     Single factor 
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ExplicitAssignament
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+=======================================================================
+======                 Electromagnetic Physics Parameters      ========
+=======================================================================
+LPM effect enabled                                 1
+Enable creation and use of sampling tables         0
+Apply cuts on all EM processes                     0
+Use combined TransportationWithMsc                 Disabled
+Use general process                                0
+Enable linear polarisation for gamma               0
+Enable photoeffect sampling below K-shell          1
+Enable sampling of quantum entanglement            0
+X-section factor for integral approach             0.8
+Min kinetic energy for tables                      100 eV 
+Max kinetic energy for tables                      500 MeV
+Number of bins per decade of a table               7
+Verbose level                                      1
+Verbose level for worker thread                    0
+Bremsstrahlung energy threshold above which 
+  primary e+- is added to the list of secondary    100 TeV
+Bremsstrahlung energy threshold above which primary
+  muon/hadron is added to the list of secondary    100 TeV
+Lowest triplet kinetic energy                      1 MeV
+Enable sampling of gamma linear polarisation       0
+5D gamma conversion model type                     0
+5D gamma conversion model on isolated ion          0
+Livermore data directory                           epics_2017
+=======================================================================
+======                 Ionisation Parameters                   ========
+=======================================================================
+Step function for e+-                              (0.2, 1 mm)
+Step function for muons/hadrons                    (0.2, 0.1 mm)
+Step function for light ions                       (0.2, 0.1 mm)
+Step function for general ions                     (0.2, 0.1 mm)
+Lowest e+e- kinetic energy                         1 keV
+Lowest muon/hadron kinetic energy                  1 keV
+Use ICRU90 data                                    0
+Fluctuations of dE/dx are enabled                  1
+Type of fluctuation model for leptons and hadrons  Universal
+Use built-in Birks satuaration                     0
+Build CSDA range enabled                           0
+Use cut as a final range enabled                   0
+Enable angular generator interface                 0
+Max kinetic energy for CSDA tables                 1 GeV
+Max kinetic energy for NIEL computation            0 eV 
+Linear loss limit                                  0.01
+Read data from file for e+e- pair production by mu 0
+=======================================================================
+======                 Multiple Scattering Parameters          ========
+=======================================================================
+Type of msc step limit algorithm for e+-           3
+Type of msc step limit algorithm for muons/hadrons 0
+Msc lateral displacement for e+- enabled           1
+Msc lateral displacement for muons and hadrons     0
+Urban msc model lateral displacement alg96         1
+Range factor for msc step limit for e+-            0.04
+Range factor for msc step limit for muons/hadrons  0.2
+Geometry factor for msc step limitation of e+-     2.5
+Safety factor for msc step limit for e+-           0.6
+Skin parameter for msc step limitation of e+-      1
+Lambda limit for msc step limit for e+-            1 mm
+Use Mott correction for e- scattering              0
+Factor used for dynamic computation of angular 
+  limit between single and multiple scattering     1
+Fixed angular limit between single 
+  and multiple scattering                          3.1416 rad
+Upper energy limit for e+- multiple scattering     100 MeV
+Type of electron single scattering model           0
+Type of nuclear form-factor                        1
+Screening factor                                   1
+=======================================================================
+======                 Atomic Deexcitation Parameters          ========
+=======================================================================
+Fluorescence enabled                               1
+Directory in G4LEDATA for fluorescence data files  fluor
+Auger electron cascade enabled                     1
+PIXE atomic de-excitation enabled                  0
+De-excitation module ignores cuts                  1
+Type of PIXE cross section for hadrons             Empirical
+Type of PIXE cross section for e+-                 Livermore
+=======================================================================
+======                 DNA Physics Parameters                  ========
+=======================================================================
+Use fast sampling in DNA models                    0
+Use Stationary option in DNA models                0
+Use DNA with multiple scattering of e-             0
+Use DNA e- solvation model type                    11003
+=======================================================================
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger flag: 1
+### ===  Ignore cuts flag:   1
+G4DNAELSEPAElasticModel: high energy limit decreased from 500 MeV to 1 MeV
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 150 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 150 keV to 500 MeV in 26 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=  500 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Meesungnoen2002 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+          StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llim=1 mm
+
+eIoni:  for e+  XStype:3  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 3, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+G4WT0 > Begin processing for Run: 0, History: 0
+G4WT0 > Begin processing for Run: 0, History: 10
+G4WT0 > Begin processing for Run: 0, History: 20
+G4WT0 > Begin processing for Run: 0, History: 30
+G4WT0 > Begin processing for Run: 0, History: 40
+G4WT0 > Begin processing for Run: 0, History: 50
+G4WT0 > Begin processing for Run: 0, History: 60
+G4WT0 > Begin processing for Run: 0, History: 70
+G4WT0 > Begin processing for Run: 0, History: 80
+G4WT0 > Begin processing for Run: 0, History: 90
+G4WT0 > Begin processing for Run: 0, History: 100
+G4WT0 > Begin processing for Run: 0, History: 110
+G4WT0 > Begin processing for Run: 0, History: 120
+G4WT0 > Begin processing for Run: 0, History: 130
+G4WT0 > Begin processing for Run: 0, History: 140
+G4WT0 > Begin processing for Run: 0, History: 150
+G4WT0 > Begin processing for Run: 0, History: 160
+G4WT0 > Begin processing for Run: 0, History: 170
+G4WT0 > Begin processing for Run: 0, History: 180
+G4WT0 > Begin processing for Run: 0, History: 190
+G4WT0 > Begin processing for Run: 0, History: 200
+G4WT0 > Begin processing for Run: 0, History: 210
+G4WT0 > Begin processing for Run: 0, History: 220
+G4WT0 > Begin processing for Run: 0, History: 230
+G4WT0 > Begin processing for Run: 0, History: 240
+G4WT0 > Begin processing for Run: 0, History: 250
+G4WT0 > Begin processing for Run: 0, History: 260
+G4WT0 > Begin processing for Run: 0, History: 270
+G4WT0 > Begin processing for Run: 0, History: 280
+G4WT0 > Begin processing for Run: 0, History: 290
+G4WT0 > Begin processing for Run: 0, History: 300
+G4WT0 > Begin processing for Run: 0, History: 310
+G4WT0 > Begin processing for Run: 0, History: 320
+G4WT0 > Begin processing for Run: 0, History: 330
+G4WT0 > Begin processing for Run: 0, History: 340
+G4WT0 > Begin processing for Run: 0, History: 350
+G4WT0 > Begin processing for Run: 0, History: 360
+G4WT0 > Begin processing for Run: 0, History: 370
+G4WT0 > Begin processing for Run: 0, History: 380
+G4WT0 > Begin processing for Run: 0, History: 390
+G4WT0 > Begin processing for Run: 0, History: 400
+G4WT0 > Begin processing for Run: 0, History: 410
+G4WT0 > Begin processing for Run: 0, History: 420
+G4WT0 > Begin processing for Run: 0, History: 430
+G4WT0 > Begin processing for Run: 0, History: 440
+G4WT0 > Begin processing for Run: 0, History: 450
+G4WT0 > Begin processing for Run: 0, History: 460
+G4WT0 > Begin processing for Run: 0, History: 470
+G4WT0 > Begin processing for Run: 0, History: 480
+G4WT0 > Begin processing for Run: 0, History: 490
+G4WT0 > Begin processing for Run: 0, History: 500
+G4WT0 > Begin processing for Run: 0, History: 510
+G4WT0 > Begin processing for Run: 0, History: 520
+G4WT0 > Begin processing for Run: 0, History: 530
+G4WT0 > Begin processing for Run: 0, History: 540
+G4WT0 > Begin processing for Run: 0, History: 550
+G4WT0 > Begin processing for Run: 0, History: 560
+G4WT0 > Begin processing for Run: 0, History: 570
+G4WT0 > Begin processing for Run: 0, History: 580
+G4WT0 > Begin processing for Run: 0, History: 590
+G4WT0 > Begin processing for Run: 0, History: 600
+G4WT0 > Begin processing for Run: 0, History: 610
+G4WT0 > Begin processing for Run: 0, History: 620
+G4WT0 > Begin processing for Run: 0, History: 630
+G4WT0 > Begin processing for Run: 0, History: 640
+G4WT0 > Begin processing for Run: 0, History: 650
+G4WT0 > Begin processing for Run: 0, History: 660
+G4WT0 > Begin processing for Run: 0, History: 670
+G4WT0 > Begin processing for Run: 0, History: 680
+G4WT0 > Begin processing for Run: 0, History: 690
+G4WT0 > Begin processing for Run: 0, History: 700
+G4WT0 > Begin processing for Run: 0, History: 710
+G4WT0 > Begin processing for Run: 0, History: 720
+G4WT0 > Begin processing for Run: 0, History: 730
+G4WT0 > Begin processing for Run: 0, History: 740
+G4WT0 > Begin processing for Run: 0, History: 750
+G4WT0 > Begin processing for Run: 0, History: 760
+G4WT0 > Begin processing for Run: 0, History: 770
+G4WT0 > Begin processing for Run: 0, History: 780
+G4WT0 > Begin processing for Run: 0, History: 790
+G4WT0 > Begin processing for Run: 0, History: 800
+G4WT0 > Begin processing for Run: 0, History: 810
+G4WT0 > Begin processing for Run: 0, History: 820
+G4WT0 > Begin processing for Run: 0, History: 830
+G4WT0 > Begin processing for Run: 0, History: 840
+G4WT0 > Begin processing for Run: 0, History: 850
+G4WT0 > Begin processing for Run: 0, History: 860
+G4WT0 > Begin processing for Run: 0, History: 870
+G4WT0 > Begin processing for Run: 0, History: 880
+G4WT0 > Begin processing for Run: 0, History: 890
+G4WT0 > Begin processing for Run: 0, History: 900
+G4WT0 > Begin processing for Run: 0, History: 910
+G4WT0 > Begin processing for Run: 0, History: 920
+G4WT0 > Begin processing for Run: 0, History: 930
+G4WT0 > Begin processing for Run: 0, History: 940
+G4WT0 > Begin processing for Run: 0, History: 950
+G4WT0 > Begin processing for Run: 0, History: 960
+G4WT0 > Begin processing for Run: 0, History: 970
+G4WT0 > Begin processing for Run: 0, History: 980
+G4WT0 > Begin processing for Run: 0, History: 990
+G4WT0 > Begin processing for Run: 0, History: 1000
+G4WT0 > Begin processing for Run: 0, History: 1010
+G4WT0 > Begin processing for Run: 0, History: 1020
+G4WT0 > Begin processing for Run: 0, History: 1030
+G4WT0 > Begin processing for Run: 0, History: 1040
+G4WT0 > Begin processing for Run: 0, History: 1050
+G4WT0 > Begin processing for Run: 0, History: 1060
+G4WT0 > Begin processing for Run: 0, History: 1070
+G4WT0 > Begin processing for Run: 0, History: 1080
+G4WT0 > Begin processing for Run: 0, History: 1090
+G4WT0 > Begin processing for Run: 0, History: 1100
+G4WT0 > Begin processing for Run: 0, History: 1110
+G4WT0 > Begin processing for Run: 0, History: 1120
+G4WT0 > Begin processing for Run: 0, History: 1130
+G4WT0 > Begin processing for Run: 0, History: 1140
+G4WT0 > Begin processing for Run: 0, History: 1150
+G4WT0 > Begin processing for Run: 0, History: 1160
+G4WT0 > Begin processing for Run: 0, History: 1170
+G4WT0 > Begin processing for Run: 0, History: 1180
+G4WT0 > Begin processing for Run: 0, History: 1190
+G4WT0 > Begin processing for Run: 0, History: 1200
+G4WT0 > Begin processing for Run: 0, History: 1210
+G4WT0 > Begin processing for Run: 0, History: 1220
+G4WT0 > Begin processing for Run: 0, History: 1230
+G4WT0 > Begin processing for Run: 0, History: 1240
+G4WT0 > Begin processing for Run: 0, History: 1250
+G4WT0 > Begin processing for Run: 0, History: 1260
+G4WT0 > Begin processing for Run: 0, History: 1270
+G4WT0 > Begin processing for Run: 0, History: 1280
+G4WT0 > Begin processing for Run: 0, History: 1290
+G4WT0 > Begin processing for Run: 0, History: 1300
+G4WT0 > Begin processing for Run: 0, History: 1310
+G4WT0 > Begin processing for Run: 0, History: 1320
+G4WT0 > Begin processing for Run: 0, History: 1330
+G4WT0 > Begin processing for Run: 0, History: 1340
+G4WT0 > Begin processing for Run: 0, History: 1350
+G4WT0 > Begin processing for Run: 0, History: 1360
+G4WT0 > Begin processing for Run: 0, History: 1370
+G4WT0 > Begin processing for Run: 0, History: 1380
+G4WT0 > Begin processing for Run: 0, History: 1390
+G4WT0 > Begin processing for Run: 0, History: 1400
+G4WT0 > Begin processing for Run: 0, History: 1410
+G4WT0 > Begin processing for Run: 0, History: 1420
+G4WT0 > Begin processing for Run: 0, History: 1430
+G4WT0 > Begin processing for Run: 0, History: 1440
+G4WT0 > Begin processing for Run: 0, History: 1450
+G4WT0 > Begin processing for Run: 0, History: 1460
+G4WT0 > Begin processing for Run: 0, History: 1470
+G4WT0 > Begin processing for Run: 0, History: 1480
+G4WT0 > Begin processing for Run: 0, History: 1490
+G4WT0 > Begin processing for Run: 0, History: 1500
+G4WT0 > Begin processing for Run: 0, History: 1510
+G4WT0 > Begin processing for Run: 0, History: 1520
+G4WT0 > Begin processing for Run: 0, History: 1530
+G4WT0 > Begin processing for Run: 0, History: 1540
+G4WT0 > Begin processing for Run: 0, History: 1550
+G4WT0 > Begin processing for Run: 0, History: 1560
+G4WT0 > Begin processing for Run: 0, History: 1570
+G4WT0 > Begin processing for Run: 0, History: 1580
+G4WT0 > Begin processing for Run: 0, History: 1590
+G4WT0 > Begin processing for Run: 0, History: 1600
+G4WT0 > Begin processing for Run: 0, History: 1610
+G4WT0 > Begin processing for Run: 0, History: 1620
+G4WT0 > Begin processing for Run: 0, History: 1630
+G4WT0 > Begin processing for Run: 0, History: 1640
+G4WT0 > Begin processing for Run: 0, History: 1650
+G4WT0 > Begin processing for Run: 0, History: 1660
+G4WT0 > Begin processing for Run: 0, History: 1670
+G4WT0 > Begin processing for Run: 0, History: 1680
+G4WT0 > Begin processing for Run: 0, History: 1690
+G4WT0 > Begin processing for Run: 0, History: 1700
+G4WT0 > Begin processing for Run: 0, History: 1710
+G4WT0 > Begin processing for Run: 0, History: 1720
+G4WT0 > Begin processing for Run: 0, History: 1730
+G4WT0 > Begin processing for Run: 0, History: 1740
+G4WT0 > Begin processing for Run: 0, History: 1750
+G4WT0 > Begin processing for Run: 0, History: 1760
+G4WT0 > Begin processing for Run: 0, History: 1770
+G4WT0 > Begin processing for Run: 0, History: 1780
+G4WT0 > Begin processing for Run: 0, History: 1790
+G4WT0 > Begin processing for Run: 0, History: 1800
+G4WT0 > Begin processing for Run: 0, History: 1810
+G4WT0 > Begin processing for Run: 0, History: 1820
+G4WT0 > Begin processing for Run: 0, History: 1830
+G4WT0 > Begin processing for Run: 0, History: 1840
+G4WT0 > Begin processing for Run: 0, History: 1850
+G4WT0 > Begin processing for Run: 0, History: 1860
+G4WT0 > Begin processing for Run: 0, History: 1870
+G4WT0 > Begin processing for Run: 0, History: 1880
+G4WT0 > Begin processing for Run: 0, History: 1890
+G4WT0 > Begin processing for Run: 0, History: 1900
+G4WT0 > Begin processing for Run: 0, History: 1910
+G4WT0 > Begin processing for Run: 0, History: 1920
+G4WT0 > Begin processing for Run: 0, History: 1930
+G4WT0 > Begin processing for Run: 0, History: 1940
+G4WT0 > Begin processing for Run: 0, History: 1950
+G4WT0 > Begin processing for Run: 0, History: 1960
+G4WT0 > Begin processing for Run: 0, History: 1970
+G4WT0 > Begin processing for Run: 0, History: 1980
+G4WT0 > Begin processing for Run: 0, History: 1990
+G4WT0 > Begin processing for Run: 0, History: 2000
+G4WT0 > Begin processing for Run: 0, History: 2010
+G4WT0 > Begin processing for Run: 0, History: 2020
+G4WT0 > Begin processing for Run: 0, History: 2030
+G4WT0 > Begin processing for Run: 0, History: 2040
+G4WT0 > Begin processing for Run: 0, History: 2050
+G4WT0 > Begin processing for Run: 0, History: 2060
+G4WT0 > Begin processing for Run: 0, History: 2070
+G4WT0 > Begin processing for Run: 0, History: 2080
+G4WT0 > Begin processing for Run: 0, History: 2090
+G4WT0 > Begin processing for Run: 0, History: 2100
+G4WT0 > Begin processing for Run: 0, History: 2110
+G4WT0 > Begin processing for Run: 0, History: 2120
+G4WT0 > Begin processing for Run: 0, History: 2130
+G4WT0 > Begin processing for Run: 0, History: 2140
+G4WT0 > Begin processing for Run: 0, History: 2150
+G4WT0 > Begin processing for Run: 0, History: 2160
+G4WT0 > Begin processing for Run: 0, History: 2170
+G4WT0 > Begin processing for Run: 0, History: 2180
+G4WT0 > Begin processing for Run: 0, History: 2190
+G4WT0 > Begin processing for Run: 0, History: 2200
+G4WT0 > Begin processing for Run: 0, History: 2210
+G4WT0 > Begin processing for Run: 0, History: 2220
+G4WT0 > Begin processing for Run: 0, History: 2230
+G4WT0 > Begin processing for Run: 0, History: 2240
+G4WT0 > Begin processing for Run: 0, History: 2250
+G4WT0 > Begin processing for Run: 0, History: 2260
+G4WT0 > Begin processing for Run: 0, History: 2270
+G4WT0 > Begin processing for Run: 0, History: 2280
+G4WT0 > Begin processing for Run: 0, History: 2290
+G4WT0 > Begin processing for Run: 0, History: 2300
+G4WT0 > Begin processing for Run: 0, History: 2310
+G4WT0 > Begin processing for Run: 0, History: 2320
+G4WT0 > Begin processing for Run: 0, History: 2330
+G4WT0 > Begin processing for Run: 0, History: 2340
+G4WT0 > Begin processing for Run: 0, History: 2350
+G4WT0 > Begin processing for Run: 0, History: 2360
+G4WT0 > Begin processing for Run: 0, History: 2370
+G4WT0 > Begin processing for Run: 0, History: 2380
+G4WT0 > Begin processing for Run: 0, History: 2390
+G4WT0 > Begin processing for Run: 0, History: 2400
+G4WT0 > Begin processing for Run: 0, History: 2410
+G4WT0 > Begin processing for Run: 0, History: 2420
+G4WT0 > Begin processing for Run: 0, History: 2430
+G4WT0 > Begin processing for Run: 0, History: 2440
+G4WT0 > Begin processing for Run: 0, History: 2450
+G4WT0 > Begin processing for Run: 0, History: 2460
+G4WT0 > Begin processing for Run: 0, History: 2470
+G4WT0 > Begin processing for Run: 0, History: 2480
+G4WT0 > Begin processing for Run: 0, History: 2490
+G4WT0 > Begin processing for Run: 0, History: 2500
+G4WT0 > Begin processing for Run: 0, History: 2510
+G4WT0 > Begin processing for Run: 0, History: 2520
+G4WT0 > Begin processing for Run: 0, History: 2530
+G4WT0 > Begin processing for Run: 0, History: 2540
+G4WT0 > Begin processing for Run: 0, History: 2550
+G4WT0 > Begin processing for Run: 0, History: 2560
+G4WT0 > Begin processing for Run: 0, History: 2570
+G4WT0 > Begin processing for Run: 0, History: 2580
+G4WT0 > Begin processing for Run: 0, History: 2590
+G4WT0 > Begin processing for Run: 0, History: 2600
+G4WT0 > Begin processing for Run: 0, History: 2610
+G4WT0 > Begin processing for Run: 0, History: 2620
+G4WT0 > Begin processing for Run: 0, History: 2630
+G4WT0 > Begin processing for Run: 0, History: 2640
+G4WT0 > Begin processing for Run: 0, History: 2650
+G4WT0 > Begin processing for Run: 0, History: 2660
+G4WT0 > Begin processing for Run: 0, History: 2670
+G4WT0 > Begin processing for Run: 0, History: 2680
+G4WT0 > Begin processing for Run: 0, History: 2690
+G4WT0 > Begin processing for Run: 0, History: 2700
+G4WT0 > Begin processing for Run: 0, History: 2710
+G4WT0 > Begin processing for Run: 0, History: 2720
+G4WT0 > Begin processing for Run: 0, History: 2730
+G4WT0 > Begin processing for Run: 0, History: 2740
+G4WT0 > Begin processing for Run: 0, History: 2750
+G4WT0 > Begin processing for Run: 0, History: 2760
+G4WT0 > Begin processing for Run: 0, History: 2770
+G4WT0 > Begin processing for Run: 0, History: 2780
+G4WT0 > Begin processing for Run: 0, History: 2790
+G4WT0 > Begin processing for Run: 0, History: 2800
+G4WT0 > Begin processing for Run: 0, History: 2810
+G4WT0 > Begin processing for Run: 0, History: 2820
+G4WT0 > Begin processing for Run: 0, History: 2830
+G4WT0 > Begin processing for Run: 0, History: 2840
+G4WT0 > Begin processing for Run: 0, History: 2850
+G4WT0 > Begin processing for Run: 0, History: 2860
+G4WT0 > Begin processing for Run: 0, History: 2870
+G4WT0 > Begin processing for Run: 0, History: 2880
+G4WT0 > Begin processing for Run: 0, History: 2890
+G4WT0 > Begin processing for Run: 0, History: 2900
+G4WT0 > Begin processing for Run: 0, History: 2910
+G4WT0 > Begin processing for Run: 0, History: 2920
+G4WT0 > Begin processing for Run: 0, History: 2930
+G4WT0 > Begin processing for Run: 0, History: 2940
+G4WT0 > Begin processing for Run: 0, History: 2950
+G4WT0 > Begin processing for Run: 0, History: 2960
+G4WT0 > Begin processing for Run: 0, History: 2970
+G4WT0 > Begin processing for Run: 0, History: 2980
+G4WT0 > Begin processing for Run: 0, History: 2990
+G4WT0 > Begin processing for Run: 0, History: 3000
+G4WT0 > Begin processing for Run: 0, History: 3010
+G4WT0 > Begin processing for Run: 0, History: 3020
+G4WT0 > Begin processing for Run: 0, History: 3030
+G4WT0 > Begin processing for Run: 0, History: 3040
+G4WT0 > Begin processing for Run: 0, History: 3050
+G4WT0 > Begin processing for Run: 0, History: 3060
+G4WT0 > Begin processing for Run: 0, History: 3070
+G4WT0 > Begin processing for Run: 0, History: 3080
+G4WT0 > Begin processing for Run: 0, History: 3090
+G4WT0 > Begin processing for Run: 0, History: 3100
+G4WT0 > Begin processing for Run: 0, History: 3110
+G4WT0 > Begin processing for Run: 0, History: 3120
+G4WT0 > Begin processing for Run: 0, History: 3130
+G4WT0 > Begin processing for Run: 0, History: 3140
+G4WT0 > Begin processing for Run: 0, History: 3150
+G4WT0 > Begin processing for Run: 0, History: 3160
+G4WT0 > Begin processing for Run: 0, History: 3170
+G4WT0 > Begin processing for Run: 0, History: 3180
+G4WT0 > Begin processing for Run: 0, History: 3190
+G4WT0 > Begin processing for Run: 0, History: 3200
+G4WT0 > Begin processing for Run: 0, History: 3210
+G4WT0 > Begin processing for Run: 0, History: 3220
+G4WT0 > Begin processing for Run: 0, History: 3230
+G4WT0 > Begin processing for Run: 0, History: 3240
+G4WT0 > Begin processing for Run: 0, History: 3250
+G4WT0 > Begin processing for Run: 0, History: 3260
+G4WT0 > Begin processing for Run: 0, History: 3270
+G4WT0 > Begin processing for Run: 0, History: 3280
+G4WT0 > Begin processing for Run: 0, History: 3290
+G4WT0 > Begin processing for Run: 0, History: 3300
+G4WT0 > Begin processing for Run: 0, History: 3310
+G4WT0 > Begin processing for Run: 0, History: 3320
+G4WT0 > Begin processing for Run: 0, History: 3330
+G4WT0 > Begin processing for Run: 0, History: 3340
+G4WT0 > Begin processing for Run: 0, History: 3350
+G4WT0 > Begin processing for Run: 0, History: 3360
+G4WT0 > Begin processing for Run: 0, History: 3370
+G4WT0 > Begin processing for Run: 0, History: 3380
+G4WT0 > Begin processing for Run: 0, History: 3390
+G4WT0 > Begin processing for Run: 0, History: 3400
+G4WT0 > Begin processing for Run: 0, History: 3410
+G4WT0 > Begin processing for Run: 0, History: 3420
+G4WT0 > Begin processing for Run: 0, History: 3430
+G4WT0 > Begin processing for Run: 0, History: 3440
+G4WT0 > Begin processing for Run: 0, History: 3450
+G4WT0 > Begin processing for Run: 0, History: 3460
+G4WT0 > Begin processing for Run: 0, History: 3470
+G4WT0 > Begin processing for Run: 0, History: 3480
+G4WT0 > Begin processing for Run: 0, History: 3490
+G4WT0 > Begin processing for Run: 0, History: 3500
+G4WT0 > Begin processing for Run: 0, History: 3510
+G4WT0 > Begin processing for Run: 0, History: 3520
+G4WT0 > Begin processing for Run: 0, History: 3530
+G4WT0 > Begin processing for Run: 0, History: 3540
+G4WT0 > Begin processing for Run: 0, History: 3550
+G4WT0 > Begin processing for Run: 0, History: 3560
+G4WT0 > Begin processing for Run: 0, History: 3570
+G4WT0 > Begin processing for Run: 0, History: 3580
+G4WT0 > Begin processing for Run: 0, History: 3590
+G4WT0 > Begin processing for Run: 0, History: 3600
+G4WT0 > Begin processing for Run: 0, History: 3610
+G4WT0 > Begin processing for Run: 0, History: 3620
+G4WT0 > Begin processing for Run: 0, History: 3630
+G4WT0 > Begin processing for Run: 0, History: 3640
+G4WT0 > Begin processing for Run: 0, History: 3650
+G4WT0 > Begin processing for Run: 0, History: 3660
+G4WT0 > Begin processing for Run: 0, History: 3670
+G4WT0 > Begin processing for Run: 0, History: 3680
+G4WT0 > Begin processing for Run: 0, History: 3690
+G4WT0 > Begin processing for Run: 0, History: 3700
+G4WT0 > Begin processing for Run: 0, History: 3710
+G4WT0 > Begin processing for Run: 0, History: 3720
+G4WT0 > Begin processing for Run: 0, History: 3730
+G4WT0 > Begin processing for Run: 0, History: 3740
+G4WT0 > Begin processing for Run: 0, History: 3750
+G4WT0 > Begin processing for Run: 0, History: 3760
+G4WT0 > Begin processing for Run: 0, History: 3770
+G4WT0 > Begin processing for Run: 0, History: 3780
+G4WT0 > Begin processing for Run: 0, History: 3790
+G4WT0 > Begin processing for Run: 0, History: 3800
+G4WT0 > Begin processing for Run: 0, History: 3810
+G4WT0 > Begin processing for Run: 0, History: 3820
+G4WT0 > Begin processing for Run: 0, History: 3830
+G4WT0 > Begin processing for Run: 0, History: 3840
+G4WT0 > Begin processing for Run: 0, History: 3850
+G4WT0 > Begin processing for Run: 0, History: 3860
+G4WT0 > Begin processing for Run: 0, History: 3870
+G4WT0 > Begin processing for Run: 0, History: 3880
+G4WT0 > Begin processing for Run: 0, History: 3890
+G4WT0 > Begin processing for Run: 0, History: 3900
+G4WT0 > Begin processing for Run: 0, History: 3910
+G4WT0 > Begin processing for Run: 0, History: 3920
+G4WT0 > Begin processing for Run: 0, History: 3930
+G4WT0 > Begin processing for Run: 0, History: 3940
+G4WT0 > Begin processing for Run: 0, History: 3950
+G4WT0 > Begin processing for Run: 0, History: 3960
+G4WT0 > Begin processing for Run: 0, History: 3970
+G4WT0 > Begin processing for Run: 0, History: 3980
+G4WT0 > Begin processing for Run: 0, History: 3990
+G4WT0 > Begin processing for Run: 0, History: 4000
+G4WT0 > Begin processing for Run: 0, History: 4010
+G4WT0 > Begin processing for Run: 0, History: 4020
+G4WT0 > Begin processing for Run: 0, History: 4030
+G4WT0 > Begin processing for Run: 0, History: 4040
+G4WT0 > Begin processing for Run: 0, History: 4050
+G4WT0 > Begin processing for Run: 0, History: 4060
+G4WT0 > Begin processing for Run: 0, History: 4070
+G4WT0 > Begin processing for Run: 0, History: 4080
+G4WT0 > Begin processing for Run: 0, History: 4090
+G4WT0 > Begin processing for Run: 0, History: 4100
+G4WT0 > Begin processing for Run: 0, History: 4110
+G4WT0 > Begin processing for Run: 0, History: 4120
+G4WT0 > Begin processing for Run: 0, History: 4130
+G4WT0 > Begin processing for Run: 0, History: 4140
+G4WT0 > Begin processing for Run: 0, History: 4150
+G4WT0 > Begin processing for Run: 0, History: 4160
+G4WT0 > Begin processing for Run: 0, History: 4170
+G4WT0 > Begin processing for Run: 0, History: 4180
+G4WT0 > Begin processing for Run: 0, History: 4190
+G4WT0 > Begin processing for Run: 0, History: 4200
+G4WT0 > Begin processing for Run: 0, History: 4210
+G4WT0 > Begin processing for Run: 0, History: 4220
+G4WT0 > Begin processing for Run: 0, History: 4230
+G4WT0 > Begin processing for Run: 0, History: 4240
+G4WT0 > Begin processing for Run: 0, History: 4250
+G4WT0 > Begin processing for Run: 0, History: 4260
+G4WT0 > Begin processing for Run: 0, History: 4270
+G4WT0 > Begin processing for Run: 0, History: 4280
+G4WT0 > Begin processing for Run: 0, History: 4290
+G4WT0 > Begin processing for Run: 0, History: 4300
+G4WT0 > Begin processing for Run: 0, History: 4310
+G4WT0 > Begin processing for Run: 0, History: 4320
+G4WT0 > Begin processing for Run: 0, History: 4330
+G4WT0 > Begin processing for Run: 0, History: 4340
+G4WT0 > Begin processing for Run: 0, History: 4350
+G4WT0 > Begin processing for Run: 0, History: 4360
+G4WT0 > Begin processing for Run: 0, History: 4370
+G4WT0 > Begin processing for Run: 0, History: 4380
+G4WT0 > Begin processing for Run: 0, History: 4390
+G4WT0 > Begin processing for Run: 0, History: 4400
+G4WT0 > Begin processing for Run: 0, History: 4410
+G4WT0 > Begin processing for Run: 0, History: 4420
+G4WT0 > Begin processing for Run: 0, History: 4430
+G4WT0 > Begin processing for Run: 0, History: 4440
+G4WT0 > Begin processing for Run: 0, History: 4450
+G4WT0 > Begin processing for Run: 0, History: 4460
+G4WT0 > Begin processing for Run: 0, History: 4470
+G4WT0 > Begin processing for Run: 0, History: 4480
+G4WT0 > Begin processing for Run: 0, History: 4490
+G4WT0 > Begin processing for Run: 0, History: 4500
+G4WT0 > Begin processing for Run: 0, History: 4510
+G4WT0 > Begin processing for Run: 0, History: 4520
+G4WT0 > Begin processing for Run: 0, History: 4530
+G4WT0 > Begin processing for Run: 0, History: 4540
+G4WT0 > Begin processing for Run: 0, History: 4550
+G4WT0 > Begin processing for Run: 0, History: 4560
+G4WT0 > Begin processing for Run: 0, History: 4570
+G4WT0 > Begin processing for Run: 0, History: 4580
+G4WT0 > Begin processing for Run: 0, History: 4590
+G4WT0 > Begin processing for Run: 0, History: 4600
+G4WT0 > Begin processing for Run: 0, History: 4610
+G4WT0 > Begin processing for Run: 0, History: 4620
+G4WT0 > Begin processing for Run: 0, History: 4630
+G4WT0 > Begin processing for Run: 0, History: 4640
+G4WT0 > Begin processing for Run: 0, History: 4650
+G4WT0 > Begin processing for Run: 0, History: 4660
+G4WT0 > Begin processing for Run: 0, History: 4670
+G4WT0 > Begin processing for Run: 0, History: 4680
+G4WT0 > Begin processing for Run: 0, History: 4690
+G4WT0 > Begin processing for Run: 0, History: 4700
+G4WT0 > Begin processing for Run: 0, History: 4710
+G4WT0 > Begin processing for Run: 0, History: 4720
+G4WT0 > Begin processing for Run: 0, History: 4730
+G4WT0 > Begin processing for Run: 0, History: 4740
+G4WT0 > Begin processing for Run: 0, History: 4750
+G4WT0 > Begin processing for Run: 0, History: 4760
+G4WT0 > Begin processing for Run: 0, History: 4770
+G4WT0 > Begin processing for Run: 0, History: 4780
+G4WT0 > Begin processing for Run: 0, History: 4790
+G4WT0 > Begin processing for Run: 0, History: 4800
+G4WT0 > Begin processing for Run: 0, History: 4810
+G4WT0 > Begin processing for Run: 0, History: 4820
+G4WT0 > Begin processing for Run: 0, History: 4830
+G4WT0 > Begin processing for Run: 0, History: 4840
+G4WT0 > Begin processing for Run: 0, History: 4850
+G4WT0 > Begin processing for Run: 0, History: 4860
+G4WT0 > Begin processing for Run: 0, History: 4870
+G4WT0 > Begin processing for Run: 0, History: 4880
+G4WT0 > Begin processing for Run: 0, History: 4890
+G4WT0 > Begin processing for Run: 0, History: 4900
+G4WT0 > Begin processing for Run: 0, History: 4910
+G4WT0 > Begin processing for Run: 0, History: 4920
+G4WT0 > Begin processing for Run: 0, History: 4930
+G4WT0 > Begin processing for Run: 0, History: 4940
+G4WT0 > Begin processing for Run: 0, History: 4950
+G4WT0 > Begin processing for Run: 0, History: 4960
+G4WT0 > Begin processing for Run: 0, History: 4970
+G4WT0 > Begin processing for Run: 0, History: 4980
+G4WT0 > Begin processing for Run: 0, History: 4990
+G4WT0 > Begin processing for Run: 0, History: 5000
+G4WT0 > Begin processing for Run: 0, History: 5010
+G4WT0 > Begin processing for Run: 0, History: 5020
+G4WT0 > Begin processing for Run: 0, History: 5030
+G4WT0 > Begin processing for Run: 0, History: 5040
+G4WT0 > Begin processing for Run: 0, History: 5050
+G4WT0 > Begin processing for Run: 0, History: 5060
+G4WT0 > Begin processing for Run: 0, History: 5070
+G4WT0 > Begin processing for Run: 0, History: 5080
+G4WT0 > Begin processing for Run: 0, History: 5090
+G4WT0 > Begin processing for Run: 0, History: 5100
+G4WT0 > Begin processing for Run: 0, History: 5110
+G4WT0 > Begin processing for Run: 0, History: 5120
+G4WT0 > Begin processing for Run: 0, History: 5130
+G4WT0 > Begin processing for Run: 0, History: 5140
+G4WT0 > Begin processing for Run: 0, History: 5150
+G4WT0 > Begin processing for Run: 0, History: 5160
+G4WT0 > Begin processing for Run: 0, History: 5170
+G4WT0 > Begin processing for Run: 0, History: 5180
+G4WT0 > Begin processing for Run: 0, History: 5190
+G4WT0 > Begin processing for Run: 0, History: 5200
+G4WT0 > Begin processing for Run: 0, History: 5210
+G4WT0 > Begin processing for Run: 0, History: 5220
+G4WT0 > Begin processing for Run: 0, History: 5230
+G4WT0 > Begin processing for Run: 0, History: 5240
+G4WT0 > Begin processing for Run: 0, History: 5250
+G4WT0 > Begin processing for Run: 0, History: 5260
+G4WT0 > Begin processing for Run: 0, History: 5270
+G4WT0 > Begin processing for Run: 0, History: 5280
+G4WT0 > Begin processing for Run: 0, History: 5290
+G4WT0 > Begin processing for Run: 0, History: 5300
+G4WT0 > Begin processing for Run: 0, History: 5310
+G4WT0 > Begin processing for Run: 0, History: 5320
+G4WT0 > Begin processing for Run: 0, History: 5330
+G4WT0 > Begin processing for Run: 0, History: 5340
+G4WT0 > Begin processing for Run: 0, History: 5350
+G4WT0 > Begin processing for Run: 0, History: 5360
+G4WT0 > Begin processing for Run: 0, History: 5370
+G4WT0 > Begin processing for Run: 0, History: 5380
+G4WT0 > Begin processing for Run: 0, History: 5390
+G4WT0 > Begin processing for Run: 0, History: 5400
+G4WT0 > Begin processing for Run: 0, History: 5410
+G4WT0 > Begin processing for Run: 0, History: 5420
+G4WT0 > Begin processing for Run: 0, History: 5430
+G4WT0 > Begin processing for Run: 0, History: 5440
+G4WT0 > Begin processing for Run: 0, History: 5450
+G4WT0 > Begin processing for Run: 0, History: 5460
+G4WT0 > Begin processing for Run: 0, History: 5470
+G4WT0 > Begin processing for Run: 0, History: 5480
+G4WT0 > Begin processing for Run: 0, History: 5490
+G4WT0 > Begin processing for Run: 0, History: 5500
+G4WT0 > Begin processing for Run: 0, History: 5510
+G4WT0 > Begin processing for Run: 0, History: 5520
+G4WT0 > Begin processing for Run: 0, History: 5530
+G4WT0 > Begin processing for Run: 0, History: 5540
+G4WT0 > Begin processing for Run: 0, History: 5550
+G4WT0 > Begin processing for Run: 0, History: 5560
+G4WT0 > Begin processing for Run: 0, History: 5570
+G4WT0 > Begin processing for Run: 0, History: 5580
+G4WT0 > Begin processing for Run: 0, History: 5590
+G4WT0 > Begin processing for Run: 0, History: 5600
+G4WT0 > Begin processing for Run: 0, History: 5610
+G4WT0 > Begin processing for Run: 0, History: 5620
+G4WT0 > Begin processing for Run: 0, History: 5630
+G4WT0 > Begin processing for Run: 0, History: 5640
+G4WT0 > Begin processing for Run: 0, History: 5650
+G4WT0 > Begin processing for Run: 0, History: 5660
+G4WT0 > Begin processing for Run: 0, History: 5670
+G4WT0 > Begin processing for Run: 0, History: 5680
+G4WT0 > Begin processing for Run: 0, History: 5690
+G4WT0 > Begin processing for Run: 0, History: 5700
+G4WT0 > Begin processing for Run: 0, History: 5710
+G4WT0 > Begin processing for Run: 0, History: 5720
+G4WT0 > Begin processing for Run: 0, History: 5730
+G4WT0 > Begin processing for Run: 0, History: 5740
+G4WT0 > Begin processing for Run: 0, History: 5750
+G4WT0 > Begin processing for Run: 0, History: 5760
+G4WT0 > Begin processing for Run: 0, History: 5770
+G4WT0 > Begin processing for Run: 0, History: 5780
+G4WT0 > Begin processing for Run: 0, History: 5790
+G4WT0 > Begin processing for Run: 0, History: 5800
+G4WT0 > Begin processing for Run: 0, History: 5810
+G4WT0 > Begin processing for Run: 0, History: 5820
+G4WT0 > Begin processing for Run: 0, History: 5830
+G4WT0 > Begin processing for Run: 0, History: 5840
+G4WT0 > Begin processing for Run: 0, History: 5850
+G4WT0 > Begin processing for Run: 0, History: 5860
+G4WT0 > Begin processing for Run: 0, History: 5870
+G4WT0 > Begin processing for Run: 0, History: 5880
+G4WT0 > Begin processing for Run: 0, History: 5890
+G4WT0 > Begin processing for Run: 0, History: 5900
+G4WT0 > Begin processing for Run: 0, History: 5910
+G4WT0 > Begin processing for Run: 0, History: 5920
+G4WT0 > Begin processing for Run: 0, History: 5930
+G4WT0 > Begin processing for Run: 0, History: 5940
+G4WT0 > Begin processing for Run: 0, History: 5950
+G4WT0 > Begin processing for Run: 0, History: 5960
+G4WT0 > Begin processing for Run: 0, History: 5970
+G4WT0 > Begin processing for Run: 0, History: 5980
+G4WT0 > Begin processing for Run: 0, History: 5990
+G4WT0 > Begin processing for Run: 0, History: 6000
+G4WT0 > Begin processing for Run: 0, History: 6010
+G4WT0 > Begin processing for Run: 0, History: 6020
+G4WT0 > Begin processing for Run: 0, History: 6030
+G4WT0 > Begin processing for Run: 0, History: 6040
+G4WT0 > Begin processing for Run: 0, History: 6050
+G4WT0 > Begin processing for Run: 0, History: 6060
+G4WT0 > Begin processing for Run: 0, History: 6070
+G4WT0 > Begin processing for Run: 0, History: 6080
+G4WT0 > Begin processing for Run: 0, History: 6090
+G4WT0 > Begin processing for Run: 0, History: 6100
+G4WT0 > Begin processing for Run: 0, History: 6110
+G4WT0 > Begin processing for Run: 0, History: 6120
+G4WT0 > Begin processing for Run: 0, History: 6130
+G4WT0 > Begin processing for Run: 0, History: 6140
+G4WT0 > Begin processing for Run: 0, History: 6150
+G4WT0 > Begin processing for Run: 0, History: 6160
+G4WT0 > Begin processing for Run: 0, History: 6170
+G4WT0 > Begin processing for Run: 0, History: 6180
+G4WT0 > Begin processing for Run: 0, History: 6190
+G4WT0 > Begin processing for Run: 0, History: 6200
+G4WT0 > Begin processing for Run: 0, History: 6210
+G4WT0 > Begin processing for Run: 0, History: 6220
+G4WT0 > Begin processing for Run: 0, History: 6230
+G4WT0 > Begin processing for Run: 0, History: 6240
+G4WT0 > Begin processing for Run: 0, History: 6250
+G4WT0 > Begin processing for Run: 0, History: 6260
+G4WT0 > Begin processing for Run: 0, History: 6270
+G4WT0 > Begin processing for Run: 0, History: 6280
+G4WT0 > Begin processing for Run: 0, History: 6290
+G4WT0 > Begin processing for Run: 0, History: 6300
+G4WT0 > Begin processing for Run: 0, History: 6310
+G4WT0 > Begin processing for Run: 0, History: 6320
+G4WT0 > Begin processing for Run: 0, History: 6330
+G4WT0 > Begin processing for Run: 0, History: 6340
+G4WT0 > Begin processing for Run: 0, History: 6350
+G4WT0 > Begin processing for Run: 0, History: 6360
+G4WT0 > Begin processing for Run: 0, History: 6370
+G4WT0 > Begin processing for Run: 0, History: 6380
+G4WT0 > Begin processing for Run: 0, History: 6390
+G4WT0 > Begin processing for Run: 0, History: 6400
+G4WT0 > Begin processing for Run: 0, History: 6410
+G4WT0 > Begin processing for Run: 0, History: 6420
+G4WT0 > Begin processing for Run: 0, History: 6430
+G4WT0 > Begin processing for Run: 0, History: 6440
+G4WT0 > Begin processing for Run: 0, History: 6450
+G4WT0 > Begin processing for Run: 0, History: 6460
+G4WT0 > Begin processing for Run: 0, History: 6470
+G4WT0 > Begin processing for Run: 0, History: 6480
+G4WT0 > Begin processing for Run: 0, History: 6490
+G4WT0 > Begin processing for Run: 0, History: 6500
+G4WT0 > Begin processing for Run: 0, History: 6510
+G4WT0 > Begin processing for Run: 0, History: 6520
+G4WT0 > Begin processing for Run: 0, History: 6530
+G4WT0 > Begin processing for Run: 0, History: 6540
+G4WT0 > Begin processing for Run: 0, History: 6550
+G4WT0 > Begin processing for Run: 0, History: 6560
+G4WT0 > Begin processing for Run: 0, History: 6570
+G4WT0 > Begin processing for Run: 0, History: 6580
+G4WT0 > Begin processing for Run: 0, History: 6590
+G4WT0 > Begin processing for Run: 0, History: 6600
+G4WT0 > Begin processing for Run: 0, History: 6610
+G4WT0 > Begin processing for Run: 0, History: 6620
+G4WT0 > Begin processing for Run: 0, History: 6630
+G4WT0 > Begin processing for Run: 0, History: 6640
+G4WT0 > Begin processing for Run: 0, History: 6650
+G4WT0 > Begin processing for Run: 0, History: 6660
+G4WT0 > Begin processing for Run: 0, History: 6670
+G4WT0 > Begin processing for Run: 0, History: 6680
+G4WT0 > Begin processing for Run: 0, History: 6690
+G4WT0 > Begin processing for Run: 0, History: 6700
+G4WT0 > Begin processing for Run: 0, History: 6710
+G4WT0 > Begin processing for Run: 0, History: 6720
+G4WT0 > Begin processing for Run: 0, History: 6730
+G4WT0 > Begin processing for Run: 0, History: 6740
+G4WT0 > Begin processing for Run: 0, History: 6750
+G4WT0 > Begin processing for Run: 0, History: 6760
+G4WT0 > Begin processing for Run: 0, History: 6770
+G4WT0 > Begin processing for Run: 0, History: 6780
+G4WT0 > Begin processing for Run: 0, History: 6790
+G4WT0 > Begin processing for Run: 0, History: 6800
+G4WT0 > Begin processing for Run: 0, History: 6810
+G4WT0 > Begin processing for Run: 0, History: 6820
+G4WT0 > Begin processing for Run: 0, History: 6830
+G4WT0 > Begin processing for Run: 0, History: 6840
+G4WT0 > Begin processing for Run: 0, History: 6850
+G4WT0 > Begin processing for Run: 0, History: 6860
+G4WT0 > Begin processing for Run: 0, History: 6870
+G4WT0 > Begin processing for Run: 0, History: 6880
+G4WT0 > Begin processing for Run: 0, History: 6890
+G4WT0 > Begin processing for Run: 0, History: 6900
+G4WT0 > Begin processing for Run: 0, History: 6910
+G4WT0 > Begin processing for Run: 0, History: 6920
+G4WT0 > Begin processing for Run: 0, History: 6930
+G4WT0 > Begin processing for Run: 0, History: 6940
+G4WT0 > Begin processing for Run: 0, History: 6950
+G4WT0 > Begin processing for Run: 0, History: 6960
+G4WT0 > Begin processing for Run: 0, History: 6970
+G4WT0 > Begin processing for Run: 0, History: 6980
+G4WT0 > Begin processing for Run: 0, History: 6990
+G4WT0 > Begin processing for Run: 0, History: 7000
+G4WT0 > Begin processing for Run: 0, History: 7010
+G4WT0 > Begin processing for Run: 0, History: 7020
+G4WT0 > Begin processing for Run: 0, History: 7030
+G4WT0 > Begin processing for Run: 0, History: 7040
+G4WT0 > Begin processing for Run: 0, History: 7050
+G4WT0 > Begin processing for Run: 0, History: 7060
+G4WT0 > Begin processing for Run: 0, History: 7070
+G4WT0 > Begin processing for Run: 0, History: 7080
+G4WT0 > Begin processing for Run: 0, History: 7090
+G4WT0 > Begin processing for Run: 0, History: 7100
+G4WT0 > Begin processing for Run: 0, History: 7110
+G4WT0 > Begin processing for Run: 0, History: 7120
+G4WT0 > Begin processing for Run: 0, History: 7130
+G4WT0 > Begin processing for Run: 0, History: 7140
+G4WT0 > Begin processing for Run: 0, History: 7150
+G4WT0 > Begin processing for Run: 0, History: 7160
+G4WT0 > Begin processing for Run: 0, History: 7170
+G4WT0 > Begin processing for Run: 0, History: 7180
+G4WT0 > Begin processing for Run: 0, History: 7190
+G4WT0 > Begin processing for Run: 0, History: 7200
+G4WT0 > Begin processing for Run: 0, History: 7210
+G4WT0 > Begin processing for Run: 0, History: 7220
+G4WT0 > Begin processing for Run: 0, History: 7230
+G4WT0 > Begin processing for Run: 0, History: 7240
+G4WT0 > Begin processing for Run: 0, History: 7250
+G4WT0 > Begin processing for Run: 0, History: 7260
+G4WT0 > Begin processing for Run: 0, History: 7270
+G4WT0 > Begin processing for Run: 0, History: 7280
+G4WT0 > Begin processing for Run: 0, History: 7290
+G4WT0 > Begin processing for Run: 0, History: 7300
+G4WT0 > Begin processing for Run: 0, History: 7310
+G4WT0 > Begin processing for Run: 0, History: 7320
+G4WT0 > Begin processing for Run: 0, History: 7330
+G4WT0 > Begin processing for Run: 0, History: 7340
+G4WT0 > Begin processing for Run: 0, History: 7350
+G4WT0 > Begin processing for Run: 0, History: 7360
+G4WT0 > Begin processing for Run: 0, History: 7370
+G4WT0 > Begin processing for Run: 0, History: 7380
+G4WT0 > Begin processing for Run: 0, History: 7390
+G4WT0 > Begin processing for Run: 0, History: 7400
+G4WT0 > Begin processing for Run: 0, History: 7410
+G4WT0 > Begin processing for Run: 0, History: 7420
+G4WT0 > Begin processing for Run: 0, History: 7430
+G4WT0 > Begin processing for Run: 0, History: 7440
+G4WT0 > Begin processing for Run: 0, History: 7450
+G4WT0 > Begin processing for Run: 0, History: 7460
+G4WT0 > Begin processing for Run: 0, History: 7470
+G4WT0 > Begin processing for Run: 0, History: 7480
+G4WT0 > Begin processing for Run: 0, History: 7490
+G4WT0 > Begin processing for Run: 0, History: 7500
+G4WT0 > Begin processing for Run: 0, History: 7510
+G4WT0 > Begin processing for Run: 0, History: 7520
+G4WT0 > Begin processing for Run: 0, History: 7530
+G4WT0 > Begin processing for Run: 0, History: 7540
+G4WT0 > Begin processing for Run: 0, History: 7550
+G4WT0 > Begin processing for Run: 0, History: 7560
+G4WT0 > Begin processing for Run: 0, History: 7570
+G4WT0 > Begin processing for Run: 0, History: 7580
+G4WT0 > Begin processing for Run: 0, History: 7590
+G4WT0 > Begin processing for Run: 0, History: 7600
+G4WT0 > Begin processing for Run: 0, History: 7610
+G4WT0 > Begin processing for Run: 0, History: 7620
+G4WT0 > Begin processing for Run: 0, History: 7630
+G4WT0 > Begin processing for Run: 0, History: 7640
+G4WT0 > Begin processing for Run: 0, History: 7650
+G4WT0 > Begin processing for Run: 0, History: 7660
+G4WT0 > Begin processing for Run: 0, History: 7670
+G4WT0 > Begin processing for Run: 0, History: 7680
+G4WT0 > Begin processing for Run: 0, History: 7690
+G4WT0 > Begin processing for Run: 0, History: 7700
+G4WT0 > Begin processing for Run: 0, History: 7710
+G4WT0 > Begin processing for Run: 0, History: 7720
+G4WT0 > Begin processing for Run: 0, History: 7730
+G4WT0 > Begin processing for Run: 0, History: 7740
+G4WT0 > Begin processing for Run: 0, History: 7750
+G4WT0 > Begin processing for Run: 0, History: 7760
+G4WT0 > Begin processing for Run: 0, History: 7770
+G4WT0 > Begin processing for Run: 0, History: 7780
+G4WT0 > Begin processing for Run: 0, History: 7790
+G4WT0 > Begin processing for Run: 0, History: 7800
+G4WT0 > Begin processing for Run: 0, History: 7810
+G4WT0 > Begin processing for Run: 0, History: 7820
+G4WT0 > Begin processing for Run: 0, History: 7830
+G4WT0 > Begin processing for Run: 0, History: 7840
+G4WT0 > Begin processing for Run: 0, History: 7850
+G4WT0 > Begin processing for Run: 0, History: 7860
+G4WT0 > Begin processing for Run: 0, History: 7870
+G4WT0 > Begin processing for Run: 0, History: 7880
+G4WT0 > Begin processing for Run: 0, History: 7890
+G4WT0 > Begin processing for Run: 0, History: 7900
+G4WT0 > Begin processing for Run: 0, History: 7910
+G4WT0 > Begin processing for Run: 0, History: 7920
+G4WT0 > Begin processing for Run: 0, History: 7930
+G4WT0 > Begin processing for Run: 0, History: 7940
+G4WT0 > Begin processing for Run: 0, History: 7950
+G4WT0 > Begin processing for Run: 0, History: 7960
+G4WT0 > Begin processing for Run: 0, History: 7970
+G4WT0 > Begin processing for Run: 0, History: 7980
+G4WT0 > Begin processing for Run: 0, History: 7990
+G4WT0 > Begin processing for Run: 0, History: 8000
+G4WT0 > Begin processing for Run: 0, History: 8010
+G4WT0 > Begin processing for Run: 0, History: 8020
+G4WT0 > Begin processing for Run: 0, History: 8030
+G4WT0 > Begin processing for Run: 0, History: 8040
+G4WT0 > Begin processing for Run: 0, History: 8050
+G4WT0 > Begin processing for Run: 0, History: 8060
+G4WT0 > Begin processing for Run: 0, History: 8070
+G4WT0 > Begin processing for Run: 0, History: 8080
+G4WT0 > Begin processing for Run: 0, History: 8090
+G4WT0 > Begin processing for Run: 0, History: 8100
+G4WT0 > Begin processing for Run: 0, History: 8110
+G4WT0 > Begin processing for Run: 0, History: 8120
+G4WT0 > Begin processing for Run: 0, History: 8130
+G4WT0 > Begin processing for Run: 0, History: 8140
+G4WT0 > Begin processing for Run: 0, History: 8150
+G4WT0 > Begin processing for Run: 0, History: 8160
+G4WT0 > Begin processing for Run: 0, History: 8170
+G4WT0 > Begin processing for Run: 0, History: 8180
+G4WT0 > Begin processing for Run: 0, History: 8190
+G4WT0 > Begin processing for Run: 0, History: 8200
+G4WT0 > Begin processing for Run: 0, History: 8210
+G4WT0 > Begin processing for Run: 0, History: 8220
+G4WT0 > Begin processing for Run: 0, History: 8230
+G4WT0 > Begin processing for Run: 0, History: 8240
+G4WT0 > Begin processing for Run: 0, History: 8250
+G4WT0 > Begin processing for Run: 0, History: 8260
+G4WT0 > Begin processing for Run: 0, History: 8270
+G4WT0 > Begin processing for Run: 0, History: 8280
+G4WT0 > Begin processing for Run: 0, History: 8290
+G4WT0 > Begin processing for Run: 0, History: 8300
+G4WT0 > Begin processing for Run: 0, History: 8310
+G4WT0 > Begin processing for Run: 0, History: 8320
+G4WT0 > Begin processing for Run: 0, History: 8330
+G4WT0 > Begin processing for Run: 0, History: 8340
+G4WT0 > Begin processing for Run: 0, History: 8350
+G4WT0 > Begin processing for Run: 0, History: 8360
+G4WT0 > Begin processing for Run: 0, History: 8370
+G4WT0 > Begin processing for Run: 0, History: 8380
+G4WT0 > Begin processing for Run: 0, History: 8390
+G4WT0 > Begin processing for Run: 0, History: 8400
+G4WT0 > Begin processing for Run: 0, History: 8410
+G4WT0 > Begin processing for Run: 0, History: 8420
+G4WT0 > Begin processing for Run: 0, History: 8430
+G4WT0 > Begin processing for Run: 0, History: 8440
+G4WT0 > Begin processing for Run: 0, History: 8450
+G4WT0 > Begin processing for Run: 0, History: 8460
+G4WT0 > Begin processing for Run: 0, History: 8470
+G4WT0 > Begin processing for Run: 0, History: 8480
+G4WT0 > Begin processing for Run: 0, History: 8490
+G4WT0 > Begin processing for Run: 0, History: 8500
+G4WT0 > Begin processing for Run: 0, History: 8510
+G4WT0 > Begin processing for Run: 0, History: 8520
+G4WT0 > Begin processing for Run: 0, History: 8530
+G4WT0 > Begin processing for Run: 0, History: 8540
+G4WT0 > Begin processing for Run: 0, History: 8550
+G4WT0 > Begin processing for Run: 0, History: 8560
+G4WT0 > Begin processing for Run: 0, History: 8570
+G4WT0 > Begin processing for Run: 0, History: 8580
+G4WT0 > Begin processing for Run: 0, History: 8590
+G4WT0 > Begin processing for Run: 0, History: 8600
+G4WT0 > Begin processing for Run: 0, History: 8610
+G4WT0 > Begin processing for Run: 0, History: 8620
+G4WT0 > Begin processing for Run: 0, History: 8630
+G4WT0 > Begin processing for Run: 0, History: 8640
+G4WT0 > Begin processing for Run: 0, History: 8650
+G4WT0 > Begin processing for Run: 0, History: 8660
+G4WT0 > Begin processing for Run: 0, History: 8670
+G4WT0 > Begin processing for Run: 0, History: 8680
+G4WT0 > Begin processing for Run: 0, History: 8690
+G4WT0 > Begin processing for Run: 0, History: 8700
+G4WT0 > Begin processing for Run: 0, History: 8710
+G4WT0 > Begin processing for Run: 0, History: 8720
+G4WT0 > Begin processing for Run: 0, History: 8730
+G4WT0 > Begin processing for Run: 0, History: 8740
+G4WT0 > Begin processing for Run: 0, History: 8750
+G4WT0 > Begin processing for Run: 0, History: 8760
+G4WT0 > Begin processing for Run: 0, History: 8770
+G4WT0 > Begin processing for Run: 0, History: 8780
+G4WT0 > Begin processing for Run: 0, History: 8790
+G4WT0 > Begin processing for Run: 0, History: 8800
+G4WT0 > Begin processing for Run: 0, History: 8810
+G4WT0 > Begin processing for Run: 0, History: 8820
+G4WT0 > Begin processing for Run: 0, History: 8830
+G4WT0 > Begin processing for Run: 0, History: 8840
+G4WT0 > Begin processing for Run: 0, History: 8850
+G4WT0 > Begin processing for Run: 0, History: 8860
+G4WT0 > Begin processing for Run: 0, History: 8870
+G4WT0 > Begin processing for Run: 0, History: 8880
+G4WT0 > Begin processing for Run: 0, History: 8890
+G4WT0 > Begin processing for Run: 0, History: 8900
+G4WT0 > Begin processing for Run: 0, History: 8910
+G4WT0 > Begin processing for Run: 0, History: 8920
+G4WT0 > Begin processing for Run: 0, History: 8930
+G4WT0 > Begin processing for Run: 0, History: 8940
+G4WT0 > Begin processing for Run: 0, History: 8950
+G4WT0 > Begin processing for Run: 0, History: 8960
+G4WT0 > Begin processing for Run: 0, History: 8970
+G4WT0 > Begin processing for Run: 0, History: 8980
+G4WT0 > Begin processing for Run: 0, History: 8990
+G4WT0 > Begin processing for Run: 0, History: 9000
+G4WT0 > Begin processing for Run: 0, History: 9010
+G4WT0 > Begin processing for Run: 0, History: 9020
+G4WT0 > Begin processing for Run: 0, History: 9030
+G4WT0 > Begin processing for Run: 0, History: 9040
+G4WT0 > Begin processing for Run: 0, History: 9050
+G4WT0 > Begin processing for Run: 0, History: 9060
+G4WT0 > Begin processing for Run: 0, History: 9070
+G4WT0 > Begin processing for Run: 0, History: 9080
+G4WT0 > Begin processing for Run: 0, History: 9090
+G4WT0 > Begin processing for Run: 0, History: 9100
+G4WT0 > Begin processing for Run: 0, History: 9110
+G4WT0 > Begin processing for Run: 0, History: 9120
+G4WT0 > Begin processing for Run: 0, History: 9130
+G4WT0 > Begin processing for Run: 0, History: 9140
+G4WT0 > Begin processing for Run: 0, History: 9150
+G4WT0 > Begin processing for Run: 0, History: 9160
+G4WT0 > Begin processing for Run: 0, History: 9170
+G4WT0 > Begin processing for Run: 0, History: 9180
+G4WT0 > Begin processing for Run: 0, History: 9190
+G4WT0 > Begin processing for Run: 0, History: 9200
+G4WT0 > Begin processing for Run: 0, History: 9210
+G4WT0 > Begin processing for Run: 0, History: 9220
+G4WT0 > Begin processing for Run: 0, History: 9230
+G4WT0 > Begin processing for Run: 0, History: 9240
+G4WT0 > Begin processing for Run: 0, History: 9250
+G4WT0 > Begin processing for Run: 0, History: 9260
+G4WT0 > Begin processing for Run: 0, History: 9270
+G4WT0 > Begin processing for Run: 0, History: 9280
+G4WT0 > Begin processing for Run: 0, History: 9290
+G4WT0 > Begin processing for Run: 0, History: 9300
+G4WT0 > Begin processing for Run: 0, History: 9310
+G4WT0 > Begin processing for Run: 0, History: 9320
+G4WT0 > Begin processing for Run: 0, History: 9330
+G4WT0 > Begin processing for Run: 0, History: 9340
+G4WT0 > Begin processing for Run: 0, History: 9350
+G4WT0 > Begin processing for Run: 0, History: 9360
+G4WT0 > Begin processing for Run: 0, History: 9370
+G4WT0 > Begin processing for Run: 0, History: 9380
+G4WT0 > Begin processing for Run: 0, History: 9390
+G4WT0 > Begin processing for Run: 0, History: 9400
+G4WT0 > Begin processing for Run: 0, History: 9410
+G4WT0 > Begin processing for Run: 0, History: 9420
+G4WT0 > Begin processing for Run: 0, History: 9430
+G4WT0 > Begin processing for Run: 0, History: 9440
+G4WT0 > Begin processing for Run: 0, History: 9450
+G4WT0 > Begin processing for Run: 0, History: 9460
+G4WT0 > Begin processing for Run: 0, History: 9470
+G4WT0 > Begin processing for Run: 0, History: 9480
+G4WT0 > Begin processing for Run: 0, History: 9490
+G4WT0 > Begin processing for Run: 0, History: 9500
+G4WT0 > Begin processing for Run: 0, History: 9510
+G4WT0 > Begin processing for Run: 0, History: 9520
+G4WT0 > Begin processing for Run: 0, History: 9530
+G4WT0 > Begin processing for Run: 0, History: 9540
+G4WT0 > Begin processing for Run: 0, History: 9550
+G4WT0 > Begin processing for Run: 0, History: 9560
+G4WT0 > Begin processing for Run: 0, History: 9570
+G4WT0 > Begin processing for Run: 0, History: 9580
+G4WT0 > Begin processing for Run: 0, History: 9590
+G4WT0 > Begin processing for Run: 0, History: 9600
+G4WT0 > Begin processing for Run: 0, History: 9610
+G4WT0 > Begin processing for Run: 0, History: 9620
+G4WT0 > Begin processing for Run: 0, History: 9630
+G4WT0 > Begin processing for Run: 0, History: 9640
+G4WT0 > Begin processing for Run: 0, History: 9650
+G4WT0 > Begin processing for Run: 0, History: 9660
+G4WT0 > Begin processing for Run: 0, History: 9670
+G4WT0 > Begin processing for Run: 0, History: 9680
+G4WT0 > Begin processing for Run: 0, History: 9690
+G4WT0 > Begin processing for Run: 0, History: 9700
+G4WT0 > Begin processing for Run: 0, History: 9710
+G4WT0 > Begin processing for Run: 0, History: 9720
+G4WT0 > Begin processing for Run: 0, History: 9730
+G4WT0 > Begin processing for Run: 0, History: 9740
+G4WT0 > Begin processing for Run: 0, History: 9750
+G4WT0 > Begin processing for Run: 0, History: 9760
+G4WT0 > Begin processing for Run: 0, History: 9770
+G4WT0 > Begin processing for Run: 0, History: 9780
+G4WT0 > Begin processing for Run: 0, History: 9790
+G4WT0 > Begin processing for Run: 0, History: 9800
+G4WT0 > Begin processing for Run: 0, History: 9810
+G4WT0 > Begin processing for Run: 0, History: 9820
+G4WT0 > Begin processing for Run: 0, History: 9830
+G4WT0 > Begin processing for Run: 0, History: 9840
+G4WT0 > Begin processing for Run: 0, History: 9850
+G4WT0 > Begin processing for Run: 0, History: 9860
+G4WT0 > Begin processing for Run: 0, History: 9870
+G4WT0 > Begin processing for Run: 0, History: 9880
+G4WT0 > Begin processing for Run: 0, History: 9890
+G4WT0 > Begin processing for Run: 0, History: 9900
+G4WT0 > Begin processing for Run: 0, History: 9910
+G4WT0 > Begin processing for Run: 0, History: 9920
+G4WT0 > Begin processing for Run: 0, History: 9930
+G4WT0 > Begin processing for Run: 0, History: 9940
+G4WT0 > Begin processing for Run: 0, History: 9950
+G4WT0 > Begin processing for Run: 0, History: 9960
+G4WT0 > Begin processing for Run: 0, History: 9970
+G4WT0 > Begin processing for Run: 0, History: 9980
+G4WT0 > Begin processing for Run: 0, History: 9990
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 10000
+######### Averaged IRT-execution-time per history (5614 histories): 0.0893997 s +/- 0.0300447 s 
+
+Note that TOPAS interrupted one or more histories during this session
+due to errors reported by Geant4.
+The total number of interrupted histories was: 4386
+For details on each of these errors, see the console log for "G4Exception"
+If only a very small proportion of your histories were affected,
+you may be able to still use the overall result,
+but this is a judgement call you need to make for yourself.
+You can set TOPAS to limit the number of messages about interrupted histories by setting
+the parameter Ts/InterruptedHistoryMaxReports
+You can set TOPAS to exit if it exceeds a given number of interrupted histories by setting
+the parmameter Ts/MaxInterruptedHistories
+
+Elapsed times:
+Parameter Reading : User=0.000000s Real=0.003093s Sys=0.000000s [Cpu=0.0%]
+    Initialization: User=0.010000s Real=0.012652s Sys=0.000000s [Cpu=79.0%]
+         Execution: User=1295.460000s Real=1627.627087s Sys=66.550000s [Cpu=83.7%]
+      Finalization: User=0.010000s Real=0.009541s Sys=0.010000s [Cpu=209.6%]
+             Total: User=1295.48s Real=1627.65s Sys=66.56s
+     1627.88 real      1295.67 user        66.58 sys

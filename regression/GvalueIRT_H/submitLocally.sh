@@ -44,7 +44,7 @@ foreach LINE ( $OPTION )
 
 #!/bin/bash
 cd $DIR
-nohup python3 $INFILE.py topas > log.out &
+nohup python3 $INFILE.py nBio_dev > log.out &
 EOF
     chmod +x $SCRIPT
     bash $SCRIPT 

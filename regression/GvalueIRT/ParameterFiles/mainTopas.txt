@@ -47,7 +47,7 @@ So/Demo/BeamPositionDistribution = "None"
 So/Demo/BeamEnergySpread = 0
 So/Demo/BeamParticle = "e-"
 So/Demo/BeamEnergy   = 999.999 keV
-i:So/Demo/NumberOfHistoriesInRun = 500
+i:So/Demo/NumberOfHistoriesInRun = 5000
 
 ################# SCORER #################
 

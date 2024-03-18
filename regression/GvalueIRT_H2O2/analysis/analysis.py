@@ -223,7 +223,7 @@ def plot_results(sut_dir, ref_dir, args):
     Table.scale(1,1.5)
 
     fig.tight_layout()
-    fig.savefig(join(args.outdir,'TimeEvolution.pdf'))
+    fig.savefig(join(args.outdir,'TimeEvolution_IRTManager_comp.pdf'))
 
     plt.clf()
     plt.cla()

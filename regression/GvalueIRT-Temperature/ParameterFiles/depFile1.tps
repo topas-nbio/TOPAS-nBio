@@ -4,7 +4,7 @@
 
 i:Ts/ShowHistoryCountAtInterval = 100
 i:Ts/MaxInterruptedHistories  = So/Demo/NumberOfHistoriesInRun
-Ts/NumberOfThreads = 0
+Ts/NumberOfThreads = -2
 b:Ts/ShowCPUTime = "True"
 
 ################## MODEL LISTS ##################
@@ -56,7 +56,7 @@ So/Demo/BeamPositionDistribution = "None"
 So/Demo/BeamEnergySpread = 0
 So/Demo/BeamParticle = "e-"
 So/Demo/BeamEnergy   = 999.999 keV
-i:So/Demo/NumberOfHistoriesInRun = 1000
+i:So/Demo/NumberOfHistoriesInRun = 10000
 
 ################# SCORER #################
 

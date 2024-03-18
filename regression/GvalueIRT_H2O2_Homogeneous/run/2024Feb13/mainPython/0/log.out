@@ -1,0 +1,2296 @@
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run1.txt
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4Data
+
+**************************************************************
+ Geant4 version Name: geant4-10-07-patch-03 [MT]   (19-November-2021)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 10
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 10 nm, and radial tolerance = 10 nm.
+Checking overlaps for volume sWorld (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+-- Set scavenging capacity for molecule H3Op of 14300 /s 
+-- Set scavenging capacity for molecule OHm of 14300 /s 
+-- Set scavenging capacity for molecule e_aq of 2300 /s 
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+Solvation model selected: 1
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+Ts Rudd-KR ionisation model is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 1.55e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s) r (nm)        Preact        
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  1.56e+10    0.294487      1             
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          2.5e+10     0.277608      1             
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) Kdif (/M/s)     Kact (/M/s)     r (nm)        Preact        alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   9e+07       2.81516e+10     9.02887e+07     0.4           0.00134615    2.50802      
+ II    OH^-1   + H2O2^0  -> HO2^-1                 1.3e+10     3.10576e+10     2.23589e+10     0.54          0.200983      3.18503      
+ II    OH^0    + H^0     -> None                   1.55e+10    2.85452e+10     3.39168e+10     0.41          0.329869      5.33703      
+ II    OH^0    + H2O2^0  -> HO2^0                  2.7e+07     1.46434e+10     2.70499e+07     0.43          0.000743474   2.32988      
+ II    OH^0    + OH^0    -> H2O2^0                 5.5e+09     7.32548e+09     2.2071e+10      0.44          0.544815      9.12024      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           1.1e+10     3.86858e+10     1.53705e+10     0.71          0.103317      1.96805      
+ II    e_aq^-1 + OH^0    -> OH^-1                  3e+10       3.86858e+10     1.33617e+11     0.72          0.497921      6.18599      
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) r (nm)        reff (nm)    Preact        
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   1.43e+11    0.876805         1.28023         1                
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  1.1e+10     0.581654         0.296644        1                
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) Kdif (/M/s)     Kact (/M/s)     r (nm)        reff (nm)    reff1 (nm)    Preact        
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    2.3e+10     1.26196e+11     2.81262e+10     0.75          1.16126      0.211976      0.0426379     
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) r (nm)        reff (nm)    Preact        
+========================================================================================================================
+
+========================================================================================================================
+Type   Molecules        Products                      Scavenging capacity /s
+========================================================================================================================
+ VI    H^0     + NO3m    -> HNO32m                 35000        Single factor 
+ VI    H3O^1   + OH^-1   -> None                   14300        Single factor 
+ VI    OH^-1   + H3O^1   -> None                   14300        Single factor 
+ VI    OH^0    + CH3OH   -> CH2OH                  10000.7      Single factor 
+ VI    e_aq^-1 + H3O^1   -> H^0                    2300         Single factor 
+ VI    e_aq^-1 + NO3m    -> NO32m                  2.425e+08    Single factor 
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ScaledProbability
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger cascade flag: 1
+### ===  Ignore cuts flag:   1
+Rudd ionisation model is initialized 
+Energy range: 100 eV - 500000 keV for GenericIon
+Rudd-KR ionisation model is initialized 
+Energy range: 2600 eV - 2.6e+07 keV for iron
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium+
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium+
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium+
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium++
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium++
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium++
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium+++
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium+++
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium+++
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 100 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 100 keV to 500 MeV in 27 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Ritchie1994 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+              StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llimit=1
+
+eIoni:  for e+  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 1, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+
+eBrem:  for e+  SubType=3
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      LPM flag: 1 for E > 0.5 GeV,  VertexHighEnergyTh(GeV)= 100000
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+annihil:  for e+, integral:1  SubType=5 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            eplus2gg : Emin=    0 eV  Emax=  500 MeV
+
+proton_G4DNAElastic:  for proton SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+proton_G4DNAExcitation:  for proton SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+DNABornExcitationModel : Emin=  500 keV Emax=  100 MeV
+
+proton_G4DNAIonisation:  for proton SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 keV  deltaRudd Fluo
+DNABornIonisationModel : Emin=  500 keV Emax=  100 MeV  deltaBorn Fluo
+DNARuddIonisationExtendedModel : Emin=  100 MeV Emax=  500 MeV  deltaRudd Fluo
+
+proton_G4DNAChargeDecrease:  for proton SubType=56 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeDecreaseModel : Emin=    0 eV  Emax=  100 MeV
+
+GenericIon_G4DNAIonisation:  for GenericIon SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha_G4DNAElastic:  for alpha SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha_G4DNAExcitation:  for alpha SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha_G4DNAIonisation:  for alpha SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha+_G4DNAElastic:  for alpha+ SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha+_G4DNAExcitation:  for alpha+ SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha+_G4DNAIonisation:  for alpha+ SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+helium_G4DNAElastic:  for helium SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+helium_G4DNAExcitation:  for helium SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+helium_G4DNAIonisation:  for helium SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+hydrogen_G4DNAElastic:  for hydrogen SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+hydrogen_G4DNAExcitation:  for hydrogen SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+
+hydrogen_G4DNAIonisation:  for hydrogen SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+hydrogen_G4DNAChargeIncrease:  for hydrogen SubType=57 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeIncreaseModel : Emin=    0 eV  Emax=  100 MeV
+
+=======================================================================
+--> G4MTRunManager::CreateAndStartWorkers() --> Initializing workers...
+=======================================================================
+
+G4WT8 > Begin processing for Run: 0, History: 0
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (549 histories): 1.53659 s +/- 0.362547 s 
+
+Elapsed times:
+Parameter Reading : User=0.010000s Real=0.001215s Sys=0.000000s [Cpu=822.7%]
+    Initialization: User=0.010000s Real=0.008785s Sys=0.000000s [Cpu=113.8%]
+         Execution: User=219.230000s Real=24.024643s Sys=1.040000s [Cpu=916.9%]
+      Finalization: User=0.000000s Real=0.005150s Sys=0.000000s [Cpu=0.0%]
+             Total: User=219.25s Real=24.0398s Sys=1.04s
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run1.txt
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4Data
+
+**************************************************************
+ Geant4 version Name: geant4-10-07-patch-03 [MT]   (19-November-2021)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 10
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 10 nm, and radial tolerance = 10 nm.
+Checking overlaps for volume sWorld (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+-- Set scavenging capacity for molecule H3Op of 14300 /s 
+-- Set scavenging capacity for molecule OHm of 14300 /s 
+-- Set scavenging capacity for molecule e_aq of 2300 /s 
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+Solvation model selected: 1
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+Ts Rudd-KR ionisation model is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 1.55e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s) r (nm)        Preact        
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  1.56e+10    0.294487      1             
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          2.5e+10     0.277608      1             
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) Kdif (/M/s)     Kact (/M/s)     r (nm)        Preact        alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   9e+07       2.81516e+10     9.02887e+07     0.4           0.00134615    2.50802      
+ II    OH^-1   + H2O2^0  -> HO2^-1                 1.3e+10     3.10576e+10     2.23589e+10     0.54          0.200983      3.18503      
+ II    OH^0    + H^0     -> None                   1.55e+10    2.85452e+10     3.39168e+10     0.41          0.329869      5.33703      
+ II    OH^0    + H2O2^0  -> HO2^0                  2.7e+07     1.46434e+10     2.70499e+07     0.43          0.000743474   2.32988      
+ II    OH^0    + OH^0    -> H2O2^0                 5.5e+09     7.32548e+09     2.2071e+10      0.44          0.544815      9.12024      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           1.1e+10     3.86858e+10     1.53705e+10     0.71          0.103317      1.96805      
+ II    e_aq^-1 + OH^0    -> OH^-1                  3e+10       3.86858e+10     1.33617e+11     0.72          0.497921      6.18599      
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) r (nm)        reff (nm)    Preact        
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   1.43e+11    0.876805         1.28023         1                
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  1.1e+10     0.581654         0.296644        1                
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) Kdif (/M/s)     Kact (/M/s)     r (nm)        reff (nm)    reff1 (nm)    Preact        
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    2.3e+10     1.26196e+11     2.81262e+10     0.75          1.16126      0.211976      0.0426379     
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) r (nm)        reff (nm)    Preact        
+========================================================================================================================
+
+========================================================================================================================
+Type   Molecules        Products                      Scavenging capacity /s
+========================================================================================================================
+ VI    H^0     + NO3m    -> HNO32m                 35000        Single factor 
+ VI    H3O^1   + OH^-1   -> None                   14300        Single factor 
+ VI    OH^-1   + H3O^1   -> None                   14300        Single factor 
+ VI    OH^0    + CH3OH   -> CH2OH                  100007       Single factor 
+ VI    e_aq^-1 + H3O^1   -> H^0                    2300         Single factor 
+ VI    e_aq^-1 + NO3m    -> NO32m                  2.425e+08    Single factor 
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ScaledProbability
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger cascade flag: 1
+### ===  Ignore cuts flag:   1
+Rudd ionisation model is initialized 
+Energy range: 100 eV - 500000 keV for GenericIon
+Rudd-KR ionisation model is initialized 
+Energy range: 2600 eV - 2.6e+07 keV for iron
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium+
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium+
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium+
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium++
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium++
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium++
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium+++
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium+++
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium+++
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 100 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 100 keV to 500 MeV in 27 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Ritchie1994 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+              StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llimit=1
+
+eIoni:  for e+  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 1, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+
+eBrem:  for e+  SubType=3
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      LPM flag: 1 for E > 0.5 GeV,  VertexHighEnergyTh(GeV)= 100000
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+annihil:  for e+, integral:1  SubType=5 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            eplus2gg : Emin=    0 eV  Emax=  500 MeV
+
+proton_G4DNAElastic:  for proton SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+proton_G4DNAExcitation:  for proton SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+DNABornExcitationModel : Emin=  500 keV Emax=  100 MeV
+
+proton_G4DNAIonisation:  for proton SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 keV  deltaRudd Fluo
+DNABornIonisationModel : Emin=  500 keV Emax=  100 MeV  deltaBorn Fluo
+DNARuddIonisationExtendedModel : Emin=  100 MeV Emax=  500 MeV  deltaRudd Fluo
+
+proton_G4DNAChargeDecrease:  for proton SubType=56 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeDecreaseModel : Emin=    0 eV  Emax=  100 MeV
+
+GenericIon_G4DNAIonisation:  for GenericIon SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha_G4DNAElastic:  for alpha SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha_G4DNAExcitation:  for alpha SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha_G4DNAIonisation:  for alpha SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha+_G4DNAElastic:  for alpha+ SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha+_G4DNAExcitation:  for alpha+ SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha+_G4DNAIonisation:  for alpha+ SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+helium_G4DNAElastic:  for helium SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+helium_G4DNAExcitation:  for helium SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+helium_G4DNAIonisation:  for helium SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+hydrogen_G4DNAElastic:  for hydrogen SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+hydrogen_G4DNAExcitation:  for hydrogen SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+
+hydrogen_G4DNAIonisation:  for hydrogen SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+hydrogen_G4DNAChargeIncrease:  for hydrogen SubType=57 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeIncreaseModel : Emin=    0 eV  Emax=  100 MeV
+
+=======================================================================
+--> G4MTRunManager::CreateAndStartWorkers() --> Initializing workers...
+=======================================================================
+
+G4WT4 > Begin processing for Run: 0, History: 0
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (549 histories): 1.54641 s +/- 0.367009 s 
+
+Elapsed times:
+Parameter Reading : User=0.000000s Real=0.001219s Sys=0.000000s [Cpu=0.0%]
+    Initialization: User=0.010000s Real=0.008814s Sys=0.000000s [Cpu=113.5%]
+         Execution: User=219.770000s Real=24.098830s Sys=1.020000s [Cpu=916.2%]
+      Finalization: User=0.000000s Real=0.005530s Sys=0.000000s [Cpu=0.0%]
+             Total: User=219.78s Real=24.1144s Sys=1.02s
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run1.txt
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4Data
+
+**************************************************************
+ Geant4 version Name: geant4-10-07-patch-03 [MT]   (19-November-2021)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 10
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 10 nm, and radial tolerance = 10 nm.
+Checking overlaps for volume sWorld (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+-- Set scavenging capacity for molecule H3Op of 14300 /s 
+-- Set scavenging capacity for molecule OHm of 14300 /s 
+-- Set scavenging capacity for molecule e_aq of 2300 /s 
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+Solvation model selected: 1
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+Ts Rudd-KR ionisation model is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 1.55e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s) r (nm)        Preact        
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  1.56e+10    0.294487      1             
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          2.5e+10     0.277608      1             
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) Kdif (/M/s)     Kact (/M/s)      r (nm)        Preact        alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   9e+07       2.81516e+10     9.02887e+07      0.4           0.00134615    2.50802      
+ II    OH^-1   + H2O2^0  -> HO2^-1                 1.3e+10     3.10576e+10     2.23589e+10      0.54          0.200983      3.18503      
+ II    OH^0    + H^0     -> None                   1.55e+10    2.85452e+10     3.39168e+10      0.41          0.329869      5.33703      
+ II    OH^0    + H2O2^0  -> HO2^0                  2.7e+07     1.46434e+10     2.70499e+07      0.43          0.000743474   2.32988      
+ II    OH^0    + OH^0    -> H2O2^0                 5.5e+09     7.32548e+09     2.2071e+10       0.44          0.544815      9.12024      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           1.1e+10     3.86858e+10     1.53705e+10      0.71          0.103317      1.96805      
+ II    e_aq^-1 + OH^0    -> OH^-1                  3e+10       3.86858e+10     1.33617e+11      0.72          0.497921      6.18599      
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) r (nm)        reff (nm)    Preact        
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   1.43e+11    0.876805         1.28023         1                
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  1.1e+10     0.581654         0.296644        1                
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) Kdif (/M/s)     Kact (/M/s)      r (nm)        reff (nm)    reff1 (nm)    Preact        
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    2.3e+10     1.26196e+11     2.81262e+10      0.75          1.16126      0.211976      0.0426379     
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) r (nm)        reff (nm)    Preact        
+========================================================================================================================
+
+========================================================================================================================
+Type   Molecules        Products                      Scavenging capacity /s
+========================================================================================================================
+ VI    H^0     + NO3m    -> HNO32m                 35000        Single factor 
+ VI    H3O^1   + OH^-1   -> None                   14300        Single factor 
+ VI    OH^-1   + H3O^1   -> None                   14300        Single factor 
+ VI    OH^0    + CH3OH   -> CH2OH                  1.00007e+06  Single factor 
+ VI    e_aq^-1 + H3O^1   -> H^0                    2300         Single factor 
+ VI    e_aq^-1 + NO3m    -> NO32m                  2.425e+08    Single factor 
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ScaledProbability
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger cascade flag: 1
+### ===  Ignore cuts flag:   1
+Rudd ionisation model is initialized 
+Energy range: 100 eV - 500000 keV for GenericIon
+Rudd-KR ionisation model is initialized 
+Energy range: 2600 eV - 2.6e+07 keV for iron
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium+
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium+
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium+
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium++
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium++
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium++
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium+++
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium+++
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium+++
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 100 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 100 keV to 500 MeV in 27 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Ritchie1994 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+              StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llimit=1
+
+eIoni:  for e+  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 1, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+
+eBrem:  for e+  SubType=3
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      LPM flag: 1 for E > 0.5 GeV,  VertexHighEnergyTh(GeV)= 100000
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+annihil:  for e+, integral:1  SubType=5 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            eplus2gg : Emin=    0 eV  Emax=  500 MeV
+
+proton_G4DNAElastic:  for proton SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+proton_G4DNAExcitation:  for proton SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+DNABornExcitationModel : Emin=  500 keV Emax=  100 MeV
+
+proton_G4DNAIonisation:  for proton SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 keV  deltaRudd Fluo
+DNABornIonisationModel : Emin=  500 keV Emax=  100 MeV  deltaBorn Fluo
+DNARuddIonisationExtendedModel : Emin=  100 MeV Emax=  500 MeV  deltaRudd Fluo
+
+proton_G4DNAChargeDecrease:  for proton SubType=56 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeDecreaseModel : Emin=    0 eV  Emax=  100 MeV
+
+GenericIon_G4DNAIonisation:  for GenericIon SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha_G4DNAElastic:  for alpha SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha_G4DNAExcitation:  for alpha SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha_G4DNAIonisation:  for alpha SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha+_G4DNAElastic:  for alpha+ SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha+_G4DNAExcitation:  for alpha+ SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha+_G4DNAIonisation:  for alpha+ SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+helium_G4DNAElastic:  for helium SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+helium_G4DNAExcitation:  for helium SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+helium_G4DNAIonisation:  for helium SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+hydrogen_G4DNAElastic:  for hydrogen SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+hydrogen_G4DNAExcitation:  for hydrogen SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+
+hydrogen_G4DNAIonisation:  for hydrogen SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+hydrogen_G4DNAChargeIncrease:  for hydrogen SubType=57 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeIncreaseModel : Emin=    0 eV  Emax=  100 MeV
+
+=======================================================================
+--> G4MTRunManager::CreateAndStartWorkers() --> Initializing workers...
+=======================================================================
+
+G4WT6 > Begin processing for Run: 0, History: 0
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (549 histories): 1.54929 s +/- 0.373716 s 
+
+Elapsed times:
+Parameter Reading : User=0.010000s Real=0.001329s Sys=0.000000s [Cpu=752.4%]
+    Initialization: User=0.010000s Real=0.008515s Sys=0.000000s [Cpu=117.4%]
+         Execution: User=219.510000s Real=24.081532s Sys=1.030000s [Cpu=915.8%]
+      Finalization: User=0.010000s Real=0.005171s Sys=0.000000s [Cpu=193.4%]
+             Total: User=219.54s Real=24.0965s Sys=1.03s
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run1.txt
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4Data
+
+**************************************************************
+ Geant4 version Name: geant4-10-07-patch-03 [MT]   (19-November-2021)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 10
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 10 nm, and radial tolerance = 10 nm.
+Checking overlaps for volume sWorld (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+-- Set scavenging capacity for molecule H3Op of 14300 /s 
+-- Set scavenging capacity for molecule OHm of 14300 /s 
+-- Set scavenging capacity for molecule e_aq of 2300 /s 
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+Solvation model selected: 1
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+Ts Rudd-KR ionisation model is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 1.55e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s) r (nm)        Preact        
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  1.56e+10    0.294487      1             
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          2.5e+10     0.277608      1             
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) Kdif (/M/s)     Kact (/M/s)      r (nm)        Preact        alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   9e+07       2.81516e+10     9.02887e+07      0.4           0.00134615    2.50802      
+ II    OH^-1   + H2O2^0  -> HO2^-1                 1.3e+10     3.10576e+10     2.23589e+10      0.54          0.200983      3.18503      
+ II    OH^0    + H^0     -> None                   1.55e+10    2.85452e+10     3.39168e+10      0.41          0.329869      5.33703      
+ II    OH^0    + H2O2^0  -> HO2^0                  2.7e+07     1.46434e+10     2.70499e+07      0.43          0.000743474   2.32988      
+ II    OH^0    + OH^0    -> H2O2^0                 5.5e+09     7.32548e+09     2.2071e+10       0.44          0.544815      9.12024      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           1.1e+10     3.86858e+10     1.53705e+10      0.71          0.103317      1.96805      
+ II    e_aq^-1 + OH^0    -> OH^-1                  3e+10       3.86858e+10     1.33617e+11      0.72          0.497921      6.18599      
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) r (nm)        reff (nm)    Preact        
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   1.43e+11    0.876805         1.28023         1                
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  1.1e+10     0.581654         0.296644        1                
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) Kdif (/M/s)     Kact (/M/s)      r (nm)        reff (nm)    reff1 (nm)    Preact        
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    2.3e+10     1.26196e+11     2.81262e+10      0.75          1.16126      0.211976      0.0426379     
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) r (nm)        reff (nm)    Preact        
+========================================================================================================================
+
+========================================================================================================================
+Type   Molecules        Products                      Scavenging capacity /s
+========================================================================================================================
+ VI    H^0     + NO3m    -> HNO32m                 35000        Single factor 
+ VI    H3O^1   + OH^-1   -> None                   14300        Single factor 
+ VI    OH^-1   + H3O^1   -> None                   14300        Single factor 
+ VI    OH^0    + CH3OH   -> CH2OH                  1.00007e+07  Single factor 
+ VI    e_aq^-1 + H3O^1   -> H^0                    2300         Single factor 
+ VI    e_aq^-1 + NO3m    -> NO32m                  2.425e+08    Single factor 
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ScaledProbability
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger cascade flag: 1
+### ===  Ignore cuts flag:   1
+Rudd ionisation model is initialized 
+Energy range: 100 eV - 500000 keV for GenericIon
+Rudd-KR ionisation model is initialized 
+Energy range: 2600 eV - 2.6e+07 keV for iron
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium+
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium+
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium+
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium++
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium++
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium++
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium+++
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium+++
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium+++
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 100 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 100 keV to 500 MeV in 27 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Ritchie1994 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+              StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llimit=1
+
+eIoni:  for e+  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 1, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+
+eBrem:  for e+  SubType=3
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      LPM flag: 1 for E > 0.5 GeV,  VertexHighEnergyTh(GeV)= 100000
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+annihil:  for e+, integral:1  SubType=5 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            eplus2gg : Emin=    0 eV  Emax=  500 MeV
+
+proton_G4DNAElastic:  for proton SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+proton_G4DNAExcitation:  for proton SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+DNABornExcitationModel : Emin=  500 keV Emax=  100 MeV
+
+proton_G4DNAIonisation:  for proton SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 keV  deltaRudd Fluo
+DNABornIonisationModel : Emin=  500 keV Emax=  100 MeV  deltaBorn Fluo
+DNARuddIonisationExtendedModel : Emin=  100 MeV Emax=  500 MeV  deltaRudd Fluo
+
+proton_G4DNAChargeDecrease:  for proton SubType=56 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeDecreaseModel : Emin=    0 eV  Emax=  100 MeV
+
+GenericIon_G4DNAIonisation:  for GenericIon SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha_G4DNAElastic:  for alpha SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha_G4DNAExcitation:  for alpha SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha_G4DNAIonisation:  for alpha SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha+_G4DNAElastic:  for alpha+ SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha+_G4DNAExcitation:  for alpha+ SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha+_G4DNAIonisation:  for alpha+ SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+helium_G4DNAElastic:  for helium SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+helium_G4DNAExcitation:  for helium SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+helium_G4DNAIonisation:  for helium SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+hydrogen_G4DNAElastic:  for hydrogen SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+hydrogen_G4DNAExcitation:  for hydrogen SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+
+hydrogen_G4DNAIonisation:  for hydrogen SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+hydrogen_G4DNAChargeIncrease:  for hydrogen SubType=57 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeIncreaseModel : Emin=    0 eV  Emax=  100 MeV
+
+=======================================================================
+--> G4MTRunManager::CreateAndStartWorkers() --> Initializing workers...
+=======================================================================
+
+G4WT9 > Begin processing for Run: 0, History: 0
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (549 histories): 1.54614 s +/- 0.353668 s 
+
+Elapsed times:
+Parameter Reading : User=0.000000s Real=0.001215s Sys=0.000000s [Cpu=0.0%]
+    Initialization: User=0.010000s Real=0.008427s Sys=0.000000s [Cpu=118.7%]
+         Execution: User=219.740000s Real=24.007469s Sys=0.990000s [Cpu=919.4%]
+      Finalization: User=0.000000s Real=0.005123s Sys=0.000000s [Cpu=0.0%]
+             Total: User=219.75s Real=24.0222s Sys=0.99s
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run1.txt
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4Data
+
+**************************************************************
+ Geant4 version Name: geant4-10-07-patch-03 [MT]   (19-November-2021)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 10
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 10 nm, and radial tolerance = 10 nm.
+Checking overlaps for volume sWorld (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+-- Set scavenging capacity for molecule H3Op of 14300 /s 
+-- Set scavenging capacity for molecule OHm of 14300 /s 
+-- Set scavenging capacity for molecule e_aq of 2300 /s 
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+Solvation model selected: 1
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+Ts Rudd-KR ionisation model is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 1.55e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s) r (nm)        Preact        
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  1.56e+10    0.294487      1             
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          2.5e+10     0.277608      1             
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) Kdif (/M/s)     Kact (/M/s)    r (nm)        Preact        alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   9e+07       2.81516e+10     9.02887e+07    0.4           0.00134615    2.50802      
+ II    OH^-1   + H2O2^0  -> HO2^-1                 1.3e+10     3.10576e+10     2.23589e+10    0.54          0.200983      3.18503      
+ II    OH^0    + H^0     -> None                   1.55e+10    2.85452e+10     3.39168e+10    0.41          0.329869      5.33703      
+ II    OH^0    + H2O2^0  -> HO2^0                  2.7e+07     1.46434e+10     2.70499e+07    0.43          0.000743474   2.32988      
+ II    OH^0    + OH^0    -> H2O2^0                 5.5e+09     7.32548e+09     2.2071e+10     0.44          0.544815      9.12024      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           1.1e+10     3.86858e+10     1.53705e+10    0.71          0.103317      1.96805      
+ II    e_aq^-1 + OH^0    -> OH^-1                  3e+10       3.86858e+10     1.33617e+11    0.72          0.497921      6.18599      
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) r (nm)        reff (nm)    Preact        
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   1.43e+11    0.876805         1.28023         1                
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  1.1e+10     0.581654         0.296644        1                
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) Kdif (/M/s)     Kact (/M/s)    r (nm)        reff (nm)    reff1 (nm)    Preact        
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    2.3e+10     1.26196e+11     2.81262e+10    0.75          1.16126      0.211976      0.0426379     
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) r (nm)        reff (nm)    Preact        
+========================================================================================================================
+
+========================================================================================================================
+Type   Molecules        Products                      Scavenging capacity /s
+========================================================================================================================
+ VI    H^0     + NO3m    -> HNO32m                 35000        Single factor 
+ VI    H3O^1   + OH^-1   -> None                   14300        Single factor 
+ VI    OH^-1   + H3O^1   -> None                   14300        Single factor 
+ VI    OH^0    + CH3OH   -> CH2OH                  1.00007e+08  Single factor 
+ VI    e_aq^-1 + H3O^1   -> H^0                    2300         Single factor 
+ VI    e_aq^-1 + NO3m    -> NO32m                  2.425e+08    Single factor 
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ScaledProbability
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger cascade flag: 1
+### ===  Ignore cuts flag:   1
+Rudd ionisation model is initialized 
+Energy range: 100 eV - 500000 keV for GenericIon
+Rudd-KR ionisation model is initialized 
+Energy range: 2600 eV - 2.6e+07 keV for iron
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium+
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium+
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium+
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium++
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium++
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium++
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium+++
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium+++
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium+++
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 100 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 100 keV to 500 MeV in 27 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Ritchie1994 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+              StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llimit=1
+
+eIoni:  for e+  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 1, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+
+eBrem:  for e+  SubType=3
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      LPM flag: 1 for E > 0.5 GeV,  VertexHighEnergyTh(GeV)= 100000
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+annihil:  for e+, integral:1  SubType=5 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            eplus2gg : Emin=    0 eV  Emax=  500 MeV
+
+proton_G4DNAElastic:  for proton SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+proton_G4DNAExcitation:  for proton SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+DNABornExcitationModel : Emin=  500 keV Emax=  100 MeV
+
+proton_G4DNAIonisation:  for proton SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 keV  deltaRudd Fluo
+DNABornIonisationModel : Emin=  500 keV Emax=  100 MeV  deltaBorn Fluo
+DNARuddIonisationExtendedModel : Emin=  100 MeV Emax=  500 MeV  deltaRudd Fluo
+
+proton_G4DNAChargeDecrease:  for proton SubType=56 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeDecreaseModel : Emin=    0 eV  Emax=  100 MeV
+
+GenericIon_G4DNAIonisation:  for GenericIon SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha_G4DNAElastic:  for alpha SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha_G4DNAExcitation:  for alpha SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha_G4DNAIonisation:  for alpha SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha+_G4DNAElastic:  for alpha+ SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha+_G4DNAExcitation:  for alpha+ SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha+_G4DNAIonisation:  for alpha+ SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+helium_G4DNAElastic:  for helium SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+helium_G4DNAExcitation:  for helium SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+helium_G4DNAIonisation:  for helium SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+hydrogen_G4DNAElastic:  for hydrogen SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+hydrogen_G4DNAExcitation:  for hydrogen SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+
+hydrogen_G4DNAIonisation:  for hydrogen SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+hydrogen_G4DNAChargeIncrease:  for hydrogen SubType=57 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeIncreaseModel : Emin=    0 eV  Emax=  100 MeV
+
+=======================================================================
+--> G4MTRunManager::CreateAndStartWorkers() --> Initializing workers...
+=======================================================================
+
+G4WT2 > Begin processing for Run: 0, History: 0
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (549 histories): 1.55472 s +/- 0.367706 s 
+
+Elapsed times:
+Parameter Reading : User=0.000000s Real=0.001383s Sys=0.000000s [Cpu=0.0%]
+    Initialization: User=0.010000s Real=0.009126s Sys=0.010000s [Cpu=219.2%]
+         Execution: User=220.470000s Real=24.093378s Sys=1.010000s [Cpu=919.3%]
+      Finalization: User=0.000000s Real=0.005233s Sys=0.010000s [Cpu=191.1%]
+             Total: User=220.48s Real=24.1091s Sys=1.03s
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run1.txt
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4Data
+
+**************************************************************
+ Geant4 version Name: geant4-10-07-patch-03 [MT]   (19-November-2021)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 10
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 10 nm, and radial tolerance = 10 nm.
+Checking overlaps for volume sWorld (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+-- Set scavenging capacity for molecule H3Op of 14300 /s 
+-- Set scavenging capacity for molecule OHm of 14300 /s 
+-- Set scavenging capacity for molecule e_aq of 2300 /s 
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+Solvation model selected: 1
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+Ts Rudd-KR ionisation model is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 1.55e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s) r (nm)        Preact        
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  1.56e+10    0.294487      1             
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          2.5e+10     0.277608      1             
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) Kdif (/M/s)     Kact (/M/s)    r (nm)        Preact        alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   9e+07       2.81516e+10     9.02887e+07    0.4           0.00134615    2.50802      
+ II    OH^-1   + H2O2^0  -> HO2^-1                 1.3e+10     3.10576e+10     2.23589e+10    0.54          0.200983      3.18503      
+ II    OH^0    + H^0     -> None                   1.55e+10    2.85452e+10     3.39168e+10    0.41          0.329869      5.33703      
+ II    OH^0    + H2O2^0  -> HO2^0                  2.7e+07     1.46434e+10     2.70499e+07    0.43          0.000743474   2.32988      
+ II    OH^0    + OH^0    -> H2O2^0                 5.5e+09     7.32548e+09     2.2071e+10     0.44          0.544815      9.12024      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           1.1e+10     3.86858e+10     1.53705e+10    0.71          0.103317      1.96805      
+ II    e_aq^-1 + OH^0    -> OH^-1                  3e+10       3.86858e+10     1.33617e+11    0.72          0.497921      6.18599      
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) r (nm)        reff (nm)    Preact        
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   1.43e+11    0.876805         1.28023         1                
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  1.1e+10     0.581654         0.296644        1                
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) Kdif (/M/s)     Kact (/M/s)    r (nm)        reff (nm)    reff1 (nm)    Preact        
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    2.3e+10     1.26196e+11     2.81262e+10    0.75          1.16126      0.211976      0.0426379     
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) r (nm)        reff (nm)    Preact        
+========================================================================================================================
+
+========================================================================================================================
+Type   Molecules        Products                      Scavenging capacity /s
+========================================================================================================================
+ VI    H^0     + NO3m    -> HNO32m                 35000        Single factor 
+ VI    H3O^1   + OH^-1   -> None                   14300        Single factor 
+ VI    OH^-1   + H3O^1   -> None                   14300        Single factor 
+ VI    OH^0    + CH3OH   -> CH2OH                  1.00007e+09  Single factor 
+ VI    e_aq^-1 + H3O^1   -> H^0                    2300         Single factor 
+ VI    e_aq^-1 + NO3m    -> NO32m                  2.425e+08    Single factor 
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ScaledProbability
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger cascade flag: 1
+### ===  Ignore cuts flag:   1
+Rudd ionisation model is initialized 
+Energy range: 100 eV - 500000 keV for GenericIon
+Rudd-KR ionisation model is initialized 
+Energy range: 2600 eV - 2.6e+07 keV for iron
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium+
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium+
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium+
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium++
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium++
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium++
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium+++
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium+++
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium+++
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 100 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 100 keV to 500 MeV in 27 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Ritchie1994 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+              StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llimit=1
+
+eIoni:  for e+  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 1, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+
+eBrem:  for e+  SubType=3
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      LPM flag: 1 for E > 0.5 GeV,  VertexHighEnergyTh(GeV)= 100000
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+annihil:  for e+, integral:1  SubType=5 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            eplus2gg : Emin=    0 eV  Emax=  500 MeV
+
+proton_G4DNAElastic:  for proton SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+proton_G4DNAExcitation:  for proton SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+DNABornExcitationModel : Emin=  500 keV Emax=  100 MeV
+
+proton_G4DNAIonisation:  for proton SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 keV  deltaRudd Fluo
+DNABornIonisationModel : Emin=  500 keV Emax=  100 MeV  deltaBorn Fluo
+DNARuddIonisationExtendedModel : Emin=  100 MeV Emax=  500 MeV  deltaRudd Fluo
+
+proton_G4DNAChargeDecrease:  for proton SubType=56 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeDecreaseModel : Emin=    0 eV  Emax=  100 MeV
+
+GenericIon_G4DNAIonisation:  for GenericIon SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha_G4DNAElastic:  for alpha SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha_G4DNAExcitation:  for alpha SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha_G4DNAIonisation:  for alpha SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha+_G4DNAElastic:  for alpha+ SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha+_G4DNAExcitation:  for alpha+ SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha+_G4DNAIonisation:  for alpha+ SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+helium_G4DNAElastic:  for helium SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+helium_G4DNAExcitation:  for helium SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+helium_G4DNAIonisation:  for helium SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+hydrogen_G4DNAElastic:  for hydrogen SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+hydrogen_G4DNAExcitation:  for hydrogen SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+
+hydrogen_G4DNAIonisation:  for hydrogen SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+hydrogen_G4DNAChargeIncrease:  for hydrogen SubType=57 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeIncreaseModel : Emin=    0 eV  Emax=  100 MeV
+
+=======================================================================
+--> G4MTRunManager::CreateAndStartWorkers() --> Initializing workers...
+=======================================================================
+
+G4WT0 > Begin processing for Run: 0, History: 0
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (549 histories): 1.54911 s +/- 0.357415 s 
+
+Elapsed times:
+Parameter Reading : User=0.000000s Real=0.001211s Sys=0.000000s [Cpu=0.0%]
+    Initialization: User=0.000000s Real=0.008642s Sys=0.010000s [Cpu=115.7%]
+         Execution: User=220.330000s Real=24.017701s Sys=0.990000s [Cpu=921.5%]
+      Finalization: User=0.010000s Real=0.005236s Sys=0.010000s [Cpu=381.9%]
+             Total: User=220.34s Real=24.0328s Sys=1.01s
+
+Welcome to TOPAS, Tool for Particle Simulation (Version 3.9)
+Loading parameters starting from: run1.txt
+
+Geant4 Data directory has been specified by the
+TOPAS_G4_DATA_DIR environment variable as /Applications/GEANT/G4Data
+
+**************************************************************
+ Geant4 version Name: geant4-10-07-patch-03 [MT]   (19-November-2021)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+TOPAS is in MT mode, setting number of threads to: 10
+
+TOPAS set the tolerances based on the World size to:
+      Surface tolerance = 10 nm, and radial tolerance = 10 nm.
+Checking overlaps for volume sWorld (G4Box) ... OK! 
+
+Checking for Unused Components.
+These are Components that were never built even though they were at least
+partially defined in some parameters. This is not necessarily an error.
+It may be an intentional choice to have these Component definitions handy for later use.
+To turn off this check, set Ge/CheckForUnusedComponents to False
+  No unused components were found.
+
+-- Set scavenging capacity for molecule H3Op of 14300 /s 
+-- Set scavenging capacity for molecule OHm of 14300 /s 
+-- Set scavenging capacity for molecule e_aq of 2300 /s 
+-- Branching ratio: All ionization states probability 1
+-- Branching ratio: A1B1 Dissociative decay probability 0.65
+-- Branching ratio: A1B1 Relaxation probability 0.35
+-- Branching ratio: B1A1 Auto-ionization probability 0.55
+-- Branching ratio: B1A1 Dissociative decay probability 0.15
+-- Branching ratio: B1A1 Relaxation probability 0.3
+-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability 0.5
+-- Branching ratio: Rydberg states and diffuse bands relaxation probability 0.5
+-- Branching ratio: dissociative attachment probability 1
+Solvation model selected: 1
+   1. Ritchie.
+   2. Terrisol.
+   3. Meesungnoen.
+   4. Kreipl.
+   5. Meesugnoen solid.
+-- Diffusion coefficient for molecule: H used the value 8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2 used the value 4.8e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H2O2 used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: H3Op used the value 9.46e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OH used the value 2.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: OHm used the value 5.3e-09 (m2/s) 
+-- Diffusion coefficient for molecule: Product used the value 0 (m2/s) 
+-- Diffusion coefficient for molecule: e_aq used the value 4.9e-09 (m2/s) 
+
+### TsEmDNAPhysics Construct Processes 
+Ts Rudd ionisation model is constructed 
+Ts Rudd-KR ionisation model is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd-KR ionisation model is constructed 
+KR Miller & Green excitation model is constructed 
+KR Born excitation model for ions is constructed 
+Ts Rudd ionisation model is constructed 
+ Re-set reaction kobs to : 1.56e+10/M/s
+ Re-set reaction kobs to : 9e+07/M/s
+ Re-set reaction kobs to : 1.43e+11/M/s
+ Re-set reaction kobs to : 1.55e+10/M/s
+ Re-set reaction kobs to : 5.5e+09/M/s
+ Re-set reaction kobs to : 2.5e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+ Re-set reaction kobs to : 2.3e+10/M/s
+ Re-set reaction kobs to : 3e+10/M/s
+ Re-set reaction kobs to : 1.1e+10/M/s
+
+========================================================================================================================
+   TypeMolecules        Products                      Kobs (/M/s) r (nm)        Preact        
+========================================================================================================================
+ I     H^0     + H^0     -> H_2^0                  1.56e+10    0.294487      1             
+ I     e_aq^-1 + H^0     -> OH^-1 + H_2^0          2.5e+10     0.277608      1             
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) Kdif (/M/s)     Kact (/M/s)     r (nm)        Preact        alpha (/nm)  
+========================================================================================================================
+ II    H^0     + H2O2^0  -> OH^0                   9e+07       2.81516e+10     9.02887e+07     0.4           0.00134615    2.50802      
+ II    OH^-1   + H2O2^0  -> HO2^-1                 1.3e+10     3.10576e+10     2.23589e+10     0.54          0.200983      3.18503      
+ II    OH^0    + H^0     -> None                   1.55e+10    2.85452e+10     3.39168e+10     0.41          0.329869      5.33703      
+ II    OH^0    + H2O2^0  -> HO2^0                  2.7e+07     1.46434e+10     2.70499e+07     0.43          0.000743474   2.32988      
+ II    OH^0    + OH^0    -> H2O2^0                 5.5e+09     7.32548e+09     2.2071e+10      0.44          0.544815      9.12024      
+ II    e_aq^-1 + H2O2^0  -> OH^-1 + OH^0           1.1e+10     3.86858e+10     1.53705e+10     0.71          0.103317      1.96805      
+ II    e_aq^-1 + OH^0    -> OH^-1                  3e+10       3.86858e+10     1.33617e+11     0.72          0.497921      6.18599      
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) r (nm)        reff (nm)    Preact        
+========================================================================================================================
+ III   H3O^1   + OH^-1   -> None                   1.43e+11    0.876805         1.28023         1                
+ III   e_aq^-1 + e_aq^-1 -> OH^-1 + OH^-1 + H_2^0  1.1e+10     0.581654         0.296644        1                
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) Kdif (/M/s)     Kact (/M/s)     r (nm)        reff (nm)    reff1 (nm)    Preact        
+========================================================================================================================
+ IV    e_aq^-1 + H3O^1   -> H^0                    2.3e+10     1.26196e+11     2.81262e+10     0.75          1.16126      0.211976      0.0426379     
+
+========================================================================================================================
+Type   Molecules        Products                      Kobs (/M/s) r (nm)        reff (nm)    Preact        
+========================================================================================================================
+
+========================================================================================================================
+Type   Molecules        Products                      Scavenging capacity /s
+========================================================================================================================
+ VI    H^0     + NO3m    -> HNO32m                 35000        Single factor 
+ VI    H3O^1   + OH^-1   -> None                   14300        Single factor 
+ VI    OH^-1   + H3O^1   -> None                   14300        Single factor 
+ VI    OH^0    + CH3OH   -> CH2OH                  1.00007e+10  Single factor 
+ VI    e_aq^-1 + H3O^1   -> H^0                    2300         Single factor 
+ VI    e_aq^-1 + NO3m    -> NO32m                  2.425e+08    Single factor 
+
+
+ -------------- TOPAS IRT Warning -------------
+ -- SpinBehavior is ScaledProbability
+ ----------------------------------------------
+
+Visualization verbosity changed to quiet (0)
+
+### ===  Deexcitation model UAtomDeexcitation is activated for 1 region:
+          DefaultRegionForTheWorld  1  1  0
+### ===  Auger cascade flag: 1
+### ===  Ignore cuts flag:   1
+Rudd ionisation model is initialized 
+Energy range: 100 eV - 500000 keV for GenericIon
+Rudd-KR ionisation model is initialized 
+Energy range: 2600 eV - 2.6e+07 keV for iron
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium+
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium+
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium+
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium++
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium++
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium++
+Rudd-KR ionisation model is initialized 
+Energy range: 300 eV - 3e+06 keV for lithium+++
+KR Miller & Green excitation model is initialized 
+Energy range: 70 eV - 3500 keV for lithium+++
+KR Born excitation model is initialized 
+Energy range: 3.5e+06 eV - 700000 keV for lithium+++
+Rudd ionisation model is initialized 
+Energy range: 0 eV - 1e+06 keV for proton
+
+phot:  for gamma SubType=12 BuildTable=0
+      LambdaPrime table from 200 keV to 500 MeV in 25 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermorePhElectric : Emin=    0 eV  Emax=  500 MeV  SauterGavrila Fluo
+
+compt:  for gamma SubType=13 BuildTable=1
+      Lambda table from 100 eV  to 1 MeV, 7 bins/decade, spline: 1
+      LambdaPrime table from 1 MeV to 500 MeV in 20 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton : Emin=    0 eV  Emax=  500 MeV Fluo
+
+conv:  for gamma SubType=14 BuildTable=1
+      Lambda table from 1.022 MeV to 500 MeV, 33 bins/decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+ LivermoreConversion : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+Rayl:  for gamma SubType=11 BuildTable=1
+      Lambda table from 100 eV  to 100 keV, 7 bins/decade, spline: 0
+      LambdaPrime table from 100 keV to 500 MeV in 27 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+   LivermoreRayleigh : Emin=    0 eV  Emax=  500 MeV  CullenGenerator
+
+e-_G4DNAElastic:  for e- SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAELSEPAElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAExcitation:  for e- SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornExcitationModel : Emin=    0 eV  Emax=    1 MeV
+
+e-_G4DNAIonisation:  for e- SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNABornIonisationModel : Emin=    0 eV  Emax=    1 MeV  deltaBorn Fluo
+
+e-_G4DNAElectronSolvation:  for e- SubType=58 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAOneStepThermalizationModel_Ritchie1994 : Emin=    0 eV  Emax=   10 eV 
+
+e-_G4DNAVibExcitation:  for e- SubType=54 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNASancheExcitationModel : Emin=    0 eV  Emax=  100 eV 
+
+e-_G4DNAAttachment:  for e- SubType=55 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMeltonAttachmentModel : Emin=    0 eV  Emax=   13 eV 
+
+msc:  for e+  SubType= 10
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc : Emin=    0 eV  Emax=  500 MeV Nbins=49 100 eV  - 500 MeV
+              StepLim=DistanceToBoundary Rfact=0.04 Gfact=2.5 Sfact=0.6 DispFlag:1 Skin=1 Llimit=1
+
+eIoni:  for e+  SubType=2
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      StepFunction=(0.2, 1 mm), integ: 1, fluct: 1, linLossLim= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha : Emin=    0 eV  Emax=  500 MeV
+
+eBrem:  for e+  SubType=3
+      dE/dx and range tables from 100 eV  to 500 MeV in 49 bins
+      Lambda tables from threshold to 500 MeV, 7 bins/decade, spline: 1
+      LPM flag: 1 for E > 0.5 GeV,  VertexHighEnergyTh(GeV)= 100000
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB : Emin=    0 eV  Emax=  500 MeV  ModifiedTsai
+
+annihil:  for e+, integral:1  SubType=5 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            eplus2gg : Emin=    0 eV  Emax=  500 MeV
+
+proton_G4DNAElastic:  for proton SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+proton_G4DNAExcitation:  for proton SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+DNABornExcitationModel : Emin=  500 keV Emax=  100 MeV
+
+proton_G4DNAIonisation:  for proton SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 keV  deltaRudd Fluo
+DNABornIonisationModel : Emin=  500 keV Emax=  100 MeV  deltaBorn Fluo
+DNARuddIonisationExtendedModel : Emin=  100 MeV Emax=  500 MeV  deltaRudd Fluo
+
+proton_G4DNAChargeDecrease:  for proton SubType=56 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeDecreaseModel : Emin=    0 eV  Emax=  100 MeV
+
+GenericIon_G4DNAIonisation:  for GenericIon SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha_G4DNAElastic:  for alpha SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha_G4DNAExcitation:  for alpha SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha_G4DNAIonisation:  for alpha SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+alpha+_G4DNAElastic:  for alpha+ SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+alpha+_G4DNAExcitation:  for alpha+ SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+alpha+_G4DNAIonisation:  for alpha+ SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+helium_G4DNAElastic:  for helium SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+helium_G4DNAExcitation:  for helium SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  400 MeV
+
+helium_G4DNAIonisation:  for helium SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+hydrogen_G4DNAElastic:  for hydrogen SubType=51 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+  DNAIonElasticModel : Emin=    0 eV  Emax=    1 MeV
+
+hydrogen_G4DNAExcitation:  for hydrogen SubType=52 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNAMillerGreenExcitationModel : Emin=    0 eV  Emax=  500 keV
+
+hydrogen_G4DNAIonisation:  for hydrogen SubType=53 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNARuddIonisationExtendedModel : Emin=    0 eV  Emax=  500 MeV  deltaRudd Fluo
+
+hydrogen_G4DNAChargeIncrease:  for hydrogen SubType=57 BuildTable=0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+DNADingfelderChargeIncreaseModel : Emin=    0 eV  Emax=  100 MeV
+
+=======================================================================
+--> G4MTRunManager::CreateAndStartWorkers() --> Initializing workers...
+=======================================================================
+
+G4WT5 > Begin processing for Run: 0, History: 0
+
+TOPAS run sequence complete.
+Particle source Demo: Total number of histories: 1000
+######### Averaged IRT-execution-time per history (549 histories): 1.53386 s +/- 0.336298 s 
+
+Elapsed times:
+Parameter Reading : User=0.010000s Real=0.001336s Sys=0.000000s [Cpu=748.3%]
+    Initialization: User=0.010000s Real=0.008890s Sys=0.010000s [Cpu=225.0%]
+         Execution: User=219.900000s Real=24.128795s Sys=1.030000s [Cpu=915.6%]
+      Finalization: User=0.000000s Real=0.005144s Sys=0.000000s [Cpu=0.0%]
+             Total: User=219.92s Real=24.1442s Sys=1.04s

@@ -21,7 +21,7 @@ foreach LINE ( $OPTION )
     set DATE = $DATEYEAR$DATEMONTH$DATEDAY
     set UNAME = `uname`
 
-    set DIR = $CURRENTPATH"/run/"$DATE/$INFILE/$COUNT
+    set DIR = $CURRENTPATH"/run/"$DATE"_withoutIRTManager"/$INFILE/$COUNT
     if ( -d $DIR ) then
        echo Directory exists, removing and recreating $DIR
        rm -rf $DIR
@@ -41,7 +41,7 @@ foreach LINE ( $OPTION )
 
 #!/bin/bash
 cd $DIR
-nohup time topas $INFILE.txt > log.out &
+nohup time nBio_dev_noIRTManager $INFILE.txt > log.out &
 EOF
     chmod +x $SCRIPT
     bash $SCRIPT 

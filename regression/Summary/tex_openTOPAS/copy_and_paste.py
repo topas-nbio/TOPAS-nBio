@@ -40,7 +40,7 @@ for test in regression_tests:
     elif test == 'FrickeIRT/':
         folder_path = tex_dir + test
         os.system('mkdir ' + folder_path)
-        os.system('cp ' + reg_dir + 'mainTopas/Gvalue.pdf ' + folder_path + 'Gvalue.pdf')
+        os.system('cp ' + reg_dir + 'mainTopas/Gvalue_IRTManager_comp.pdf ' + folder_path + 'Gvalue.pdf')
 
     elif test == 'GvalueStepByStep/':
         folder_path = tex_dir + test
@@ -55,7 +55,7 @@ for test in regression_tests:
     elif test == 'GvalueIRT/':
         folder_path = tex_dir + test
         os.system('mkdir ' + folder_path)
-        os.system('cp ' + reg_dir + 'mainTopas/GvalueIRT.pdf ' + folder_path + 'GvalueIRT.pdf')
+        os.system('cp ' + reg_dir + 'mainTopas/GvalueIRT_IRTManager_comp.pdf ' + folder_path + 'GvalueIRT.pdf')
 
     elif test == 'Gvalue_LET-IRT/':
         folder_path = tex_dir + test
@@ -65,18 +65,18 @@ for test in regression_tests:
     elif test == 'GvalueIRT_H2O2/':
         folder_path = tex_dir + test
         os.system('mkdir ' + folder_path)
-        os.system('cp ' + reg_dir + 'mainPython/TimeEvolution.pdf ' + folder_path + 'TimeEvolution.pdf')
+        os.system('cp ' + reg_dir + 'mainPython/TimeEvolution_IRTManager_comp.pdf ' + folder_path + 'TimeEvolution.pdf')
 
     elif test == 'GvalueIRT_H/':
         folder_path = tex_dir + test
         os.system('mkdir ' + folder_path)
-        os.system('cp ' + reg_dir + 'mainPython/TimeEvolution.pdf ' + folder_path + 'TimeEvolution.pdf')
+        os.system('cp ' + reg_dir + 'mainPython/TimeEvolution_IRTManager_comp.pdf ' + folder_path + 'TimeEvolution.pdf')
 
     elif test == 'GvalueIRT-Temperature/':
         folder_path = tex_dir + test
         os.system('mkdir ' + folder_path)
-        os.system('cp ' + reg_dir + 'mainPython/TimeEvolution.pdf ' + folder_path + 'TimeEvolution.pdf')
-        os.system('cp ' + reg_dir + 'mainPython/TemperatureEvolution.pdf ' + folder_path + 'TemperatureEvolution.pdf')
+        os.system('cp ' + reg_dir + 'mainPython/TimeEvolution_IRTManager_comp.pdf ' + folder_path + 'TimeEvolution.pdf')
+        os.system('cp ' + reg_dir + 'mainPython/TemperatureEvolution_IRTManager_comp.pdf ' + folder_path + 'TemperatureEvolution.pdf')
 
     elif test == 'NanodosimetryI/':
         folder_path = tex_dir + test

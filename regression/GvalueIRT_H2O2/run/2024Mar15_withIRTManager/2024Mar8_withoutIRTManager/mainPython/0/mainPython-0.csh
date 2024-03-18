@@ -1,0 +1,4 @@
+
+#!/bin/bash
+cd /Applications/TOPAS/openTOPAS/openTOPAS_nBio_dev/TOPAS-nBio-dev/regression/GvalueIRT_H2O2/run/2024Mar8/mainPython/0
+nohup python3 mainPython.py nBio_dev > log.out &

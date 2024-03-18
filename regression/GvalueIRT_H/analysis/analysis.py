@@ -177,8 +177,8 @@ def plot_results(sut_dir, ref_dir, args):
     sut_GT = average_results(sut_dir + '/*/Br_1e-3_M_NO3m_1e-3_M.phsp')
     ref_GT = average_results(ref_dir + '/*/Br_1e-3_M_NO3m_1e-3_M.phsp')
 
-    V1 = np.copy(sut_GT['H_2^0'][66])
-    V2 = np.copy(ref_GT['H_2^0'][66])
+    V1 = np.copy(sut_GT['H_2^0'][99]) # taking 1e+9 [99] instead of 1e+6 [66], since H2 not stabilised at 1us
+    V2 = np.copy(ref_GT['H_2^0'][99])
 
     # Getting escape yield of H2, which represents {H_2}^0 in Huerta Parajon 2008. Multiplied to match number of concentrations
     sut_SG_H20['H_2^0'] = [V1[1]]*len(HCO2m_concentrations)
@@ -197,8 +197,8 @@ def plot_results(sut_dir, ref_dir, args):
             ref_GT   = average_results(ref_dir + '/*/HCO2m_%s_M_Br_1e-3_M_NO3m_%s_M.phsp'%(T,N))
 
             for i in sut_GT.keys():
-                V1 = np.copy(sut_GT[i][66])
-                V2 = np.copy(ref_GT[i][66])
+                V1 = np.copy(sut_GT[i][99]) # taking 1e+9 [99] instead of 1e+6 [66], since H2 not stabilised at 1us
+                V2 = np.copy(ref_GT[i][99])
                 V1[0] = 1e12 / (float(T)*kobsHCO2m + 1e-3*kobsNO3m)
                 V2[0] = 1e12 / (float(T)*kobsHCO2m + 1e-3*kobsNO3m)
                 
@@ -359,7 +359,7 @@ def plot_results(sut_dir, ref_dir, args):
     Table.scale(1,1.5)
 
     fig.tight_layout()
-    fig.savefig(join(args.outdir,'TimeEvolution.pdf'))
+    fig.savefig(join(args.outdir,'TimeEvolution_IRTManager_comp.pdf'))
 
     plt.clf()
     plt.cla()

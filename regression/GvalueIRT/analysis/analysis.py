@@ -282,8 +282,8 @@ def plot_results(sut_dir, ref_dir, args):
                       )
 
     plt.tight_layout() 
-    plt.savefig(join(args.outdir, 'GvalueIRT.eps'), bbox_inches='tight')
-    plt.savefig(join(args.outdir, 'GvalueIRT.pdf'), bbox_inches='tight')
+    plt.savefig(join(args.outdir, 'GvalueIRT_IRTManager_comp.eps'), bbox_inches='tight')
+    plt.savefig(join(args.outdir, 'GvalueIRT_IRTManager_comp.pdf'), bbox_inches='tight')
 
 ####################################################
 ### Define Main

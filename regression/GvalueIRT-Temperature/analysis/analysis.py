@@ -338,7 +338,7 @@ def plot_results(sut_dir, ref_dir, args):
     #ax9.set_axis_off()
 
     fig.tight_layout()
-    fig.savefig(join(args.outdir,'TimeEvolution.pdf'))
+    fig.savefig(join(args.outdir,'TimeEvolution_IRTManager_comp.pdf'))
 
     plt.clf()
     plt.cla()
@@ -478,7 +478,7 @@ def plot_results(sut_dir, ref_dir, args):
     #ax9.set_axis_off()
 
     fig.tight_layout()
-    fig.savefig(join(args.outdir,'TemperatureEvolution.pdf'))
+    fig.savefig(join(args.outdir,'TemperatureEvolution_IRTManager_comp.pdf'))
 
     plt.clf()
     plt.cla()

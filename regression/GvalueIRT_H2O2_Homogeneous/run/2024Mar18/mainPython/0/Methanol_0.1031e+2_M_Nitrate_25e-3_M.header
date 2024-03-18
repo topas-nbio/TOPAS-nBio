@@ -1,0 +1,7 @@
+
+Columns of data are as follows:
+1: GValue: number of molecules per 100 eV of energy deposit
+2: GValue statistical error
+3: Time [picosecond]
+4: MoleculeName
+

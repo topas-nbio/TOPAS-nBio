@@ -21,4 +21,4 @@
 \beamer@sectionintoc {21}{Nanodosimetry III: g4em-dna\_opt2}{24}{0}{21}
 \beamer@sectionintoc {22}{Nanodosimetry III: g4em-dna\_opt4}{25}{0}{22}
 \beamer@sectionintoc {23}{Nanodosimetry III: g4em-dna\_opt6}{26}{0}{23}
-\beamer@sectionintoc {24}{SSBs as a function of DMSO: pulsed beam}{27}{0}{24}
+\beamer@sectionintoc {24}{SSBs as a function of DMSO: single pulse, low dose rate}{27}{0}{24}
