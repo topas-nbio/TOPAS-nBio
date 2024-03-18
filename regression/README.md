@@ -36,7 +36,7 @@ This example must give a value of around 15.5 +- 0.1 reported by the ICRU.
 
 13. GvalueIRT_H. H-scavenger-dependent G value for H within microsecond time range
 
-14. DNASSBPulsed. Quantifies the number of SSBs induced on a DNA plasmid as a function of DMSO concentration for a pulsed beam of 250 keV electrons
+14. DNASSBPulsed. Quantifies the number of SSBs induced on a DNA plasmid as a function of DMSO concentration for a low dose rate continuous beam.
 
 #### Use
 Each directory has TOPAS parameters with the follow pattern:
@@ -56,6 +56,6 @@ python analysis/analysis.py run/2020July/mainTopas run/2020July/mainOpt2 --sut_l
 Look for the images in the directory `results/`. A table which contains averaged execution time per CPU is also available.
 
 #### Optional
-Run the Python script inside the folder Summary/tex_openTOPAS. This will copy and paste all the regression test images into a new directory called Summary/openTOPAS. Run the .tex file in order to generate a PDF summarising all the results.
+If you have modified the names of the image files resulting from `analysis.py`, open the python script `copy_and_paste.py` in the directory Summary/tex_openTOPAS and change the names of the appropriate files such that they match. Then run the script. This will copy and paste all the regression test images into a new directory called Summary/openTOPAS. Run the .tex file in order to generate a PDF summarising all the results.
 
 
