@@ -142,7 +142,10 @@ public:
 
 		G4int trackID  = -1;
 		G4int parentID = 0;
-		std::vector<G4int> exinfo = {-1,-1,-1};
+
+		G4int volumeID = -1;
+		G4int baseID   = -1;
+		G4int strandID = -1;
 	};
 	
 private:

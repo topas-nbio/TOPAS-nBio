@@ -35,6 +35,8 @@ public:
 	std::map<G4String, std::map<G4double, G4int>> GetGValues();
 	std::map<G4int, std::map<G4double, G4int>>    GetDeltaGValues();
 
+	std::vector<TsIRTConfiguration::TsMolecule> GetSurvivingMoleculesWithMolID(G4int);
+
 private:
 	G4String fName;
 	TsVIRTProcedure* fIRTProcedure;

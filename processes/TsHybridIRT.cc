@@ -662,7 +662,10 @@ void TsHybridIRT::ConductReactions() {
 
 		if (currentTime >= fTransCut) { break; }
 
-		std::vector<G4int> dnaInfo = {-1,-1,-1};
+		G4int dnaVolumeID = 0;
+		G4int dnaBaseID   = 0;
+		G4int dnaStrandID = 0;
+
 		G4double irt = fIRTValues[currentIRT].first;
 
 		UpdateGillespieDirect(currentTime);
@@ -738,11 +741,15 @@ void TsHybridIRT::ConductReactions() {
 					}
 				}
 				
-				if (fChemicalSpecies[iM].exinfo[0] >= 0) {
-					dnaInfo = fChemicalSpecies[iM].exinfo;
+				if (fChemicalSpecies[iM].volumeID >= 0) {
+					dnaVolumeID = fChemicalSpecies[iM].volumeID;
+					dnaBaseID   = fChemicalSpecies[iM].baseID;
+					dnaStrandID = fChemicalSpecies[iM].strandID;
 				}
-				else if (fChemicalSpecies[jM].exinfo[0] >= 0) {
-					dnaInfo = fChemicalSpecies[jM].exinfo;
+				else if (fChemicalSpecies[jM].volumeID >= 0) {
+					dnaVolumeID = fChemicalSpecies[jM].volumeID;
+					dnaBaseID   = fChemicalSpecies[jM].baseID;
+					dnaStrandID = fChemicalSpecies[jM].strandID;
 				}
 
 				fChemicalSpecies[iM].reacted = true;
@@ -765,8 +772,10 @@ void TsHybridIRT::ConductReactions() {
 					}
 				}
 
-				if (fChemicalSpecies[iM].exinfo[0] >= 0) {
-					dnaInfo = fChemicalSpecies[iM].exinfo;
+				if (fChemicalSpecies[iM].volumeID >= 0) {
+					dnaVolumeID = fChemicalSpecies[iM].volumeID;
+					dnaBaseID   = fChemicalSpecies[iM].baseID;
+					dnaStrandID = fChemicalSpecies[iM].strandID;
 				}
 				
 				fChemicalSpecies[iM].reacted = true;
@@ -786,8 +795,11 @@ void TsHybridIRT::ConductReactions() {
 
 				if (fMolecules[aProd.id] == "") {continue;}
 
-				if (dnaInfo[0] >= 0)
-					aProd.exinfo = dnaInfo;
+				if (dnaVolumeID >= 0) {
+					aProd.volumeID = dnaVolumeID;
+					aProd.baseID   = dnaBaseID;
+					aProd.strandID = dnaStrandID;
+				}
 				
 				if ( 1 == products[u] || 5 == products[u] )
 					aProd.spin = G4UniformRand() > 0.5 ? 1 : 0;
@@ -1202,25 +1214,45 @@ G4bool TsHybridIRT::DoGillespieDirect(G4double currentTime) {
 	G4bool CreateMolecule = false;
 	G4int Scenario = 0;
 	std::vector<G4ThreeVector> Positions;
-	std::vector<G4int> DNA_info  = {-1,-1,-1};
+	G4int dnaVolumeID = -1;
+	G4int dnaBaseID   = -1;
+	G4int dnaStrandID = -1;
 	if ((IndexA >= 0 && IndexB >= 0) && !Random) {
 		CreateMolecule = true;
 		Positions = fReactionConf->GetPositionOfProducts(fChemicalSpecies[IndexA],fChemicalSpecies[IndexB], fHomogeneousReactIndex);
 		Scenario = 1;
-		if ((fChemicalSpecies[IndexA].exinfo)[0] > 0)      DNA_info = fChemicalSpecies[IndexA].exinfo;
-		else if ((fChemicalSpecies[IndexB].exinfo)[0] > 0) DNA_info = fChemicalSpecies[IndexB].exinfo;
+
+		if (fChemicalSpecies[IndexA].volumeID >= 0) {
+			dnaVolumeID = fChemicalSpecies[IndexA].volumeID;
+			dnaBaseID   = fChemicalSpecies[IndexA].baseID;
+			dnaStrandID = fChemicalSpecies[IndexA].strandID;
+		}
+
+		else if (fChemicalSpecies[IndexB].volumeID >= 0) {
+			dnaVolumeID = fChemicalSpecies[IndexB].volumeID;
+			dnaBaseID   = fChemicalSpecies[IndexB].baseID;
+			dnaStrandID = fChemicalSpecies[IndexB].strandID;
+		}
 	}
 	else if (((IndexA >= 0 && IndexB == -1) || (IndexA >= 0 && IndexB == -2)) && !Random) {
 		CreateMolecule = true;
 		Positions = fReactionConf->GetBackgroundPositionOfProducts(fChemicalSpecies[IndexA],fHomogeneousReactIndex);
 		Scenario = 2;
-		if ((fChemicalSpecies[IndexA].exinfo)[0] > 0) DNA_info = fChemicalSpecies[IndexA].exinfo;
+		if (fChemicalSpecies[IndexA].volumeID >= 0) {
+			dnaVolumeID = fChemicalSpecies[IndexA].volumeID;
+			dnaBaseID   = fChemicalSpecies[IndexA].baseID;
+			dnaStrandID = fChemicalSpecies[IndexA].strandID;
+		}		
 	}
 	else if ((IndexA == -2 && IndexB >= 0) && !Random) {
 		CreateMolecule = true;
 		Positions = fReactionConf->GetBackgroundPositionOfProducts(fChemicalSpecies[IndexB],fHomogeneousReactIndex);
 		Scenario = 3;
-		if ((fChemicalSpecies[IndexB].exinfo)[0] > 0) DNA_info = fChemicalSpecies[IndexB].exinfo;
+		if (fChemicalSpecies[IndexB].volumeID >= 0) {
+			dnaVolumeID = fChemicalSpecies[IndexA].volumeID;
+			dnaBaseID   = fChemicalSpecies[IndexA].baseID;
+			dnaStrandID = fChemicalSpecies[IndexA].strandID;
+		}	
 	}
 
 	// Conduct the Reaction
@@ -1237,7 +1269,9 @@ G4bool TsHybridIRT::DoGillespieDirect(G4double currentTime) {
 			aProd.trackID  = 0;
 			aProd.isDNA    = false;
 			aProd.isNew    = true;
-			aProd.exinfo   = DNA_info;
+			aProd.volumeID = dnaVolumeID;
+			aProd.baseID   = dnaBaseID;
+			aProd.strandID = dnaStrandID;
 			aProd.spin     = -1;
 			G4int I = fUtils->FindBin(fNx, fXMin, fXMax, Positions[u].x());
 			G4int J = fUtils->FindBin(fNy, fYMin, fYMax, Positions[u].y());

@@ -704,6 +704,10 @@ void TsVIRTProcedure::ConductReactions() {
 				RemoveFirstIRTElement();
 				continue;
 			}
+
+			G4int dnaVolumeID = 0;
+			G4int dnaBaseID   = 0;
+			G4int dnaStrandID = 0;
 			
 			G4int indexOfReaction = fIRTIndex[idx];
 			
@@ -787,6 +791,17 @@ void TsVIRTProcedure::ConductReactions() {
 						}
 					}
 				}
+
+				if (fChemicalSpecies[iM].volumeID >= 0) {
+					dnaVolumeID = fChemicalSpecies[iM].volumeID;
+					dnaBaseID   = fChemicalSpecies[iM].baseID;
+					dnaStrandID = fChemicalSpecies[iM].strandID;
+				}
+				else if (fChemicalSpecies[jM].volumeID >= 0) {
+					dnaVolumeID = fChemicalSpecies[jM].volumeID;
+					dnaBaseID   = fChemicalSpecies[jM].baseID;
+					dnaStrandID = fChemicalSpecies[jM].strandID;
+				}
 				
 				fChemicalSpecies[iM].reacted = true;
 				fChemicalSpecies[jM].reacted = true;
@@ -818,6 +833,12 @@ void TsVIRTProcedure::ConductReactions() {
 						}
 					}
 				}
+
+				if (fChemicalSpecies[iM].volumeID >= 0) {
+					dnaVolumeID = fChemicalSpecies[iM].volumeID;
+					dnaBaseID   = fChemicalSpecies[iM].baseID;
+					dnaStrandID = fChemicalSpecies[iM].strandID;
+				}
 				
 				fChemicalSpecies[iM].reacted = true;
 				fConcentrations[fChemicalSpecies[iM].id]--;
@@ -837,6 +858,12 @@ void TsVIRTProcedure::ConductReactions() {
 				fConcentrations[aProd.id]++;
 
 				if (fMolecules[aProd.id] == "") {continue;}
+
+				if (dnaVolumeID >= 0) {
+					aProd.volumeID = dnaVolumeID;
+					aProd.baseID   = dnaBaseID;
+					aProd.strandID = dnaStrandID;
+				}
 				
 				if ( 1 == products[u] || 5 == products[u] )
 					aProd.spin = G4UniformRand() > 0.5 ? 1 : 0;

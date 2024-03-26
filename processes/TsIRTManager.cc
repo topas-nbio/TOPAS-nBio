@@ -101,3 +101,7 @@ std::map<G4String, std::map<G4double, G4int>> TsIRTManager::GetGValues() {
 std::map<G4int, std::map<G4double, G4int>>    TsIRTManager::GetDeltaGValues() {
 	return fIRTProcedure->GetDeltaGValues();
 }
+
+std::vector<TsIRTConfiguration::TsMolecule> TsIRTManager::GetSurvivingMoleculesWithMolID(G4int molID) {
+	return fIRTProcedure->GetSurvivingMoleculesWithMolID(molID);
+}

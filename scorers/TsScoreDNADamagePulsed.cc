@@ -11,7 +11,7 @@
 //
 
 #include "TsScoreDNADamagePulsed.hh"
-#include "TsIRT.hh"
+#include "TsIRTManager.hh"
 #include "TsIRTConfiguration.hh"
 #include "TsIRTUtils.hh"
 
@@ -37,7 +37,7 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
 {
     SetUnit("");
 
-    fIRT       = new TsIRT(fPm, fName);
+    fIRT       = new TsIRTManager(fPm, fName);
     fUtils     = fIRT->GetUtils();
     fStepTimes = fIRT->GetStepTimes();
     
@@ -808,7 +808,10 @@ void TsScoreDNADamagePulsed::InsertDNAMolecules() {
             aMol.reacted  = false;
             aMol.isDNA    = false;
             aMol.isNew    = true;
-            aMol.exinfo   = fDNADetails[i];
+            //aMol.exinfo   = fDNADetails[i];
+            aMol.volumeID = fDNADetails[i][0];
+            aMol.baseID   = fDNADetails[i][1];
+            aMol.strandID = fDNADetails[i][2];
             fMolecules[1].push_back(aMol);
         }
         else
@@ -873,12 +876,20 @@ void TsScoreDNADamagePulsed::CheckForIndirectDNABreaks() {
         std::vector<TsIRTConfiguration::TsMolecule> SurvivingMolecules = fIRT->GetSurvivingMoleculesWithMolID(BreakMolID);
         for (size_t j = 0; j < SurvivingMolecules.size(); j++) {
             if (fIndirectStrandBreaks.count(fNbOfIRTRuns)){
-                std::vector<G4int> thisBreak = SurvivingMolecules[j].exinfo;
+                //std::vector<G4int> thisBreak = SurvivingMolecules[j].exinfo;
+                std::vector<G4int> thisBreak;
+                thisBreak.push_back(SurvivingMolecules[j].volumeID);
+                thisBreak.push_back(SurvivingMolecules[j].baseID);
+                thisBreak.push_back(SurvivingMolecules[j].strandID);
                 thisBreak.push_back(int(i));
                 fIndirectStrandBreaks[fNbOfIRTRuns].push_back(thisBreak);
             }
             else {
-                std::vector<G4int> thisBreak = SurvivingMolecules[j].exinfo;
+                //std::vector<G4int> thisBreak = SurvivingMolecules[j].exinfo;
+                std::vector<G4int> thisBreak;
+                thisBreak.push_back(SurvivingMolecules[j].volumeID);
+                thisBreak.push_back(SurvivingMolecules[j].baseID);
+                thisBreak.push_back(SurvivingMolecules[j].strandID);
                 thisBreak.push_back(int(i));
                 std::vector<std::vector<G4int>> tempBreak;
                 tempBreak.push_back(thisBreak);
