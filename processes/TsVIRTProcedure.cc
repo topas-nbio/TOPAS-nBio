@@ -705,9 +705,9 @@ void TsVIRTProcedure::ConductReactions() {
 				continue;
 			}
 
-			G4int dnaVolumeID = 0;
-			G4int dnaBaseID   = 0;
-			G4int dnaStrandID = 0;
+			G4int dnaVolumeID = -1;
+			G4int dnaBaseID   = -1;
+			G4int dnaStrandID = -1;
 			
 			G4int indexOfReaction = fIRTIndex[idx];
 			
