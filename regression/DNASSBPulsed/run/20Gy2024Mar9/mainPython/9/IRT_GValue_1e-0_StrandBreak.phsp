@@ -1,9 +1,0 @@
-# TOPAS-nBio IRT: DNA Strand Break Map File
-# BreakID = 1 if Direct, 2 if Indirect SB
-# | EventID | VolumeID | BaseID | StrandID | MoleculeID | BreakID |
-           3         -1       -1         -1           0         2
-          28         -1       -1         -1           1         2
-         116         -1       -1         -1           1         2
-         144         -1       -1         -1           1         2
-         154         -1       -1         -1           0         2
-         154         -1       -1         -1           0         2
