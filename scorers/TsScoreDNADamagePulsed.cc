@@ -41,11 +41,11 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
     fUtils     = fIRT->GetUtils();
     fStepTimes = fIRT->GetStepTimes();
     
-    fNtuple->RegisterColumnD(&fGValue,      "GValue", "");
-    fNtuple->RegisterColumnD(&fGValueError, "GValue Error", "");
+    fNtuple->RegisterColumnD(&fGValue,      "GValue per 100 eV of energy deposit", "");
+    fNtuple->RegisterColumnD(&fGValueError, "GValue statistical error", "");
     fNtuple->RegisterColumnD(&fNumberOfMolecules, "Total Number of molecules","");
     fNtuple->RegisterColumnD(&fNumberOfMoleculesError, "Error of Number of molecules","");
-    fNtuple->RegisterColumnD(&fEnergy,      "EnergyDeposit", "");
+    fNtuple->RegisterColumnD(&fEnergy,      "EnergyDeposit", "MeV");
     fNtuple->RegisterColumnD(&fTime,        "Time", "picosecond");
     fNtuple->RegisterColumnS(&fMoleculeName, "MoleculeName");
     
