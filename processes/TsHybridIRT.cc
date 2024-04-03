@@ -1273,6 +1273,7 @@ G4bool TsHybridIRT::DoGillespieDirect(G4double currentTime) {
 			aProd.baseID   = dnaBaseID;
 			aProd.strandID = dnaStrandID;
 			aProd.spin     = -1;
+			aProd.chemAlgo = 0; // Assigning 0 for instance of direct Gillespie
 			G4int I = fUtils->FindBin(fNx, fXMin, fXMax, Positions[u].x());
 			G4int J = fUtils->FindBin(fNy, fYMin, fYMax, Positions[u].y());
 			G4int K = fUtils->FindBin(fNz, fZMin, fZMax, Positions[u].z());

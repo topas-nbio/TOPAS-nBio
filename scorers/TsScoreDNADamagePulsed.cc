@@ -573,7 +573,7 @@ void TsScoreDNADamagePulsed::Output() {
     StrandBreakOut.open(fOutputFile + "_StrandBreak.phsp");
 
     StrandBreakOut << "# TOPAS-nBio IRT: DNA Strand Break Map File"   << std::endl;
-    StrandBreakOut << "# BreakID = 1 if Direct, 2 if Indirect SB"     << std::endl;
+    StrandBreakOut << "# BreakID = 1 if Direct SB, 2 if indirect SB from IRT, 3 if indirect SB from Gillespie"     << std::endl;
     StrandBreakOut << "# | EventID | VolumeID | BaseID | StrandID | MoleculeID | BreakID |" << std::endl;
 
     for (G4int i = 0; i < fNbOfIRTRuns; i++) {
@@ -590,12 +590,17 @@ void TsScoreDNADamagePulsed::Output() {
 
         if (fIndirectStrandBreaks.find(i) != fIndirectStrandBreaks.end()) {
             for (size_t j = 0; j  < fIndirectStrandBreaks[i].size(); j++) {
+                int algoCheck = 2;
+                if (fIndirectStrandBreaks[i][j][4] == 0) { // Checking the algorithm used
+                    algoCheck = 3;
+                }
+
                 StrandBreakOut << std::setw(12) << i
                                << std::setw(11) << fIndirectStrandBreaks[i][j][0]
                                << std::setw(9)  << fIndirectStrandBreaks[i][j][1]
                                << std::setw(11) << fIndirectStrandBreaks[i][j][2]
                                << std::setw(12) << fIndirectStrandBreaks[i][j][3]
-                               << std::setw(10) << 2 << std::endl;          
+                               << std::setw(10) << algoCheck << std::endl;          
             }
         }
     }
@@ -882,6 +887,7 @@ void TsScoreDNADamagePulsed::CheckForIndirectDNABreaks() {
                 thisBreak.push_back(SurvivingMolecules[j].baseID);
                 thisBreak.push_back(SurvivingMolecules[j].strandID);
                 thisBreak.push_back(int(i));
+                thisBreak.push_back(SurvivingMolecules[j].chemAlgo); // Adding identifier for IRT vs. Gillespie
                 fIndirectStrandBreaks[fNbOfIRTRuns].push_back(thisBreak);
             }
             else {
@@ -891,6 +897,7 @@ void TsScoreDNADamagePulsed::CheckForIndirectDNABreaks() {
                 thisBreak.push_back(SurvivingMolecules[j].baseID);
                 thisBreak.push_back(SurvivingMolecules[j].strandID);
                 thisBreak.push_back(int(i));
+                thisBreak.push_back(SurvivingMolecules[j].chemAlgo);
                 std::vector<std::vector<G4int>> tempBreak;
                 tempBreak.push_back(thisBreak);
                 fIndirectStrandBreaks[fNbOfIRTRuns] = tempBreak;

@@ -146,6 +146,8 @@ public:
 		G4int volumeID = -1;
 		G4int baseID   = -1;
 		G4int strandID = -1;
+
+		G4int chemAlgo = -1; // To differentiate IRT from direct Gillespie
 	};
 	
 private:
