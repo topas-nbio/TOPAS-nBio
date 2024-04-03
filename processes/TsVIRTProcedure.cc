@@ -46,8 +46,8 @@ TsVIRTProcedure::TsVIRTProcedure(TsParameterManager* pM, G4String parmName)
 			fHighTimeScavenger = fPm->GetBooleanParameter(GetFullParmName("EnableHighTimeScavengers"));
 		fTimeCut = tmax; 
 	} else {
-		fStepTimes = fUtils->CreateTimeSteps(0.1*ps, 1.0e6*ps, 100, true);
-		fReactionConf->SetTimeLimits(0.1*ps, 1.0e6*ps);
+		fStepTimes = fUtils->CreateTimeSteps(1.0*ps, 1.0e6*ps, 100, true);
+		fReactionConf->SetTimeLimits(1.0*ps, 1.0e6*ps);
 		fTimeCut = 1.0e6*ps;
 	}
 	
