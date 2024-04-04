@@ -204,6 +204,41 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 			G4bool posSensitive = fPm->GetBooleanParameter(aparName.substr(0,aparName.find("Products")-1)+"/PositionSensitive");
 			fReactions[fReactionID-1].positionSensitive = posSensitive;
 		}
+
+		G4int channels = 1;
+		if (fPm->ParameterExists(aparName.substr(0,aparName.find("Products")-1) + "/NumberOfChannels")) {
+			channels = fPm->GetIntegerParameter(aparName.substr(0,aparName.find("Products")-1) + "/NumberOfChannels");
+		}
+
+		if (channels > 1) {
+			fReactions[fReactionID-1].isMultiChannel = true;
+			G4int nbOfChanelWeight  = fPm->GetVectorLength(aparName.substr(0,aparName.find("Products")-1) + "/ChannelWeights");
+			G4double* ChanelWeights = fPm->GetUnitlessVector(aparName.substr(0,aparName.find("Products")-1) + "/ChannelWeights");
+			
+			if (nbOfChanelWeight != channels) {
+				Quit(aparName.substr(0,aparName.find("Products")-1) + "/ChannelWeights", "Number of Elements doesn't match with the number of channels");
+			}
+
+			fReactions[fReactionID-1].productsChannel.push_back(fReactions[fReactionID-1].products);
+			fReactions[fReactionID-1].weightsChannels.push_back(ChanelWeights[0]);
+
+			for (G4int j = 1; j < channels; j++){
+				G4String chanelIndx = G4UIcommand::ConvertToString(j);
+				G4String* productInChannel = fPm->GetStringVector(aparName.substr(0,aparName.find("Products")-1) + "/ProductsInChannel" + chanelIndx);
+				G4int nbProductsInChannel  = fPm->GetVectorLength(aparName.substr(0,aparName.find("Products")-1) + "/ProductsInChannel" + chanelIndx);
+				
+				std::vector<G4int> productsOfChannel;
+				for (G4int k = 0; k < nbProductsInChannel; k++) {
+					productInChannel[k].toLower();
+					QuitIfMoleculeNotFound(productInChannel[k]);
+					productsOfChannel.push_back(fMoleculesID[fExistingMolecules[productInChannel[k]]]);
+				}
+
+				fReactions[fReactionID-1].productsChannel.push_back(productsOfChannel);
+				fReactions[fReactionID-1].weightsChannels.push_back(ChanelWeights[j]);
+				
+			}
+		}
 	}
 	
 	// Declare And Insert Background Reactions
@@ -491,6 +526,33 @@ TsIRTConfiguration::TsMolecularReaction TsIRTConfiguration::GetReaction(G4int in
 		TsMolecularReaction NoReaction;
 		NoReaction.index = -1;
 		return NoReaction;
+	}
+}
+
+std::vector<G4int> TsIRTConfiguration::GetReactionProducts(G4int index) {
+	if (fReactions.count(index) == 1) {
+		if (fReactions[index].isMultiChannel) {
+			//G4cout << "Multichannel Reaction! Is Happening!!" << G4endl;
+			size_t numberOfChannels = fReactions[index].productsChannel.size();
+			G4double prob = G4UniformRand();
+			G4double sumProb = 0;
+
+			for (size_t i = 0; i < fReactions[index].weightsChannels.size(); i++) {
+				sumProb += fReactions[index].weightsChannels[i];
+
+				if (prob < sumProb) {
+					return fReactions[index].productsChannel[i];
+				}
+			}
+			return fReactions[index].productsChannel[numberOfChannels-1];
+		}
+		else {
+			return fReactions[index].products;
+		}
+	}
+	else {
+		std::vector<G4int> NoProducts;
+		return NoProducts;
 	}
 }
 

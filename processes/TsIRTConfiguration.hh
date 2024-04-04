@@ -127,6 +127,11 @@ public:
 		G4double OnsagerRadius;
 		G4double concentration;
 		G4double scavengingCapacity;
+
+		// Multiple Channel Reaction
+		G4bool isMultiChannel = false;
+		std::vector<std::vector<G4int>> productsChannel;
+		std::vector<G4double> weightsChannels;
 	};
 
 	struct TsMolecule {
@@ -250,6 +255,7 @@ public:
 					 G4int iM, G4int jM, G4int indexOfReaction, G4double irt);
 	
 	TsMolecularReaction GetReaction(G4int index);
+	std::vector<G4int> GetReactionProducts(G4int index);
 	std::map<G4int, G4String> GetMoleculeName() {return fMoleculesName;}
 	std::map<G4int, TsIRTConfiguration::TsMolecularReaction> GetReactions() {return fReactions;}
 	

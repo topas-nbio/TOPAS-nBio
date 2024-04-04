@@ -770,7 +770,7 @@ void TsVIRTProcedure::ConductReactions() {
 				
 				binReaction = fReactionConf->GetReaction(indexOfReaction);
 				if (binReaction.index < 0) {continue;}
-				products = binReaction.products;
+				products = fReactionConf->GetReactionProducts(indexOfReaction);//binReaction.products;
 				
 				if ( 0 <= tBin ) {
 					for ( int ti = tBin; ti < (int)fStepTimes.size(); ti++ ) {
@@ -817,7 +817,8 @@ void TsVIRTProcedure::ConductReactions() {
 				
 				binReaction = fReactionConf->GetReaction(indexOfReaction);
 				if (binReaction.index < 0) {continue;}
-				products = binReaction.products;
+				products = fReactionConf->GetReactionProducts(indexOfReaction);//binReaction.products;
+
 				if ( 0 <= tBin ) {
 					for ( int ti = tBin; ti < (int)fStepTimes.size(); ti++ ) {
 						fTheGvalue[fChemicalSpecies[iM].id][ti]--;
