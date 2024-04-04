@@ -85,11 +85,11 @@ def average_results(match_path):
 
    
     ssb = 0.24 * gvalue['OHDeoxyriboseDamaged'][-1,1] +\
-          0.08 * gvalue['HDeoxyriboseDamaged'][-1,1] 
+          0.05 * gvalue['HDeoxyriboseDamaged'][-1,1] 
 
     ssb_err = np.sqrt(\
           (0.24 * gvalue['OHDeoxyriboseDamaged'][-1,2])**2 +\
-          (0.08 * gvalue['OHDeoxyriboseDamaged'][-1,2])**2)
+          (0.05 * gvalue['HDeoxyriboseDamaged'][-1,2])**2)
 
     ssb *= 0.1036         # to umol/J
     ssb_err *= 0.1036     # to umol/J
