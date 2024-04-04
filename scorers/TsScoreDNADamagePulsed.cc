@@ -250,7 +250,6 @@ G4bool TsScoreDNADamagePulsed::ProcessHits(G4Step* aStep, G4TouchableHistory*)
                 if ( fTestIsInside ) {
                     G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
                     const G4String& volumeName = touchable->GetVolume()->GetName();
-
                     if( !G4StrUtil::contains(volumeName,fSensitiveVolume)) {
                         return false;
                     }
@@ -285,9 +284,23 @@ G4bool TsScoreDNADamagePulsed::ProcessHits(G4Step* aStep, G4TouchableHistory*)
                     }
                 }
 
-                else if (!G4StrUtil::contains(vName,"VoxelStraight")) {
+                //else if (!G4StrUtil::contains(vName,"VoxelStraight")) {
+                if (vName == "Plasmids") {
                     fMass = (density * fSolid->GetCubicVolume())/kg;
                 }
+
+                if (fMass == 0) {fMass = fVolume * density;}
+            
+                G4double dose = 0;
+
+                if (fMass > 0) {
+                    dose = (edep/eV)*1.60218e-19 / fMass;
+                }
+                //if (dose > 20*gray) {return false;} 
+
+                fTotalDose += dose;
+                fEnergyDepositPerEvent += edep ;
+                fDosePerPulse += dose;
 
                 if (fTotalDose >= fPrescribedDose/gray) {
                     aStep->GetTrack()->SetTrackStatus(fStopAndKill);
@@ -296,13 +309,8 @@ G4bool TsScoreDNADamagePulsed::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
                 if (fDosePerPulse >= (fPrescribedDose/fNumberOfPulses)/gray) {
                     aStep->GetTrack()->SetTrackStatus(fStopAndKill);
-                    return false;
+                    //return false;
                 }
-
-                G4double dose = (edep/(fSolid->GetCubicVolume()*density))/gray;
-                fTotalDose += dose;
-                fEnergyDepositPerEvent += edep ;
-                fDosePerPulse += dose;
                 return true;
             }
         } 
@@ -639,7 +647,7 @@ void TsScoreDNADamagePulsed::SampleShiftTime() {
 
 
 void TsScoreDNADamagePulsed::RunAndSaveInfo() {
-    G4cout << "Starting Chemistry after " << fNbOfScoredEvents << " primaries" << G4endl;
+    G4cout << "Starting Chemistry after " << fNbOfScoredEvents << " primaries | Dose = " << fTotalDose << " Gy" << G4endl;
     RunChemistry();
     G4int tBin;
     for(size_t t = 0; t < fVEnergyDepositPerEvent.size();t++) {
