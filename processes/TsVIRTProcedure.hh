@@ -19,7 +19,7 @@ public:
 	TsVIRTProcedure(TsParameterManager*, G4String);
 	~TsVIRTProcedure();
 	
-	void runIRT(G4double startTime = -1, G4double finalTime = -1, G4double transTime=-1, G4bool isContinuation=false);
+	virtual void runIRT(G4double startTime = -1, G4double finalTime = -1, G4double transTime=-1, G4bool isContinuation=false) {;}
 	
 	void AddMolecule(TsIRTConfiguration::TsMolecule);
 	void AddMolecule(G4Step*, G4double, G4int, G4ThreeVector);
@@ -28,7 +28,7 @@ public:
 	void AddMolecule(G4Track*, G4double, G4int, G4ThreeVector, G4bool);
 	TsIRTConfiguration::TsMolecule ConstructMolecule(G4Track*, G4double, G4int, G4ThreeVector);
 	
-	void Clean();
+	virtual void Clean() {;}
 	
 	G4bool Inside(G4ThreeVector);
 	
@@ -46,7 +46,7 @@ public:
 	
 	std::vector<G4String> GetProducts(G4int);
 
-	std::vector<G4int> GetSurvivingMolecules();
+	std::vector<G4int> GetSurvivingMolecules(G4int parentID=-1);
 	std::vector<TsIRTConfiguration::TsMolecule> GetSurvivingMoleculesWithMolID(G4int);
 
 	inline TsIRTConfiguration* GetIRTConfiguration() {return fReactionConf;}
@@ -58,12 +58,12 @@ public:
 	std::map<G4int,G4int> GetEscapeYields();
 	std::map<G4int,G4int> GetDeltaYields();
 
-	void SetContainersForNextPulse() {;}
+	virtual void SetContainersForNextPulse() {;}
 
-private:
+protected:
 	void initializeScorers();
 	void FindBinIndexes(G4ThreeVector thisPos, G4double rcutOff);
-	void contactReactions(G4int i,std::unordered_map<G4int, G4bool> j);
+	virtual void contactReactions(G4int i,std::unordered_map<G4int, G4bool> j) {;}
 	void sampleReactions(G4int i);
 	G4String GetFullParmName(G4String name);
 
@@ -71,18 +71,17 @@ private:
 	void TestForContactReactions();
 	void SampleIndependantReactionTimes();
 	void SortIndependantReactionTimes();
-	void ConductReactions();
-	void CleanIRTVariables();
+	virtual void ConductReactions() {;}
+	virtual void CleanIRTVariables() {;}
 	void UpdateGValues();
 	void AddToIRT(G4double Time, G4int Reaction, G4int molA, G4int molB, G4double OrigTime, G4ThreeVector aPos, G4ThreeVector bPos, G4bool isBack);
 	void AddIRTinAscendantOrder(G4double Time);
 	void RemoveFirstIRTElement();
-	void RemoveMolecule(G4int Index);
+	virtual void RemoveMolecule(G4int Index) {;}
 	G4int CountSurvivingMolecules();
 	G4bool MoleculeExists(G4int Index);
 
-private:
-	
+protected:
 	TsParameterManager* fPm;
 	TsIRTConfiguration* fReactionConf;
 	TsIRTUtils* fUtils;
