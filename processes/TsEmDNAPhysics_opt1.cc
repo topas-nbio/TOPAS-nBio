@@ -12,7 +12,8 @@
 
 #include "G4DNAElectronSolvation.hh"
 #include "G4DNAElastic.hh"
-#include "G4DNAELSEPAElasticModel.hh"
+//#include "G4DNAELSEPAElasticModel.hh"
+#include "TsDNAELSEPAElasticModel.hh"
 #include "G4DNAChampionElasticModel.hh"
 #include "G4DNAScreenedRutherfordElasticModel.hh"
 #include "G4DNAMillerGreenExcitationModel.hh"
@@ -155,7 +156,7 @@ void TsEmDNAPhysics_opt1::ConstructProcess()
                
 	    } else if ( eScatteringModel == "elsepa" ) {
 		G4DNAElastic* theDNAElasticProcess = new G4DNAElastic("e-_G4DNAElastic");
-		theDNAElasticProcess->SetEmModel(new G4DNAELSEPAElasticModel());
+		theDNAElasticProcess->SetEmModel(new TsDNAELSEPAElasticModel());
 		ph->RegisterProcess(theDNAElasticProcess, particle);
 		solvationHighLimit = 7.4 * eV;
 
