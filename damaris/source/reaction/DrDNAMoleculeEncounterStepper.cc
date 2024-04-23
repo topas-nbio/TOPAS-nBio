@@ -66,6 +66,8 @@ DrDNAMoleculeEncounterStepper::DrDNAMoleculeEncounterStepper()
         , fReactionModel(nullptr)
         , fVerbose(0)
 {
+    fpTrackContainer = G4ITTrackHolder::Instance();
+    fReactionSet = G4ITReactionSet::Instance();
 }
 
 DrDNAMoleculeEncounterStepper::~DrDNAMoleculeEncounterStepper() = default;

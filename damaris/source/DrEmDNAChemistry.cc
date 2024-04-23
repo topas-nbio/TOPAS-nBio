@@ -557,22 +557,24 @@ void DrEmDNAChemistry::ConstructReactionTable(
         G4DNAMolecularReactionTable *theReactionTable) {
     //-----------------------------------
     //Get the molecular configuration
-    G4MolecularConfiguration* OH = G4MoleculeTable::Instance()->GetConfiguration("OH");
-    G4MolecularConfiguration* OHm = G4MoleculeTable::Instance()->GetConfiguration("OHm");
+    G4MolecularConfiguration* OH   = G4MoleculeTable::Instance()->GetConfiguration("OH");
+    G4MolecularConfiguration* OHm  = G4MoleculeTable::Instance()->GetConfiguration("OHm");
     G4MolecularConfiguration* e_aq = G4MoleculeTable::Instance()->GetConfiguration("e_aq");
-    G4MolecularConfiguration* H2 = G4MoleculeTable::Instance()->GetConfiguration("H2");
+    G4MolecularConfiguration* H2   = G4MoleculeTable::Instance()->GetConfiguration("H2");
     G4MolecularConfiguration* H3Op = G4MoleculeTable::Instance()->GetConfiguration("H3Op");
-    G4MolecularConfiguration* H = G4MoleculeTable::Instance()->GetConfiguration("H");
+    G4MolecularConfiguration* H    = G4MoleculeTable::Instance()->GetConfiguration("H");
     G4MolecularConfiguration* H2O2 = G4MoleculeTable::Instance()->GetConfiguration("H2O2");
+    //G4MolecularConfiguration* Oxy  = G4MoleculeTable::Instance()->GetConfiguration("Oxy");
 
     std::map<G4String, G4MolecularConfiguration*> reactions;
-    reactions["OH"] = OH;
-    reactions["OHm"] = OHm;
-    reactions["e_aq"] = e_aq;
-    reactions["H2"] = H2;
-    reactions["H3Op"] = H3Op;
-    reactions["H"] = H;
-    reactions["H2O2"] = H2O2;
+    reactions["OH"]    = OH;
+    reactions["OHm"]   = OHm;
+    reactions["e_aq"]  = e_aq;
+    reactions["H2"]    = H2;
+    reactions["H3Op"]  = H3Op;
+    reactions["H"]     = H;
+    reactions["H2O2"]  = H2O2;
+    //reactions["Oxy"] = Oxy;
 
     if ( fSetWaterConfiguration ) {
         G4MolecularConfiguration* H2O = G4MoleculeTable::Instance()->GetConfiguration("H2O");
@@ -581,14 +583,15 @@ void DrEmDNAChemistry::ConstructReactionTable(
 
     G4DNAMolecularReactionData* reactionData;
     for ( size_t t = 0; t < fReactionSpecies.size(); t++ ) {
-
-        reactionData = new G4DNAMolecularReactionData(fReactionRates[t] * (1e-3 * m3 / (mole * s)), reactions[fReactionSpecies[t][0]], reactions[fReactionSpecies[t][1]]);
+        reactionData = new G4DNAMolecularReactionData(fReactionRates[t], reactions[fReactionSpecies[t][0]], reactions[fReactionSpecies[t][1]]);
+        G4int reactionType = 1;
+        reactionData->SetReactionID(reactionType);
 
         for ( size_t u = 0; u < fReactionProducts[t].size(); u++ ) {
-            if ( "noproduct" != fReactionProducts[t][u] ) // This comparison crashes if the order is fReactionProducts[t][u] != "noproduct"
+            if ( "none" != fReactionProducts[t][u] ) // This comparison crashes if the order is fReactionProducts[t][u] != "none"
                 reactionData->AddProduct(reactions[ fReactionProducts[t][u] ] );
         }
-
+        std::cout << " Re-set reaction kobs to : " << fReactionRates[t]/(1e-3*m3/(mole*s)) << "/M/s" << std::endl;
         theReactionTable->SetReaction(reactionData);
     }
 
@@ -609,7 +612,7 @@ void DrEmDNAChemistry::ConstructReactionTable(
             reactionRate = 4 * pi * Avogadro * reactionRadius * reactant1->GetDiffusionCoefficient();
         }
         reactionData = new G4DNAMolecularReactionData(reactionRate, reactant1, reactant2);
-        reactionData->AddProduct(product);
+        reactionData->SetReactionType(1);
         theReactionTable->SetReaction(reactionData);
     }
     //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
