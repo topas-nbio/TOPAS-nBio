@@ -612,6 +612,7 @@ void DrEmDNAChemistry::ConstructReactionTable(
             reactionRate = 4 * pi * Avogadro * reactionRadius * reactant1->GetDiffusionCoefficient();
         }
         reactionData = new G4DNAMolecularReactionData(reactionRate, reactant1, reactant2);
+        reactionData->AddProduct(product)git add 
         reactionData->SetReactionType(1);
         theReactionTable->SetReaction(reactionData);
     }
