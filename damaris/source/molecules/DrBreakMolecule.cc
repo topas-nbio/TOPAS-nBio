@@ -21,6 +21,7 @@ DrBreakMolecule::DrBreakMolecule():G4VAuxiliaryTrackInformation(), fIsWaiting(tr
 	sBreakEndA = new breakInformation();
 	sBreakEndB = new breakInformation();
 }
+
 DrBreakMolecule::~DrBreakMolecule(){}
 
 DrBreakMolecule& DrBreakMolecule::operator =(const DrBreakMolecule& rhs){
