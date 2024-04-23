@@ -118,7 +118,6 @@ TsDNAELSEPAElasticModel::~TsDNAELSEPAElasticModel()
 {
   delete fpData_Au;
   delete fpData_H2O;
-  delete fpBaseWater;
 
   eEdummyVec_Au.clear();
   eEdummyVec_H2O.clear();
