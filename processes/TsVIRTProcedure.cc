@@ -150,6 +150,7 @@ void TsVIRTProcedure::AddMolecule(TsIRTConfiguration::TsMolecule aMol) {
 
 	G4ThreeVector position = aMol.position;
 	
+	fSpeciesOfAKind[aMol.id][fSpeciesIndex] = true;
 	fConcentrations[aMol.id]++;
 	fChemicalSpecies[fSpeciesIndex] = aMol;
 	fSpeciesIndex++;

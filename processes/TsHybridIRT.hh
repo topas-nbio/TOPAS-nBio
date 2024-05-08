@@ -19,7 +19,7 @@ class TsHybridIRT : public TsVIRTProcedure {
 public:
 	TsHybridIRT(TsParameterManager*, G4String);
 	~TsHybridIRT();
-	
+
 	void runIRT(G4double startTime = -1, G4double finalTime = -1, G4double transTime=-1, G4bool isContinuation=false) override;
 	void Clean() override;
 
@@ -61,7 +61,6 @@ protected:
 	G4bool fUseVariableBackground;
 	G4double fCubicVolume;
 	std::unordered_map<G4int,G4double> fPropensityAtThisTime;
-	std::unordered_map<G4int,std::unordered_map<G4int,G4bool>> fSpeciesOfAKind;
 	std::unordered_map<G4int,std::vector<G4int>> fConcentrationsAtThisTime;
 	std::unordered_map<G4int,G4int> fHomogeneousConcentrations;
 	std::unordered_map<G4int,G4int> fInitialBackgroundConcentrations;
