@@ -613,7 +613,6 @@ void DrEmDNAChemistry::ConstructReactionTable(
         }
         reactionData = new G4DNAMolecularReactionData(reactionRate, reactant1, reactant2);
         reactionData->AddProduct(product);
-        reactionData->SetReactionType(1);
         theReactionTable->SetReaction(reactionData);
     }
     //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

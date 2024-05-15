@@ -31,11 +31,7 @@ DrDNASmoluchowskiReactionModel::DrDNASmoluchowskiReactionModel()
 
 DrDNASmoluchowskiReactionModel::~DrDNASmoluchowskiReactionModel() = default;
 
-G4double DrDNASmoluchowskiReactionModel::GetReactionRadius(const G4int&) {
-    return 0;
-}
-
-G4double DrDNASmoluchowskiReactionModel::GetReactionRadius(const G4int __i)
+G4double DrDNASmoluchowskiReactionModel::GetReactionRadius(const G4int& __i)
 {
     G4double __output = (*fpReactionData)[__i]->GetEffectiveReactionRadius();
     return __output;

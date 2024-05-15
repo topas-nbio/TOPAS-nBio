@@ -95,6 +95,8 @@ std::unique_ptr<G4ITReactionChange> DrDNAMolecularReaction::MakeReaction(const G
 
             productTrack->SetTrackStatus(fAlive);
 
+            G4ITTrackHolder::Instance()->Push(productTrack);
+
             pChanges->AddSecondary(productTrack);
             G4MoleculeFinder::Instance()->Push(productTrack);
         }

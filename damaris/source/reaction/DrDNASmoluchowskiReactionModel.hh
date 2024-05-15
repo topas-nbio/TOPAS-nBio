@@ -42,7 +42,6 @@ public :
     G4double GetReactionRadius(const G4MolecularConfiguration*,
                                const G4MolecularConfiguration*) override;
 
-    G4double GetReactionRadius(const G4int);
     G4double GetReactionRadius(const G4int&) override;
 
     G4bool FindReaction(const G4Track&,
