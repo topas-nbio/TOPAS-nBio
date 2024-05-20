@@ -64,7 +64,7 @@ protected:
 	void initializeScorers();
 	void FindBinIndexes(G4ThreeVector thisPos, G4double rcutOff);
 	virtual void contactReactions(G4int i,std::unordered_map<G4int, G4bool> j) {;}
-	void sampleReactions(G4int i);
+	virtual void sampleReactions(G4int i);
 	G4String GetFullParmName(G4String name);
 
 	void VoxelizeAndSortSpace();

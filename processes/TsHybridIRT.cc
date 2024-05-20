@@ -252,7 +252,7 @@ void TsHybridIRT::contactReactions(G4int i,std::unordered_map<G4int, G4bool> use
 
 void TsHybridIRT::runIRT(G4double startTime, G4double finalTime, G4double transTime, G4bool isContinuation) {
 	G4String component = fPm->GetStringParameter(GetFullParmName("Component"));
-	fCubicVolume = 1000 * G4LogicalVolumeStore::GetInstance()->GetVolume(component,false)->GetSolid()->GetCubicVolume() / (m3);
+	fCubicVolume = 1000 * G4LogicalVolumeStore::GetInstance()->GetVolume(component,false)->GetSolid()->GetCubicVolume() / m3;
 
 	fMinTime = 0;
 	fTimeCut = fStepTimes[fStepTimes.size()-1];
@@ -284,6 +284,98 @@ void TsHybridIRT::runIRT(G4double startTime, G4double finalTime, G4double transT
 	UpdateGValues();
 }
 
+void TsHybridIRT::sampleReactions(G4int i) {
+	if ( !MoleculeExists(i) )
+		return;
+	
+	if ( fChemicalSpecies[i].isDNA )
+		return;
+	
+	if ( !fChemicalSpecies[i].isNew )
+		return;
+
+	G4ThreeVector thisPos = fChemicalSpecies[i].position;
+
+	FindBinIndexes(thisPos, fRCutOff);
+
+	fUsed[i] = true;
+	for ( int ii = fxiniIndex; ii <= fxendIndex; ii++ ) {
+		for ( int jj = fyiniIndex; jj <= fyendIndex; jj++ ) {
+			for ( int kk = fziniIndex; kk <= fzendIndex; kk++ ) {
+				for (auto& IndexAndAlive:fSpaceBinned[ii][jj][kk]) {
+					G4int j = IndexAndAlive.first;
+					
+					if ( !MoleculeExists(j) || (fUsed[j] && fSampleIRTatStart))
+						continue;
+
+					if ( !fChemicalSpecies[j].isNew )
+						return;
+
+					if (j == i) continue;
+
+					G4int indexOfReaction = fReactionConf->GetReactionIndex(fChemicalSpecies[i].id,
+																			fChemicalSpecies[j].id);
+					if( -1 < indexOfReaction ) {
+						G4double timeI = fChemicalSpecies[i].time;
+						G4double timeJ = fChemicalSpecies[j].time;
+						G4double dt = fChemicalSpecies[i].time - timeJ;
+						// if ( dt < 0 ) continue; // No efect if all initial times are the same, but affects for flash
+						
+						G4ThreeVector origPositionI = fChemicalSpecies[i].position;
+						G4ThreeVector origPositionJ = fChemicalSpecies[j].position;
+						G4bool resampleA = false, resampleB = false;
+						if ( 0 < dt ) {
+							fReactionConf->Diffuse(fChemicalSpecies[j],dt);
+							resampleB = true;
+						}
+						
+						if ( 0 > dt ) {
+							fReactionConf->Diffuse(fChemicalSpecies[i],-dt);
+							resampleA = true;
+						}
+						
+						G4double irt = fReactionConf->GetIndependentReactionTime(fChemicalSpecies[i],
+																				 fChemicalSpecies[j],
+																				 indexOfReaction);
+						G4double gTime = fChemicalSpecies[i].time;
+
+						if ( (0 < irt) && (irt + gTime <= fTimeCut) && (fMinTime <= irt + gTime)) {
+							irt += gTime;
+							AddToIRT(irt,indexOfReaction,i,j,fChemicalSpecies[i].time,fChemicalSpecies[i].position,fChemicalSpecies[j].position,false);
+							
+						}
+						
+						if ( resampleB ) {
+							fChemicalSpecies[j].position = origPositionJ;
+							fChemicalSpecies[j].time = timeJ;
+						}
+						
+						if ( resampleA ) {
+							fChemicalSpecies[i].position = origPositionI;
+							fChemicalSpecies[i].time = timeI;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	/*
+	std::pair<G4int, G4double> tnIscav = fReactionConf->SampleIRTFirstOrderAndBackgroundReactions(fChemicalSpecies[i]);
+	G4double tscav = tnIscav.second;
+	G4double gTime = fChemicalSpecies[i].time;
+
+	if (gTime + tscav < fMinTime) {
+		gTime = fMinTime;
+	}
+
+	if ((fHighTimeScavenger && 0 < tscav) && (tscav+gTime <= fTimeCut)) {
+		tscav += gTime;
+		AddToIRT(tscav,tnIscav.first,i,i,fChemicalSpecies[i].time,fChemicalSpecies[i].position,fChemicalSpecies[i].position,true);
+	}
+	*/
+}
+
 
 void TsHybridIRT::ConductReactions() {
 	fSampleIRTatStart = false;
@@ -312,7 +404,7 @@ void TsHybridIRT::ConductReactions() {
 		if ((fHomogeneousTimeStep + currentTime < irt)      &&
 			(fHomogeneousTimeStep + currentTime < fTimeCut) &&
 			(fHomogeneousReactIndex >= 0)) {
-			G4bool Success = DoGillespieDirect(fHomogeneousTimeStep+currentTime);
+			G4bool Success = DoGillespieDirect(fHomogeneousTimeStep+currentTime,false);
 			if (Success) {
 				currentTime  += fHomogeneousTimeStep;
 				continue;
@@ -476,6 +568,7 @@ void TsHybridIRT::ConductReactions() {
 						sampleReactions(fContactProducts[jProds]);
 					}
 				}
+
 			}
 		} else {
 			break;
@@ -510,15 +603,17 @@ void TsHybridIRT::ConductReactions() {
 	}
 
 	else {
+		G4int Tries = 0;
 		while (currentTime < fTimeCut) {
 			UpdateGillespieDirect(currentTime);
-			if ((fHomogeneousTimeStep + currentTime < fTimeCut) && (fHomogeneousReactIndex >= 0)) {
-				G4bool Success = DoGillespieDirect(fHomogeneousTimeStep+currentTime);
-				if (Success) {
-					currentTime  += fHomogeneousTimeStep;
-					continue;
-				}
+			G4bool Success = DoGillespieDirect(fHomogeneousTimeStep+currentTime,true);
+			if (Success) {
+				currentTime  += fHomogeneousTimeStep;
+				Tries = 0; 
+				continue;
 			}
+			else {Tries++;}
+			if (Tries == 100) {break;}
 		}
 	}
 }
@@ -569,14 +664,14 @@ void TsHybridIRT::RemoveMolecule(G4int Index) {
 	}
 }
 
+
 void TsHybridIRT::UpdateGillespieDirect(G4double time) {
 	// Update Propensities
 	fHomogeneousReactIndex     = -1;
 	fHomogeneousTimeStep       = -1;
 	fTotalPropensityAtThisTime = 0;
 
-	G4double M = 1.0e3*mole/(m*m*m);
-	//G4double fCubicVolume = 27E-15;
+	G4double M = fPm->GetUnitValue("M");
 
 	std::map<G4int, TsIRTConfiguration::TsMolecularReaction> reactions = fReactionConf->GetReactions();
 	std::map<G4int,G4String> MolNames = fReactionConf->GetMoleculeNames();
@@ -600,8 +695,9 @@ void TsHybridIRT::UpdateGillespieDirect(G4double time) {
 		G4int type    = reaction.reactionType;
 		G4int reactA  = reaction.reactorA;
 		G4int reactB  = reaction.reactorB;
-		G4double kobs = reaction.kobs * M / (6.022e23 * fCubicVolume);
+		G4double kobs = reaction.kobs * M * s / (6.022e23 * fCubicVolume);
 		G4double concentration = reaction.concentration * 6.022e23 * fCubicVolume / M;
+		G4double scavCap = IndexAndReaction.second.scavengingCapacity * s;
 
 		G4int TotalReactA = fConcentrationsAtThisTime[reactA].size() + fHomogeneousConcentrations[reactA];
 		G4int TotalReactB = fConcentrationsAtThisTime[reactB].size() + fHomogeneousConcentrations[reactB];
@@ -616,15 +712,16 @@ void TsHybridIRT::UpdateGillespieDirect(G4double time) {
 		}
 		else {
 			if (concentration > 0) {
-				fPropensityAtThisTime[Index] = kobs * TotalReactA * concentration;
+				fPropensityAtThisTime[Index] = TotalReactA * scavCap;
 			}
 			else {
-				fPropensityAtThisTime[Index] = kobs * TotalReactA * (6.022e23 * fCubicVolume);
+				fPropensityAtThisTime[Index] = scavCap * TotalReactA;
 			}
 		}
 
-		if (fPropensityAtThisTime[Index] >= 0)
+		if (fPropensityAtThisTime[Index] >= 0 && !std::isnan(fPropensityAtThisTime[Index])) {
 			fTotalPropensityAtThisTime  += fPropensityAtThisTime[Index];
+		}
 	}
 
 	if (fTotalPropensityAtThisTime <= 0) {
@@ -641,40 +738,52 @@ void TsHybridIRT::UpdateGillespieDirect(G4double time) {
 			PartialProp += fPropensityAtThisTime[Index];
 
 		if (PartialProp > rand * fTotalPropensityAtThisTime) {
-			fHomogeneousReactIndex = Index;
-			fHomogeneousTimeStep   = (1.0/fTotalPropensityAtThisTime) * std::log(1.0 / G4UniformRand());
+			fHomogeneousReactIndex  = Index;
+			fHomogeneousTimeStep = (-std::log(G4UniformRand())/fTotalPropensityAtThisTime)*s;
+			GetGillespieDirectReactants(fHomogeneousTimeStep+time);
 			return;
 		}
 	}
 }
 
 
-G4bool TsHybridIRT::DoGillespieDirect(G4double currentTime) {
+void TsHybridIRT::GetGillespieDirectReactants(G4double currentTime) {
 	TsIRTConfiguration::TsMolecularReaction reaction = fReactionConf->GetReaction(fHomogeneousReactIndex);
+	G4bool Random = !reaction.positionSensitive;
 	G4int ReactA  = reaction.reactorA;
 	G4int ReactB  = reaction.reactorB;
 	G4int Type    = reaction.reactionType;
-	G4bool Random = !reaction.positionSensitive;
-	std::vector<G4int> Products = reaction.products;
-	G4int tBin = fUtils->FindBin(currentTime, fStepTimes);
-
-	// Find the reactors
-	G4int IndexA = -1;
-	G4int IndexB = -1;
+	fGillespieIndexA = -1;
+	fGillespieIndexB = -1;
 
 	// Random: Faster but less detailed, perfect for concentration aimed studies
 	// Distance based: Slower but offers more detail, perfect for position sensitive studies like DNA damage
 	if (Random) {
-		IndexA = ChooseReactantRandomly(fConcentrationsAtThisTime[ReactA],fHomogeneousConcentrations[ReactA],currentTime);
+		fGillespieIndexA = ChooseReactantRandomly(fConcentrationsAtThisTime[ReactA],fHomogeneousConcentrations[ReactA],currentTime);
 		if (Type != 6) {
-			IndexB = ChooseReactantRandomly(fConcentrationsAtThisTime[ReactB],fHomogeneousConcentrations[ReactB],currentTime);
+			fGillespieIndexB = ChooseReactantRandomly(fConcentrationsAtThisTime[ReactB],fHomogeneousConcentrations[ReactB],currentTime);
 		}
 	}
 	else {
 		std::pair<G4int, G4int> Reactants = ChooseReactantsBasedOnDistance(fConcentrationsAtThisTime[ReactA],fConcentrationsAtThisTime[ReactB],fHomogeneousConcentrations[ReactA],fHomogeneousConcentrations[ReactB],Type,currentTime);
-		IndexA = Reactants.first;
-		IndexB = Reactants.second;
+		fGillespieIndexA = Reactants.first;
+		fGillespieIndexB = Reactants.second;
 	}
+}
+
+
+G4bool TsHybridIRT::DoGillespieDirect(G4double currentTime, G4bool isHomogeneous) {
+	TsIRTConfiguration::TsMolecularReaction reaction = fReactionConf->GetReaction(fHomogeneousReactIndex);
+	G4int ReactA  = reaction.reactorA;
+	G4int ReactB  = reaction.reactorB;
+	G4int Type    = reaction.reactionType;
+	G4bool Random = isHomogeneous;//!reaction.positionSensitive;
+	std::vector<G4int> Products = reaction.products;
+	G4int tBin = fUtils->FindBin(currentTime, fStepTimes);
+
+	// Find the reactors
+	G4int IndexA = fGillespieIndexA;
+	G4int IndexB = fGillespieIndexB;
 
 	// Check if the reaction is Possible
 	if ((IndexA == -1 || IndexB == -1) && Type != 6) {return false;}
@@ -768,7 +877,25 @@ G4bool TsHybridIRT::DoGillespieDirect(G4double currentTime) {
 			fSpaceBinned[I][J][K][fSpeciesIndex] = true;
 			fChemicalSpecies[fSpeciesIndex]      = aProd;
 			fSpeciesOfAKind[Products[u]][fSpeciesIndex] = true;
+			G4int newID = fSpeciesIndex;
 			fSpeciesIndex++;
+
+
+			if (!isHomogeneous) {
+				std::unordered_map<G4int, G4bool> emptyUsed;
+				contactReactions(newID,emptyUsed);
+				if (!fReactedByContact) {
+					// Sample the New Molecule if it didn't reacted by contact
+					sampleReactions(newID);
+				}
+				else {
+					// Sample the products of the Molecule
+					for (size_t jProds = 0; jProds < fContactProducts.size(); jProds++) {
+						sampleReactions(fContactProducts[jProds]);
+					}
+				}
+			}
+
 		}
 		else {
 			fHomogeneousConcentrations[Products[u]]++;
@@ -790,7 +917,7 @@ void TsHybridIRT::UpdateGillespieTauLeaping(G4double time) {
 	G4double eps = 0.03;
 
 	// Retrieve Reaction Information
-	G4double M = 1.0e3*mole/(m*m*m);
+	G4double M = fPm->GetUnitValue("M");//1.0e3*mole/(m*m*m);
 	//G4int tBin = fUtils->FindBin(time, fStepTimes);
 
 	std::map<G4int, TsIRTConfiguration::TsMolecularReaction> reactions = fReactionConf->GetReactions();
@@ -815,8 +942,9 @@ void TsHybridIRT::UpdateGillespieTauLeaping(G4double time) {
 
 		G4double OrderOfReaction = 0;
 		std::vector<G4int> prods = IndexAndReaction.second.products;
-		G4double kobs = IndexAndReaction.second.kobs * (M*s) / (6.022e23 * fCubicVolume);
+		G4double kobs = IndexAndReaction.second.kobs * (M) / (6.022e23 * fCubicVolume);
 		G4double concentration = IndexAndReaction.second.concentration * 6.022e23 * fCubicVolume / M;
+		G4double scavCap = IndexAndReaction.second.scavengingCapacity;
 
 		G4double partialProp = 0;
 		G4int vij = 1;
@@ -833,12 +961,14 @@ void TsHybridIRT::UpdateGillespieTauLeaping(G4double time) {
 			}
 		}
 		else {
-			if (concentration > 0) {
-				partialProp = kobs * concentrationA * concentration;
+			//if (concentration > 0) {
+			if (scavCap > 0) {
+				partialProp = concentrationA * scavCap;
 				OrderOfReaction = 2;
 			}
 			else {
-				partialProp = kobs * concentrationA * (6.022e23 * fCubicVolume);
+				//partialProp = kobs * concentrationA * (6.022e23 * fCubicVolume);
+				partialProp = scavCap*concentrationA;
 				OrderOfReaction = 1;
 			}
 		}
@@ -902,7 +1032,7 @@ void TsHybridIRT::UpdateGillespieTauLeaping(G4double time) {
 		if (Tau > fMinForMolecule[Index]) { Tau = fMinForMolecule[Index]; }
 	}
 
-	Tau *= 3.5;
+	//Tau *= 3.5;
 
 	// Calculate Changes By Reactions
 	for (auto& IndexAndReaction:reactions) {
@@ -925,7 +1055,7 @@ void TsHybridIRT::UpdateGillespieTauLeaping(G4double time) {
 		fTotalChanges += fChangesForMolecule[Index];
 	}
 
-	fHomogeneousTimeStep = Tau*s;
+	fHomogeneousTimeStep = Tau;
 }
 
 
