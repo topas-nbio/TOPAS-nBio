@@ -55,7 +55,7 @@ TsIRT::TsIRT(TsParameterManager* pM, G4String parmName)
 	if (fPm->ParameterExists(GetFullParmName("UseScaledProbabilityForSpinBehavior")))
 		fUseSpinScaled = fPm->GetBooleanParameter(GetFullParmName("UseScaledProbabilityForSpinBehavior"));
 	
-	G4cout << "\n -------------- TOPAS IRT Warning -------------" << G4endl;
+	G4cout << "\n -------------- OpenTOPAS-nBio IRT Warning -------------" << G4endl;
 	
 	if ( fUseSpinScaled )
 		G4cout << " -- SpinBehavior is ScaledProbability" << G4endl;
