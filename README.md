@@ -54,7 +54,7 @@ Follow [installation for MacOS](https://opentopas.readthedocs.io/en/latest/getti
 
 Clone the repository:
 
-    $ git clone https://github.com/OpenTOPAS/OpenTOPAS-RBE.git
+    $ git clone https://github.com/topas-nbio/TOPAS-nBio.git
 
 Return to the OpenTopas-build directory:
 
