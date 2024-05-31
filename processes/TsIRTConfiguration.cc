@@ -840,7 +840,6 @@ void TsIRTConfiguration::ResolveRemainerReactionParameters() {
 				G4double kact = activationReactionRate/fPm->GetUnitValue("/M/s");
 				G4double r = reactionRadius/nm;
 				G4double reff = effectiveReactionRadius/nm;
-				// G4double v = 0.93*kact/(4 * CLHEP::pi * std::pow(reff,2)*6.022140857e-1);
 				G4double v = kact * exp(rc/r) / (4 * CLHEP::pi * std::pow(r,2) * 6.022140857e-1);
 
 				sumDiffCoeff /= nm*nm/s;
@@ -890,18 +889,20 @@ void TsIRTConfiguration::CalculateContactProbabilities() {
 		} else if ( reactionType == 2 || reactionType == 4 ){
 			G4double Rs = 0.29 * nm;
 			G4double diffusionReactionRate = fReactions[i].kdif;
-			G4double activationReactionRate = fReactions[i].kact;
+			G4double observedReactionRate = fReactions[i].kobs;
 			G4double rc = GetOnsagerRadius(molA, molB);
 			
-			G4double effectiveReactionRadius = -rc / (1-exp(rc /
-															(fMoleculesDefinition[molA].radius + fMoleculesDefinition[molB].radius)));
-			
-			if ( reactionType == 2 )
-				probability =  Rs / (Rs + (diffusionReactionRate / activationReactionRate) *
-									 ((fMoleculesDefinition[molA].radius + fMoleculesDefinition[molB].radius) + Rs));
-			else
-				probability = Rs / (Rs + (diffusionReactionRate / activationReactionRate) * (effectiveReactionRadius + Rs));
-			
+			G4double sigmaEff = fMoleculesDefinition[molA].radius + fMoleculesDefinition[molB].radius;
+			G4double sigmaEffRs = fMoleculesDefinition[molA].radius + fMoleculesDefinition[molB].radius + Rs;
+
+			if(reactionType == 4){
+				sigmaEff = -rc / (1-exp(rc /sigmaEff));
+				sigmaEffRs = -rc / (1-exp(rc /sigmaEffRs));
+			}
+
+			probability = observedReactionRate / diffusionReactionRate * ((1 - (sigmaEff/sigmaEffRs))
+					/(1 - observedReactionRate / diffusionReactionRate * sigmaEff/sigmaEffRs));	
+
 		} else {
 			continue;
 		}
@@ -1868,32 +1869,6 @@ G4double TsIRTConfiguration::SampleIRTPartiallyDiffusionControlled(TsMolecule mo
     }
 
 	return -1;
-/*
-	G4double r0 = (molA.position-molB.position).mag();
-	
-	G4double irt, prob = 0.0;
-	if ( fReactions[indexOfReaction].reactionType == 2 ) {
-		// From paper Plante 2017, Considerations for ...
-		G4double alpha = -(fReactions[indexOfReaction]).alpha;
-		G4double sigma = (fReactions[indexOfReaction]).effectiveReactionRadius;
-		G4double D = fMoleculesDefinition[molA.id].diffusionCoefficient + fMoleculesDefinition[molB.id].diffusionCoefficient;
-		irt = fUtils->SampleTypeII(alpha, sigma, r0, D);
-		
-	} else {
-		G4double rc = (fReactions[indexOfReaction]).OnsagerRadius;
-		G4double reff = -rc/(1 - std::exp(rc/r0));
-		G4double sigmaEffEff = (fReactions[indexOfReaction]).effectiveTildeReactionRadius;
-		
-		G4double Winf = sigmaEffEff/reff;
-		G4double W = G4UniformRand();
-		if ( W < Winf ) {
-			irt = brents_fun(molA, molB, indexOfReaction, -W);
-			prob = W;
-		} else {
-			irt = -1.0*ps;
-		}
-	}
-	return irt;*/
 }
 
 
@@ -1934,15 +1909,16 @@ G4int  TsIRTConfiguration::ContactFirstOrderAndBackgroundReactions(TsMolecule mo
 	//Pimblott S M, 1991 Stochastic models of spur kinetics in water. International Journal of Radiation Applications and Instrumentation. Part 37 377–88
 	for ( size_t v = 0; v < sizeIndex; v++ ) {
 		size_t u = index[v];
-		G4double R  = fMoleculesDefinition[pdgA].radius;
+		G4double R  = fMoleculesDefinition[pdgA].radius/nm;
 		G4double R3 = R*R*R;
 		G4double Cs = fReactions[u].concentration/fPm->GetUnitValue("M");
 		if (Cs > 50) {continue;}          // No Contact Reactions with water molecules
-		Cs /= 6.022140857e-1*(nm*nm*nm);  // nm3 to M multiply by 10^-24 Nav = 6.02214076×10^23x10^-24 = 0.602214076
+		Cs *= 6.022140857e-1;  // nm3 to M multiply by 10^-24 Nav = 6.02214076×10^23x10^-24 = 0.602214076
 		G4double prob1 = std::exp(-1.33333333*CLHEP::pi*R3*Cs);
+
 		if ( G4UniformRand() < 1. - prob1 ) {
 			return (int)u;
-	}
+		}
 	}
 	
 	return -1;
