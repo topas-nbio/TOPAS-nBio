@@ -53,7 +53,7 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
     fPrescribedDose = fPm->GetDoubleParameter(GetFullParmName("PrescribedDose"),"Dose");
 
     fTimeDistribution = fPm->GetStringParameter(GetFullParmName("PulseDistribution"));
-    fTimeDistribution.toLower();
+    G4StrUtil::to_lower(fTimeDistribution);
 
     fNumberOfPulses = 1;
     if ( fPm->ParameterExists(GetFullParmName("NumberOfPulses")) ) {
@@ -160,7 +160,7 @@ G4bool TsScoreWithIRTCummulative::ProcessHits(G4Step* aStep, G4TouchableHistory*
             if ( fTestIsInside ) {
                 G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
                 const G4String& volumeName = touchable->GetVolume()->GetName();
-                if( !volumeName.contains(fSensitiveVolume)) {
+                if( !G4StrUtil::contains(volumeName,fSensitiveVolume)) {
                     return false;
                 }
             }
@@ -234,7 +234,7 @@ void TsScoreWithIRTCummulative::UserHookForPreTimeStepAction() {
         for(;it_begin!=it_end;++it_begin){
             if ( fTestIsInside ) {
                 const G4String& volumeName = (*it_begin)->GetVolume()->GetName();
-                if ( volumeName.contains(fSensitiveVolume) ) {
+                if ( G4StrUtil::contains(volumeName,fSensitiveVolume) ) {
                     G4double time = fShiftTime;
                     fIRT->AddMolecule(*it_begin, time, 0, G4ThreeVector());
                 }

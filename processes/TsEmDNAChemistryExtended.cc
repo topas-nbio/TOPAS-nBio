@@ -140,7 +140,7 @@ void TsEmDNAChemistryExtended::DefineParameters()
                  "must match with " + GetFullParmName("DiffusionCoefficients/Values"));
         
         for ( int i = 0; i < nbOfMolecules; i++ ) {
-            molecules[i].toLower();
+            G4StrUtil::to_lower(molecules[i]);
             if ( !MoleculeExists(molecules[i]) ) {
                 Quit(GetFullParmName("DiffusionCoefficients/Molecules"), "\n--- Molecule: " + molecules[i] + " was not found in database");
             } else if ( molecules[i] == "water" ) {
@@ -164,7 +164,7 @@ void TsEmDNAChemistryExtended::DefineParameters()
                  "must match with " + GetFullParmName("Radii/Values"));
         
         for ( int i = 0; i < nbOfMolecules; i++ ) {
-            molecules[i].toLower();
+            G4StrUtil::to_lower(molecules[i]);
             if ( !MoleculeExists(molecules[i]) ) {
                 Quit(GetFullParmName("Radii/Molecules"), "\n--- Molecule: " + molecules[i] + " was not found in database");
             } else if ( molecules[i] == "water" ) {
@@ -197,8 +197,8 @@ void TsEmDNAChemistryExtended::DefineParameters()
                 std::vector<G4String> reactors;
                 std::vector<G4String> products;
                 
-                reactorA.toLower();
-                reactorB.toLower();
+                G4StrUtil::to_lower(reactorA);
+                G4StrUtil::to_lower(reactorB);
                 if ( !MoleculeExists(reactorA) )
                     Quit(parName, "\n--- Molecule: " + reactorA + " was not found in database");
                 
@@ -209,7 +209,7 @@ void TsEmDNAChemistryExtended::DefineParameters()
                 reactors.push_back(fExistingMolecules[reactorB]);
                 
                 for ( int j = 0; j < nbOfProduct; j++ ) {
-                    product[j].toLower();
+                    G4StrUtil::to_lower(product[j]);
                     if ( product[j] == "none" ) // Note on comparison of strings: See comment on ConstructReactionTable()
                         products.push_back("none");
                     else if ( product[j] == "water") {
@@ -242,7 +242,7 @@ void TsEmDNAChemistryExtended::DefineParameters()
         G4int nbOfScavenged = fPm->GetVectorLength(GetFullParmName("Scavenger/Molecules"));
         for ( int i = 0; i < nbOfScavenged; i++ ) {
             G4String aName = scavengedMolecules[i];
-            aName.toLower();
+            G4StrUtil::to_lower(aName);
             if ( !MoleculeExists(aName) )  {
                 Quit(GetFullParmName("Scavenger/Molecules"), "\n--- Molecule name " + aName + " was not found");
             }

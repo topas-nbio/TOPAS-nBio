@@ -323,7 +323,7 @@ void TsEmStandardPhysics_option4::ConstructProcess()
       G4eBremsstrahlungRelModel* br2 = new G4eBremsstrahlungRelModel();
       if ( fPm->ParameterExists("Ph/BremsstrahlungAngularDistribution")) {
           G4String model = fPm->GetStringParameter("Ph/BremsstrahlungAngularDistribution");
-          model.toLower();
+          G4StrUtil::to_lower(model);
 
           if ( model == "2bn" ) {
               br1->SetAngularDistribution(new G4Generator2BN());

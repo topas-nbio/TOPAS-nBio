@@ -163,22 +163,22 @@ G4LogicalVolume* TsIRTPlasmidSupercoiled::CreateLogicVolume(G4String, G4int copy
 		G4int copyNum = fMolecules[i].fCopyNumber;
 		
 		if ( solidPhosphate || solidPurinePyrimidine || solidDeoxyribose || solidHistone ) {
-			if ( name.contains("phosphate") && solidPhosphate ) {
+			if ( G4StrUtil::contains(name,"phosphate") && solidPhosphate ) {
 				phosphate = new G4Orb("phosphate", radius);
 				wphosphate = new G4Orb("wphosphate", waterRadius);
 				solidPhosphate = false;
 				G4cout << "####  Built phosphate" << G4endl;
-			} else if ( name.contains("base") && solidPurinePyrimidine ) {
+			} else if ( G4StrUtil::contains(name,"base") && solidPurinePyrimidine ) {
 				purineAndPyrimidine = new G4Orb("purineandpyrimidine", radius);
 				wpurineAndPyrimidine = new G4Orb("wpurineandpyrimidine", waterRadius);
 				solidPurinePyrimidine = false;
 				G4cout << "####  Built purines and pyrimidines" << G4endl;
-			} else if ( name.contains("deoxyribose") && solidDeoxyribose ) {
+			} else if ( G4StrUtil::contains(name, "deoxyribose") && solidDeoxyribose ) {
 				deoxyribose = new G4Orb("deoxyribose", radius);
 				wdeoxyribose = new G4Orb("wdeoxyribose", waterRadius);
 				solidDeoxyribose = false;
 				G4cout << "####  Built deoxyriboses" << G4endl;
-			} else if ( name.contains("histone") && solidHistone ) {
+			} else if ( G4StrUtil::contains(name, "histone") && solidHistone ) {
 				histone = new G4Orb("histone", radius);
 				solidHistone = false;
 			}
@@ -192,11 +192,11 @@ G4LogicalVolume* TsIRTPlasmidSupercoiled::CreateLogicVolume(G4String, G4int copy
 		if(waterRadius > (0 + tol)*nm)
 		{
 			G4String nameWaterSolid = name+"_waterShell";
-			if ( name.contains("phosphate") ) {
+			if ( G4StrUtil::contains(name, "phosphate") ) {
 				moleculeWaterCut_solid = CreateCutSolid(wphosphate, fMolecules[i], fMolecules, false);
-			} else if ( name.contains("base") ) {
+			} else if ( G4StrUtil::contains(name, "base") ) {
 				moleculeWaterCut_solid = CreateCutSolid(wpurineAndPyrimidine, fMolecules[i], fMolecules, false);
-			} else if ( name.contains("deoxyribose") ) {
+			} else if ( G4StrUtil::contains(name, "deoxyribose") ) {
 				moleculeWaterCut_solid = CreateCutSolid(wdeoxyribose, fMolecules[i], fMolecules, false);
 			}
 			
@@ -213,13 +213,13 @@ G4LogicalVolume* TsIRTPlasmidSupercoiled::CreateLogicVolume(G4String, G4int copy
 		G4String nameLogic = name;
 		G4LogicalVolume* molecule_logic = 0;
 		
-		if ( name.contains("phosphate") ) {
+		if ( G4StrUtil::contains(name,"phosphate") ) {
 			moleculeCut_solid = CreateCutSolid(phosphate, fMolecules[i], fMolecules, true);
-		} else if ( name.contains("base") ) {
+		} else if ( G4StrUtil::contains(name,"base") ) {
 			moleculeCut_solid = CreateCutSolid(purineAndPyrimidine, fMolecules[i], fMolecules, true);
-		} else if ( name.contains("deoxyribose") ) {
+		} else if ( G4StrUtil::contains(name,"deoxyribose") ) {
 			moleculeCut_solid = CreateCutSolid(deoxyribose, fMolecules[i], fMolecules, true);
-		} else if ( name.contains("histone") ) {
+		} else if ( G4StrUtil::contains(name,"histone") ) {
 			moleculeCut_solid = CreateCutSolid(histone, fMolecules[i], fMolecules, true);
 		}
 		

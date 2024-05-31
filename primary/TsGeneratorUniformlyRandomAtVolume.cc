@@ -48,7 +48,7 @@ void TsGeneratorUniformlyRandomAtVolume::ResolveParameters() {
 	G4String generateOn = "volume";
 	if ( fPm->ParameterExists(GetFullParmName("DistributePrimariesAtVolumeRegion")))
 		generateOn = fPm->GetStringParameter(GetFullParmName("DistributePrimariesAtVolumeRegion"));
-	generateOn.toLower();
+	G4StrUtil::to_lower(generateOn);
 	
 	if ( generateOn != "volume" && generateOn != "surface" ) {
 		G4cerr << "Topas is exiting due to a serious error in source setup." << G4endl;
@@ -61,7 +61,7 @@ void TsGeneratorUniformlyRandomAtVolume::ResolveParameters() {
 	fTheDirection = "isotropic";
 	if ( fPm->ParameterExists(GetFullParmName("DirectPrimariesTo")))
 		fTheDirection = fPm->GetStringParameter(GetFullParmName("DirectPrimariesTo"));
-	fTheDirection.toLower();
+	G4StrUtil::to_lower(fTheDirection);
 	
 	if ( fTheDirection != "inside" && ( fTheDirection != "outside" && fTheDirection != "isotropic")) {
 		G4cerr << "Topas is exiting due to a serious error in source setup." << G4endl;

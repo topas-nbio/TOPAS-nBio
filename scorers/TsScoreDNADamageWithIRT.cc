@@ -67,10 +67,10 @@ G4bool TsScoreDNADamageWithIRT::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 			const G4String& vName = touchable->GetVolume()->GetName();
 			
 			
-			if (vName.contains("deoxyribose" ) ) {
+			if (G4StrUtil::contains(vName, "deoxyribose" ) ) {
 				G4int plasmidID = 0;
 				G4int baseID = touchable->GetVolume(0)->GetCopyNo();
-				if ( vName.contains("water") ) // get parent copy number
+				if ( G4StrUtil::contains(vName,"water") ) // get parent copy number
 					plasmidID = touchable->GetVolume(1)->GetCopyNo();
 				else // get grand parent copy number
 					plasmidID = touchable->GetVolume(2)->GetCopyNo();
@@ -79,7 +79,7 @@ G4bool TsScoreDNADamageWithIRT::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 				if ( fDirectSSB.find(plasmidID) == fDirectSSB.end() )
 					found = true;
 				
-				if (vName.contains("deoxyribose1") ) {
+				if (G4StrUtil::contains(vName, "deoxyribose1") ) {
 					if ( found ) {
 						if (fDirectSSB[plasmidID].find(baseID) == fDirectSSB[plasmidID].end()) {
 							fDirectSSB[plasmidID][baseID] = edep;
@@ -89,7 +89,7 @@ G4bool TsScoreDNADamageWithIRT::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 					} else {
 						fDirectSSB[plasmidID][baseID] = edep;
 					}
-				} else if (vName.contains("deoxyribose2"))  {
+				} else if (G4StrUtil::contains(vName, "deoxyribose2"))  {
 					if ( found ) {
 						if ( fDirectSSB[plasmidID].find(baseID) == fDirectSSB[plasmidID].end() ) {
 							fDirectSSB[plasmidID][-baseID] = edep;

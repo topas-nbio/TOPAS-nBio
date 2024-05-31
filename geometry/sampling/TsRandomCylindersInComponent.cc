@@ -55,14 +55,14 @@ TsVGeometryComponent(pM, eM, mM, gM, parentComponent, parentVolume, name)
 		fTHL = fPm->GetDoubleParameter(GetFullParmName("Cylinders/HL"), "Length");
 	
 	fEnvelopeType = fPm->GetStringParameter(GetFullParmName("EnvelopeShape"));
-	fEnvelopeType.toLower();
-	if ( fEnvelopeType.contains("tssphere") ) {
+	G4StrUtil::to_lower(fEnvelopeType);
+	if ( G4StrUtil::contains(fEnvelopeType,"tssphere") ) {
 		fRMax = fPm->GetDoubleParameter(GetFullParmName("RMax"), "Length");
-	} else if (fEnvelopeType.contains("tsbox")) {
+	} else if (G4StrUtil::contains(fEnvelopeType,"tsbox")) {
 		fHLX = fPm->GetDoubleParameter(GetFullParmName("HLX"), "Length");
 		fHLY = fPm->GetDoubleParameter(GetFullParmName("HLY"), "Length");
 		fHLZ = fPm->GetDoubleParameter(GetFullParmName("HLZ"), "Length");
-	} else if ( fEnvelopeType.contains("tscylinder")) {
+	} else if ( G4StrUtil::contains(fEnvelopeType,"tscylinder")) {
 		fRMax = fPm->GetDoubleParameter(GetFullParmName("RMax"), "Length");
 		fHL = fPm->GetDoubleParameter(GetFullParmName("HL"), "Length");
 	} else {
@@ -90,12 +90,12 @@ G4VPhysicalVolume* TsRandomCylindersInComponent::Construct()
 	BeginConstruction();
 	
 	G4double extensionX, extensionY, extensionZ;
-	if ( fEnvelopeType.contains("tssphere" ) ) {
+	if ( G4StrUtil::contains(fEnvelopeType,"tssphere" ) ) {
 		fEnvelope = new G4Orb(fName, fRMax);
 		extensionX = 2.0 * fRMax;
 		extensionY = extensionX;
 		extensionZ = extensionY;
-	} else if ( fEnvelopeType.contains("tscylinder")) {
+	} else if ( G4StrUtil::contains(fEnvelopeType,"tscylinder")) {
 		fEnvelope = new G4Tubs(fName, 0.0, fRMax, fHL, 0.0, 360.0*deg);
 		extensionX = 2.0 * fRMax;
 		extensionY = extensionX;
