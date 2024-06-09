@@ -988,6 +988,7 @@ void TsIRTConfiguration::CalculateContactProbabilities() {
 		G4int reactionType = fReactions[i].reactionType;
 		G4int molA = fReactions[i].reactorA;
 		G4int molB = fReactions[i].reactorB;
+		G4double rc = GetOnsagerRadius(molA, molB);
 		if ( reactionType == 1 || reactionType == 3 || reactionType == 5 ) {
 			if ( reactionType == 5 )
 				probability = 0.25;
@@ -995,20 +996,22 @@ void TsIRTConfiguration::CalculateContactProbabilities() {
 				probability = 1.0;
 			
 		} else if ( reactionType == 2 || reactionType == 4 ){
-			G4double Rs = 0.29 * nm;
-			G4double diffusionReactionRate = fReactions[i].kdif;
-			G4double activationReactionRate = fReactions[i].kact;
-			G4double rc = GetOnsagerRadius(molA, molB);
-			
-			G4double effectiveReactionRadius = -rc / (1-exp(rc /
-															(fMoleculesDefinition[molA].radius + fMoleculesDefinition[molB].radius)));
-			
-			if ( reactionType == 2 )
-				probability =  Rs / (Rs + (diffusionReactionRate / activationReactionRate) *
-									 ((fMoleculesDefinition[molA].radius + fMoleculesDefinition[molB].radius) + Rs));
-			else
-				probability = Rs / (Rs + (diffusionReactionRate / activationReactionRate) * (effectiveReactionRadius + Rs));
-			
+			G4double Rs = 0.29 * nm; // distance between water molecules (0.29-0.31 nm adjustable)
+
+			G4double kdiff = fReactions[i].kdif;
+			G4double kact = fReactions[i].kact;
+			G4double kobs = fReactions[i].kobs;
+
+			G4double effectiveReactionRadius = fReactions[i].effectiveReactionRadius;
+
+            G4double sigmaEffRs = fReactions[i].reactionRadius + Rs;
+
+            if(rc != 0) sigmaEffRs = -rc / (1-exp(rc /sigmaEffRs));
+
+            probability = kobs / kdiff * ((1 - (effectiveReactionRadius/sigmaEffRs))
+                            /(1 - kobs / kdiff * effectiveReactionRadius/sigmaEffRs));
+
+
 		} else {
 			continue;
 		}
@@ -2415,7 +2418,7 @@ G4bool TsIRTConfiguration::Inside(G4ThreeVector p ) {
 	return true;
 }
 
-
+// First-order contact reactions
 G4bool TsIRTConfiguration::MakeReaction(std::unordered_map<G4int,TsMolecule> &initialSpecies, G4int& speciesIndex,
 										std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int,G4bool>>>> &spaceBinned,
 										G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin,
@@ -2523,7 +2526,7 @@ G4bool TsIRTConfiguration::MakeReaction(std::unordered_map<G4int,TsMolecule> &in
 	}
 }
 
-
+// bimolecular contact reactions
 G4bool TsIRTConfiguration::MakeReaction(std::unordered_map<G4int,TsMolecule> &initialSpecies, G4int& speciesIndex,
 										std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int,G4bool>>>> &spaceBinned,
 										G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin,
@@ -2762,30 +2765,6 @@ G4bool TsIRTConfiguration::MakeReaction(std::unordered_map<G4int,TsMolecule> &in
 	} else {
 		return false;
 	}
-}
-
-
-void TsIRTConfiguration::ScoreGvalue(std::vector<TsMolecule> &initialSpecies,
-									 std::map<G4int, std::map<G4int, G4int>> &theGvalueInVolume,
-									 std::vector<G4double> timeSteps,
-									 G4int iM, G4int jM, G4int indexOfReaction, G4double irt) {
-	
-	std::vector<G4int> products = (GetReaction(indexOfReaction)).products;
-	G4int tBin = fUtils->FindBin(irt, timeSteps);
-	if ( tBin < 0 ) return;
-	
-	for ( size_t u = 0; u < products.size(); u++ ) {
-		for ( int ti = tBin; ti < (int)timeSteps.size(); ti++ ) {
-			theGvalueInVolume[products[u]][ti]++;
-		}
-	}
-	
-	for ( int ti = tBin; ti < (int)timeSteps.size(); ti++ ) {
-		theGvalueInVolume[initialSpecies[iM].id][ti]--;
-		theGvalueInVolume[initialSpecies[jM].id][ti]--;
-	}
-	
-	return;
 }
 
 

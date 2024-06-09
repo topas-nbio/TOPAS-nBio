@@ -208,7 +208,7 @@ public:
 	std::vector<G4ThreeVector> GetPositionOfProducts(TsMolecule molA, TsMolecule molB, G4int index);
 	std::vector<G4ThreeVector> GetBackgroundPositionOfProducts(TsMolecule molA, G4int index);
 	G4double GetRCutOff(G4double tCutOff);
-	
+
 	G4bool MakeReaction(std::unordered_map<G4int,TsMolecule> &initialSpecies, G4int& speciesIndex,
 						std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int,G4bool>>>> &spaceBinned,
 						G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin, G4double YMax, G4double ZMin, G4double ZMax,
@@ -227,25 +227,41 @@ public:
 						std::map<G4int, std::map<G4int, G4int>> &theGvalue,
 						std::map<G4int, std::map<G4int, G4int>> &theGvalueInVolume, std::vector<G4double> timeSteps,
 						G4int iM, G4int jM, G4int indexOfReaction, G4double irt, G4double probabilityOfReaction, std::unordered_map<G4int,G4bool> &used, std::vector<G4int>& prods);
-
+	// First order contact reactions
 	G4bool MakeReaction(std::unordered_map<G4int,TsMolecule> &initialSpecies, G4int& speciesIndex,
 						std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int,G4bool>>>> &spaceBinned,
 						G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin, G4double YMax, G4double ZMin, G4double ZMax,
 						std::map<G4int, std::map<G4int, G4int>> &theGvalue, std::vector<G4double> timeSteps,
 						G4int iM, G4int indexOfReaction, G4double irt, std::unordered_map<G4int,G4bool> &used, std::vector<G4int>& prods, std::unordered_map<G4int,std::unordered_map<G4int,G4bool>>& specKind);
-	
+
 	G4bool MakeReaction(std::unordered_map<G4int,TsMolecule> &initialSpecies, G4int& speciesIndex,
 						std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int,G4bool>>>> &spaceBinned,
 						G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin, G4double YMax, G4double ZMin, G4double ZMax,
 						std::map<G4int, std::map<G4int, G4int>> &theGvalue, std::vector<G4double> timeSteps,
 						G4int iM, G4int jM, G4int indexOfReaction, G4double irt, G4double probabilityOfReaction, std::unordered_map<G4int,G4bool> &used, std::vector<G4int>& prods, std::unordered_map<G4int,std::unordered_map<G4int,G4bool>>& specKind);
-	
+	// bimolecular contact reactions
 	G4bool MakeReaction(std::unordered_map<G4int,TsMolecule> &initialSpecies, G4int& speciesIndex,
 						std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int,G4bool>>>> &spaceBinned,
 						G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin, G4double YMax, G4double ZMin, G4double ZMax,
 						std::map<G4int, std::map<G4int, G4int>> &theGvalue,
 						std::map<G4int, std::map<G4int, G4int>> &theGvalueInVolume, std::vector<G4double> timeSteps,
 						G4int iM, G4int jM, G4int indexOfReaction, G4double irt, G4double probabilityOfReaction, std::unordered_map<G4int,G4bool> &used, std::vector<G4int>& prods, std::unordered_map<G4int,std::unordered_map<G4int,G4bool>>& specKind);
+/*
+	// test
+	G4bool MakeReaction(std::unordered_map<G4int,TsMolecule> &initialSpecies, G4int& speciesIndex,
+						std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int, std::vector<G4int>>>> &spaceBinned,
+						G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin, G4double YMax, G4double ZMin, G4double ZMax,
+						std::map<G4int, std::map<G4int, G4int>> &theGvalue,
+						std::map<G4int, std::map<G4int, G4int>> &theGvalueInVolume, std::vector<G4double> timeSteps,
+						G4int iM, G4int jM, G4int indexOfReaction, G4double irt, G4double probabilityOfReaction, std::unordered_map<G4int,G4bool> &used, std::vector<G4int>& prods, std::unordered_map<G4int,std::unordered_map<G4int,G4bool>>& specKind);
+
+	G4bool MakeReaction(std::unordered_map<G4int,TsMolecule> &initialSpecies, G4int& speciesIndex,
+						std::unordered_map<G4int, std::unordered_map<G4int, std::unordered_map<G4int, std::vector<G4int>>>> &spaceBinned,
+						G4int NX, G4int NY, G4int NZ, G4double XMin, G4double XMax, G4double YMin, G4double YMax, G4double ZMin, G4double ZMax,
+						std::map<G4int, std::map<G4int, G4int>> &theGvalue, std::vector<G4double> timeSteps,
+						G4int iM, G4int indexOfReaction, G4double irt, std::unordered_map<G4int,G4bool> &used, std::vector<G4int>& prods, std::unordered_map<G4int,std::unordered_map<G4int,G4bool>>& specKind);
+*/
+
 
 	G4bool Inside(G4ThreeVector p);
 	

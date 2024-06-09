@@ -169,13 +169,30 @@ void TsHybridIRT::contactReactions(G4int i,std::unordered_map<G4int, G4bool> use
 					}
 				}
 			}
+
+
+			if(fVerbosity > 1){
+				G4cout<<"First order contact: "<<fChemicalSpecies[i].time<<'\t'<<fReactionConf->GetMoleculeName()[fChemicalSpecies[i].id]
+							<<" ("<<fChemicalSpecies[i].trackID<<") + "<<fMolecules[fReactionConf->GetReaction(indexOf1stOrder).reactorB]<<" => ";
+			}
+
 			fChemicalSpecies[i].reacted = true;
 			fConcentrations[fChemicalSpecies[i].id]--;
 			RemoveMolecule(i);
 			for (size_t prods = 0; prods < fContactProducts.size(); prods++) {
+				if(fVerbosity > 1){
+					G4cout<<fReactionConf->GetMoleculeNames()[fChemicalSpecies[fContactProducts[prods]].id]<<
+							" (B"<<fChemicalSpecies[fContactProducts[prods]].trackID<<") "<<'\t';
+				}
+
 				if (fMolecules[fContactProducts[prods]] != "")
 					fConcentrations[fContactProducts[prods]]++;
 			}
+
+			if(fVerbosity > 1){
+				G4cout<<G4endl;
+			}
+
 			return;
 		}
 	}
@@ -229,6 +246,13 @@ void TsHybridIRT::contactReactions(G4int i,std::unordered_map<G4int, G4bool> use
 										}
 									}
 								}
+
+								if(fVerbosity > 1){
+									G4cout<<"Contact: "<<fChemicalSpecies[i].time<<'\t'<<fReactionConf->GetMoleculeName()[fChemicalSpecies[i].id]
+												<<" ("<<fChemicalSpecies[i].trackID<<") + "<<fReactionConf->GetMoleculeName()[fChemicalSpecies[j].id]
+												<<" ("<<fChemicalSpecies[j].trackID<<") => ";
+								}
+
 								fChemicalSpecies[i].reacted = true;
 								fChemicalSpecies[j].reacted = true;
 								fConcentrations[fChemicalSpecies[i].id]--;
@@ -236,8 +260,17 @@ void TsHybridIRT::contactReactions(G4int i,std::unordered_map<G4int, G4bool> use
 								RemoveMolecule(i);
 								RemoveMolecule(j);
 								for (size_t prods = 0; prods < fContactProducts.size(); prods++) {
-									if (fMolecules[fContactProducts[prods]] != "")
+									if (fMolecules[fContactProducts[prods]] != ""){
+										if(fVerbosity > 1){
+											G4cout<<fContactProducts[prods]<<'\t'<<fChemicalSpecies[fContactProducts[prods]].id<<'\t'<<fReactionConf->GetMoleculeNames()[fChemicalSpecies[fContactProducts[prods]].id]<<
+													" ("<<fChemicalSpecies[fContactProducts[prods]].trackID<<") "<<'\t';
+										}
 										fConcentrations[fContactProducts[prods]]++;
+									}
+								}
+
+								if(fVerbosity > 1){
+									G4cout<<G4endl;
 								}
 								return;
 							}
@@ -392,6 +425,11 @@ void TsHybridIRT::ConductReactions() {
 					dnaStrandID = fChemicalSpecies[jM].strandID;
 				}
 
+				if(fVerbosity > 0){
+					G4cout<<"At time: "<<irt-fMinTime<<'\t'<<fReactionConf->GetMoleculeName()[fChemicalSpecies[iM].id]
+								<<" + "<<fReactionConf->GetMoleculeName()[fChemicalSpecies[jM].id]<<G4endl;
+				}
+
 				fChemicalSpecies[iM].reacted = true;
 				fChemicalSpecies[jM].reacted = true;
 				RemoveMolecule(iM);
@@ -400,6 +438,8 @@ void TsHybridIRT::ConductReactions() {
 			} else {
 				fReactionConf->Diffuse(fChemicalSpecies[iM],irt-fChemicalSpecies[iM].time);
 				positions = fReactionConf->GetBackgroundPositionOfProducts(fChemicalSpecies[iM],indexOfReaction);
+
+				G4int molB = binReaction.reactorB;
 				
 				TsIRTConfiguration::TsMolecularReaction binReaction = fReactionConf->GetReaction(indexOfReaction);
 				if (binReaction.index < 0) {continue;}
@@ -418,6 +458,11 @@ void TsHybridIRT::ConductReactions() {
 					dnaStrandID = fChemicalSpecies[iM].strandID;
 				}
 				
+				if(fVerbosity > 1){
+					G4cout<<"At rest: "<<irt-fMinTime<<'\t'<<fReactionConf->GetMoleculeName()[fChemicalSpecies[iM].id]<<" ("<<fChemicalSpecies[iM].trackID<<") "
+								<<" + "<<fReactionConf->GetMoleculeName()[molB]<<" (B"<<molB<<") "<<G4endl;
+				}
+
 				fChemicalSpecies[iM].reacted = true;
 				RemoveMolecule(iM);
 			}

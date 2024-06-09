@@ -1,7 +1,7 @@
 // Extra Class for TsEmDNAChemistry
-#include "TsIRT.hh"
+#include "TsIRT_revise.hh"
 #include "TsIRTUtils.hh"
-#include "TsIRTConfiguration.hh"
+#include "TsIRTConfiguration_revise.hh"
 #include "TsParameterManager.hh"
 
 #include "G4Step.hh"
@@ -25,115 +25,207 @@
 #include <iostream>
 #include <set>
 
-TsIRT::TsIRT(TsParameterManager* pM, G4String parmName): TsVIRTProcedure(pM,parmName){;}
-TsIRT::~TsIRT() {;}
+TsIRT_revise::TsIRT_revise(TsParameterManager* pM, G4String parmName): TsVIRTProcedure(pM,parmName){
+	fReactionConf = new TsIRTConfiguration_revise(parmName, pM);
 
-void TsIRT::runIRT(G4double, G4double, G4double, G4bool) {	
-	// Voxelize and Sort the Chemical Species Space
-	VoxelizeAndSortSpace();
+	fSpeciesIndex = 0;
+	fMoleculesName = fReactionConf->GetMoleculeNames();
 
-	// Test For initial Contact Reactions; Needed for QA
-	TestForContactReactions();
+	fChemVerbosity = 0;
+	if ( pM->ParameterExists("Ts/ChemistryVerbosity"))
+		fChemVerbosity =pM->GetIntegerParameter("Ts/ChemistryVerbosity");
 
-	// Initial Sample of the IRT
-	SampleIndependantReactionTimes();
+}
 
-	// Make the reactions according to the IRT
+TsIRT_revise::~TsIRT_revise() {;}
+
+void TsIRT_revise::runIRT(G4double, G4double, G4double, G4bool) {
+
+	Sampling();
 	ConductReactions();
-
-	// Update the GValue containers for output
 	UpdateGValues();
 }
 
-void TsIRT::contactReactions(G4int i,std::unordered_map<G4int, G4bool> used) {
-	fReactedByContact = false;
-	fContactProducts.clear();
+void TsIRT_revise::Sampling(){
+	if ( !fScorersInitialized )
+		initializeScorers();
 
-	if (!MoleculeExists(i)) {return;}
+	fNx = G4int((fXMax-fXMin)/fBinWidth) == 0 ? 1 : G4int((fXMax-fXMin)/fBinWidth);
+	fNy = G4int((fYMax-fYMin)/fBinWidth) == 0 ? 1 : G4int((fYMax-fYMin)/fBinWidth);
+	fNz = G4int((fZMax-fZMin)/fBinWidth) == 0 ? 1 : G4int((fZMax-fZMin)/fBinWidth);
 
-	// background reaction
+	for(auto it = fChemicalSpecies.begin(); it != fChemicalSpecies.end(); ++it){
+		TsIRTConfiguration_revise::TsMolecule aMol = (*it).second;
+		G4ThreeVector position = aMol.position;
+
+		G4double t = (*it).first;
+
+		G4int tBin = fUtils->FindBin(aMol.time, fStepTimes);
+		if ( -1 < tBin ) {
+			for ( int tbin = tBin; tbin < (int)fStepTimes.size(); tbin++ ) {
+				if ( fTheGvalue.find(aMol.id) == fTheGvalue.end() )
+					fTheGvalue[aMol.id][tbin] = 1;
+				else
+					fTheGvalue[aMol.id][tbin]++;
+			}
+		}
+		G4int I = fUtils->FindBin(fNx, fXMin, fXMax, aMol.position.x());
+		G4int J = fUtils->FindBin(fNy, fYMin, fYMax, aMol.position.y());
+		G4int K = fUtils->FindBin(fNz, fZMin, fZMax, aMol.position.z());
+
+		fSpaceBinned[I][J][K][t] = true;
+
+		sampleReactions(t);
+	}
+}
+
+void TsIRT_revise::AddMolecule(G4Track* aTrack, G4double time, G4int moleculeID, G4ThreeVector offset){
+	if (!fScorersInitialized)
+		initializeScorers();
+
+	TsIRTConfiguration_revise::TsMolecule aMol = ConstructMolecule(aTrack, time, 0, G4ThreeVector());
+
+	G4ThreeVector position = aMol.position;
+
+	if ( fXMin > position.x() ) fXMin = position.x();
+	if ( fYMin > position.y() ) fYMin = position.y();
+	if ( fZMin > position.z() ) fZMin = position.z();
+
+	if ( fXMax < position.x() ) fXMax = position.x();
+	if ( fYMax < position.y() ) fYMax = position.y();
+	if ( fZMax < position.z() ) fZMax = position.z();
+
+	fChemicalSpecies[fSpeciesIndex] = aMol;
+	fSpeciesIndex++;
+}
+
+
+TsIRTConfiguration_revise::TsMolecule TsIRT_revise::ConstructMolecule(G4Track* aTrack, G4double time, G4int moleculeID, G4ThreeVector offset) {
+	G4int pdg = -1;
+	G4ThreeVector position = aTrack->GetPosition();
+	const G4String& name = GetMolecule(aTrack)->GetName();
+	pdg = fMoleculesIDs[name];
+
+	TsIRTConfiguration_revise::TsMolecule aMol;
+
+	if ( pdg > 0 ) {
+		aMol.id = pdg;
+		aMol.position = position + offset;
+		aMol.time = time;
+		// trackID != 0 reserved for DNA, < 0 = left strand, > 0 = right strand
+		aMol.trackID = moleculeID;
+		aMol.isDNA = false;
+
+		if ( pdg == 1 | pdg == 5 ) aMol.spin = G4UniformRand() > 0.5 ? 1 : 0;
+		else aMol.spin = -1;
+	}
+
+	return aMol;
+}
+
+
+void TsIRT_revise::sampleReactions(G4int i) {
+
+	if ( fChemicalSpecies[i].isDNA )
+		return;
+
+	if ( !MoleculeExists(i) )
+		return;
+
+	// background contact reaction
 	G4int indexOf1stOrder = fReactionConf->ContactFirstOrderAndBackgroundReactions(fChemicalSpecies[i]);
 	if ( -1 < indexOf1stOrder ) {
-		fReactedByContact = fReactionConf->MakeReaction(fChemicalSpecies, fSpeciesIndex, fSpaceBinned,
-														fNx, fNy, fNz, fXMin, fXMax,
-														fYMin, fYMax, fZMin, fZMax,
-														fTheGvalue, fStepTimes, i,
-														indexOf1stOrder, fChemicalSpecies[i].time, fUsed, fContactProducts);
-		if ( fReactedByContact ) {
-			if ( fReportDelta ) {
-				G4int tBin = fUtils->FindBin(fChemicalSpecies[i].time, fStepTimes);
-				if ( -1 < tBin ) {
-					for ( int ti = tBin; ti < (int)fStepTimes.size(); ti++ ) {
-						fDeltaGValues[indexOf1stOrder][fStepTimes[ti]]++;
-					}
-				}
-			}
-			fChemicalSpecies[i].reacted = true;
-			RemoveMolecule(i);
-			return;
-		}
+		AddToIRT(0,indexOf1stOrder,i,i,fChemicalSpecies[i].time,fChemicalSpecies[i].position,fChemicalSpecies[i].position,true);
+		return;
 	}
-	
+
 	G4ThreeVector thisPos = fChemicalSpecies[i].position;
-	FindBinIndexes(thisPos, 0.0);
-	
+
+	FindBinIndexes(thisPos, fRCutOff);
+
 	for ( int ii = fxiniIndex; ii <= fxendIndex; ii++ ) {
 		for ( int jj = fyiniIndex; jj <= fyendIndex; jj++ ) {
 			for ( int kk = fziniIndex; kk <= fzendIndex; kk++ ) {
 				for (auto& IndexAndAlive:fSpaceBinned[ii][jj][kk]) {
 					G4int j = IndexAndAlive.first;
 
-					if (!MoleculeExists(j) || fReactedByContact) {continue;}
-					if (!fChemicalSpecies[j].isNew) {continue;}
-					if (used.count(j) >= 1) {continue;}
-					
-					if ( j == i )
-						continue;
-					
-					G4int indexOfReaction = fReactionConf->GetReactionIndex(fChemicalSpecies[j].id,
-																			fChemicalSpecies[i].id);
-					if ( -1 < indexOfReaction ) {
-						TsIRTConfiguration::TsMolecularReaction binReaction = fReactionConf->GetReaction(indexOfReaction);
-						if (binReaction.index < 0) {continue;} 
+					if (j == i) continue;
 
-						G4double r = binReaction.reactionRadius;
-						
-						G4double p = binReaction.probabilityOfReaction;
+					if ( !MoleculeExists(j) )
+						continue;
+
+					G4int indexOfReaction = fReactionConf->GetReactionIndex(fChemicalSpecies[i].id,
+																			fChemicalSpecies[j].id);
+					if( -1 < indexOfReaction ) {
+						G4double timeI = fChemicalSpecies[i].time;
 						G4double timeJ = fChemicalSpecies[j].time;
-						
-						if ( fChemicalSpecies[i].time != timeJ ) continue; /// Only zero timers<---Best match Clifford et al.
-						
-						if ( (fChemicalSpecies[i].position - fChemicalSpecies[j].position).mag2() < r*r ) {
-							fReactedByContact = fReactionConf->MakeReaction(fChemicalSpecies, fSpeciesIndex, fSpaceBinned,
-																			fNx, fNy, fNz, fXMin, fXMax,
-																			fYMin, fYMax, fZMin, fZMax,
-																			fTheGvalue, fStepTimes, i,
-																			j, indexOfReaction, fChemicalSpecies[i].time, p, fUsed, fContactProducts);
-							
-							if ( fReactedByContact ) {
-								if ( fReportDelta ) {
-									G4int tdBin = fUtils->FindBin(fChemicalSpecies[i].time, fStepTimes);
-									if ( -1 < tdBin ) {
-										for ( int ti = tdBin; ti < (int)fStepTimes.size(); ti++ ) {
-											fDeltaGValues[indexOfReaction][fStepTimes[ti]]++;
-										}
-									}
-								}
-								fChemicalSpecies[i].reacted = true;
-								fChemicalSpecies[j].reacted = true;
-								RemoveMolecule(i);
-								RemoveMolecule(j);
-								return;
-							}
+						G4double dt = fChemicalSpecies[i].time - timeJ;
+						// if ( dt < 0 ) continue; // No efect if all initial times are the same, but affects for flash
+
+						G4ThreeVector origPositionI = fChemicalSpecies[i].position;
+						G4ThreeVector origPositionJ = fChemicalSpecies[j].position;
+
+						// sampling contact reaction
+						G4double r = fReactionConf->GetReaction(indexOfReaction).reactionRadius;
+						if ( (timeI == timeJ) && (origPositionI - origPositionJ).mag2() < r*r ) {
+							G4double p = fReactionConf->GetReaction(indexOfReaction).probabilityOfReaction;
+							if(G4UniformRand() < p)	AddToIRT(timeI,indexOfReaction,i,j,fChemicalSpecies[i].time,fChemicalSpecies[i].position,fChemicalSpecies[j].position,false);
+						}
+
+
+						G4bool resampleA = false, resampleB = false;
+						if ( 0 < dt ) {
+							fReactionConf->Diffuse(fChemicalSpecies[j],dt);
+							resampleB = true;
+						}
+
+						if ( 0 > dt ) {
+							fReactionConf->Diffuse(fChemicalSpecies[i],-dt);
+							resampleA = true;
+						}
+
+						G4double irt = fReactionConf->GetIndependentReactionTime(fChemicalSpecies[i],
+																				 fChemicalSpecies[j],
+																				 indexOfReaction);
+
+						G4double gTime = fChemicalSpecies[i].time;
+
+						if ( (0 < irt) && (irt + gTime <= fTimeCut) && (fMinTime <= irt + gTime)) {
+							irt += gTime;
+							AddToIRT(irt,indexOfReaction,i,j,fChemicalSpecies[i].time,fChemicalSpecies[i].position,fChemicalSpecies[j].position,false);
+
+						}
+
+						if ( resampleB ) {
+							fChemicalSpecies[j].position = origPositionJ;
+							fChemicalSpecies[j].time = timeJ;
+						}
+
+						if ( resampleA ) {
+							fChemicalSpecies[i].position = origPositionI;
+							fChemicalSpecies[i].time = timeI;
 						}
 					}
 				}
 			}
 		}
 	}
+
+	std::pair<G4int, G4double> tnIscav = fReactionConf->SampleIRTFirstOrderAndBackgroundReactions(fChemicalSpecies[i]);
+	G4double tscav = tnIscav.second;
+	G4double gTime = fChemicalSpecies[i].time;
+
+	if (gTime + tscav < fMinTime) {
+		gTime = fMinTime;
+	}
+
+	if ((fHighTimeScavenger && 0 < tscav) && (tscav+gTime <= fTimeCut)) {
+		tscav += gTime;
+		AddToIRT(tscav,tnIscav.first,i,i,fChemicalSpecies[i].time,fChemicalSpecies[i].position,fChemicalSpecies[i].position,true);
+	}
 }
 
-void TsIRT::ConductReactions() {
+void TsIRT_revise::ConductReactions() {
 	fSampleIRTatStart = false;
 
 	while (fIRTValues.size() > 0) {
@@ -157,7 +249,7 @@ void TsIRT::ConductReactions() {
 			G4int indexOfReaction = fIRTIndex[idx];
 			
 			// 5.1 set the position of the reactants to those used to sample the irt
-			TsIRTConfiguration::TsMolecularReaction binReaction = fReactionConf->GetReaction(indexOfReaction);
+			TsIRTConfiguration_revise::TsMolecularReaction binReaction = fReactionConf->GetReaction(indexOfReaction);
 			if (binReaction.index < 0) {continue;}
 			if ( binReaction.reactionType == 5 ) {
 				if (fUseSpinScaled) {
@@ -193,11 +285,9 @@ void TsIRT::ConductReactions() {
 					fChemicalSpecies[jM].position = fIRTPositions[idx].second;
 					fChemicalSpecies[jM].time = fIRTOrigTime[idx];
 					
-					fReactionConf->ResampleReactantsPosition(fChemicalSpecies[iM], fChemicalSpecies[jM],
+					positions = fReactionConf->ResampleReactantsPosition(fChemicalSpecies[iM], fChemicalSpecies[jM],
 															 indexOfReaction, irt);
 					
-					positions = fReactionConf->GetPositionOfProducts(fChemicalSpecies[iM],
-																	 fChemicalSpecies[jM], indexOfReaction);
 				} else { // at least one is DNA. Set product positions as the DNA molecule position.
 					// Score the base pair ID, and molecule that caused the damage.
 					if ( fChemicalSpecies[iM].isDNA ) {
@@ -217,6 +307,11 @@ void TsIRT::ConductReactions() {
 				if (binReaction.index < 0) {continue;}
 				products = fReactionConf->GetReactionProducts(indexOfReaction);//binReaction.products;
 				
+				if(fChemVerbosity > 0){
+					G4cout<<"At time: "<<irt-fMinTime<<" ns"<<'\t'<<fMoleculesName[fChemicalSpecies[iM].id]
+								<<" + "<<fMoleculesName[fChemicalSpecies[jM].id]<<" => ";
+				}
+
 				if ( 0 <= tBin ) {
 					for ( int ti = tBin; ti < (int)fStepTimes.size(); ti++ ) {
 						fTheGvalue[fChemicalSpecies[iM].id][ti]--;
@@ -248,8 +343,6 @@ void TsIRT::ConductReactions() {
 					dnaStrandID = fChemicalSpecies[jM].strandID;
 				}
 				
-				fChemicalSpecies[iM].reacted = true;
-				fChemicalSpecies[jM].reacted = true;
 				fConcentrations[fChemicalSpecies[iM].id]--;
 				fConcentrations[fChemicalSpecies[jM].id]--;
 				RemoveMolecule(iM);
@@ -280,27 +373,30 @@ void TsIRT::ConductReactions() {
 					}
 				}
 
+				if(fChemVerbosity > 0){
+					G4int molB = binReaction.reactorB;
+					G4cout<<"At rest: "<<irt-fMinTime<<" ns"<<'\t'<<fMoleculesName[fChemicalSpecies[iM].id]<<" ("<<fChemicalSpecies[iM].id<<") "
+								<<" + "<<fMoleculesName[molB]<<" ("<<molB<<") => ";
+				}
+
 				if (fChemicalSpecies[iM].volumeID >= 0) {
 					dnaVolumeID = fChemicalSpecies[iM].volumeID;
 					dnaBaseID   = fChemicalSpecies[iM].baseID;
 					dnaStrandID = fChemicalSpecies[iM].strandID;
 				}
 				
-				fChemicalSpecies[iM].reacted = true;
 				fConcentrations[fChemicalSpecies[iM].id]--;
 				RemoveMolecule(iM);
 			}
 			
 			// 5.3 create new products at positions resampled in previous step
 			for ( size_t u = 0; u < products.size(); u++ ) {
-				TsIRTConfiguration::TsMolecule aProd;
+				TsIRTConfiguration_revise::TsMolecule aProd;
 				aProd.id = products[u];
 				aProd.position = positions[u];
 				aProd.time = irt;
-				aProd.reacted = false;
 				aProd.trackID = 0;
 				aProd.isDNA = false;
-				aProd.isNew = true;
 				fConcentrations[aProd.id]++;
 
 				if (fMolecules[aProd.id] == "") {continue;}
@@ -325,7 +421,6 @@ void TsIRT::ConductReactions() {
 				// Merge this specie with the track
 				fSpaceBinned[I][J][K][fSpeciesIndex] = true;
 				fChemicalSpecies[fSpeciesIndex] = aProd;
-				fUsed[fSpeciesIndex] = false;
 				fSpeciesIndex++;
 				
 				if ( 0 <= tBin ) {
@@ -339,38 +434,46 @@ void TsIRT::ConductReactions() {
 						}
 					}
 				}
-				
-				std::unordered_map<G4int, G4bool> emptyUsed;
-				contactReactions(newID,emptyUsed);
-				if (!fReactedByContact) {
-					// Sample the New Molecule if it didn't reacted by contact
-					sampleReactions(newID);
-				}
-				else {
-					// Sample the products of the Molecule
-					for (size_t jProds = 0; jProds < fContactProducts.size(); jProds++) {
-						sampleReactions(fContactProducts[jProds]);
-					}
+
+                if (fChemVerbosity && u != 0)
+                {
+                    G4cout << " + ";
+                }
+                if (fChemVerbosity)
+                {
+                    G4cout << fMoleculesName[aProd.id];
+                }
+
+				sampleReactions(newID);
+
+			}
+
+			if(fChemVerbosity >= 2){
+				if (products.size() == 0)
+				{
+					G4cout << "No product"<<G4endl;
+				}else{
+	                G4cout << G4endl;
 				}
 			}
+
 		} else {
 			break;
 		}
 		
-		if (fVerbosity > 2 && ( currentIRT >= fChunk && currentIRT % fChunk == 0 )) {
+		if (fChemVerbosity > 2 && ( currentIRT >= fChunk && currentIRT % fChunk == 0 )) {
 			G4cout << "     ---- current reactions performed " << currentIRT << " out " << fChunk*10 << G4endl;
 		}
 		RemoveFirstIRTElement();
 	}
 }
 
-void TsIRT::Clean() {
+void TsIRT_revise::Clean() {
 	fChemicalSpecies.clear();
 	fConcentrations.clear();
 	fTheGvalue.clear();
 	fTheGvalueInVolume.clear();
 	fSpaceBinned.clear();
-	fUsed.clear();
 	
 	fGValues.clear();
 	fReactedDNA.clear();
@@ -388,7 +491,7 @@ void TsIRT::Clean() {
 	fTimeCut = fStepTimes[fStepTimes.size()-1];
 }
 
-void TsIRT::CleanIRTVariables() {
+void TsIRT_revise::CleanIRTVariables() {
 	fIRTIndex.clear();
 	fIRTValues.clear();
 	fIRTMolA.clear();
@@ -396,10 +499,10 @@ void TsIRT::CleanIRTVariables() {
 	fIRTIsBackground.clear();
 	fIRTOrigTime.clear();
 	fIRTPositions.clear();
+
 	fTheGvalue.clear();
 	fTheGvalueInVolume.clear();
 	fSpaceBinned.clear();
-	fUsed.clear();
 	
 	fCurrentTimeScale = 1*us;
 	fSampleIRTatStart = true;
@@ -416,13 +519,23 @@ void TsIRT::CleanIRTVariables() {
 	fIndex = 0;
 }
 
-void TsIRT::RemoveMolecule(G4int Index) {
+G4bool TsIRT_revise::MoleculeExists(G4int Index) {
+	std::unordered_map<G4int,TsIRTConfiguration_revise::TsMolecule>::iterator IT = fChemicalSpecies.find(Index);
+	if (IT == fChemicalSpecies.end()) {
+		return false;
+	}
+
+	return true;
+}
+
+
+void TsIRT_revise::RemoveMolecule(G4int Index) {
 	G4int I = fUtils->FindBin(fNx, fXMin, fXMax, fChemicalSpecies[Index].position.x());
 	G4int J = fUtils->FindBin(fNy, fYMin, fYMax, fChemicalSpecies[Index].position.y());
 	G4int K = fUtils->FindBin(fNz, fZMin, fZMax, fChemicalSpecies[Index].position.z());
 	fSpaceBinned[I][J][K].erase(Index);
 	fChemicalSpecies.erase(Index);
-	fUsed.erase(Index);
 }
 
-void TsIRT::SetContainersForNextPulse() {;}
+
+void TsIRT_revise::SetContainersForNextPulse() {;}

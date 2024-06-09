@@ -21,11 +21,11 @@ public:
 	
 	virtual void runIRT(G4double startTime = -1, G4double finalTime = -1, G4double transTime=-1, G4bool isContinuation=false) {;}
 	
-	void AddMolecule(TsIRTConfiguration::TsMolecule);
-	void AddMolecule(G4Step*, G4double, G4int, G4ThreeVector);
-	void AddMolecule(G4Track*, G4double, G4int, G4ThreeVector);
-	void AddMolecule(const G4Track*, G4double, G4int, G4ThreeVector);
-	void AddMolecule(G4Track*, G4double, G4int, G4ThreeVector, G4bool);
+	virtual void AddMolecule(TsIRTConfiguration::TsMolecule);
+	virtual void AddMolecule(G4Step*, G4double, G4int, G4ThreeVector);
+	virtual void AddMolecule(G4Track*, G4double, G4int, G4ThreeVector);
+	virtual void AddMolecule(const G4Track*, G4double, G4int, G4ThreeVector);
+	virtual void AddMolecule(G4Track*, G4double, G4int, G4ThreeVector, G4bool);
 	TsIRTConfiguration::TsMolecule ConstructMolecule(G4Track*, G4double, G4int, G4ThreeVector);
 	
 	virtual void Clean() {;}
