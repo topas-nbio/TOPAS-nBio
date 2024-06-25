@@ -1,0 +1,48 @@
+title: "[Simulation question]:"
+labels: ["question"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please, make sure to follow the user issue guidelines for TOPAS-nBio. Failure to comply with the guidelines will result in this issue to be deleted.
+        Thanks for your understanding and we hope to be able to best assist you.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Simulation question 
+      placeholder: Please describe your question.
+      value: 
+    validations:
+      required: true
+  - type: dropdown
+    id: topas-nbio-category 
+    attributes:
+      label: TOPAS-nBio category 
+      description: Select an option 
+      options:
+        - Geometry 
+        - Physics 
+        - Scoring 
+        - Chemistry 
+        - Examples 
+      default: 0
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
+  - type: checkboxes
+    id: attestation
+    attributes:
+       label: Attestation
+       description: By submitting this issue, you testify of having read the code of conduct.
+       options:
+         - label: I testify that I have fully read the bug reporting guideline beforehand.
+           required: true
+
