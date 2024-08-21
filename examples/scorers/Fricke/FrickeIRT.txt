@@ -47,8 +47,7 @@ d:Sc/nbOfMol/CutOffTime = 1 ps
 d:Sc/nbOfMol/TimeLower = 1.0 ps
 d:Sc/nbOfMol/TimeUpper = 50 s 
 i:Sc/nbOfMol/TimeBins  = 200
-b:Sc/nbOfMol/HighTimeScavenger = "True"
-sv:Sc/nbOfMol/ReportMoleculesNamed = 1 "Fe3"
+b:Sc/nbOfMol/EnableHighTimeScavengers = "True"
 
 i:So/Demo/NumberOfHistoriesInRun = 300
 i:Ts/ShowHistoryCountAtInterval = 30
