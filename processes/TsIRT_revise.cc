@@ -35,6 +35,8 @@ TsIRT_revise::TsIRT_revise(TsParameterManager* pM, G4String parmName): TsVIRTPro
 	if ( pM->ParameterExists("Ts/ChemistryVerbosity"))
 		fChemVerbosity =pM->GetIntegerParameter("Ts/ChemistryVerbosity");
 
+	fHighTimeScavenger = true;
+
 }
 
 TsIRT_revise::~TsIRT_revise() {;}
@@ -135,7 +137,7 @@ void TsIRT_revise::sampleReactions(G4int i) {
 	// background contact reaction
 	G4int indexOf1stOrder = fReactionConf->ContactFirstOrderAndBackgroundReactions(fChemicalSpecies[i]);
 	if ( -1 < indexOf1stOrder ) {
-		AddToIRT(0,indexOf1stOrder,i,i,fChemicalSpecies[i].time,fChemicalSpecies[i].position,fChemicalSpecies[i].position,true);
+		AddToIRT(fChemicalSpecies[i].time,indexOf1stOrder,i,i,fChemicalSpecies[i].time,fChemicalSpecies[i].position,fChemicalSpecies[i].position,true);
 		return;
 	}
 
