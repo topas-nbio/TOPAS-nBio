@@ -45,19 +45,13 @@ class PDBlib
 public:
   //! First constructor
   PDBlib();
-  //! Destructor
-  ~PDBlib() {};
 
   //! Load PDB file into memory
-  Molecule* Load( const string &filename,
-      unsigned short int &isDNA,
-      unsigned short int verbose);
-
-  // All declarations below are 'DNA specific'
-  // Just comment those lines if you need to use this code elsewhere.
+  Molecule * Load(const string &filename, unsigned short int &isProtein,
+                  unsigned short int verbose=0);
 
   //! Compute nucleotide barycenter from memory
-  Barycenter* ComputeNucleotideBarycenters(Molecule *moleculeListTemp);
+  Barycenter * ComputeResidueBarycenters(Molecule * moleculeListTemp);
 
   //! Compute the corresponding bounding volume parameters
   void ComputeBoundingVolumeParams(Molecule *moleculeListTemp,
@@ -72,14 +66,23 @@ public:
       double x, double y,double z,
       int &numStrand, int &numNucleotid, int &codeResidue);
 
-private:
+  //! Compute if energy is deposited in per atom
+  unsigned short int ComputeMatchEdepProtein(Barycenter *BarycenterList,
+      Molecule *moleculeListTemp,
+      double x, double y, double z,
+      int &chainNum, int &residueNum, string &atomType);
+
   //! return distance between two 3D points
   double DistanceTwo3Dpoints(double xA,double xB,
       double yA,double yB,
       double zA,double zB);
 
+private:
   //! Number of nucleotid per strand
   int fNbNucleotidsPerStrand;
+
+  //! Number of residues per chain
+  int fNbResiduesPerChain;
 };
 
 #endif

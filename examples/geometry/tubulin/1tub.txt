@@ -1,0 +1,52 @@
+# 1tub.txt - TOPAS parameter file for loading and visualizing 1tub.pdb
+
+# Geometry settings
+s:Ge/1tub/Type = "TsPDB4DNA"
+s:Ge/1tub/PDB4DNAFileName = "examples/geometry/tubulin/1tub.pdb"
+b:Ge/1tub/VisualizeBoundingBox = "True"
+
+# Position and rotation
+d:Ge/1tub/TransX = 0. mm
+d:Ge/1tub/TransY = 0. mm
+d:Ge/1tub/TransZ = 0. mm
+d:Ge/1tub/RotX = 0. deg
+d:Ge/1tub/RotY = 0. deg
+d:Ge/1tub/RotZ = 0. deg
+
+# Visualization settings
+s:Ge/1tub/Color = "auto"
+b:Ge/1tub/Visible = "True"
+
+# Scoring settings
+s:Sc/1tub_scorer/Quantity = "PDB4DNA"
+s:Sc/1tub_scorer/Component = "1tub"
+s:Sc/1tub_scorer/FileName = "1tub_hits"
+i:Sc/1tub_scorer/MinimumDistanceForDSB = 10
+d:Sc/1tub_scorer/LowerEnergyForSamplingSSB = 8.22 eV
+
+# Run settings
+i:Ts/NumberOfThreads = 1
+i:Ts/Seed = 1
+i:Ts/NumberOfHistoriesInRun = 1000
+
+# Beam settings
+s:So/Example/Type = "Beam"
+s:So/Example/Component = "BeamPosition"
+s:So/Example/BeamParticle = "proton"
+d:So/Example/BeamEnergy = 100 MeV
+u:So/Example/BeamEnergySpread = 0.757504
+s:So/Example/BeamPositionDistribution = "Gaussian"
+s:So/Example/BeamPositionCutoffShape = "Ellipse"
+d:So/Example/BeamPositionCutoffX = 10 cm
+d:So/Example/BeamPositionCutoffY = 10 cm
+d:So/Example/BeamPositionSpreadX = 0.65 cm
+d:So/Example/BeamPositionSpreadY = 0.65 cm
+s:So/Example/BeamAngularDistribution = "Gaussian"
+d:So/Example/BeamAngularCutoffX = 90 deg
+d:So/Example/BeamAngularCutoffY = 90 deg
+d:So/Example/BeamAngularSpreadX = 0.0032 rad
+d:So/Example/BeamAngularSpreadY = 0.0032 rad
+
+# Graphics settings
+b:Gr/Enable = "True"
+i:Gr/NumberOfThreads = 1

@@ -41,7 +41,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-PDBlib::PDBlib():fNbNucleotidsPerStrand(0)
+PDBlib::PDBlib():fNbResiduesPerChain(0)
 {
 }
 
@@ -56,7 +56,7 @@ PDBlib::PDBlib():fNbNucleotidsPerStrand(0)
  * \return   List of molecules
  */
 
-Molecule * PDBlib::Load( const string &filename,unsigned short int &isDNA,
+Molecule * PDBlib::Load(const string &filename, unsigned short int &isProtein,
     unsigned short int verbose=0)
 {
   string sLine = "";
@@ -151,29 +151,21 @@ Molecule * PDBlib::Load( const string &filename,unsigned short int &isDNA,
     if (!infile.eof())
     {
       getline(infile, sLine);
-      std::size_t found = sLine.find("DNA");
-      if (found!=std::string::npos)
-      {
-        terMax=2;
-        isDNA=1;
-      }
-      else
-        isDNA=0;
-      //If PDB file have not a header line
-      found = sLine.find("HEADER");
+      isProtein = 1; // Assume it's a protein by default
+      std::size_t found = sLine.find("HEADER");
       if (found==std::string::npos)
       {
         infile.close();
         infile.open(filename.c_str());
-        //Specific to Geant4, use std::cout instead
 #ifdef GEANT4
         G4cout<<"PDBlib::load >> No header found !!!!"<<G4endl;
 #else
         cout<<"PDBlib::load >> No header found !!!!"<<endl;
 #endif
       }
-
     }
+
+    int terMax = std::numeric_limits<int>::max();
 
     while (!infile.eof())
     {
@@ -324,24 +316,19 @@ Molecule * PDBlib::Load( const string &filename,unsigned short int &isDNA,
         {
           vdwRadius=1.52;
         }
-        else if (element=="P")
-        {
-          vdwRadius=1.8;
-        }
         else if (element=="S")
         {
           vdwRadius=1.8;
         }
         else
         {
+          // Use a default radius for unknown elements
+          vdwRadius=1.8;
 #ifdef GEANT4
-          G4cout << "Element not recognized : " << element << G4endl;
-          G4cout << "Stop now" << G4endl;
+          G4cout << "Warning: Unknown element: " << element << ". Using default radius." << G4endl;
 #else
-          cout << "Element not recognized : " << element << endl;
-          cout << "Stop now" << endl;
+          cout << "Warning: Unknown element: " << element << ". Using default radius." << endl;
 #endif
-          exit(1);
         }
 
         {
@@ -463,17 +450,13 @@ Molecule * PDBlib::Load( const string &filename,unsigned short int &isDNA,
  * \param    Molecule *    moleculeList
  * \return   Barycenter *
  */
-Barycenter * PDBlib::ComputeNucleotideBarycenters(Molecule * moleculeListTemp)
+Barycenter * PDBlib::ComputeResidueBarycenters(Molecule * moleculeListTemp)
 {
-  ///////////////////////////////////////////////////////
-  //Placement and physical volume construction from memory
   Barycenter * BarycenterFirst = NULL;
   Barycenter * BarycenterOld = NULL;
   Barycenter * BarycenterNext = NULL;
 
-  //Residue (Base, Phosphate,sugar) list
   Residue *residueListTemp;
-  //Atom list inside a residu
   Atom *AtomTemp;
 
   int k=0;
@@ -486,161 +469,140 @@ Barycenter * PDBlib::ComputeNucleotideBarycenters(Molecule * moleculeListTemp)
     k++;
     int j=0;
 
-    //Check numerotation style (1->n per strand or 1->2n for two strand)
-    int correctNumerotationNumber=0;
-    if (k==2 && residueListTemp->fResSeq > 1)
-    {
-      correctNumerotationNumber=residueListTemp->fResSeq;
-    }
-
     while (residueListTemp)
     {
       AtomTemp=residueListTemp->GetFirst();
       j++;
 
-      //Correction consequently to numerotation check
-      if (correctNumerotationNumber!=0)
-      {
-        residueListTemp->fResSeq=residueListTemp->fResSeq-
-            correctNumerotationNumber+1;
-      }
-
-      //Barycenter computation
-      double baryX=0.,baryY=0.,baryZ=0.;
-      double baryBaseX=0.,baryBaseY=0.,baryBaseZ=0.;
-      double barySugX=0.,barySugY=0.,barySugZ=0.;
-      double baryPhosX=0.,baryPhosY=0.,baryPhosZ=0.;
-      unsigned short int nbAtomInBase=0;
+      double baryX=0., baryY=0., baryZ=0.;
+      int atomCount = 0;
 
       for (int i=0 ; i < residueListTemp->fNbAtom ; i++)
       {
-        //Compute barycenter of the nucletotide
-        baryX+=AtomTemp->fX;
-        baryY+=AtomTemp->fY;
-        baryZ+=AtomTemp->fZ;
-        //Compute barycenters for Base Sugar Phosphat
-        if (residueListTemp->fResSeq == 1)
-        {
-          if (i==0)
-          {
-            baryPhosX+=AtomTemp->fX;
-            baryPhosY+=AtomTemp->fY;
-            baryPhosZ+=AtomTemp->fZ;
-          }
-          else if (i<8)
-          {
-            barySugX+=AtomTemp->fX;
-            barySugY+=AtomTemp->fY;
-            barySugZ+=AtomTemp->fZ;
-          }
-          else
-          {
-            //hydrogen are placed at the end of the residue in a PDB file
-            //We don't want them for this calculation
-            if (AtomTemp->fElement!="H"){
-              baryBaseX+=AtomTemp->fX;
-              baryBaseY+=AtomTemp->fY;
-              baryBaseZ+=AtomTemp->fZ;
-              nbAtomInBase++;}
-          }
-        }
-        else
-        {
-          if (i<4)
-          {
-            baryPhosX+=AtomTemp->fX;
-            baryPhosY+=AtomTemp->fY;
-            baryPhosZ+=AtomTemp->fZ;
-          }
-          else if (i<11)
-          {
-            barySugX+=AtomTemp->fX;
-            barySugY+=AtomTemp->fY;
-            barySugZ+=AtomTemp->fZ;
-          }
-          else
-          {
-            //hydrogen are placed at the end of the residue in a PDB file
-            //We don't want them for this calculation
-            if (AtomTemp->fElement!="H"){// break;
-              baryBaseX+=AtomTemp->fX;
-              baryBaseY+=AtomTemp->fY;
-              baryBaseZ+=AtomTemp->fZ;
-              nbAtomInBase++;}
-          }
-        }
-        AtomTemp=AtomTemp->GetNext();
-      }//end of for (  i=0 ; i < residueListTemp->nbAtom ; i++)
+        baryX += AtomTemp->fX;
+        baryY += AtomTemp->fY;
+        baryZ += AtomTemp->fZ;
+        atomCount++;
 
-      baryX = baryX / (double)residueListTemp->fNbAtom;
-      baryY = baryY / (double)residueListTemp->fNbAtom;
-      baryZ = baryZ / (double)residueListTemp->fNbAtom;
-
-      if (residueListTemp->fResSeq != 1) //Special case first Phosphate
-      {
-        baryPhosX = baryPhosX / 4.;
-        baryPhosY = baryPhosY / 4.;
-        baryPhosZ = baryPhosZ / 4.;
+        AtomTemp = AtomTemp->GetNext();
       }
-      barySugX = barySugX / 7.;
-      barySugY = barySugY / 7.;
-      barySugZ = barySugZ / 7.;
-      baryBaseX = baryBaseX / (double)nbAtomInBase;
-      baryBaseY = baryBaseY / (double)nbAtomInBase;
-      baryBaseZ = baryBaseZ / (double)nbAtomInBase;
 
-      //Barycenter creation:
+      baryX /= atomCount;
+      baryY /= atomCount;
+      baryZ /= atomCount;
+
       if (BarycenterOld == NULL)
       {
-        BarycenterOld =new Barycenter(j+j_old,baryX,baryY,baryZ, //j [1..n]
-                                      baryBaseX,baryBaseY,baryBaseZ,
-                                      barySugX,barySugY,barySugZ,
-                                      baryPhosX,baryPhosY,baryPhosZ);
+        BarycenterOld = new Barycenter(j+j_old, baryX, baryY, baryZ);
         BarycenterFirst = BarycenterOld;
       }
       else
       {
-        BarycenterNext = new Barycenter(j+j_old,baryX,baryY,baryZ,
-                                        baryBaseX,baryBaseY,baryBaseZ,
-                                        barySugX,barySugY,barySugZ,
-                                        baryPhosX,baryPhosY,baryPhosZ);
-        BarycenterOld -> SetNext(BarycenterNext);
+        BarycenterNext = new Barycenter(j+j_old, baryX, baryY, baryZ);
+        BarycenterOld->SetNext(BarycenterNext);
         BarycenterOld = BarycenterNext;
       }
 
-      /////////////////////////////////////////////////
-      //distance computation between all atoms inside
-      //a residue and the barycenter
-      AtomTemp=residueListTemp->GetFirst();
-      double dT3Dp;
-      double max=0.;
+      AtomTemp = residueListTemp->GetFirst();
+      double max = 0.;
       for (int ii=0 ; ii < residueListTemp->fNbAtom ; ii++)
       {
-        dT3Dp = DistanceTwo3Dpoints(AtomTemp->fX,BarycenterOld->fCenterX,
-                                    AtomTemp->fY,BarycenterOld->fCenterY,
-                                    AtomTemp->fZ,BarycenterOld->fCenterZ);
-        BarycenterOld->SetDistance(ii,dT3Dp);
-        if (dT3Dp>max) max=dT3Dp;
-        AtomTemp=AtomTemp->GetNext();
-      }//end of for (  i=0 ; i < residueListTemp->nbAtom ; i++)
+        double dT3Dp = DistanceTwo3Dpoints(AtomTemp->fX, BarycenterOld->fCenterX,
+                                           AtomTemp->fY, BarycenterOld->fCenterY,
+                                           AtomTemp->fZ, BarycenterOld->fCenterZ);
+        BarycenterOld->SetDistance(ii, dT3Dp);
+        if (dT3Dp > max) max = dT3Dp;
+        AtomTemp = AtomTemp->GetNext();
+      }
 
-      BarycenterOld->SetRadius(max+1.8);
-      residueListTemp=residueListTemp->GetNext();
+      BarycenterOld->SetRadius(max + 1.8);
+      residueListTemp = residueListTemp->GetNext();
+    }
 
-    }//end of while sur residueListTemp
+    j_old += j;
+    moleculeListTemp = moleculeListTemp->GetNext();
+  }
 
-    j_old+=j;
-
-    ///molecs->push_back(*moleculeListTemp);
-    moleculeListTemp=moleculeListTemp->GetNext();
-  }//end of while sur moleculeListTemp
-
-  if(BarycenterNext!=NULL)
+  if(BarycenterNext != NULL)
   {
-    BarycenterNext -> SetNext(NULL);
+    BarycenterNext->SetNext(NULL);
   }
 
   return BarycenterFirst;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+/**
+ * \brief    Compute barycenters
+ * \details  Compute barycenters and its coordinate 
+ *                  for nucleotides
+ * \param    Molecule *    moleculeList
+ * \return   Barycenter *
+ */
+unsigned short int PDBlib::ComputeMatchEdepProtein(Barycenter *BarycenterList,
+    Molecule *moleculeListTemp,
+    double x, double y, double z,
+    int &chainNum, int &residueNum, string &atomType)
+{
+  unsigned short int matchFound = 0;
+
+  Molecule *mLTsavedPointer = moleculeListTemp;
+  Barycenter *BLsavedPointer = BarycenterList;
+
+  short int currentChainNum = 0;
+  double smallestDist = 33.0; // Sufficiently large value
+
+  Residue *residueListTemp;
+  Atom *AtomTemp;
+
+  int k = 0; // Molecule number
+  moleculeListTemp = mLTsavedPointer;
+  BarycenterList = BLsavedPointer;
+
+  while (moleculeListTemp)
+  {
+    k++;
+    residueListTemp = moleculeListTemp->GetFirst();
+
+    int j = 0; // Residue number
+
+    while (residueListTemp)
+    {
+      j++;
+
+      double distEdepProtein = DistanceTwo3Dpoints(x, BarycenterList->fCenterX,
+                                                   y, BarycenterList->fCenterY,
+                                                   z, BarycenterList->fCenterZ);
+      if (distEdepProtein < BarycenterList->GetRadius())
+      {
+        AtomTemp = residueListTemp->GetFirst();
+        for (int iii = 0; iii < residueListTemp->fNbAtom; iii++)
+        {
+          double distEdepAtom = DistanceTwo3Dpoints(x, AtomTemp->GetX(),
+                                                    y, AtomTemp->GetY(),
+                                                    z, AtomTemp->GetZ());
+
+          if ((distEdepAtom < AtomTemp->GetVanDerWaalsRadius())
+              && (smallestDist > distEdepAtom))
+          {
+            chainNum = k;
+            residueNum = residueListTemp->fResSeq;
+            atomType = AtomTemp->fElement;
+
+            smallestDist = distEdepAtom;
+            matchFound = 1;
+          }
+          AtomTemp = AtomTemp->GetNext();
+        }
+      }
+      BarycenterList = BarycenterList->GetNext();
+      residueListTemp = residueListTemp->GetNext();
+    }
+    moleculeListTemp = moleculeListTemp->GetNext();
+  }
+
+  return matchFound;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -712,14 +674,12 @@ void PDBlib::ComputeBoundingVolumeParams(Molecule *moleculeListTemp,
   tZ=minminZ+(maxmaxZ-minminZ)/2.;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-/**
- * \brief    Compute number of nucleotide per strand
- * \details  Compute number of nucleotide per strand 
- *                  for DNA
- */
-void PDBlib::ComputeNbNucleotidsPerStrand(Molecule * moleculeListTemp)
+double PDBlib::DistanceTwo3Dpoints(double xA,double xB,double yA,double yB,
+    double zA,double zB)
+{
+  return std::sqrt ( (xA-xB)*(xA-xB) + (yA-yB)*(yA-yB) + (zA-zB)*(zA-zB) );
+}
+void PDBlib::ComputeNbResiduesPerChain(Molecule * moleculeListTemp)
 {
   Residue *residueListTemp;
 
@@ -743,140 +703,7 @@ void PDBlib::ComputeNbNucleotidsPerStrand(Molecule * moleculeListTemp)
     moleculeListTemp=moleculeListTemp->GetNext();
   }//end of while sur moleculeListTemp
 
-  fNbNucleotidsPerStrand=j_old/2;
+  fNbResiduesPerChain=j_old/2;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-/**
- * \brief    Compute barycenters
- * \details  Compute barycenters and its coordinate 
- *                  for nucleotides
- * \param    Molecule *    moleculeList
- * \return   Barycenter *
- */
-unsigned short int PDBlib::ComputeMatchEdepDNA(Barycenter *BarycenterList,
-    Molecule *moleculeListTemp,
-    double x, double y,double z,
-    int &numStrand, int &numNucleotid, int &codeResidue)
-{
-  unsigned short int matchFound=0;
-
-  Molecule *mLTsavedPointer = moleculeListTemp;
-  Barycenter *BLsavedPointer = BarycenterList;
-
-  short int strandNum=0;//Strand number
-  int residueNum=1;//Residue (nucleotide) number
-  string baseName;//Base name [A,C,T,G]
-  unsigned short int BSP=2;//Base (default value), Sugar, Phosphat
-
-  double smallestDist;//smallest dist Atom <-> edep coordinates
-  double distEdepDNA;
-  double distEdepAtom;
-
-  //Residue (Base, Phosphate,suggar) list
-  Residue *residueListTemp;
-  //Atom list inside a residue
-  Atom *AtomTemp;
-
-  int k = 0;//Molecule number
-  moleculeListTemp = mLTsavedPointer;
-  BarycenterList = BLsavedPointer;
-
-  smallestDist=33.0;//Sufficiently large value
-  while (moleculeListTemp)
-  {
-    k++;
-    residueListTemp = moleculeListTemp->GetFirst();
-
-    int j = 0;//Residue number
-
-#ifdef GEANT4
-    int j_save=2000000000;//Saved res. number if match found
-#else
-    int j_save = numeric_limits<int>::max();//Saved res. number if match found
-#endif
-
-    while (residueListTemp)
-    {
-      j++;
-
-      if (j - j_save > 2 ) break;
-
-      distEdepDNA=DistanceTwo3Dpoints(x,BarycenterList->fCenterX,
-                                      y,BarycenterList->fCenterY,
-                                      z,BarycenterList->fCenterZ);
-      if (distEdepDNA < BarycenterList->GetRadius())
-      {
-        //Find the closest atom
-        //Compute distance between energy deposited and atoms for a residue
-        //if distance <1.8 then match OK but search inside 2 next residues
-        AtomTemp=residueListTemp->GetFirst();
-        for (int iii=0 ; iii < residueListTemp->fNbAtom ; iii++)
-        {
-
-          distEdepAtom=DistanceTwo3Dpoints(x,AtomTemp->GetX(),
-                                           y,AtomTemp->GetY(),
-                                           z,AtomTemp->GetZ());
-
-          if ((distEdepAtom < AtomTemp->GetVanDerWaalsRadius())
-              && (smallestDist > distEdepAtom))
-          {
-            strandNum=k;
-
-            if (k==2){
-              residueNum = fNbNucleotidsPerStrand + 1 -
-                  residueListTemp->fResSeq;
-            }
-            else
-            {
-              residueNum = residueListTemp->fResSeq;
-            }
-
-            baseName = (residueListTemp->fResName)[2];
-            if (residueListTemp->fResSeq == 1)
-            {
-              if (iii == 0) BSP = 0;//"Phosphate"
-              else if (iii < 8) BSP = 1;//"Sugar"
-              else BSP = 2;//"Base"
-            }
-            else
-            {
-              if (iii < 4) BSP = 0;//"Phosphate"
-              else if (iii < 11) BSP = 1;//"Sugar"
-              else BSP = 2;//"Base"
-            }
-
-            smallestDist=distEdepAtom;
-
-#ifdef GEANT4
-            int j_max_value=2000000000;
-#else
-            int j_max_value = numeric_limits<int>::max();
-#endif
-            if (j_save == j_max_value) j_save = j;
-            matchFound = 1;
-          }
-          AtomTemp=AtomTemp->GetNext();
-        }//end of for (  iii=0 ; iii < residueListTemp->nbAtom ; iii++)
-      }//end for if (distEdepDNA < BarycenterList->GetRadius())
-      BarycenterList=BarycenterList->GetNext();
-      residueListTemp=residueListTemp->GetNext();
-    }//end of while sur residueListTemp
-    moleculeListTemp=moleculeListTemp->GetNext();
-  }//end of while sur moleculeListTemp
-
-  numStrand = strandNum;
-  numNucleotid = residueNum;
-  codeResidue = BSP;
-
-  return matchFound;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-double PDBlib::DistanceTwo3Dpoints(double xA,double xB,double yA,double yB,
-    double zA,double zB)
-{
-  return std::sqrt ( (xA-xB)*(xA-xB) + (yA-yB)*(yA-yB) + (zA-zB)*(zA-zB) );
-}

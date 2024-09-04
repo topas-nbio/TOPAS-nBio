@@ -25,28 +25,28 @@ TsScorePDB4DNA::TsScorePDB4DNA(TsParameterManager* pM, TsMaterialManager* mM, Ts
     SetUnit("");
     
     fPDBFileName = fPm->GetStringParameter(GetFullParmName("PDB4DNAFileName"));
-	std::fstream in;
-	in.open(fPDBFileName,std::ios::in);
-	if (!in.is_open() ) {
-		G4cerr << "Topas is exiting due to a serious error in scoring." << G4endl;
-		G4cerr << "Input file: " << fPDBFileName << " cannot be opened for Scorer name: " << GetName() << G4endl;
-		fPm->AbortSession(1);
-	}
-	in.close();
-	
-    fMoleculeList=NULL;
-    fBarycenterList=NULL;
+    std::fstream in;
+    in.open(fPDBFileName,std::ios::in);
+    if (!in.is_open() ) {
+        G4cerr << "Topas is exiting due to a serious error in scoring." << G4endl;
+        G4cerr << "Input file: " << fPDBFileName << " cannot be opened for Scorer name: " << GetName() << G4endl;
+        fPm->AbortSession(1);
+    }
+    in.close();
     
-    G4int verbosity=0;
-    unsigned short int isDNA;
-    fMoleculeList = fPDBlib.Load(fPDBFileName,isDNA,verbosity);
+    fMoleculeList = NULL;
+    fBarycenterList = NULL;
     
-    if (fMoleculeList!=NULL && isDNA==1) {
-        fPDBlib.ComputeNbNucleotidsPerStrand(fMoleculeList);
-        fBarycenterList=fPDBlib.ComputeNucleotideBarycenters(fMoleculeList );
+    G4int verbosity = 0;
+    unsigned short int isProtein;
+    fMoleculeList = fPDBlib.Load(fPDBFileName, isProtein, verbosity);
+    
+    if (fMoleculeList != NULL) {
+        fPDBlib.ComputeNbResiduesPerChain(fMoleculeList);
+        fBarycenterList = fPDBlib.ComputeResidueBarycenters(fMoleculeList);
     }
     
-    if (fMoleculeList!=NULL) {
+    if (fMoleculeList != NULL) {
         std::cout << "Read file " << fPDBFileName << std::endl;
     }
     
@@ -63,13 +63,15 @@ TsScorePDB4DNA::TsScorePDB4DNA(TsParameterManager* pM, TsMaterialManager* mM, Ts
     
     // This is for variance reduction
     if ( fPm->ParameterExists(GetFullParmName("NumberOfSplit")) )
-    	fNbOfAlgo = fPm->GetIntegerParameter(GetFullParmName("NumberOfSplit"));
+        fNbOfAlgo = fPm->GetIntegerParameter(GetFullParmName("NumberOfSplit"));
     
     fThresEdepForSSB /= eV;
     
     fNtuple->RegisterColumnI(&fEventID, "Event number");
-    fNtuple->RegisterColumnI(&fSSB,     "Single strand breaks");
-    fNtuple->RegisterColumnI(&fDSB,     "Double strand breaks");
+    fNtuple->RegisterColumnI(&fHits,    "Number of hits");
+    fNtuple->RegisterColumnI(&fChainNum, "Chain number");
+    fNtuple->RegisterColumnI(&fResidueNum, "Residue number");
+    fNtuple->RegisterColumnS(&fAtomType, "Atom type");
     
     SuppressStandardOutputHandling();
     
@@ -96,35 +98,18 @@ G4bool TsScorePDB4DNA::ProcessHits(G4Step* aStep,G4TouchableHistory*)
         G4double y = pos.y()/nanometer;
         G4double z = pos.z()/nanometer;
         
-        G4int numStrand = 0;
-        G4int numNucl = 0;
-        G4int intResidue = -1;
-        unsigned short int hit = fPDBlib.ComputeMatchEdepDNA(fBarycenterList, fMoleculeList, x*10, y*10, z*10,
-                                                             numStrand, numNucl, intResidue);
+        int chainNum = 0;
+        int residueNum = 0;
+        string atomType;
+        unsigned short int hit = fPDBlib.ComputeMatchEdepProtein(fBarycenterList, fMoleculeList, x*10, y*10, z*10,
+                                                                 chainNum, residueNum, atomType);
         
         if ( 1 == hit ) {
-            if ( ( 0 == intResidue ) || ( 1 == intResidue ) ) { //Edep in Phosphate or sugar
-                G4int index = 1;
-                if ( 1 < fNbOfAlgo ) {
-                    TsTrackInformation* trackInformation = (TsTrackInformation*)aStep->GetTrack()->GetUserInformation();
-                    index = trackInformation->GetSplitTrackID();
-                }
-                
-                if ( 2 < index ) {
-                    if ( numStrand == 1 )
-                        fVEdepStrand1[index-3][numNucl] += edep;
-                    else
-                        fVEdepStrand2[index-3][numNucl] += edep;
-                    
-                } else {
-                    if ( numStrand == 1 )
-                        for ( int i = 0; i < fNbOfAlgo; i++ )
-                            fVEdepStrand1[i][numNucl] += edep;
-                    else
-                        for ( int i = 0; i < fNbOfAlgo; i++ )
-                            fVEdepStrand2[i][numNucl] += edep;
-                }
-            }
+            fHits++;
+            fChainNum = chainNum;
+            fResidueNum = residueNum;
+            fAtomType = atomType;
+            fNtuple->Fill();
         }
         return true;
     }
@@ -133,19 +118,11 @@ G4bool TsScorePDB4DNA::ProcessHits(G4Step* aStep,G4TouchableHistory*)
 
 
 void TsScorePDB4DNA::UserHookForEndOfEvent() {
-
     fEventID = GetEventID();
-    
-    for ( int i = 0; i < fNbOfAlgo; i++ ) {
-        G4int sb[2] = {0, 0};
-        ComputeStrandBreaks(sb, i);
-        fSSB = sb[0];
-        fDSB = sb[1];
-        fNtuple->Fill();
-    }
-    
-    fVEdepStrand1.erase(fVEdepStrand1.begin(), fVEdepStrand1.end());
-    fVEdepStrand2.erase(fVEdepStrand2.begin(), fVEdepStrand2.end());
+    fHits = 0;
+    fChainNum = 0;
+    fResidueNum = 0;
+    fAtomType = "";
 }
 
 
