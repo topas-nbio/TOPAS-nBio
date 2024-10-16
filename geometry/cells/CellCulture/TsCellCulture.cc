@@ -76,43 +76,24 @@ G4VPhysicalVolume* TsCellCulture::Construct()
     G4LogicalVolume* lNucleus = CreateLogicalVolume(subComponentName1, gNucleus);
 
     // Randomly place cells in the volume
-    for (int j = 0; j < NbOfCells; j++){
-
-        G4bool Overlap = true;
-        while (Overlap == true){
-
-            G4double phi = 0;
-            G4double psi = 0;
-            G4double x = 0.0;
-            G4double y = 0.0;
-            G4double z = 0.0;
-
-            x = (2*G4UniformRand()-1)*(HLX-CellRadius) ;
-            y = (2*G4UniformRand()-1)*(HLY-CellRadius) ;
-            z = (2*G4UniformRand()-1)*(HLZ-CellRadius) ;
-
-            G4ThreeVector* position = new G4ThreeVector(x,y,z);
-            G4ThreeVector* posNucl = new G4ThreeVector(0*mm,0*mm,0*mm);
-            
-            G4RotationMatrix* rotm = new G4RotationMatrix();
-
-            rotm->rotateX(psi);
-            rotm->rotateY(phi);
-
-            G4VPhysicalVolume* pCell = CreatePhysicalVolume("Cell", j, true, lCell, rotm, position, fEnvelopePhys);
-            G4VPhysicalVolume* pNucleus = CreatePhysicalVolume("Nucleus", j, true, lNucleus, rotm, posNucl, pCell);
+    G4int nCell = 0;
+    G4double x, y, z;
+    
+    while(nCell < NbOfCells) {
+        x = (2*G4UniformRand()-1)*(HLX-CellRadius) ;
+        y = (2*G4UniformRand()-1)*(HLY-CellRadius) ;
+        z = (2*G4UniformRand()-1)*(HLZ-CellRadius) ;
         
-            G4bool OverlapCheck = pCell->CheckOverlaps();
-
-            if (OverlapCheck == false){
-                OverlapCheck = pNucleus->CheckOverlaps();
-                if (OverlapCheck == false)
-                    break;
-            }
-            if (OverlapCheck == true){
-                pCell = NULL;
-                pNucleus = NULL;
-                G4cout << "**** Finding new position for volume Cell : " << j <<  " ****" << G4endl;
+        if (gBox->Inside(G4ThreeVector(x, y, z)) == kInside) {
+            G4ThreeVector* position = new G4ThreeVector(x,y,z);
+            G4VPhysicalVolume* pCell = CreatePhysicalVolume("Cell", nCell, true, lCell, new G4RotationMatrix(), position, fEnvelopePhys);
+            
+            if (pCell->CheckOverlaps(1000, 0., false, 1)) {
+                delete pCell;
+                G4cout << "**** Finding new position for volume Cell : " << nCell <<  " ****" << G4endl;
+            } else {
+                CreatePhysicalVolume("Nucleus", lNucleus, new G4RotationMatrix(), new G4ThreeVector(), pCell);
+                nCell++;
             }
         }
     }
