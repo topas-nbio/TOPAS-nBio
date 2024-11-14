@@ -374,9 +374,9 @@ void TsEmDNAChemistry::DefineParameters()
         fB1A1AutoIonization = fPm->GetUnitlessParameter(parName + "B1A1/AutoIonization");
     std::cout << "-- Branching ratio: B1A1 Auto-ionization probability " << fB1A1AutoIonization << std::endl;
 
-    if ( fPm->ParameterExists(parName + "B1A1/AutoIonization"))
+    if ( fPm->ParameterExists(parName + "A1B1/DissociativeDecay2"))
         fA1B1DissociativeDecay2 = fPm->GetUnitlessParameter(parName + "A1B1/DissociativeDecay2");
-    std::cout << "-- Branching ratio: B1A1 Auto-ionization probability " << fA1B1DissociativeDecay2 << std::endl;
+    std::cout << "-- Branching ratio: A1B1 Dissociative decay2 probability " << fA1B1DissociativeDecay2 << std::endl;
 
     if ( fPm->ParameterExists(parName + "B1A1/DissociativeDecay2"))
         fB1A1DissociativeDecay2 = fPm->GetUnitlessParameter(parName + "B1A1/DissociativeDecay2");
