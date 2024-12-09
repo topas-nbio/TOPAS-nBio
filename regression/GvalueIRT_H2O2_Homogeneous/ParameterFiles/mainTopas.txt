@@ -27,7 +27,7 @@ dv:Ch/TOPASChemistry/AddTimeStepResolution       = 1 1e-6 ps
 d:Ch/TOPASChemistry/ChemicalStageTimeEnd         = 1.00001 ps
 b:Ch/TOPASChemistry/TestForContactReactions      = "True"
 
-s:Ch/TOPASChemistry/IRTProcedure = "pure"
+s:Ch/TOPASChemistry/IRTProcedure = "hybrid"
 
 ###############################################################
 ################### Additional Reactions ######################

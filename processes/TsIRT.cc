@@ -371,6 +371,7 @@ void TsIRT::Clean() {
 	fTheGvalueInVolume.clear();
 	fSpaceBinned.clear();
 	fUsed.clear();
+	fSpeciesOfAKind.clear();
 	
 	fGValues.clear();
 	fReactedDNA.clear();

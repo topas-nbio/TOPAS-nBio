@@ -64,7 +64,7 @@ protected:
 	void initializeScorers();
 	void FindBinIndexes(G4ThreeVector thisPos, G4double rcutOff);
 	virtual void contactReactions(G4int i,std::unordered_map<G4int, G4bool> j) {;}
-	void sampleReactions(G4int i);
+	virtual void sampleReactions(G4int i);
 	G4String GetFullParmName(G4String name);
 
 	void VoxelizeAndSortSpace();
@@ -145,6 +145,7 @@ protected:
 	G4double fTimeCut;
 	G4double fCurrentTimeScale;
 	std::vector<std::pair<G4double, G4int > > fIRTValues;
+	std::unordered_map<G4int,std::unordered_map<G4int,G4bool>> fSpeciesOfAKind;
 	std::unordered_map<G4int,G4int> fIRTIndex;
 	std::unordered_map<G4int,G4int> fIRTMolA;
 	std::unordered_map<G4int,G4int> fIRTMolB;

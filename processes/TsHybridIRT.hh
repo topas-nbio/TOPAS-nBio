@@ -19,7 +19,7 @@ class TsHybridIRT : public TsVIRTProcedure {
 public:
 	TsHybridIRT(TsParameterManager*, G4String);
 	~TsHybridIRT();
-	
+
 	void runIRT(G4double startTime = -1, G4double finalTime = -1, G4double transTime=-1, G4bool isContinuation=false) override;
 	void Clean() override;
 
@@ -28,6 +28,7 @@ public:
 
 protected:
 	void contactReactions(G4int i,std::unordered_map<G4int, G4bool> j) override;
+	void sampleReactions(G4int i) override;
 	void ConductReactions() override;
 	void CleanIRTVariables() override;
 	void RemoveMolecule(G4int Index) override;
@@ -36,7 +37,7 @@ protected:
 	//Homogeneous Chemistry Methods
 	// Gillespie Direct Method
 	void UpdateGillespieDirect(G4double);
-	G4bool DoGillespieDirect(G4double);
+	G4bool DoGillespieDirect(G4double,G4bool);
 	std::pair<G4int,G4int> ChooseReactantsBasedOnDistance(std::vector<G4int>,std::vector<G4int>,G4int,G4int,G4int,G4double);
 	G4int ChooseReactantRandomly(std::vector<G4int>,G4int,G4double);
 
@@ -44,6 +45,9 @@ protected:
 	void UpdateGillespieTauLeaping(G4double);
 	G4bool DoGillespieTauLeaping(G4double);
 	std::vector<G4int> GetAllSpeciesOfAKindAtATime(G4double,G4int);
+
+	void GetGillespieDirectReactants(G4double currentTime);
+	void GetGillespieDirectTime();
 
 protected:
 	TsParameterManager* fPm;
@@ -61,7 +65,6 @@ protected:
 	G4bool fUseVariableBackground;
 	G4double fCubicVolume;
 	std::unordered_map<G4int,G4double> fPropensityAtThisTime;
-	std::unordered_map<G4int,std::unordered_map<G4int,G4bool>> fSpeciesOfAKind;
 	std::unordered_map<G4int,std::vector<G4int>> fConcentrationsAtThisTime;
 	std::unordered_map<G4int,G4int> fHomogeneousConcentrations;
 	std::unordered_map<G4int,G4int> fInitialBackgroundConcentrations;
@@ -72,6 +75,9 @@ protected:
 	G4double fHomogeneousTimeStep;
 	G4double fTotalPropensityAtThisTime;
 	G4bool fGillespieFinalTau;
+
+	G4int fGillespieIndexA;
+	G4int fGillespieIndexB;
 
 	// Adaptative Tau Leaping Method
 	std::unordered_map<G4int,G4double> fMuForMolecule;

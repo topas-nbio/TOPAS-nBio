@@ -395,10 +395,6 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 		AdjustReactionAndDiffusionRateForTemperature();
 	}
 	
-	ResolveReactionRateCoefficients();
-	CalculateContactProbabilities();
-	ResolveRemainerReactionParameters();
-	
 	if ( fPm->ParameterExists("Ch/"+chemistryList+"/ModelAcidPropertiesFromSubstance") ) {
 		fpHSolventConcentration = 0.0;
 		fpHValue                = 7.1;
@@ -421,6 +417,10 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 			AdjustReactionRateForPH("PH");
 		}
 	}
+
+	ResolveReactionRateCoefficients();
+	CalculateContactProbabilities();
+	ResolveRemainerReactionParameters();
 
 	PrintReactionsInformation();
 }
@@ -1645,6 +1645,7 @@ void TsIRTConfiguration::AdjustReactionRateForPH(G4String pHOrConcentration) {
 	}
 	
 	else if (pHOrConcentration == "Concentration" && fpHSolvent == "h2so4") {
+		//{_H_pos, _HSO_4, _SO_4, _OH_me, _H_2SO_4, H_Poly};
 		AcidComponents = GetH2SO4ComponentsConcentrationP(fpHSolventConcentration/fPm->GetUnitValue("M"));
 		Ionic          = GetIonicStrength(AcidComponents);
 		HCon           = AcidComponents[0];
@@ -1683,6 +1684,10 @@ void TsIRTConfiguration::AdjustReactionRateForPH(G4String pHOrConcentration) {
 	
 	G4cout << G4endl;
 	G4cout << " ###-------- pH Scaling Starts ---------###" << G4endl;
+	G4cout << "[H2SO4] = " << fpHSolventConcentration/fPm->GetUnitValue("M") << " M" << G4endl;
+	G4cout << "[H3O]   = " << HCon    << " M | pH = " << -std::log10(HCon) << G4endl;
+	G4cout << "[OH-]   = " << OHCon   << " M" << G4endl;
+	G4cout << "[HSO4m] = " << HSO4Con << " M" << G4endl;
 	
 	for(size_t i = 0; i < fReactions.size(); i++) {
 		G4int chargeA   = fMoleculesDefinition[fReactions[i].reactorA].charge;
@@ -1697,6 +1702,7 @@ void TsIRTConfiguration::AdjustReactionRateForPH(G4String pHOrConcentration) {
 		}
 		
 		fReactions[i].kobs /= fPm->GetUnitValue("/M/s");
+		fReactions[i].concentration /= fPm->GetUnitValue("M");
 		fReactions[i].scavengingCapacity /= 1/s;
 		
 		if ((chargeA != 0 && chargeB != 0) && (!(ReactA == "e_aq^-1" && ReactB == "e_aq^-1"))) {
@@ -1707,35 +1713,41 @@ void TsIRTConfiguration::AdjustReactionRateForPH(G4String pHOrConcentration) {
 			
 			else if (fReactions[i].reactionType == 6 && ReactB == "H3O^1") {
 				k_Before = fReactions[i].scavengingCapacity;
-				fReactions[i].scavengingCapacity = IonicRate(Ionic, fReactions[i]) * HCon;
+				fReactions[i].scavengingCapacity = IonicRate(Ionic, fReactions[i]) * (HCon/HCon25);
+				fReactions[i].concentration = HCon;
 			}
 			
 			else if (fReactions[i].reactionType == 6 && ReactB == "OH^-1") {
 				k_Before = fReactions[i].scavengingCapacity;
-				fReactions[i].scavengingCapacity = IonicRate(Ionic, fReactions[i]) * OHCon;
+				fReactions[i].scavengingCapacity = IonicRate(Ionic, fReactions[i]) * (OHCon/OHCon25);
+				fReactions[i].concentration = OHCon;
+				//fReactions[i].scavengingCapacity = fReactions[i].kobs * OHCon;
 			}
 			
 			else {
 				G4cout << "========= "<< fReactions[i].reactionType << G4endl;
 				k_Before = fReactions[i].kobs;
-				fReactions[i].kobs = fReactions[i].kobs * 1E-7;
-				fReactions[i].kobs = IonicRate(Ionic, fReactions[i]);
+				//fReactions[i].kobs = fReactions[i].kobs;
+				fReactions[i].scavengingCapacity = IonicRate(Ionic, fReactions[i]);
 			}
 		}
 		
 		else if ((fReactions[i].reactionType == 6) && (ReactB == "H3O^1")) {
 			k_Before = fReactions[i].scavengingCapacity;
 			fReactions[i].scavengingCapacity = fReactions[i].scavengingCapacity * HCon / HCon25;
+			fReactions[i].concentration      = HCon;
 		}
 		
 		else if ((fReactions[i].reactionType == 6) && (ReactB == "OH^-1")) {
 			k_Before = fReactions[i].scavengingCapacity;
 			fReactions[i].scavengingCapacity = fReactions[i].scavengingCapacity * OHCon / OHCon25;
+			fReactions[i].concentration      = OHCon;
 		}
 		
 		else if ((fReactions[i].reactionType == 6) && (ReactB == "HSO4^-1")) {
 			k_Before = fReactions[i].scavengingCapacity;
 			fReactions[i].scavengingCapacity = fReactions[i].scavengingCapacity * HSO4Con;
+			fReactions[i].concentration      = HSO4Con;
 		}
 		
 		if (k_Before > 0) {
@@ -1754,6 +1766,7 @@ void TsIRTConfiguration::AdjustReactionRateForPH(G4String pHOrConcentration) {
 				G4cout << G4endl << " ---- kobs: " << k_Before << " ---> "  << fReactions[i].kobs << G4endl << G4endl;
 		}
 		fReactions[i].kobs *= fPm->GetUnitValue("/M/s");
+		fReactions[i].concentration *= fPm->GetUnitValue("M");
 		fReactions[i].scavengingCapacity *= 1/s;
 	}
 	
@@ -2769,8 +2782,8 @@ G4bool TsIRTConfiguration::MakeReaction(std::unordered_map<G4int,TsMolecule> &in
 
 
 std::vector<G4double> TsIRTConfiguration::GetH2SO4ComponentsConcentrationPH(G4double pH) {
-	G4double Ka1 = pow(10,3);
-	G4double Ka2 = pow(10,-1.987);
+	G4double Ka1 = pow(10,-3);
+	G4double Ka2 = pow(10,1.987);
 	G4double _Kw = 1E-14;
 	
 	G4double _H_pos = pow(10,-pH);
@@ -2787,8 +2800,8 @@ std::vector<G4double> TsIRTConfiguration::GetH2SO4ComponentsConcentrationPH(G4do
 
 
 std::vector<G4double> TsIRTConfiguration::GetH2SO4ComponentsConcentrationP(G4double Concentration) {
-	G4double Ka1 = pow(10,3);
-	G4double Ka2 = pow(10,-1.987);
+	G4double Ka1 = pow(10,-3);
+	G4double Ka2 = pow(10,1.987);
 	G4double _C = Concentration;
 	G4double _Kw = 1E-14;
 	
@@ -2810,8 +2823,8 @@ std::vector<G4double> TsIRTConfiguration::GetH2SO4ComponentsConcentrationP(G4dou
 				_H_pos = Result[i];
 			}
 		}
-	}
-	
+	}	
+
 	if (_H_pos == -10)
 		return {0, 0, 0, 0, 0, 0};
 	
@@ -2852,7 +2865,7 @@ G4double TsIRTConfiguration::IonicRate(G4double IonicStrength, TsMolecularReacti
 	G4double Rate = 0.0;
 	if ( BackGround == 6 ) {
 		Rate = Reaction.scavengingCapacity;
-		Rate /= 1E-7;
+	//	Rate /= 1E-7;
 	} else {
 		Rate = Reaction.kobs;
 	}
