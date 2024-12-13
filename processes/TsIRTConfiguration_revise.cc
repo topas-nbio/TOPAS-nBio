@@ -436,45 +436,36 @@ void TsIRTConfiguration_revise::ResolveReactionParameters() {
 		G4int molB = fReactions[i].reactorB;
 		G4int reactionType = fReactions[i].reactionType;
 		G4double kobs = fReactions[i].kobs;
-
 		G4double rc = GetOnsagerRadius(molA, molB);
-
+        
 		G4double sumDiffCoeff = fMoleculesDefinition[molA].diffusionCoefficient + fMoleculesDefinition[molB].diffusionCoefficient;
 		fReactions[i].diffusionCoefficient = sumDiffCoeff;
-		if(molA == molB) sumDiffCoeff/=2;
+//		if(molA == molB) sumDiffCoeff/=2;
 
 		G4double reactionRadius;
 		G4double effectiveReactionRadius;
-
-		if(reactionType == 1 || reactionType == 3){
-			effectiveReactionRadius = kobs / (4. * CLHEP::pi * sumDiffCoeff * CLHEP::Avogadro);
-			reactionRadius = effectiveReactionRadius;
-			if(rc != 0) reactionRadius = rc/log(1+rc/effectiveReactionRadius);
-		}else{
-			reactionRadius = fMoleculesDefinition[molA].radius + fMoleculesDefinition[molB].radius;
-			effectiveReactionRadius = reactionRadius;
-			if(rc != 0) effectiveReactionRadius = -rc / (1-exp(rc / reactionRadius));
-		}
-
-//		G4double reactionRadius = fMoleculesDefinition[molA].radius + fMoleculesDefinition[molB].radius;
-//		G4double effectiveReactionRadius = reactionRadius;
-//		if(rc != 0) effectiveReactionRadius = -rc / (1-exp(rc / reactionRadius));
 
 		// TODO sigma calculated by using sigmaeff ? (for the kobs tuned case)
 		// TODO or sigmaeff calculated by using kobs ?
 
 		G4double probability = 1;
-
 		G4double kdiff = 0;
 		G4double kact = DBL_MAX;
 
-
-
 		if (reactionType == 1 || reactionType == 3 || reactionType == 5) {
+            effectiveReactionRadius = kobs / (4. * CLHEP::pi * sumDiffCoeff * CLHEP::Avogadro);
+            reactionRadius = effectiveReactionRadius;
+            
+            if(rc != 0) reactionRadius = rc/log(1+rc/effectiveReactionRadius);
+            
 			kdiff = kobs;
 			if ( reactionType == 5 ) probability = 0.25;
 
 		} else if ( reactionType == 2 || reactionType == 4 ) {
+            reactionRadius = fMoleculesDefinition[molA].radius + fMoleculesDefinition[molB].radius;
+            effectiveReactionRadius = reactionRadius;
+            if(rc != 0) effectiveReactionRadius = -rc / (1-exp(rc / reactionRadius));
+            
 			G4double Rs = 0.29 * nm; // distance between water molecules (0.29-0.31 nm adjustable)
 
 			kdiff = 4 * pi * sumDiffCoeff * effectiveReactionRadius * Avogadro;
@@ -575,8 +566,7 @@ void TsIRTConfiguration_revise::InsertBackgroundReaction(G4String A, G4String B,
 	std::vector<G4int> products;
 	for (size_t i = 0; i < p.size(); i++) {
 		G4String molNameP = fMoleculesName[p[i]];
-		if (molNameP != "None" && molNameP != "none") {
-			molNameP = fExistingMolecules[molNameP];
+		if (molNameP != "None" && molNameP != "none" && MoleculeExists(molNameP)) {
 			products.push_back(fMoleculesID[molNameP]);
 		}
 	}
@@ -956,7 +946,7 @@ void TsIRTConfiguration_revise::AdjustReactionAndDiffusionRateForTemperature() {
 	std::map<G4String, G4double> DefaultValues;
 
 	ReactionLabels["R1"]  = std::make_pair("e_aq^-1","e_aq^-1");
-	DefaultValues["R1"]   = 5.5e9;
+	DefaultValues["R1"]   = 1.1e10;
 	ReactionLabels["R2"]  = std::make_pair("e_aq^-1","H3O^1");
     DefaultValues["R2"]   = 2.3e10;
 	ReactionLabels["R3"]  = std::make_pair("e_aq^-1","H^0");
@@ -968,13 +958,13 @@ void TsIRTConfiguration_revise::AdjustReactionAndDiffusionRateForTemperature() {
 	ReactionLabels["R6"]  = std::make_pair("H3O^1",  "OH^-1");
     DefaultValues["R6"]   = 14.3e10;
 	ReactionLabels["R7"]  = std::make_pair("H^0",    "H^0");
-	DefaultValues["R7"]   = 7.8e9;
+	DefaultValues["R7"]   = 1.56e10;
 	ReactionLabels["R8"]  = std::make_pair("OH^0",   "H^0");
 	DefaultValues["R8"]   = 1.55e10;
 	ReactionLabels["R9"]  = std::make_pair("H^0",    "H2O2^0");
 	DefaultValues["R9"]   = 9.0e7;
 	ReactionLabels["R10"] = std::make_pair("OH^0",   "OH^0");
-	DefaultValues["R10"]  = 5.5e9;
+	DefaultValues["R10"]  = 1.1e10;
 
 	for(size_t i = 0; i < fReactions.size(); i++) {
 		G4double radiusA = fMoleculesDefinition[fReactions[i].reactorA].radius / m;
@@ -997,9 +987,9 @@ void TsIRTConfiguration_revise::AdjustReactionAndDiffusionRateForTemperature() {
 		G4bool Found = false;
 		if ((ReactA == ReactionLabels["R1"].first  && ReactB == ReactionLabels["R1"].second) ||
 			(ReactA == ReactionLabels["R1"].second && ReactB == ReactionLabels["R1"].first)) {
-			newKobs = 2*fUtils->ArrheniusFunction(2.33E13, fTemperature+273.15, 20.3);
-			refKobs = 2*fUtils->ArrheniusFunction(2.33E13, 298.15, 20.3);
-			factor  = 2*DefaultValues["R1"] / (refKobs);
+			newKobs = fUtils->ArrheniusFunction(2.33E13, fTemperature+273.15, 20.3);
+			refKobs = fUtils->ArrheniusFunction(2.33E13, 298.15, 20.3);
+			factor  = DefaultValues["R1"] / (refKobs);
 			Found = true;
 		}
 
@@ -1072,9 +1062,9 @@ void TsIRTConfiguration_revise::AdjustReactionAndDiffusionRateForTemperature() {
 			     (ReactA == ReactionLabels["R7"].second && ReactB == ReactionLabels["R7"].first)) {
 			G4double R = radiusA + radiusB;
 			G4double Da = fUtils->WaterDiffusionRate(fTemperature+273.15,8.0E-9);
-			newKobs = 2*fUtils->SmoluchowskiFunction(1, R, 2*Da);
-			refKobs = 2*fUtils->SmoluchowskiFunction(1, R, 1.6E-8);
-			factor  = 2*DefaultValues["R7"] / (refKobs);
+			newKobs = fUtils->SmoluchowskiFunction(1, R, 2*Da);
+			refKobs = fUtils->SmoluchowskiFunction(1, R, 1.6E-8);
+			factor  = DefaultValues["R7"] / (refKobs);
 			Found = true;
 		}
 
