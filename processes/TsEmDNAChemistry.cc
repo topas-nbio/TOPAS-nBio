@@ -286,8 +286,14 @@ void TsEmDNAChemistry::DefineParameters()
 
     // Branching ratios Mode: 1 = New, 0 = Old.
     // New doesn't works, probably needs new cross sections
-    size_t mode = 0;
-
+    G4int mode = 0;
+    if (fPm->ParameterExists(GetFullParmName("BranchingRatiosModel"))) {
+        G4String branchModelName = fPm->GetStringParameter(GetFullParmName("BranchingRatiosModel"));
+        G4StrUtil::to_lower(branchModelName);
+        if ( branchModelName != "default" )
+            mode = 1;
+    }
+    
     /////////////////////////////////
     // Default Probabilities Ratio //
     /////////////////////////////////
@@ -296,42 +302,42 @@ void TsEmDNAChemistry::DefineParameters()
         fIonizationStates = 1.0;
 
         // Excitation Fifth Layer
-        fA1B1Relaxation        = 0.35;
-        fA1B1DissociativeDecay = 0.65;
+        fA1B1Relaxation        = 0.35;  // H2O
+        fA1B1DissociativeDecay = 0.65;  // H + OH
 
         // Excitation Fourth Layer
-        fB1A1Relaxation         = 0.175;  //0.30;
-        fB1A1DissociativeDecay  = 0.0325; //0.15;
-        fB1A1AutoIonization     = 0.50;   //0.55;
-        fA1B1DissociativeDecay2 = 0.2535;
-        fB1A1DissociativeDecay2 = 0.039;
+        fB1A1Relaxation         = 0.175;  //0.30;  H2O
+        fB1A1DissociativeDecay  = 0.086;//0.0325; //0.15;  H2+ 2OH
+        fB1A1AutoIonization     = 0.50;   //0.55;  H3O+ + OH + e-aq
+        fB1A1DissociativeDecay1 = 0.2;//535; // H + OH
+        fB1A1DissociativeDecay2 = 0.039;  // 2H + O(3P)
 
         // Excitation Third, Second And First Layers
-        fRydDiffAutoIonization = 0.5;
-        fRydDiffRelaxation     = 0.5;
+        fRydDiffAutoIonization = 0.5;  // H3O+ + OH + e-aq
+        fRydDiffRelaxation     = 0.5;  // H2O
 
         // Disociative Attachment
-        fDissociativeAttachment = 1.0;
+        fDissociativeAttachment = 1.0; // OH- + OH + H2
 
         // Electron Hole Recombination
-        fH2OvibDissociationDecay1 = 0.1365;
-        fH2OvibDissociationDecay2 = 0.3575;
-        fH2OvibDissociationDecay3 = 0.156;
-        fH2OvibDissociationDecay4 = 0.35;
+        fH2OvibDissociationDecay1 = 0.1925;  // H2 + 2OH
+        fH2OvibDissociationDecay2 = 0.3;//575;  // H + OH
+        fH2OvibDissociationDecay3 = 0.05; //0.156;   // 2H + O(3P)
+        fH2OvibDissociationDecay4 = 0.4575;    // H2O
     }
     else {
         // Ionization
         fIonizationStates = 1.0;
 
         // Excitation Fifth Layer
-        fA1B1Relaxation        = 0.35;
-        fA1B1DissociativeDecay = 0.65;
+        fA1B1Relaxation        = 0.35; // H2O
+        fA1B1DissociativeDecay = 0.65; // H + OH
 
         // Excitation Fourth Layer
-        fB1A1Relaxation         = 0.15;//0.30;
-        fB1A1DissociativeDecay  = 0.30;//0.15;
+        fB1A1Relaxation         = 0.20;//0.30;
+        fB1A1DissociativeDecay  = 0.25;//0.15;
         fB1A1AutoIonization     = 0.55;
-        fA1B1DissociativeDecay2 = 0;
+        fB1A1DissociativeDecay1 = 0;
         fB1A1DissociativeDecay2 = 0;
 
         // Excitation Third, Second And First Layers
@@ -342,10 +348,10 @@ void TsEmDNAChemistry::DefineParameters()
         fDissociativeAttachment = 1.0;
 
         // Electron Hole Recombination
-        fH2OvibDissociationDecay1 = 0.15;
-        fH2OvibDissociationDecay2 = 0.55;
+        fH2OvibDissociationDecay1 = 0.17;//0.15;
+        fH2OvibDissociationDecay2 = 0.54;//0.55
         fH2OvibDissociationDecay3 = 0;
-        fH2OvibDissociationDecay4 = 0.3;
+        fH2OvibDissociationDecay4 = 0.29;//0.3;
     }
 
     //////////////////////////////////
@@ -365,6 +371,9 @@ void TsEmDNAChemistry::DefineParameters()
         fA1B1Relaxation = fPm->GetUnitlessParameter(parName + "A1B1/Relaxation");
     std::cout << "-- Branching ratio: A1B1 Relaxation probability " << fA1B1Relaxation << std::endl;
     
+    if ( fA1B1DissociativeDecay + fA1B1Relaxation != 1 )
+        Quit("Error while defining branching rations", "Probabilities for fifth layer A1B1Relaxation and A1B1DissociativeDecay do not add to unity.");
+    
     // Excitation on the Fourth Layer
     if ( fPm->ParameterExists(parName + "B1A1/Relaxation"))
         fB1A1Relaxation = fPm->GetUnitlessParameter(parName + "B1A1/Relaxation");
@@ -378,13 +387,16 @@ void TsEmDNAChemistry::DefineParameters()
         fB1A1AutoIonization = fPm->GetUnitlessParameter(parName + "B1A1/AutoIonization");
     std::cout << "-- Branching ratio: B1A1 Auto-ionization probability " << fB1A1AutoIonization << std::endl;
 
-    if ( fPm->ParameterExists(parName + "B1A1/AutoIonization"))
-        fA1B1DissociativeDecay2 = fPm->GetUnitlessParameter(parName + "A1B1/DissociativeDecay2");
-    std::cout << "-- Branching ratio: B1A1 Auto-ionization probability " << fA1B1DissociativeDecay2 << std::endl;
+    if ( fPm->ParameterExists(parName + "B1A1/DissociativeDecay1"))
+        fB1A1DissociativeDecay1 = fPm->GetUnitlessParameter(parName + "A1B1/DissociativeDecay1");
+    std::cout << "-- Branching ratio: B1A1 Dissociative decay1 probability " << fB1A1DissociativeDecay1 << std::endl;
 
     if ( fPm->ParameterExists(parName + "B1A1/DissociativeDecay2"))
         fB1A1DissociativeDecay2 = fPm->GetUnitlessParameter(parName + "B1A1/DissociativeDecay2");
     std::cout << "-- Branching ratio: B1A1 Dissociative decay2 probability " << fB1A1DissociativeDecay2 << std::endl;
+    
+    if (fB1A1Relaxation + fB1A1DissociativeDecay + fB1A1AutoIonization + fB1A1DissociativeDecay1 + fB1A1DissociativeDecay2 != 1)
+        Quit("Error while defining branching rations","Probabilities for fourth layer do not add to unity");
     
     // Excitation on the 3rd, 2nd and 1st Layer
     if ( fPm->ParameterExists(parName + "RydbergStatesAndDiffuseBands/AutoIoinization"))
@@ -394,6 +406,9 @@ void TsEmDNAChemistry::DefineParameters()
     if ( fPm->ParameterExists(parName + "RydbergStatesAndDiffuseBands/Relaxation"))
         fRydDiffRelaxation = fPm->GetUnitlessParameter(parName + "RydbergStatesAndDiffuseBands/Relaxation");
     std::cout << "-- Branching ratio: Rydberg states and diffuse bands relaxation probability " << fRydDiffRelaxation << std::endl;
+    
+    if ( fRydDiffAutoIonization + fRydDiffRelaxation != 1)
+        Quit("Error while defining branching rations","Probabilities for 3rd, 2nd and 1st layer do not add to unity.");
 
     // Dissociative Attachment
     if ( fPm->ParameterExists(parName + "DissociativeAttachment"))
@@ -416,6 +431,7 @@ void TsEmDNAChemistry::DefineParameters()
     if ( fPm->ParameterExists(parName + "ElectronHole/DissociativeDecay4"))
         fH2OvibDissociationDecay4 = fPm->GetUnitlessParameter(parName + "H2OVibration/DissociativeDecay4");
     std::cout << "-- Branching ratio: H2O Electron Hole Recombination Dissociative decay4 probability " << fH2OvibDissociationDecay4 << std::endl;
+    
 }
 
 
@@ -550,7 +566,7 @@ void TsEmDNAChemistry::ConstructDissociationChannels()
     //Decay 4: H + OH
     decCh4->AddProduct(H);
     decCh4->AddProduct(OH);
-    decCh4->SetProbability(fA1B1DissociativeDecay2);
+    decCh4->SetProbability(fB1A1DissociativeDecay1); // it reuses A1B1_DissociativeDecay, but we set a different probablity label
     decCh4->SetDisplacementType(TsDNAWaterDissociationDisplacer::A1B1_DissociationDecay);
 
     //Decay 5: 2H + O
