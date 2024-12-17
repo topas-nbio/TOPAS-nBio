@@ -42,7 +42,7 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 	fExistingMolecules["superoxideanion"]  = "O2^-1";
 	fExistingMolecules["hydroperoxy"]      = "HO2^0";
 	fExistingMolecules["dioxidanide"]      = "HO2^-1";
-	fExistingMolecules["atomicoxygen"]     = "O3P^0";
+	fExistingMolecules["atomicoxygen"]     = "O^0"; // O(3P)
 	fExistingMolecules["oxyde"]            = "O^-1";
 	fExistingMolecules["trioxide"]         = "O3^-1";
 	fExistingMolecules["ozone"]            = "O3^0";
@@ -59,7 +59,7 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 	AddMolecule("O2^-1",   1.75e9*nm*nm/s, -1, 0.22*nm);
 	AddMolecule("HO2^0",   2.3e9*nm*nm/s,  0, 0.21*nm);
 	AddMolecule("HO2^-1",  1.4e9*nm*nm/s, -1, 0.25*nm);
-	AddMolecule("O3P^0",   2.0e9*nm*nm/s,  0, 0.20*nm);
+	AddMolecule("O^0",     2.0e9*nm*nm/s,  0, 0.20*nm); // O(3P)
 	AddMolecule("O^-1",    2.0e9*nm*nm/s, -1, 0.25*nm);
 	AddMolecule("O3^-1",   2.0e9*nm*nm/s, -1, 0.20*nm);
 	AddMolecule("O3^0",    2.0e9*nm*nm/s,  0, 0.20*nm);

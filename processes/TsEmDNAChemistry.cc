@@ -111,7 +111,7 @@ void TsEmDNAChemistry::DefineParameters()
     fExistingMolecules["hydroxide"]        = "OHm";
     fExistingMolecules["solvatedelectron"] = "e_aq";
     fExistingMolecules["hydrogenperoxide"] = "H2O2";
-    fExistingMolecules["atomicoxygen"]     = "Oxy";
+    fExistingMolecules["atomicoxygen"]     = "Oxy"; // O3P, but using Oxy for G4's compatiblity
     fExistingMolecules["product"]          = "Product";
     
     fDiffusionCoefficients["OH"]      = 2.8e-9*m2/s;
@@ -121,7 +121,7 @@ void TsEmDNAChemistry::DefineParameters()
     fDiffusionCoefficients["OHm"]     = 5.0e-9*m2/s;
     fDiffusionCoefficients["e_aq"]    = 4.9e-9*m2/s;
     fDiffusionCoefficients["H2O2"]    = 2.3e-9*m2/s;
-    fDiffusionCoefficients["Oxy"]   = 2.0e9*nm*nm/s;
+    fDiffusionCoefficients["Oxy"]     = 2.0e9*nm*nm/s;
     fDiffusionCoefficients["Product"] = 0.0*m2/s;
     
     fName = "Default";
@@ -772,7 +772,7 @@ void TsEmDNAChemistry::ConstructReactionTable(G4DNAMolecularReactionTable*
     G4MolecularConfiguration* H3Op = G4MoleculeTable::Instance()->GetConfiguration("H3Op");
     G4MolecularConfiguration* H    = G4MoleculeTable::Instance()->GetConfiguration("H");
     G4MolecularConfiguration* H2O2 = G4MoleculeTable::Instance()->GetConfiguration("H2O2");
-    //G4MolecularConfiguration* Oxy  = G4MoleculeTable::Instance()->GetConfiguration("Oxy");
+    G4MolecularConfiguration* Oxy  = G4MoleculeTable::Instance()->GetConfiguration("Oxy");
     
     std::map<G4String, G4MolecularConfiguration*> reactions;
     reactions["OH"]    = OH;
@@ -782,7 +782,7 @@ void TsEmDNAChemistry::ConstructReactionTable(G4DNAMolecularReactionTable*
     reactions["H3Op"]  = H3Op;
     reactions["H"]     = H;
     reactions["H2O2"]  = H2O2;
-    //reactions["Oxy"] = Oxy;
+    reactions["Oxy"] = Oxy;
     
     if ( fSetWaterConfiguration ) {
         G4MolecularConfiguration* H2O = G4MoleculeTable::Instance()->GetConfiguration("H2O");
