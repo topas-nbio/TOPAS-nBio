@@ -238,7 +238,6 @@ void TsScoreWithIRT::UserHookForPreTimeStepAction() {
         it_begin = trackList->begin();
         for(;it_begin!=it_end;++it_begin){
             G4double time = it_begin->GetGlobalTime();
-            //G4cout << "G4Molecule: " << GetMolecule(*it_begin)->GetName() << ". G4MolDef: " << GetMolecule(*it_begin)->GetDefinition()->GetName() << G4endl;
             fIRT->AddMolecule(*it_begin, time, 0, G4ThreeVector());
         }
         
