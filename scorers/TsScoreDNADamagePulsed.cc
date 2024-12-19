@@ -30,6 +30,8 @@
 #include "TsGeometryManager.hh"
 #include "TsIRTPlasmidSupercoiled.hh"
 
+#include "G4LogicalVolumeStore.hh"
+
 TsScoreDNADamagePulsed::TsScoreDNADamagePulsed(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
                                                      G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer)
 : TsVNtupleScorer(pM, mM, gM, scM, eM, scorerName, quantity, outFileName, isSubScorer),
@@ -141,8 +143,10 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
     fNbOfScoredEventsEverywhere = 0;
     fNbOfIRTRuns = 0;
 
-    fTotalDose = 0.0;
-    fDosePerPulse = 0.0;
+    // fTotalDose = 0.0;
+    fTotalEDep = 0.0;
+    // fDosePerPulse = 0.0;
+    fEDepPerPulse = 0.0;
     fPulseTimeShift = 0.0; //fPulsesTimeDelay;
     
     //SampleShiftTime();
@@ -190,6 +194,25 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
     }
 
     fMass = 0;
+    fRadius = 0;
+
+    // prescribed eDep from prescribed dose
+    G4LogicalVolume* logicalVolume = G4LogicalVolumeStore::GetInstance()->GetVolume("Plasmids");
+    G4Material* material = logicalVolume->GetMaterial();
+    G4VSolid* solid = logicalVolume->GetSolid();
+
+    G4double density = material->GetDensity();
+    G4double cubicVolume = solid->GetCubicVolume();
+
+    fMass = density * cubicVolume;
+
+    fPrescribedEDep = (fPrescribedDose * fMass);
+
+    // G4cout << "------------ VOLUME --------------- : " << cubicVolume << G4endl;
+    // G4cout << "------------ DENSITY --------------- : " << density << G4endl;
+    // G4cout << "------------ MASS --------------- : " << fMass << G4endl;
+    // G4cout << "------------ DOSE --------------- : " << fPrescribedDose/gray << " Gy" << G4endl;
+    // G4cout << "------------ EDEP --------------- : " << fPrescribedEDep/eV << " eV" <<G4endl;
 
     if (fPm->ParameterExists(GetFullParmName("DNAMoleculesNames"))) {
         G4int NbOfDNANames   = fPm->GetVectorLength(GetFullParmName("DNAMoleculesNames"));
@@ -285,29 +308,41 @@ G4bool TsScoreDNADamagePulsed::ProcessHits(G4Step* aStep, G4TouchableHistory*)
                 }
 
                 //else if (!G4StrUtil::contains(vName,"VoxelStraight")) {
-                if (vName == "Plasmids") {
-                    fMass = (density * fSolid->GetCubicVolume())/kg;
-                }
+                // if (vName == "Plasmids") {
+                //     fMass = (density * fSolid->GetCubicVolume())/kg;
+                // }
 
-                if (fMass == 0) {fMass = fVolume * density;}
+                // if (fMass == 0) {fMass = fVolume * density;}
             
-                G4double dose = 0;
+                // G4double dose = 0;
 
-                if (fMass > 0) {
-                    dose = (edep/eV)*1.60218e-19 / fMass;
-                }
-                //if (dose > 20*gray) {return false;} 
+                // if (fMass > 0) {
+                //     dose = (edep/eV)*1.60218e-19 / fMass;
+                // }
+                // if (dose > 20*gray) {return false;} 
 
-                fTotalDose += dose;
+                // fTotalDose += dose;
+                fTotalEDep += edep;
+
                 fEnergyDepositPerEvent += edep ;
-                fDosePerPulse += dose;
 
-                if (fTotalDose >= fPrescribedDose/gray) {
+                // fDosePerPulse += dose;
+                // fEDepPerPulse += edep;
+
+                // if (fTotalDose >= fPrescribedDose/gray) {
+                //     aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+                //     return false;
+                // }
+                if (fTotalEDep >= fPrescribedEDep) {
                     aStep->GetTrack()->SetTrackStatus(fStopAndKill);
                     return false;
                 }
 
-                if (fDosePerPulse >= (fPrescribedDose/fNumberOfPulses)/gray) {
+                // if (fDosePerPulse >= (fPrescribedDose/fNumberOfPulses)/gray) {
+                //     aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+                //     //return false;
+                // }
+                if (fEDepPerPulse >= fPrescribedEDep/fNumberOfPulses) {
                     aStep->GetTrack()->SetTrackStatus(fStopAndKill);
                     //return false;
                 }
@@ -381,18 +416,25 @@ void TsScoreDNADamagePulsed::UserHookForEndOfEvent() {
     fEnergyDepositPerEvent = 0.0;
     fEnergyDepositPerEventEverywhere = 0.0;
 
-    if(fNumberOfPulses > 1 && fDosePerPulse >= (fPrescribedDose/fNumberOfPulses)/gray && fCurrentPulse < fNumberOfPulses && !fPulseRecycle) {
-        fDosePerPulse = 0.0;
+    // if(fNumberOfPulses > 1 && fDosePerPulse >= (fPrescribedDose/fNumberOfPulses)/gray && fCurrentPulse < fNumberOfPulses && !fPulseRecycle) {
+    //     fDosePerPulse = 0.0;
+    if(fNumberOfPulses > 1 && fEDepPerPulse >= fPrescribedEDep/fNumberOfPulses && fCurrentPulse < fNumberOfPulses && !fPulseRecycle) {
+        fEDepPerPulse = 0.0;
         fPulseTimeShift += fPulsesTimeDelay;
         fCurrentPulse++;
         fPulseTimeLimits[fCurrentPulse].first  =  1E150;
         fPulseTimeLimits[fCurrentPulse].second = 1E-150;
     }
 
-    if(fTotalDose > fPrescribedDose/gray)
+    // if(fTotalDose > fPrescribedDose/gray)
+    //     RunAndSaveInfo();
+    // if (fPulseRecycle && fDosePerPulse >= (fPrescribedDose/fNumberOfPulses)/gray)
+    //     RunAndSaveInfo();
+    if(fTotalEDep > fPrescribedEDep)
         RunAndSaveInfo();
-    if (fPulseRecycle && fDosePerPulse >= (fPrescribedDose/fNumberOfPulses)/gray)
+    if (fPulseRecycle && fEDepPerPulse >= fPrescribedEDep/fNumberOfPulses)
         RunAndSaveInfo();
+
 }
 
 
@@ -652,6 +694,9 @@ void TsScoreDNADamagePulsed::SampleShiftTime() {
 
 
 void TsScoreDNADamagePulsed::RunAndSaveInfo() {
+
+    fTotalDose = (fTotalEDep/fMass)/gray;
+
     G4cout << "Starting Chemistry after " << fNbOfScoredEvents << " primaries | Dose = " << fTotalDose << " Gy" << G4endl;
     RunChemistry();
     G4int tBin;
@@ -709,7 +754,7 @@ void TsScoreDNADamagePulsed::RunAndSaveInfo() {
     fPulseTimeLimits.clear();
     fDNAHasBeenInserted = false;
 
-    fTotalDose = 0;
+    fTotalEDep = 0;
 
     if ((fNumberOfRepetitions / fNumberOfThreads) <= fNbOfIRTRuns) {
         fSimulationFinished = true;
