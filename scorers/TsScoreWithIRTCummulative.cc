@@ -10,9 +10,7 @@
 // ********************************************************************
 
 #include "TsScoreWithIRTCummulative.hh"
-#include "TsIRT.hh"
-#include "TsIRTConfiguration.hh"
-#include "TsIRTUtils.hh"
+#include "TsIRTManager.hh"
 
 #include "G4ITTrackHolder.hh"
 #include "G4EventManager.hh"
@@ -26,9 +24,7 @@
 #include "G4Electron_aq.hh"
 #include "G4UnitsTable.hh"
 #include "Randomize.hh"
-//#include <algorithm>
-//#include <stdlib.h>
-// #include <algorithm>
+
 
 TsScoreWithIRTCummulative::TsScoreWithIRTCummulative(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
                                                      G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer)
@@ -37,7 +33,7 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
 {
     SetUnit("");
     
-    fIRT = new TsIRT(fPm, fName);
+    fIRT = new TsIRTManager(fPm, fName);
     fUtils = fIRT->GetUtils();
     fStepTimes = fIRT->GetStepTimes();
     for ( size_t u = 0; u < fStepTimes.size(); u++ ) {
@@ -51,10 +47,10 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
     fNtuple->RegisterColumnD(&fEnergy, "EnergyDeposit", "eV");
     
     fPrescribedDose = fPm->GetDoubleParameter(GetFullParmName("PrescribedDose"),"Dose");
-
+    
     fTimeDistribution = fPm->GetStringParameter(GetFullParmName("PulseDistribution"));
     fTimeDistribution.toLower();
-
+    
     fNumberOfPulses = 1;
     if ( fPm->ParameterExists(GetFullParmName("NumberOfPulses")) ) {
         fNumberOfPulses = fPm->GetIntegerParameter(GetFullParmName("NumberOfPulses"));
@@ -121,7 +117,7 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
     
     fNbOfScoredEvents = 0;
     fNbOfScoredEventsEverywhere = 0;
-
+    
     fTotalDose = 0.0;
     fDosePerPulse = 0.0;
     fPulseTimeShift = 0.0;
@@ -156,13 +152,20 @@ G4bool TsScoreWithIRTCummulative::ProcessHits(G4Step* aStep, G4TouchableHistory*
             G4double mass = 0.0;
             G4double density = aStep->GetPreStepPoint()->GetMaterial()->GetDensity();
             fEnergyDepositPerEventEverywhere += edep ;
-
+            
             if ( fTestIsInside ) {
                 G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
                 const G4String& volumeName = touchable->GetVolume()->GetName();
                 if( !volumeName.contains(fSensitiveVolume)) {
                     return false;
                 }
+                
+                mass = density * touchable->GetVolume()->GetLogicalVolume()->GetSolid()->GetCubicVolume();
+                G4double dose = edep / mass;
+                fTotalDose += dose;
+                fEnergyDepositPerEvent += edep ;
+                fDosePerPulse += dose;
+                return true;
             }
             
             mass = density * fSolid->GetCubicVolume();
@@ -292,7 +295,7 @@ void TsScoreWithIRTCummulative::UserHookForEndOfEvent() {
             fTimeOutFile.write(reinterpret_cast<char*>(&saveEdep), sizeof saveEdep);
             
             G4cout << " --- energy deposit at time " << fVEnergyDepositPerEvent[t].first/ps
-                   << " ps " << fVEnergyDepositPerEvent[t].second/eV << G4endl;
+            << " ps " << fVEnergyDepositPerEvent[t].second/eV << G4endl;
         }
         
         fIRT->runIRT();
@@ -328,5 +331,6 @@ void TsScoreWithIRTCummulative::UserHookForEndOfEvent() {
         G4RunManager::GetRunManager()->AbortRun(true);
     }
 }
+
 
 

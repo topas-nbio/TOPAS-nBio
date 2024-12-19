@@ -74,6 +74,13 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyLossKill(0), fName(scorerName)
         fOutputFile = fPm->GetStringParameter(GetFullParmName("OutputFile"));
     }
     
+    // To filter only physical interactiones within a virtual TsBox.
+    fTestIsInside = false;
+    if ( fPm->ParameterExists(GetFullParmName("SensitiveVolumeName"))) {
+        fTestIsInside = true;
+        fSensitiveVolume = fPm->GetStringParameter(GetFullParmName("SensitiveVolumeName"));
+    }
+    
     fVolume = 0;
     
     fIRT       = new TsIRTManager(fPm, fName);
@@ -151,6 +158,14 @@ G4bool TsScoreWithIRT::ProcessHits(G4Step* aStep, G4TouchableHistory*)
         
         G4double edep = aStep->GetTotalEnergyDeposit();
         if ( edep > 0 ) {
+            if ( fTestIsInside ) {
+                G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
+                const G4String& volumeName = touchable->GetVolume()->GetName();
+                if( !volumeName.contains(fSensitiveVolume)) {
+                    return false;
+                }
+                
+            }
             fEnergyDepositPerEvent += edep * aStep->GetPreStepPoint()->GetWeight();
             return true;
         }
@@ -238,7 +253,14 @@ void TsScoreWithIRT::UserHookForPreTimeStepAction() {
         it_begin = trackList->begin();
         for(;it_begin!=it_end;++it_begin){
             G4double time = it_begin->GetGlobalTime();
-            fIRT->AddMolecule(*it_begin, time, 0, G4ThreeVector());
+            if ( fTestIsInside ) {
+                const G4String& volumeName = (*it_begin)->GetVolume()->GetName();
+                if ( volumeName.contains(fSensitiveVolume) ) {
+                    fIRT->AddMolecule(*it_begin, time, 0, G4ThreeVector());
+                }
+            } else {
+                fIRT->AddMolecule(*it_begin, time, 0, G4ThreeVector());
+            }
         }
         
         G4Scheduler::Instance()->Stop();

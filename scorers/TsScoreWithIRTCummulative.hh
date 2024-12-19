@@ -18,7 +18,7 @@
 
 #include <stdint.h>
 
-class TsIRT;
+class TsIRTManager;
 class TsIRTUtils;
 
 class TsScoreWithIRTCummulative : public TsVNtupleScorer
@@ -46,7 +46,7 @@ private:
 	G4bool Inside(G4ThreeVector);
 	
 	TsParameterManager* fPm;
-	TsIRT* fIRT;
+	TsIRTManager* fIRT;
 	TsIRTUtils* fUtils;
 	
 	std::vector<std::pair<G4double,G4double>> fVEnergyDepositPerEvent;
