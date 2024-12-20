@@ -9,8 +9,8 @@
 // ********************************************************************
 //
 
-#ifndef TsScoreWithIRTCummulative_hh
-#define TsScoreWithIRTCummulative_hh
+#ifndef TsScoreDNADamagePulsed2_hh
+#define TsScoreDNADamagePulsed2_hh
 
 #include "TsVNtupleScorer.hh"
 #include "TsIRTConfiguration.hh"
@@ -21,18 +21,23 @@
 class TsIRTManager;
 class TsIRTUtils;
 
-class TsScoreWithIRTCummulative : public TsVNtupleScorer
+class TsScoreDNADamagePulsed2 : public TsVNtupleScorer
 {
 public:
-	TsScoreWithIRTCummulative(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
+	TsScoreDNADamagePulsed2(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
 							  G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer);
-	~TsScoreWithIRTCummulative();
+	~TsScoreDNADamagePulsed2();
 	
 	virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
 	
 	void UserHookForEndOfEvent();
     
     virtual void UserHookForPreTimeStepAction();
+    
+    void InsertDNAMolecules();
+    G4String SampleDNAMolecule();
+    void GetDNAInformation();
+
 		
 protected:
 	
@@ -56,6 +61,8 @@ private:
 	G4double fEnergyDepositPerEvent;
 	G4double fEnergyDepositPerEventEverywhere;
 
+    G4double fMass;
+    G4double fDensity;
 	G4double fTotalDose;
 	G4double fPrescribedDose;
 	G4int fNbOfScoredEvents;
@@ -64,6 +71,7 @@ private:
 	G4double fTCut;
 	G4String fName;
     G4String fOutputFile;
+    G4String fComponentName;
 	
 	G4double fTimeMean;
 	G4double fTimeStdv;
@@ -95,7 +103,25 @@ private:
 	G4bool fTestIsInside;
     G4String fSensitiveVolume;
     
-    G4bool fReportDelta;
+    // DNA Information from Geometry
+    std::vector<G4bool>   fPHSPIsAlive;
+    std::vector<G4String> fPHSPMolecules;
+    std::vector<G4double> fPHSPTime;
+    std::vector<G4ThreeVector> fPHSPPosition;
+    std::vector<std::vector<G4int>> fDNADetails;
+    // Molecules to insert
+    std::vector<G4String> fDNAMoleculesToInsert;
+    std::vector<G4double> fDNAMoleculesWeights;
+    
+    // Direct DNA damage containers
+    std::map<G4int, std::map<G4int, std::map<G4int, G4double>>> fDNAEnergyDeposit;
+    std::map<G4int,std::vector<std::vector<G4int>>> fDirectStrandBreaks;
+    std::vector<std::vector<G4int>> fDirectStrandBreaksInEvent;
+    
+    // Indirect DNA damage containers
+    //TsMoleculeGun fMoleculeGun;
+    std::vector<G4String> fStrandBreakMolecules;
+    std::map<G4int,std::vector<std::vector<G4int>>> fIndirectStrandBreaks;
 };
 
 #endif

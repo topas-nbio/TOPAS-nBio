@@ -13,7 +13,6 @@
 #include "TsScoreDNADamagePulsed.hh"
 #include "TsIRTManager.hh"
 #include "TsIRTConfiguration.hh"
-//#include "TsIRTUtils.hh"
 
 #include "G4ITTrackHolder.hh"
 #include "G4EventManager.hh"

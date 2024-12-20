@@ -20,7 +20,6 @@
 
 class TsIRTManager;
 class TsIRTUtils;
-class TsScoringUtils;
 
 class TsScoreDNADamagePulsed : public TsVNtupleScorer
 {
@@ -68,7 +67,6 @@ private:
 	TsParameterManager* fPm;
 	TsIRTManager* fIRT;
 	TsIRTUtils* fUtils;
-    TsScoringUtils* fScu;
 	
 	std::vector<std::pair<G4double,G4double>> fPulseInformation;
 	std::vector<std::pair<G4double,G4double>> fVEnergyDepositPerEvent;

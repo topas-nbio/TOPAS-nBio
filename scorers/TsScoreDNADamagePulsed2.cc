@@ -1,4 +1,4 @@
-// Scorer for TsIRTInterPulse
+// Scorer for TsIRTStrandBreaksPulsed2
 //
 // ********************************************************************
 // *                                                                  *
@@ -9,8 +9,13 @@
 // *                                                                  *
 // ********************************************************************
 
-#include "TsScoreWithIRTCummulative.hh"
+#include "TsScoreDNADamagePulsed2.hh"
 #include "TsIRTManager.hh"
+#include "TsIRTPlasmidSupercoiled.hh"
+#include "TsIRTConfiguration.hh"
+
+#include "TsGeometryManager.hh"
+
 
 #include "G4ITTrackHolder.hh"
 #include "G4EventManager.hh"
@@ -26,7 +31,7 @@
 #include "Randomize.hh"
 
 
-TsScoreWithIRTCummulative::TsScoreWithIRTCummulative(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
+TsScoreDNADamagePulsed2::TsScoreDNADamagePulsed2(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
                                                      G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer)
 : TsVNtupleScorer(pM, mM, gM, scM, eM, scorerName, quantity, outFileName, isSubScorer),
 fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(scorerName), fOldEvent(-1)
@@ -70,10 +75,6 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
         }
         fPulsesTimeDelay = 1./pulsesFrequency;
     }
-    
-    fLowLimitTo1ps = false;
-    if ( fPm->ParameterExists(GetFullParmName("ForceLowTimeCutTo1ps")) )
-        fLowLimitTo1ps = fPm->GetBooleanParameter(GetFullParmName("ForceLowTimeCutTo1ps"));
     
     if ( fTimeDistribution == "gaussian" ) {
         fTimeDistributionType = 1;
@@ -121,16 +122,39 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
         fSensitiveVolume = fPm->GetStringParameter(GetFullParmName("SensitiveVolumeName"));
     }
     
-    fReportDelta = false;
-    if ( fPm->ParameterExists(GetFullParmName("ReportDeltaGValues"))) {
-        fReportDelta = fPm->GetBooleanParameter(GetFullParmName("ReportDeltaGValues"));
+    if (fPm->ParameterExists(GetFullParmName("DNAMoleculeNames"))) { // From the DNA/chemistry model's name, these are used in IRT
+        G4int NbOfDNANames   = fPm->GetVectorLength(GetFullParmName("DNAMoleculesNames"));
+        G4int NbOfDNAWeights = fPm->GetVectorLength(GetFullParmName("DNAMoleculesWeights"));
+        
+        G4String* DNAMoleculesNames   = fPm->GetStringVector(GetFullParmName("DNAMoleculesNames"));
+        G4double* DNAMoleculesWeights = fPm->GetUnitlessVector(GetFullParmName("DNAMoleculesWeights"));
+        
+        if (NbOfDNANames != NbOfDNAWeights) {
+            G4cout << "Please provide as many DNA molecules as Weights!!" << G4endl;
+            fPm->AbortSession(1);
+        }
+        
+        for (G4int i = 0; i < NbOfDNANames; i++) {
+            fDNAMoleculesToInsert.push_back(DNAMoleculesNames[i]);
+            fDNAMoleculesWeights.push_back(DNAMoleculesWeights[i]);
+        }
+    } else {
+        fDNAMoleculesToInsert.push_back("Deoxyribose");
+        fDNAMoleculesWeights.push_back(1);
     }
+    fOutputFile = "TOPAS";
+    if ( fPm->ParameterExists(GetFullParmName("OutputFile"))) {
+        fOutputFile = fPm->GetStringParameter(GetFullParmName("OutputFile"));
+    }
+    
+    fComponentName = fPm->GetStringParameter(GetFullParmName("Component"));
     
     fTCut = 1.0 * ps;
     
     fNbOfScoredEvents = 0;
-    fNbOfScoredEventsEverywhere = 0;
     
+    fMass = 0.0;
+    fDensity = 1.0 * g/(cm*cm*cm);
     fTotalDose = 0.0;
     fDosePerPulse = 0.0;
     fPulseTimeShift = 0.0;
@@ -142,19 +166,82 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
     remove(fileName);
     fTimeOutFile.open(fileName, std::ios::binary | std::ios::app);
     
-    fOutputFile = "TOPAS";
-    if ( fPm->ParameterExists(GetFullParmName("OutputFile"))) {
-        fOutputFile = fPm->GetStringParameter(GetFullParmName("OutputFile"));
-    }
+    GetDNAInformation();
 }
 
 
-TsScoreWithIRTCummulative::~TsScoreWithIRTCummulative()
+TsScoreDNADamagePulsed2::~TsScoreDNADamagePulsed2()
 {
 }
 
 
-G4bool TsScoreWithIRTCummulative::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+void TsScoreDNADamagePulsed2::GetDNAInformation() {
+    G4String Component = fComponentName;
+    G4StrUtil::to_lower(Component);
+    TsVGeometryComponent* DNAComponent     = fGm->GetComponent(Component);
+    TsIRTPlasmidSupercoiled* PlasmidComponent1 = dynamic_cast<TsIRTPlasmidSupercoiled*>(DNAComponent);
+    
+    if (PlasmidComponent1 != 0) {
+        fPHSPMolecules = PlasmidComponent1->GetDNANames();
+        fPHSPPosition  = PlasmidComponent1->GetDNAPositions();
+        fPHSPTime      = PlasmidComponent1->GetDNATimes();
+        fDNADetails    = PlasmidComponent1->GetDNADetails();
+    }
+    
+    else {
+        G4cout << "No DNA Compatible scorer found!!!" << G4endl;
+        exit(1);
+    }
+    
+    for (size_t i = 0; i < fPHSPTime.size(); i++) {
+        fPHSPIsAlive.push_back(true);
+    }
+}
+
+void TsScoreDNADamagePulsed2::InsertDNAMolecules() {
+    std::map<G4String,G4int> MolIDs = fIRT->GetIRTConfiguration()->GetMoleculeIDs();
+    for (size_t i = 0; i < fPHSPMolecules.size(); i++) {
+        if (fPHSPIsAlive[i]) { // only insert those that are not damage in the direct action
+            G4String MolName = SampleDNAMolecule();
+            G4int    MolID   = MolIDs[MolName];
+            TsIRTConfiguration::TsMolecule aMol;
+            aMol.id       = MolID;
+            aMol.position = fPHSPPosition[i];
+            aMol.time     = 1 * ps;
+            aMol.spin     = 0;
+            aMol.trackID  = 100;
+            aMol.parentID = 0;
+            aMol.reacted  = false;
+            aMol.isDNA    = false;
+            aMol.isNew    = true;
+            //aMol.exinfo   = fDNADetails[i];
+            aMol.volumeID = fDNADetails[i][0];
+            aMol.baseID   = fDNADetails[i][1];
+            aMol.strandID = fDNADetails[i][2];
+            fIRT->AddMolecule(aMol);
+        }
+    }
+}
+
+G4String TsScoreDNADamagePulsed2::SampleDNAMolecule() {
+    if (fDNAMoleculesToInsert.size() == 1)
+        return fDNAMoleculesToInsert[0];
+    
+    G4double Random = G4UniformRand();
+    G4double Sum    = 0;
+    
+    for (size_t i = 0; i < fDNAMoleculesWeights.size(); i++) {
+        Sum += fDNAMoleculesWeights[i];
+        if (Random <= Sum) {
+            return fDNAMoleculesToInsert[i];
+        }
+    }
+    
+    return fDNAMoleculesToInsert[fDNAMoleculesToInsert.size()-1];
+}
+
+
+G4bool TsScoreDNADamagePulsed2::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
     if (!fIsActive) {
         fSkippedWhileInactive++;
@@ -167,36 +254,48 @@ G4bool TsScoreWithIRTCummulative::ProcessHits(G4Step* aStep, G4TouchableHistory*
             ResolveSolid(aStep);
             edep *= aStep->GetPreStepPoint()->GetWeight();
             
-            G4double mass = 0.0;
-            G4double density = aStep->GetPreStepPoint()->GetMaterial()->GetDensity();
-            fEnergyDepositPerEventEverywhere += edep ;
-            
-            if ( fTestIsInside ) {
-                G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
-                const G4String& volumeName = touchable->GetVolume()->GetName();
-                if( !volumeName.contains(fSensitiveVolume)) {
-                    return false;
-                }
-                
-                mass = density * touchable->GetVolume()->GetLogicalVolume()->GetSolid()->GetCubicVolume();
-                G4double dose = edep / mass;
-                fTotalDose += dose;
-                fEnergyDepositPerEvent += edep ;
-                fDosePerPulse += dose;
-                return true;
-            }
-            
-            mass = density * fSolid->GetCubicVolume();
-            G4double dose = edep / mass;
+            if ( 0 == fMass )
+                fMass = fDensity * fSolid->GetCubicVolume();
+
+            G4double dose = edep / fMass;
             fTotalDose += dose;
             fEnergyDepositPerEvent += edep ;
             fDosePerPulse += dose;
             
+            G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
+            const G4String& vName = touchable->GetVolume()->GetName();
+            
+            if (G4StrUtil::contains(vName,"deoxyribose") || G4StrUtil::contains(vName,"phosphate")) {
+                G4int PlasmidID;
+                G4int BaseID = touchable->GetVolume(0)->GetCopyNo();
+                G4int StrandID;
+                
+                if (G4StrUtil::contains(vName,"water")) {PlasmidID = touchable->GetVolume(1)->GetCopyNo();}
+                else {PlasmidID = touchable->GetVolume(2)->GetCopyNo();}
+                
+                if (G4StrUtil::contains(vName,"1")) {StrandID = 1;}
+                else {StrandID = 2;}
+                
+                if (fDNAEnergyDeposit.find(PlasmidID) == fDNAEnergyDeposit.end()) {
+                    fDNAEnergyDeposit[PlasmidID][BaseID][StrandID] = edep;
+                } else {
+                    if (fDNAEnergyDeposit[PlasmidID].find(BaseID) == fDNAEnergyDeposit[PlasmidID].end()) {
+                        fDNAEnergyDeposit[PlasmidID][BaseID][StrandID] = edep;
+                    } else {
+                        if (fDNAEnergyDeposit[PlasmidID][BaseID].find(StrandID) == fDNAEnergyDeposit[PlasmidID][BaseID].end()) {
+                            fDNAEnergyDeposit[PlasmidID][BaseID][StrandID] = edep;
+                        } else {
+                            fDNAEnergyDeposit[PlasmidID][BaseID][StrandID] += edep;
+                        }
+                    }
+                }
+            }
+            
             return true;
         }
     } else {
-        
         fEventID = GetEventID();
+        // Sample pulse's time only once at each new G4event/history.
         if ( fEventID != fOldEvent ) { // New history, sample a time within the pulse
             G4bool resample;
             if ( fTimeDistributionType == 1 ) {
@@ -234,10 +333,9 @@ G4bool TsScoreWithIRTCummulative::ProcessHits(G4Step* aStep, G4TouchableHistory*
             }
             
             fOldEvent = fEventID;
-            if ( fLowLimitTo1ps && fTimeDistributionType != 3 && (fNbOfScoredEvents == 0 && fNbOfScoredEventsEverywhere == 0))
+            // Force the first event arrival at 1 ps.
+            if ((fNbOfScoredEvents == 0 && fNbOfScoredEventsEverywhere == 0))
                 fShiftTime = 1.0 * ps;
-            
-            
         }
         
         return true;
@@ -246,8 +344,8 @@ G4bool TsScoreWithIRTCummulative::ProcessHits(G4Step* aStep, G4TouchableHistory*
 }
 
 
-void TsScoreWithIRTCummulative::UserHookForPreTimeStepAction() {
-    if (G4Scheduler::Instance()->GetNbSteps() == 2) {
+void TsScoreDNADamagePulsed2::UserHookForPreTimeStepAction() {
+    if (!G4EventManager::GetEventManager()->GetConstCurrentEvent()->IsAborted()) {
         G4TrackManyList* trackList = G4ITTrackHolder::Instance()->GetMainList();
         G4ManyFastLists<G4Track>::iterator it_begin = trackList->begin();
         G4ManyFastLists<G4Track>::iterator it_end = trackList->end();
@@ -255,9 +353,8 @@ void TsScoreWithIRTCummulative::UserHookForPreTimeStepAction() {
         for(;it_begin!=it_end;++it_begin){
             if ( fTestIsInside ) {
                 const G4String& volumeName = (*it_begin)->GetVolume()->GetName();
-                if ( volumeName.contains(fSensitiveVolume) ) {
-                    G4double time = fShiftTime;
-                    fIRT->AddMolecule(*it_begin, time, 0, G4ThreeVector());
+                if ( G4StrUtil::contains(volumeName,fSensitiveVolume) ) {
+                    fIRT->AddMolecule(*it_begin, fShiftTime, 0, G4ThreeVector());
                 }
             }
             else {
@@ -270,23 +367,13 @@ void TsScoreWithIRTCummulative::UserHookForPreTimeStepAction() {
 }
 
 
-void TsScoreWithIRTCummulative::UserHookForEndOfEvent() {
+void TsScoreDNADamagePulsed2::UserHookForEndOfEvent() {
     if ( fEnergyDepositPerEvent > 0 ) {
-        G4cout << "- current dose " << fTotalDose/gray << " Gy out "
-        << fPrescribedDose/gray << " deposited within pulse at time "
-        << fShiftTime/ps << " ps " << G4endl;
-        
         fVEnergyDepositPerEvent.push_back(std::make_pair(fShiftTime,fEnergyDepositPerEvent));
         fNbOfScoredEvents++;
     }
     
-    if ( fEnergyDepositPerEventEverywhere > 0 ) {
-        fVEnergyDepositPerEventEverywhere.push_back(std::make_pair(fShiftTime,fEnergyDepositPerEventEverywhere));
-        fNbOfScoredEventsEverywhere++;
-    }
-    
     fEnergyDepositPerEvent = 0.0;
-    fEnergyDepositPerEventEverywhere = 0.0;
     
     if(fNumberOfPulses > 1 && fDosePerPulse >= fPrescribedDose/fNumberOfPulses) {
         fDosePerPulse = 0.0;
@@ -294,7 +381,7 @@ void TsScoreWithIRTCummulative::UserHookForEndOfEvent() {
         G4cout << "-- New Pulse at " << fPulseTimeShift/ps << " ps " << G4endl;
     }
     
-    if(fTotalDose > fPrescribedDose )  {
+    if(fTotalDose > fPrescribedDose )  { // Add everything to IRT
         G4int tBin;
         G4cout << " --- IRT start for event " << GetEventID() << G4endl;
         
@@ -314,10 +401,12 @@ void TsScoreWithIRTCummulative::UserHookForEndOfEvent() {
         }
         fTimeOutFile.close();
         
+        InsertDNAMolecules();
         fIRT->runIRT();
+        
         std::map<G4String, std::map<G4double, G4int>> irt = fIRT->GetGValues();
         
-        G4cout << " --- IRT ends for event " << GetEventID() << G4endl;
+        G4cout << " --- IRT ends." << G4endl;
         for ( auto& nameTimeAndGvalue : irt ) {
             G4String name = nameTimeAndGvalue.first;
             fMoleculeName = name;
@@ -332,50 +421,47 @@ void TsScoreWithIRTCummulative::UserHookForEndOfEvent() {
             }
         }
         
-        if (fReportDelta) {
-            std::ofstream DeltaGFile;
-            
-            std::map<G4int, std::map<G4double, G4double> >::iterator wDeltaIter;
-            std::map<G4int, std::map<G4double, G4double> >::iterator wDeltaIter2;
-            std::map<G4double, G4double>::iterator deltaiter;
-            std::map<G4double, G4double>::iterator deltaiter2;
-            
-            G4int ReactionIndex;
-            G4double ReactionTime;
-            G4double DeltaReaction;
-            G4double DeltaError;
-            G4String ReactA;
-            G4String ReactB;
-            
-            G4String OutputFileName = fPm->GetStringParameter(GetFullParmName("OutputFile"));
-            DeltaGFile.open(fOutputFile + "_DeltaG.phsp", std::ofstream::app);
-            DeltaGFile << "# reactionID moleculeA moleculeB prod1 prod2 prod3 Time(ps) DeltaG(/100eV) " << G4endl;
-            std::map<G4int, std::map<G4double, G4int>> DeltaG = fIRT->GetDeltaGValues();
-            
-            for ( auto& indexTimeAndDeltaG : DeltaG) {
-                G4int reactionIndex = indexTimeAndDeltaG.first;
-                for ( auto& timeAndDeltaG : (indexTimeAndDeltaG.second) ) {
-                    G4double time   = timeAndDeltaG.first;
-                    G4double deltaG = timeAndDeltaG.second;
-                    deltaG *= 100/(fEnergyDepositPerEvent/eV);
-                    G4String ReactA = (fIRT->GetReactants(reactionIndex)).first;
-                    G4String ReactB = (fIRT->GetReactants(reactionIndex)).second;
-                    std::vector<G4String> Products = fIRT->GetProducts(reactionIndex);
-                    DeltaGFile << reactionIndex+1 << "    "  << ReactA << "  "  << ReactB << "  ";
-                    
-                    while (Products.size() < 3)
-                        Products.push_back("None");
-                    
-                    for (size_t prod = 0; prod < Products.size(); prod++)
-                        DeltaGFile << Products[prod] << "  ";
-                    
-                    DeltaGFile << "  " << time/ps << "     " << deltaG << std::endl;
-                }
-            }
-            DeltaGFile.close();
-            DeltaG.clear();
-        }
+        std::ofstream DeltaGFile;
         
+        std::map<G4int, std::map<G4double, G4double> >::iterator wDeltaIter;
+        std::map<G4int, std::map<G4double, G4double> >::iterator wDeltaIter2;
+        std::map<G4double, G4double>::iterator deltaiter;
+        std::map<G4double, G4double>::iterator deltaiter2;
+        
+        G4int ReactionIndex;
+        G4double ReactionTime;
+        G4double DeltaReaction;
+        G4double DeltaError;
+        G4String ReactA;
+        G4String ReactB;
+        
+        G4String OutputFileName = fPm->GetStringParameter(GetFullParmName("OutputFile"));
+        DeltaGFile.open(fOutputFile + "_DeltaG.phsp", std::ofstream::app);
+        DeltaGFile << "# reactionID moleculeA moleculeB prod1 prod2 prod3 Time(ps) DeltaG(/100eV) " << G4endl;
+        std::map<G4int, std::map<G4double, G4int>> DeltaG = fIRT->GetDeltaGValues();
+        
+        for ( auto& indexTimeAndDeltaG : DeltaG) {
+            G4int reactionIndex = indexTimeAndDeltaG.first;
+            for ( auto& timeAndDeltaG : (indexTimeAndDeltaG.second) ) {
+                G4double time   = timeAndDeltaG.first;
+                G4double deltaG = timeAndDeltaG.second;
+                deltaG *= 100/(fEnergyDepositPerEvent/eV);
+                G4String ReactA = (fIRT->GetReactants(reactionIndex)).first;
+                G4String ReactB = (fIRT->GetReactants(reactionIndex)).second;
+                std::vector<G4String> Products = fIRT->GetProducts(reactionIndex);
+                DeltaGFile << reactionIndex+1 << "    "  << ReactA << "  "  << ReactB << "  ";
+                
+                while (Products.size() < 3)
+                    Products.push_back("None");
+                
+                for (size_t prod = 0; prod < Products.size(); prod++)
+                    DeltaGFile << Products[prod] << "  ";
+                
+                DeltaGFile << "  " << time/ps << "     " << deltaG << std::endl;
+            }
+        }
+        DeltaGFile.close();
+        DeltaG.clear();
         
         irt.clear();
         fIRT->Clean();
@@ -391,6 +477,5 @@ void TsScoreWithIRTCummulative::UserHookForEndOfEvent() {
         G4RunManager::GetRunManager()->AbortRun(true);
     }
 }
-
 
 
