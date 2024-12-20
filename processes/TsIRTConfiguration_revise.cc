@@ -262,7 +262,7 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 			G4double scavengingCapacity = fPm->GetDoubleParameter(aparName.substr(0,aparName.find("Products")-1) +
 																  "/ScavengingCapacity","perTime");
 
-			InsertBackgroundReaction(reactorA, reactorB, vProduct, 1.0, scavengingCapacity, false);
+			InsertBackgroundReaction(reactorA, reactorB, vProduct, -1.0, scavengingCapacity, false);
 		} else {
 			G4double concentration = fPm->GetDoubleParameter(aparName.substr(0,aparName.find("Products")-1) +
 															 "/Concentration","molar concentration");
@@ -580,8 +580,15 @@ void TsIRTConfiguration_revise::InsertBackgroundReaction(G4String A, G4String B,
 	+ fMoleculesDefinition[molB].diffusionCoefficient;
 	aMolecularReaction.diffusionCoefficient = sumDiffCoeff;
 	aMolecularReaction.effectiveReactionRadius = kobs / (4. * CLHEP::pi * sumDiffCoeff * CLHEP::Avogadro);
-	aMolecularReaction.concentration = concentration;
-	aMolecularReaction.scavengingCapacity = kobs * concentration;
+
+	if(kobs == -1.0){
+                aMolecularReaction.concentration = 0; 
+                aMolecularReaction.scavengingCapacity = concentration;
+        }else{
+                aMolecularReaction.concentration = concentration;
+                aMolecularReaction.scavengingCapacity = kobs * concentration;
+        }
+
 	aMolecularReaction.index = index;
 	aMolecularReaction.reactionType = 6;
 	aMolecularReaction.sampleExponential = sampleExponential;// true;
