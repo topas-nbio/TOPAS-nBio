@@ -13,7 +13,7 @@
 #include "TsScoreDNADamagePulsed.hh"
 #include "TsIRTManager.hh"
 #include "TsIRTConfiguration.hh"
-#include "TsIRTUtils.hh"
+//#include "TsIRTUtils.hh"
 
 #include "G4ITTrackHolder.hh"
 #include "G4EventManager.hh"
@@ -29,8 +29,6 @@
 #include "Randomize.hh"
 #include "TsGeometryManager.hh"
 #include "TsIRTPlasmidSupercoiled.hh"
-
-#include "G4LogicalVolumeStore.hh"
 
 TsScoreDNADamagePulsed::TsScoreDNADamagePulsed(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
                                                      G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer)
@@ -143,10 +141,8 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
     fNbOfScoredEventsEverywhere = 0;
     fNbOfIRTRuns = 0;
 
-    // fTotalDose = 0.0;
-    fTotalEDep = 0.0;
-    // fDosePerPulse = 0.0;
-    fEDepPerPulse = 0.0;
+    fTotalDose = 0.0;
+    fDosePerPulse = 0.0;
     fPulseTimeShift = 0.0; //fPulsesTimeDelay;
     
     //SampleShiftTime();
@@ -194,25 +190,6 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
     }
 
     fMass = 0;
-    fRadius = 0;
-
-    // prescribed eDep from prescribed dose
-    G4LogicalVolume* logicalVolume = G4LogicalVolumeStore::GetInstance()->GetVolume("Plasmids");
-    G4Material* material = logicalVolume->GetMaterial();
-    G4VSolid* solid = logicalVolume->GetSolid();
-
-    G4double density = material->GetDensity();
-    G4double cubicVolume = solid->GetCubicVolume();
-
-    fMass = density * cubicVolume;
-
-    fPrescribedEDep = (fPrescribedDose * fMass);
-
-    // G4cout << "------------ VOLUME --------------- : " << cubicVolume << G4endl;
-    // G4cout << "------------ DENSITY --------------- : " << density << G4endl;
-    // G4cout << "------------ MASS --------------- : " << fMass << G4endl;
-    // G4cout << "------------ DOSE --------------- : " << fPrescribedDose/gray << " Gy" << G4endl;
-    // G4cout << "------------ EDEP --------------- : " << fPrescribedEDep/eV << " eV" <<G4endl;
 
     if (fPm->ParameterExists(GetFullParmName("DNAMoleculesNames"))) {
         G4int NbOfDNANames   = fPm->GetVectorLength(GetFullParmName("DNAMoleculesNames"));
@@ -308,41 +285,29 @@ G4bool TsScoreDNADamagePulsed::ProcessHits(G4Step* aStep, G4TouchableHistory*)
                 }
 
                 //else if (!G4StrUtil::contains(vName,"VoxelStraight")) {
-                // if (vName == "Plasmids") {
-                //     fMass = (density * fSolid->GetCubicVolume())/kg;
-                // }
+                if (vName == "Plasmids") {
+                    fMass = (density * fSolid->GetCubicVolume())/kg;
+                }
 
-                // if (fMass == 0) {fMass = fVolume * density;}
+                if (fMass == 0) {fMass = fVolume * density;}
             
-                // G4double dose = 0;
+                G4double dose = 0;
 
-                // if (fMass > 0) {
-                //     dose = (edep/eV)*1.60218e-19 / fMass;
-                // }
-                // if (dose > 20*gray) {return false;} 
+                if (fMass > 0) {
+                    dose = (edep/eV)*1.60218e-19 / fMass;
+                }
+                //if (dose > 20*gray) {return false;} 
 
-                // fTotalDose += dose;
-                fTotalEDep += edep;
-
+                fTotalDose += dose;
                 fEnergyDepositPerEvent += edep ;
+                fDosePerPulse += dose;
 
-                // fDosePerPulse += dose;
-                // fEDepPerPulse += edep;
-
-                // if (fTotalDose >= fPrescribedDose/gray) {
-                //     aStep->GetTrack()->SetTrackStatus(fStopAndKill);
-                //     return false;
-                // }
-                if (fTotalEDep >= fPrescribedEDep) {
+                if (fTotalDose >= fPrescribedDose/gray) {
                     aStep->GetTrack()->SetTrackStatus(fStopAndKill);
                     return false;
                 }
 
-                // if (fDosePerPulse >= (fPrescribedDose/fNumberOfPulses)/gray) {
-                //     aStep->GetTrack()->SetTrackStatus(fStopAndKill);
-                //     //return false;
-                // }
-                if (fEDepPerPulse >= fPrescribedEDep/fNumberOfPulses) {
+                if (fDosePerPulse >= (fPrescribedDose/fNumberOfPulses)/gray) {
                     aStep->GetTrack()->SetTrackStatus(fStopAndKill);
                     //return false;
                 }
@@ -416,25 +381,18 @@ void TsScoreDNADamagePulsed::UserHookForEndOfEvent() {
     fEnergyDepositPerEvent = 0.0;
     fEnergyDepositPerEventEverywhere = 0.0;
 
-    // if(fNumberOfPulses > 1 && fDosePerPulse >= (fPrescribedDose/fNumberOfPulses)/gray && fCurrentPulse < fNumberOfPulses && !fPulseRecycle) {
-    //     fDosePerPulse = 0.0;
-    if(fNumberOfPulses > 1 && fEDepPerPulse >= fPrescribedEDep/fNumberOfPulses && fCurrentPulse < fNumberOfPulses && !fPulseRecycle) {
-        fEDepPerPulse = 0.0;
+    if(fNumberOfPulses > 1 && fDosePerPulse >= (fPrescribedDose/fNumberOfPulses)/gray && fCurrentPulse < fNumberOfPulses && !fPulseRecycle) {
+        fDosePerPulse = 0.0;
         fPulseTimeShift += fPulsesTimeDelay;
         fCurrentPulse++;
         fPulseTimeLimits[fCurrentPulse].first  =  1E150;
         fPulseTimeLimits[fCurrentPulse].second = 1E-150;
     }
 
-    // if(fTotalDose > fPrescribedDose/gray)
-    //     RunAndSaveInfo();
-    // if (fPulseRecycle && fDosePerPulse >= (fPrescribedDose/fNumberOfPulses)/gray)
-    //     RunAndSaveInfo();
-    if(fTotalEDep > fPrescribedEDep)
+    if(fTotalDose > fPrescribedDose/gray)
         RunAndSaveInfo();
-    if (fPulseRecycle && fEDepPerPulse >= fPrescribedEDep/fNumberOfPulses)
+    if (fPulseRecycle && fDosePerPulse >= (fPrescribedDose/fNumberOfPulses)/gray)
         RunAndSaveInfo();
-
 }
 
 
@@ -655,6 +613,57 @@ void TsScoreDNADamagePulsed::Output() {
         }
     }
     StrandBreakOut.close();
+    
+    std::ofstream DeltaGFile;
+    
+    std::map<G4int, std::map<G4double, G4double> >::iterator wDeltaIter;
+    std::map<G4int, std::map<G4double, G4double> >::iterator wDeltaIter2;
+    std::map<G4double, G4double>::iterator deltaiter;
+    std::map<G4double, G4double>::iterator deltaiter2;
+    
+    G4int ReactionIndex;
+    G4double ReactionTime;
+    G4double DeltaReaction;
+    G4double DeltaError;
+    G4String ReactA;
+    G4String ReactB;
+
+    G4String OutputFileName = fPm->GetStringParameter(GetFullParmName("OutputFile"));
+    DeltaGFile.open(fOutputFile + "_DeltaG.phsp", std::ofstream::app);
+    
+    for ( wDeltaIter = fDeltaGValues.begin(); wDeltaIter != fDeltaGValues.end(); wDeltaIter++ ) {
+        wDeltaIter2 = fDeltaGValues.find(wDeltaIter->first );
+        
+        for ( deltaiter = (wDeltaIter->second).begin(); deltaiter != (wDeltaIter->second).end(); deltaiter++) {
+            deltaiter2 = (wDeltaIter2->second).find( deltaiter->first );
+            
+            DeltaReaction = deltaiter->second/fNbOfIRTRuns;
+            if ( fNbOfScoredEvents > 1 ) {
+                DeltaError = sqrt( (1.0/(fNbOfIRTRuns-1)) * ( (deltaiter2->second)/fNbOfIRTRuns - DeltaReaction*DeltaReaction));
+            } else {
+                DeltaError = 1.0;
+            }
+            
+            ReactionTime  = deltaiter->first;
+            ReactionIndex = wDeltaIter->first;
+            ReactA = (fIRT->GetReactants(ReactionIndex)).first;
+            ReactB = (fIRT->GetReactants(ReactionIndex)).second;
+            std::vector<G4String> Products = fIRT->GetProducts(ReactionIndex);
+            DeltaGFile << ReactionIndex+1 << "    "  << ReactA << "  "  << ReactB << "  ";
+            
+            while (Products.size() < 3) {
+                Products.push_back("None");
+            }
+            
+            for (size_t prod = 0; prod < Products.size(); prod++) {
+                DeltaGFile << Products[prod] << "  ";
+            }
+            
+            DeltaGFile << "  " << ReactionTime * 1000 << "     " << DeltaReaction << "    " << DeltaError << std::endl;
+        }
+    }
+    
+    DeltaGFile.close();
 }
 
 
@@ -694,9 +703,6 @@ void TsScoreDNADamagePulsed::SampleShiftTime() {
 
 
 void TsScoreDNADamagePulsed::RunAndSaveInfo() {
-
-    fTotalDose = (fTotalEDep/fMass)/gray;
-
     G4cout << "Starting Chemistry after " << fNbOfScoredEvents << " primaries | Dose = " << fTotalDose << " Gy" << G4endl;
     RunChemistry();
     G4int tBin;
@@ -754,7 +760,7 @@ void TsScoreDNADamagePulsed::RunAndSaveInfo() {
     fPulseTimeLimits.clear();
     fDNAHasBeenInserted = false;
 
-    fTotalEDep = 0;
+    fTotalDose = 0;
 
     if ((fNumberOfRepetitions / fNumberOfThreads) <= fNbOfIRTRuns) {
         fSimulationFinished = true;

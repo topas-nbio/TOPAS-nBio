@@ -20,6 +20,7 @@
 
 class TsIRTManager;
 class TsIRTUtils;
+class TsScoringUtils;
 
 class TsScoreDNADamagePulsed : public TsVNtupleScorer
 {
@@ -67,6 +68,7 @@ private:
 	TsParameterManager* fPm;
 	TsIRTManager* fIRT;
 	TsIRTUtils* fUtils;
+    TsScoringUtils* fScu;
 	
 	std::vector<std::pair<G4double,G4double>> fPulseInformation;
 	std::vector<std::pair<G4double,G4double>> fVEnergyDepositPerEvent;
@@ -148,7 +150,7 @@ private:
 
     // Molecules
     std::map<G4int,std::pair<G4double,G4double>> fPulseTimeLimits;
-    std::map<G4int, std::vector<TsIRTConfiguration::TsMolecule>> fMolecules; 
+    std::map<G4int, std::vector<TsIRTConfiguration::TsMolecule>> fMolecules;
 
     std::map<G4String, std::map<G4double, G4int>> fGValuesInRun;
     std::map<G4int, std::map<G4double, G4int>>    fDeltaGInRun;
