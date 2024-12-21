@@ -357,7 +357,7 @@ void TsScoreWithIRTCummulative::UserHookForEndOfEvent() {
                 for ( auto& timeAndDeltaG : (indexTimeAndDeltaG.second) ) {
                     G4double time   = timeAndDeltaG.first;
                     tBin = fUtils->FindBin(time, fStepTimes);
-                    G4double deltaG = 100 * timeAndDeltaG.second/(fVEnergyDeposit[tbin]/eV);
+                    G4double deltaG = 100 * timeAndDeltaG.second/(fVEnergyDeposit[tBin]/eV);
                     G4String ReactA = (fIRT->GetReactants(reactionIndex)).first;
                     G4String ReactB = (fIRT->GetReactants(reactionIndex)).second;
                     std::vector<G4String> Products = fIRT->GetProducts(reactionIndex);
