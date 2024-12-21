@@ -333,7 +333,7 @@ void TsScoreWithIRTCummulative::UserHookForEndOfEvent() {
         }
         
         if (fReportDelta) {
-            std::ofstream DeltaGFile;
+            std::ofstream DeltaGFile(fOutputFile + "_DeltaG.phsp");
             
             std::map<G4int, std::map<G4double, G4double> >::iterator wDeltaIter;
             std::map<G4int, std::map<G4double, G4double> >::iterator wDeltaIter2;
@@ -348,7 +348,7 @@ void TsScoreWithIRTCummulative::UserHookForEndOfEvent() {
             G4String ReactB;
             
             G4String OutputFileName = fPm->GetStringParameter(GetFullParmName("OutputFile"));
-            DeltaGFile.open(fOutputFile + "_DeltaG.phsp", std::ofstream::app);
+            
             DeltaGFile << "# reactionID moleculeA moleculeB prod1 prod2 prod3 Time(ps) DeltaG(/100eV) " << G4endl;
             std::map<G4int, std::map<G4double, G4int>> DeltaG = fIRT->GetDeltaGValues();
             
