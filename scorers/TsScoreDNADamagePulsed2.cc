@@ -241,6 +241,18 @@ G4String TsScoreDNADamagePulsed2::SampleDNAMolecule() {
 }
 
 
+void TsScoreDNADamagePulsed2::FilterMoleculesInsideDNAVolumes() {
+    G4TrackManyList* trackList = G4ITTrackHolder::Instance()->GetMainList();
+    G4ManyFastLists<G4Track>::iterator it_begin = trackList->begin();
+    G4ManyFastLists<G4Track>::iterator it_end   = trackList->end();
+    for(;it_begin!=it_end;++it_begin){
+        if (it_begin->GetMaterial()->GetName() != "G4_WATER") {
+            it_begin->SetTrackStatus(fStopAndKill);
+        }
+    }
+}
+
+
 G4bool TsScoreDNADamagePulsed2::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
     if (!fIsActive) {
@@ -346,6 +358,9 @@ G4bool TsScoreDNADamagePulsed2::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 void TsScoreDNADamagePulsed2::UserHookForPreTimeStepAction() {
     if (!G4EventManager::GetEventManager()->GetConstCurrentEvent()->IsAborted()) {
+        
+        FilterMoleculesInsideDNAVolumes();
+        
         G4TrackManyList* trackList = G4ITTrackHolder::Instance()->GetMainList();
         G4ManyFastLists<G4Track>::iterator it_begin = trackList->begin();
         G4ManyFastLists<G4Track>::iterator it_end = trackList->end();
