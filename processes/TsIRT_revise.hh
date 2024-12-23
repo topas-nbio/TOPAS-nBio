@@ -23,6 +23,9 @@ public:
 	void runIRT(G4double startTime = -1, G4double finalTime = -1, G4double transTime=-1, G4bool isContinuation=false) override;
 	void Clean() override;
 	void AddMolecule(G4Track*, G4double, G4int, G4ThreeVector);
+	void AddMolecule(G4int, G4ThreeVector, G4double,
+                               G4int, G4bool, G4int, G4int, G4int);
+
 	TsIRTConfiguration_revise::TsMolecule ConstructMolecule(G4Track*, G4double, G4int, G4ThreeVector);
 
 	void SetContainersForNextPulse() override;

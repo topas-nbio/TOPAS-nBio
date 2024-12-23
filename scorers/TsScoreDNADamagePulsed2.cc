@@ -204,21 +204,22 @@ void TsScoreDNADamagePulsed2::InsertDNAMolecules() {
         if (fPHSPIsAlive[i]) { // only insert those that are not damage in the direct action
             G4String MolName = SampleDNAMolecule();
             G4int    MolID   = MolIDs[MolName];
-            TsIRTConfiguration::TsMolecule aMol;
-            aMol.id       = MolID;
-            aMol.position = fPHSPPosition[i];
-            aMol.time     = 1 * ps;
-            aMol.spin     = 0;
-            aMol.trackID  = 100;
-            aMol.parentID = 0;
-            aMol.reacted  = false;
-            aMol.isDNA    = false;
-            aMol.isNew    = true;
-            //aMol.exinfo   = fDNADetails[i];
-            aMol.volumeID = fDNADetails[i][0];
-            aMol.baseID   = fDNADetails[i][1];
-            aMol.strandID = fDNADetails[i][2];
-            fIRT->AddMolecule(aMol);
+            //TsIRTConfiguration::TsMolecule aMol;
+            //aMol.id       = MolID;
+            //aMol.position = fPHSPPosition[i];
+            //aMol.time     = 1 * ps;
+            //aMol.spin     = 0;
+            //aMol.trackID  = 100;
+            //aMol.parentID = 0;
+            //aMol.reacted  = false;
+            //aMol.isDNA    = true;
+            //aMol.isNew    = true;
+            ////aMol.exinfo   = fDNADetails[i];
+            //aMol.volumeID = fDNADetails[i][0];
+            //aMol.baseID   = fDNADetails[i][1];
+            //aMol.strandID = fDNADetails[i][2];
+            //fIRT->AddMolecule(aMol);
+            fIRT->AddMolecule(MolID, fPHSPPosition[i], 1*ps, 100, true, fDNADetails[i][0], fDNADetails[i][1], fDNADetails[i][2]);
         }
     }
 }
@@ -358,13 +359,20 @@ G4bool TsScoreDNADamagePulsed2::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 void TsScoreDNADamagePulsed2::UserHookForPreTimeStepAction() {
     if (!G4EventManager::GetEventManager()->GetConstCurrentEvent()->IsAborted()) {
-        
-        FilterMoleculesInsideDNAVolumes();
-        
+        //FilterMoleculesInsideDNAVolumes();
         G4TrackManyList* trackList = G4ITTrackHolder::Instance()->GetMainList();
         G4ManyFastLists<G4Track>::iterator it_begin = trackList->begin();
         G4ManyFastLists<G4Track>::iterator it_end = trackList->end();
+        for(;it_begin!=it_end;++it_begin) {
+            G4Molecule* Molecule = GetMolecule(*it_begin);
+            const G4MoleculeDefinition* MolDef = Molecule->GetDefinition();
+            if (MolDef == G4H2O::Definition()) {
+                // return this function to allow H2O dissociates
+                return;
+            }
+        }
         
+        it_begin = trackList->begin();
         for(;it_begin!=it_end;++it_begin){
             if ( fTestIsInside ) {
                 const G4String& volumeName = (*it_begin)->GetVolume()->GetName();
@@ -411,8 +419,9 @@ void TsScoreDNADamagePulsed2::UserHookForEndOfEvent() {
             fTimeOutFile.write(reinterpret_cast<char*>(&saveTime), sizeof saveTime);
             fTimeOutFile.write(reinterpret_cast<char*>(&saveEdep), sizeof saveEdep);
             
-            G4cout << " --- energy deposit at time " << fVEnergyDepositPerEvent[t].first/ps
-            << " ps " << fVEnergyDepositPerEvent[t].second/eV << G4endl;
+            if ( fVerbosity > 0 )
+                G4cout << " --- energy deposit at time " << fVEnergyDepositPerEvent[t].first/ps
+                << " ps " << fVEnergyDepositPerEvent[t].second/eV << G4endl;
         }
         fTimeOutFile.close();
         

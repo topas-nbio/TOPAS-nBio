@@ -56,6 +56,12 @@ std::vector<G4String> TsIRTManager::GetProducts(G4int reactIndex) {
 	return fIRTProcedure->GetProducts(reactIndex);
 }
 
+// temporal function
+void TsIRTManager::AddMolecule(G4int molID, G4ThreeVector position, G4double time,
+                               G4int trackID, G4bool isDNA, G4int volumeID, G4int baseID, G4int strandID) {
+	fIRTProcedure->AddMolecule(molID, position, time, trackID, isDNA, volumeID, baseID, strandID);
+}
+
 void TsIRTManager::AddMolecule(TsIRTConfiguration::TsMolecule aMol) {
 	fIRTProcedure->AddMolecule(aMol);
 }

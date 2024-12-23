@@ -81,6 +81,38 @@ void TsIRT_revise::Sampling(){
 	}
 }
 
+
+void TsIRT_revise::AddMolecule(G4int molID, G4ThreeVector position, G4double time,
+                               G4int trackID, G4bool isDNA, G4int volumeID, G4int baseID, G4int strandID) {
+    if (!fScorersInitialized)
+        initializeScorers();
+    
+    TsIRTConfiguration_revise::TsMolecule aMol;
+    aMol.id       = molID;
+    aMol.position = position;
+    aMol.time     = time;
+    aMol.spin     = 0;
+    aMol.trackID  = trackID;
+    aMol.parentID = 0;
+    aMol.reacted  = false;
+    aMol.isDNA    = isDNA;
+    aMol.isNew    = true;
+    ////aMol.exinfo   = fDNADetails[i];
+    aMol.volumeID = volumeID;
+    aMol.baseID   = baseID;
+    aMol.strandID = strandID;
+    if ( fXMin > position.x() ) fXMin = position.x();
+    if ( fYMin > position.y() ) fYMin = position.y();
+    if ( fZMin > position.z() ) fZMin = position.z();
+    
+    if ( fXMax < position.x() ) fXMax = position.x();
+    if ( fYMax < position.y() ) fYMax = position.y();
+    if ( fZMax < position.z() ) fZMax = position.z();
+    
+    fChemicalSpecies[fSpeciesIndex] = aMol;
+    fSpeciesIndex++;
+}
+
 void TsIRT_revise::AddMolecule(G4Track* aTrack, G4double time, G4int moleculeID, G4ThreeVector offset){
 	if (!fScorersInitialized)
 		initializeScorers();
@@ -128,8 +160,8 @@ TsIRTConfiguration_revise::TsMolecule TsIRT_revise::ConstructMolecule(G4Track* a
 
 void TsIRT_revise::sampleReactions(G4int i) {
 
-	if ( fChemicalSpecies[i].isDNA )
-		return;
+    if ( fChemicalSpecies[i].isDNA )
+        return;
 
 	if ( !MoleculeExists(i) )
 		return;

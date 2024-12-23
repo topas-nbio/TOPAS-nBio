@@ -144,6 +144,13 @@ G4bool TsVIRTProcedure::Inside(G4ThreeVector p ) {
 }
 
 
+void TsVIRTProcedure::AddMolecule(G4int, G4ThreeVector, G4double,
+                               G4int, G4bool, G4int, G4int, G4int)
+{
+	return;
+}
+
+
 void TsVIRTProcedure::AddMolecule(TsIRTConfiguration::TsMolecule aMol) {
 	if ( !fScorersInitialized )
 		initializeScorers();

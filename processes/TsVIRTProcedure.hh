@@ -2,6 +2,7 @@
 #define TsVIRTProcedure_hh
 
 #include "TsIRTConfiguration.hh"
+#include "TsIRTConfiguration_revise.hh"
 #include "globals.hh"
 #include "G4ThreeVector.hh"
 #include "G4Step.hh"
@@ -26,6 +27,10 @@ public:
 	virtual void AddMolecule(G4Track*, G4double, G4int, G4ThreeVector);
 	virtual void AddMolecule(const G4Track*, G4double, G4int, G4ThreeVector);
 	virtual void AddMolecule(G4Track*, G4double, G4int, G4ThreeVector, G4bool);
+// Temporal function
+	virtual void AddMolecule(G4int, G4ThreeVector, G4double,
+                               G4int, G4bool, G4int, G4int, G4int);
+
 	TsIRTConfiguration::TsMolecule ConstructMolecule(G4Track*, G4double, G4int, G4ThreeVector);
 	
 	virtual void Clean() {;}

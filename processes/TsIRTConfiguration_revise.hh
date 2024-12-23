@@ -75,6 +75,8 @@ public:
 		G4ThreeVector position = G4ThreeVector();
 
 		G4bool isDNA   = false;
+		G4bool reacted = false;
+		G4bool isNew   = true;
 
 		G4int trackID  = -1;
 		G4int parentID = 0;

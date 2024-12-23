@@ -37,7 +37,7 @@ public:
     void InsertDNAMolecules();
     G4String SampleDNAMolecule();
     void GetDNAInformation();
-
+    void FilterMoleculesInsideDNAVolumes();
 		
 protected:
 	
