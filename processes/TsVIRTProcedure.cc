@@ -2,6 +2,7 @@
 #include "TsVIRTProcedure.hh"
 #include "TsIRTUtils.hh"
 #include "TsIRTConfiguration.hh"
+#include "TsIRTConfiguration.hh"
 #include "TsParameterManager.hh"
 
 #include "G4Step.hh"
@@ -367,7 +368,7 @@ void TsVIRTProcedure::initializeScorers() {
 			}
 		}
 	}
-	
+
 	fScorersInitialized = true;
 }
 
@@ -676,7 +677,9 @@ std::vector<G4int> TsVIRTProcedure::GetSurvivingMolecules(G4int parentID) {
 }
 
 std::vector<TsIRTConfiguration::TsMolecule> TsVIRTProcedure::GetSurvivingMoleculesWithMolID(G4int molID) {
-	std::vector<TsIRTConfiguration::TsMolecule> AliveMolecules;
+    G4cout << " --- Called GetSurvivingMoleculesWithMolID " << G4endl;
+    
+    std::vector<TsIRTConfiguration::TsMolecule> AliveMolecules;
 	for (auto& IndexAndMol: fChemicalSpecies) {
 		G4int i = IndexAndMol.first;
 		if (!fChemicalSpecies[i].reacted) {
@@ -687,6 +690,7 @@ std::vector<TsIRTConfiguration::TsMolecule> TsVIRTProcedure::GetSurvivingMolecul
 	}
 	return AliveMolecules;
 }
+
 
 G4bool TsVIRTProcedure::MoleculeExists(G4int Index) {
 	std::unordered_map<G4int,TsIRTConfiguration::TsMolecule>::iterator IT = fChemicalSpecies.find(Index);

@@ -7,6 +7,7 @@
 #include "G4ThreeVector.hh"
 #include "TsIRTUtils.hh"
 #include "TsIRTConfiguration.hh"
+#include "TsIRTConfiguration.hh"
 
 class TsVIRTProcedure;
 class TsParameterManager;
@@ -28,6 +29,7 @@ public:
 	void SetContainersForNextPulse();
 
 	TsIRTUtils* GetUtils();
+	TsVIRTProcedure* GetIRTProcedure();
 	std::vector<G4double> GetStepTimes();
 	TsIRTConfiguration::TsMolecule ConstructMolecule(G4Track*, G4double, G4int, G4ThreeVector);
 	TsIRTConfiguration* GetIRTConfiguration();

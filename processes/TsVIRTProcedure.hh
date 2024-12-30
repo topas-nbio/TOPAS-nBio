@@ -2,7 +2,6 @@
 #define TsVIRTProcedure_hh
 
 #include "TsIRTConfiguration.hh"
-#include "TsIRTConfiguration_revise.hh"
 #include "globals.hh"
 #include "G4ThreeVector.hh"
 #include "G4Step.hh"
@@ -39,6 +38,8 @@ public:
 	
 	inline std::vector<G4double> GetStepTimes() {return fStepTimes; };
 	inline TsIRTUtils* GetUtils() { return fUtils; };
+	inline G4double GetVirtualRegionCubicVolume() {return 8 * (fDx * fDy * fDz);}; 
+	inline G4bool GetTestIsInside() {return fTestIsInside;}; 
 	
 	void SetGValues(std::map<G4String, std::map<G4double, G4int>>);
 	void SetDeltaGValues(std::map<G4int, std::map<G4double, G4int>>);
