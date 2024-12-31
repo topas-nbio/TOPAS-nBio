@@ -36,24 +36,22 @@ TsIRT::TsIRT(TsParameterManager* pM, G4String parmName): TsVIRTProcedure(pM,parm
 		fChemVerbosity =pM->GetIntegerParameter("Ts/ChemistryVerbosity");
 
 	fHighTimeScavenger = true;
-	fScorersInitialized = false;
-
 }
+
 
 TsIRT::~TsIRT() {;}
 
-void TsIRT::runIRT(G4double, G4double, G4double, G4bool) {
 
+void TsIRT::runIRT(G4double, G4double, G4double, G4bool) {
 	Sampling();
 	ConductReactions();
 	UpdateGValues();
 }
 
+
 void TsIRT::Sampling(){
-	if ( !fScorersInitialized ) {
+	if ( !fScorersInitialized )
 		initializeScorers();
-		fScorersInitialized = true;
-	}
 
 	fNx = G4int((fXMax-fXMin)/fBinWidth) == 0 ? 1 : G4int((fXMax-fXMin)/fBinWidth);
 	fNy = G4int((fYMax-fYMin)/fBinWidth) == 0 ? 1 : G4int((fYMax-fYMin)/fBinWidth);
@@ -63,15 +61,16 @@ void TsIRT::Sampling(){
 		TsIRTConfiguration::TsMolecule aMol = (*it).second;
 		G4ThreeVector position = aMol.position;
 
-		G4double t = (*it).first;
+		G4int t = (*it).first; 
 
 		G4int tBin = fUtils->FindBin(aMol.time, fStepTimes);
 		if ( -1 < tBin ) {
 			for ( int tbin = tBin; tbin < (int)fStepTimes.size(); tbin++ ) {
-				if ( fTheGvalue.find(aMol.id) == fTheGvalue.end() )
+				if ( fTheGvalue.find(aMol.id) == fTheGvalue.end() ) {
 					fTheGvalue[aMol.id][tbin] = 1;
-				else
-					fTheGvalue[aMol.id][tbin]++;
+				} else {
+					fTheGvalue[aMol.id][tbin]++; 
+				}
 			}
 		}
 		G4int I = fUtils->FindBin(fNx, fXMin, fXMax, aMol.position.x());
@@ -87,11 +86,6 @@ void TsIRT::Sampling(){
 
 void TsIRT::AddMolecule(G4int molID, G4ThreeVector position, G4double time,
                                G4int trackID, G4bool isDNA, G4int volumeID, G4int baseID, G4int strandID) {
-    if (!fScorersInitialized) {
-        initializeScorers();
-        fScorersInitialized = true;
-    }
- 
     TsIRTConfiguration::TsMolecule aMol;
     aMol.id       = molID;
     aMol.position = position;
@@ -118,12 +112,8 @@ void TsIRT::AddMolecule(G4int molID, G4ThreeVector position, G4double time,
     fSpeciesIndex++;
 }
 
-void TsIRT::AddMolecule(G4Track* aTrack, G4double time, G4int moleculeID, G4ThreeVector offset){
-	if (!fScorersInitialized) {
-		initializeScorers();
-                fScorersInitialized = true;
-        }
 
+void TsIRT::AddMolecule(G4Track* aTrack, G4double time, G4int moleculeID, G4ThreeVector offset){
 	TsIRTConfiguration::TsMolecule aMol = ConstructMolecule(aTrack, time, 0, G4ThreeVector());
 
 	G4ThreeVector position = aMol.position;

@@ -30,7 +30,6 @@ public:
 
 	void SetContainersForNextPulse() override;
 
-
 protected:
 	void CleanIRTVariables() override;
 	void ConductReactions() override;
@@ -49,7 +48,6 @@ protected:
 	std::unordered_map<G4int,std::unordered_map<G4int,std::unordered_map<G4int,std::unordered_map<G4int,G4bool>>>> fSpaceBinned;
 	std::map<G4int, G4String> fMoleculesName;
 
-
 	TsIRTConfiguration* fReactionConf;
 	TsParameterManager* fPm;
 	G4String fName;
@@ -57,7 +55,6 @@ protected:
 	G4int fChemVerbosity;
 
 	G4bool fHighTimeScavenger;
-	G4bool fScorersInitialized;
 	
 };
 #endif

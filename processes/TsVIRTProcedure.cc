@@ -165,7 +165,7 @@ void TsVIRTProcedure::AddMolecule(TsIRTConfiguration::TsMolecule aMol) {
 	
 	// count
 	G4int tBin = fUtils->FindBin(aMol.time, fStepTimes);
-	
+	G4cout << tBin << " " << fStepTimes[tBin] << G4endl;
 	if ( -1 < tBin ) {
 		for ( int tbin = tBin; tbin < (int)fStepTimes.size(); tbin++ ) {
 			if ( fTheGvalue.find(aMol.id) == fTheGvalue.end() )

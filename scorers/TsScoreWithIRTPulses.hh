@@ -47,6 +47,7 @@ protected:
     G4double fTime;
     G4String fMoleculeName;
     G4double fMolecules;
+    G4double fEnergyDepositGvalue;
 	
     std::map<G4String, std::map<G4double, G4double> > fGValuePerSpeciePerTime;
     std::map<G4String, std::map<G4double, G4double> > fMoleculesPerSpeciePerTime;
@@ -75,6 +76,7 @@ private:
     G4double fTimeFWHM;
     G4double fTimeStdv;
     G4int fNumberOfPulses;
+    G4int fPulseCount;
     G4double fPulsesTimePeriod; // = 1/frequency
     G4double fPulseTimeShift; // Added to the molecules
     	

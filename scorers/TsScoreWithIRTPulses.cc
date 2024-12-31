@@ -48,6 +48,7 @@ fPm(pM), fEnergyDepositPerEvent(0)
     fNtuple->RegisterColumnD(&fTime,    "Time", "picosecond");
     fNtuple->RegisterColumnS(&fMoleculeName, "MoleculeName");
     fNtuple->RegisterColumnD(&fMolecules,"Number of molecules","");
+    fNtuple->RegisterColumnD(&fEnergyDepositGvalue,"Number of molecules","eV");
         
     fIRT       = new TsIRTManager(fPm, scorerName);
     fUtils       = fIRT->GetUtils();
@@ -60,7 +61,7 @@ fPm(pM), fEnergyDepositPerEvent(0)
     fDosePerPulse = 0*gray;
     fMass = 0*g;
     fDensity = 1 * g/(cm*cm*cm);
-    fShiftTime = 0 * ps;
+    fShiftTime = 1 * ps;
     fEventID = 0;
     fOldEvent = -1;
     
@@ -69,6 +70,7 @@ fPm(pM), fEnergyDepositPerEvent(0)
     fTimeStdv = fTimeFWHM/2.354820045;
 
     fNumberOfPulses = 1;
+    fPulseCount = 0;
     fPulseTimeShift = 0*ps;
     fPulsesTimePeriod = 0*ps;
     if ( fPm->ParameterExists(GetFullParmName("NumberOfPulses")) ) {
@@ -139,21 +141,24 @@ G4bool TsScoreWithIRTPulses::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 void TsScoreWithIRTPulses::UserHookForEndOfEvent() {
     if(fEnergyDepositPerEvent > 0) {
+        SampleTimeShift();
         fVEnergyDepositPerSampledTime.push_back(std::make_pair(fShiftTime,fEnergyDepositPerEvent));
         fTotalEnergyDeposit += fEnergyDepositPerEvent;
         fDosePerPulse += fEnergyDepositPerEvent/fMass;
         fEnergyDepositPerEvent = 0;
     }
-    
+
     // If several pulses, then dose is split in dose/numberOfPulses
     if(fNumberOfPulses > 1 && fDosePerPulse >= fPrescribedDose/fNumberOfPulses) {
+        fPulseCount++;
+        G4cout << "-- The pulse (" << fPulseCount << ") started at " << fPulseTimeShift/ps << " ps achieved dose per pulse " << fDosePerPulse/gray << " Gy. " << G4endl;
         fPulseTimeShift += fPulsesTimePeriod;
-        G4cout << "-- Previous pulse achieved dose " << fDosePerPulse/gray << " Gy. New pulse begins at " << fPulseTimeShift/ps << " ps " << G4endl;
         fDosePerPulse = 0.0;
     }
     
     if ( fTotalEnergyDeposit/fMass >= fPrescribedDose ) {
-        G4cout << " --- Achieved " << (fTotalEnergyDeposit/fMass)/gray << " Gy " << G4endl;
+        fPulseCount++;
+        G4cout << "-- With pulse (" << fPulseCount << ") started at " << fPulseTimeShift/ps << " ps achieved a Total Dose " << (fTotalEnergyDeposit/fMass)/gray << " Gy. " << G4endl;
         for ( size_t t = 0; t < fVEnergyDepositPerSampledTime.size(); t++ ) {
             G4int tBin = fUtils->FindBin(fVEnergyDepositPerSampledTime[t].first, fVStepTimes);
             
@@ -172,6 +177,7 @@ void TsScoreWithIRTPulses::UserHookForEndOfEvent() {
                 G4int tBin = fUtils->FindBin(time, fVStepTimes);
                 
                 fMoleculesPerSpeciePerTime[name][time] += gvalue;
+
                 gvalue *= 100/(fVEnergyDeposits[tBin]/eV);
                 fGValuePerSpeciePerTime[name][time] += gvalue;
             }
@@ -202,9 +208,6 @@ void TsScoreWithIRTPulses::UserHookForEndOfEvent() {
 
 
 void TsScoreWithIRTPulses::UserHookForPreTimeStepAction() {
-    
-    SampleTimeShift();
-    
     G4TrackManyList* trackList = G4ITTrackHolder::Instance()->GetMainList();
     G4ManyFastLists<G4Track>::iterator it_begin = trackList->begin();
     G4ManyFastLists<G4Track>::iterator it_end   = trackList->end();
@@ -217,8 +220,7 @@ void TsScoreWithIRTPulses::UserHookForPreTimeStepAction() {
     
     it_begin = trackList->begin();
     for(;it_begin!=it_end;++it_begin){
-        G4double time = it_begin->GetGlobalTime();
-        fIRT->AddMolecule(*it_begin, time + fShiftTime, 0, G4ThreeVector());
+        fIRT->AddMolecule(*it_begin, fShiftTime, 0, G4ThreeVector());
     }
     
     G4Scheduler::Instance()->Stop();
@@ -227,14 +229,14 @@ void TsScoreWithIRTPulses::UserHookForPreTimeStepAction() {
 
 void TsScoreWithIRTPulses::SampleTimeShift() {
     fEventID = GetEventID();
-    if ( fEventID == 0 )
+    if ( fEventID == 1 )
         return;
     
     if (fEventID != fOldEvent) { // sample time only once per history basis
         G4bool resample = true;
         while ( resample ) {
             fShiftTime = G4RandFlat::shoot(fTimeMean-fTimeFWHM*0.5, fTimeMean+fTimeFWHM*0.5);
-            if ( fShiftTime > 0 )
+            if ( fShiftTime >= 1*ps )
                 resample = false;
         }
         
@@ -255,22 +257,15 @@ void TsScoreWithIRTPulses::AbsorbResultsFromWorkerScorer(TsVScorer* workerScorer
     fDosePerPulse += workerGvalueScorer->fDosePerPulse;
     
     // G value accumulation
-    std::map<G4String, std::map<G4double, G4double> >::iterator wIter;
-    std::map<G4String, std::map<G4double, G4double> >::iterator mIter;
-    for ( wIter = workerGvalueScorer->fGValuePerSpeciePerTime.begin(); wIter != workerGvalueScorer->fGValuePerSpeciePerTime.end(); wIter++) {
-        mIter = fGValuePerSpeciePerTime.find( wIter->first );
-        if ( mIter == fGValuePerSpeciePerTime.end() ) {
-            fGValuePerSpeciePerTime.insert(std::pair<G4String, std::map<G4double, G4double> > ( wIter->first, wIter->second));
-        } else {
-            std::map<G4double, G4double>::iterator witer;
-            std::map<G4double, G4double>::iterator miter;
-            for ( witer = (wIter->second).begin(); witer != (wIter->second).end(); witer++ ) {
-                miter = (mIter->second).find( witer->first );
-                miter->second += witer->second;
-            }
+    for (auto& NameAndElse: workerGvalueScorer->fGValuePerSpeciePerTime) {
+        G4String MoleculeName = NameAndElse.first;
+        for (auto& TimeAndGvalue:NameAndElse.second) {
+            G4double MoleculeTime = TimeAndGvalue.first;
+            G4double MoleculesGvalue = TimeAndGvalue.second;
+            fGValuePerSpeciePerTime[MoleculeName][MoleculeTime]+=MoleculesGvalue;
         }
     }
-    
+     
     // Merge the Number Of Molecules Per Time
     for (auto& NameAndElse: workerGvalueScorer->fMoleculesPerSpeciePerTime) {
         G4String MoleculeName = NameAndElse.first;
@@ -321,7 +316,8 @@ void TsScoreWithIRTPulses::Output() {
                         
             fGValue    = iter->second;
             fMolecules = fMoleculesPerSpeciePerTime[fMoleculeName][fTime];
-            
+            fEnergyDepositGvalue = fVEnergyDeposits[fUtils->FindBin(fTime, fVStepTimes)];
+
             fNtuple->Fill();
         }
     }
@@ -378,7 +374,5 @@ void TsScoreWithIRTPulses::Clear() {
     
     UpdateFileNameForUpcomingRun();
 }
-
-
 
 
