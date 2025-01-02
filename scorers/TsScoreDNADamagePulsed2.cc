@@ -431,34 +431,34 @@ void TsScoreDNADamagePulsed2::Output() {
     StrandBreakOut << "# BreakID = 1 if Direct SB, 2 if indirect SB from IRT, 3 if indirect SB from Gillespie"     << std::endl;
     StrandBreakOut << "# | EventID | VolumeID | BaseID | StrandID | MoleculeID | BreakID |" << std::endl;
     
-    for (G4int i = 0; i < 1; i++) {
-        if (fDirectStrandBreaks.find(i) != fDirectStrandBreaks.end()) {
-            for (size_t j = 0; j  < fDirectStrandBreaks[i].size(); j++) {
-                StrandBreakOut << std::setw(12) << i
-                << std::setw(11) << fDirectStrandBreaks[i][j][0]
-                << std::setw(9)  << fDirectStrandBreaks[i][j][1]
-                << std::setw(11) << fDirectStrandBreaks[i][j][2]
+    //for (G4int i = 0; i < 1; i++) {
+        //if (fDirectStrandBreaks.find(i) != fDirectStrandBreaks.end()) {
+            for (size_t j = 0; j  < fDirectStrandBreaks.size(); j++) {
+                StrandBreakOut
+                << std::setw(11) << fDirectStrandBreaks[j][0]
+                << std::setw(9)  << fDirectStrandBreaks[j][1]
+                << std::setw(11) << fDirectStrandBreaks[j][2]
                 << std::setw(12) << 0
                 << std::setw(10) << 1 << std::endl;
             }
-        }
+        //}
         
-        if (fIndirectStrandBreaks.find(i) != fIndirectStrandBreaks.end()) {
-            for (size_t j = 0; j  < fIndirectStrandBreaks[i].size(); j++) {
+        //if (fIndirectStrandBreaks.find(i) != fIndirectStrandBreaks.end()) {
+            for (size_t j = 0; j  < fIndirectStrandBreaks.size(); j++) {
                 int algoCheck = 2;
-                if (fIndirectStrandBreaks[i][j][4] == 0) { // Checking the algorithm used
+                if (fIndirectStrandBreaks[j][4] == 0) { // Checking the algorithm used
                     algoCheck = 3;
                 }
                 
-                StrandBreakOut << std::setw(12) << i
-                << std::setw(11) << fIndirectStrandBreaks[i][j][0]
-                << std::setw(9)  << fIndirectStrandBreaks[i][j][1]
-                << std::setw(11) << fIndirectStrandBreaks[i][j][2]
-                << std::setw(12) << fIndirectStrandBreaks[i][j][3]
+                StrandBreakOut
+                << std::setw(11) << fIndirectStrandBreaks[j][0]
+                << std::setw(9)  << fIndirectStrandBreaks[j][1]
+                << std::setw(11) << fIndirectStrandBreaks[j][2]
+                << std::setw(12) << fIndirectStrandBreaks[j][3]
                 << std::setw(10) << algoCheck << std::endl;
             }
-        }
-    }
+        //}
+    //}
     
     StrandBreakOut.close();
 }
@@ -575,7 +575,6 @@ void TsScoreDNADamagePulsed2::CheckForDirectDNABreaks() {
 
 void TsScoreDNADamagePulsed2::CheckForIndirectDNABreaks() {
     // Score the indirect strand breaks
-    G4int fNbOfIRTRuns = 0;
     for (int i = 0; i < fNumberOfStrandBreakMolecules; i++) {
         G4int BreakMolID = (fIRT->GetIRTConfiguration()->GetMoleculeIDs())[fStrandBreakMolecules[i]];
         
@@ -585,7 +584,7 @@ void TsScoreDNADamagePulsed2::CheckForIndirectDNABreaks() {
         G4cout << "Surviving of type " << BreakMolID << " " << SurvivingMolecules.size() << G4endl;
         
         for (size_t j = 0; j < SurvivingMolecules.size(); j++) {
-            if (fIndirectStrandBreaks.count(fNbOfIRTRuns)){ // .count indicates if a key exists in a map 0 or 1
+            /*if (fIndirectStrandBreaks.count(fNbOfIRTRuns)){ // .count indicates if a key exists in a map 0 or 1
                 //std::vector<G4int> thisBreak = SurvivingMolecules[j].exinfo;
                 std::vector<G4int> thisBreak;
                 thisBreak.push_back(SurvivingMolecules[j].volumeID);
@@ -595,7 +594,7 @@ void TsScoreDNADamagePulsed2::CheckForIndirectDNABreaks() {
                 thisBreak.push_back(SurvivingMolecules[j].chemAlgo); // Adding identifier for IRT vs. Gillespie
                 fIndirectStrandBreaks[fNbOfIRTRuns].push_back(thisBreak);
             }
-            else {
+            else {*/
                 //std::vector<G4int> thisBreak = SurvivingMolecules[j].exinfo;
                 std::vector<G4int> thisBreak;
                 thisBreak.push_back(SurvivingMolecules[j].volumeID);
@@ -603,21 +602,21 @@ void TsScoreDNADamagePulsed2::CheckForIndirectDNABreaks() {
                 thisBreak.push_back(SurvivingMolecules[j].strandID);
                 thisBreak.push_back(int(i));
                 thisBreak.push_back(SurvivingMolecules[j].chemAlgo);
-                std::vector<std::vector<G4int>> tempBreak;
-                tempBreak.push_back(thisBreak);
-                fIndirectStrandBreaks[fNbOfIRTRuns] = tempBreak;
-            }
+                //std::vector<std::vector<G4int>> tempBreak;
+                //tempBreak.push_back(thisBreak);
+            fIndirectStrandBreaks.push_back(thisBreak);// = tempBreak;
+            //}
         }
     }
     
     for (size_t i = 0; i < fDirectStrandBreaksInEvent.size(); i++)
-        if (fDirectStrandBreaks.count(fNbOfIRTRuns))
-            fDirectStrandBreaks[0].push_back(fDirectStrandBreaksInEvent[i]);
-        else {
-            std::vector<std::vector<G4int>> tempBreak;
-            tempBreak.push_back(fDirectStrandBreaksInEvent[i]);
-            fDirectStrandBreaks[fNbOfIRTRuns]= tempBreak;
-        }
+        //if (fDirectStrandBreaks.count(fNbOfIRTRuns))
+            fDirectStrandBreaks.push_back(fDirectStrandBreaksInEvent[i]);
+        //else {
+        //    std::vector<std::vector<G4int>> tempBreak;
+        //    tempBreak.push_back(fDirectStrandBreaksInEvent[i]);
+        //    fDirectStrandBreaks[fNbOfIRTRuns]= tempBreak;
+        //}*/
     
     if (fDirectStrandBreaksInEvent.size() != 0)
         fDirectStrandBreaksInEvent.clear();
