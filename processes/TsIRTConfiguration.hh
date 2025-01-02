@@ -139,12 +139,12 @@ public:
 	std::pair<G4String, G4String> GetReactants(G4int);
 	std::vector<G4String> GetProducts(G4int);
 	std::vector<G4int> GetReactionProducts(G4int index);
-	G4int GetNumberOfReactions() { return (G4int)fReactions.size();}
-	std::map<G4int, G4String> GetMoleculeName() {return fMoleculesName;}
-	std::map<G4int, TsIRTConfiguration::TsMolecularReaction> GetReactions() {return fReactions;}
-	TsMolecularReaction GetReaction(G4int index) {return fReactions[index];}
-	G4int GetLastMoleculeID() { return fLastMoleculeID; }
-	G4int GetLastReactionID() { return fReactionID-1; }
+	inline G4int GetNumberOfReactions() { return (G4int)fReactions.size();}
+	inline G4String GetMoleculeNameFromMoleculeID(G4int molID) {return fMoleculesName[molID];}
+	inline std::map<G4int, TsIRTConfiguration::TsMolecularReaction> GetReactions() {return fReactions;}
+	inline TsMolecularReaction GetReaction(G4int index) {return fReactions[index];}
+	inline G4int GetLastMoleculeID() { return fLastMoleculeID; }
+	inline G4int GetLastReactionID() { return fReactionID-1; }
 
 	void Diffuse(TsMolecule& mol, G4double dt);
 	
