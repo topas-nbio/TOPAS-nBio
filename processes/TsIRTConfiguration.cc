@@ -126,7 +126,7 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 		AddMolecule(symbol, diffusionCoefficient, charge, radius);
 		
 		fExistingMolecules[moleculesDontExist[u]] = symbol;
-	}
+    }
 	
 	G4String parName = "Ch/" + chemistryList + "/SetAllReactionsTotallyDiffusionControlled";
 	if ( fPm->ParameterExists(parName) )

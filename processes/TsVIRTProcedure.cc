@@ -677,8 +677,6 @@ std::vector<G4int> TsVIRTProcedure::GetSurvivingMolecules(G4int parentID) {
 }
 
 std::vector<TsIRTConfiguration::TsMolecule> TsVIRTProcedure::GetSurvivingMoleculesWithMolID(G4int molID) {
-    G4cout << " --- Called GetSurvivingMoleculesWithMolID " << G4endl;
-    
     std::vector<TsIRTConfiguration::TsMolecule> AliveMolecules;
 	for (auto& IndexAndMol: fChemicalSpecies) {
 		G4int i = IndexAndMol.first;

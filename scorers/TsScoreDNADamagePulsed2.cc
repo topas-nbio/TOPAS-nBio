@@ -1,4 +1,4 @@
-// Scorer for TsIRTPulses
+// Scorer for TsDNADamageWithIRTPulses
 //
 // ********************************************************************
 // *                                                                  *
@@ -9,7 +9,11 @@
 // *                                                                  *
 // ********************************************************************
 
-#include "TsScoreWithIRTPulses.hh"
+#include "TsScoreDNADamagePulsed2.hh"
+#include "TsIRTPlasmidSupercoiled.hh"
+#include "TsGeometryManager.hh"
+#include "TsVGeometryComponent.hh"
+
 #include "TsIRTManager.hh"
 #include "TsVIRTProcedure.hh"
 #include "TsIRTUtils.hh"
@@ -24,7 +28,7 @@
 #include "G4UnitsTable.hh"
 #include "Randomize.hh"
 
-TsScoreWithIRTPulses::TsScoreWithIRTPulses(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
+TsScoreDNADamagePulsed2::TsScoreDNADamagePulsed2(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
                                            G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer)
 : TsVNtupleScorer(pM, mM, gM, scM, eM, scorerName, quantity, outFileName, isSubScorer),
 fPm(pM), fEnergyDepositPerEvent(0)
@@ -43,7 +47,7 @@ fPm(pM), fEnergyDepositPerEvent(0)
     fNtuple->RegisterColumnD(&fTime,    "Time", "picosecond");
     fNtuple->RegisterColumnS(&fMoleculeName, "MoleculeName");
     fNtuple->RegisterColumnD(&fMolecules,"Number of molecules","");
-    fNtuple->RegisterColumnD(&fEnergyDepositGvalue,"Number of molecules","eV");
+    fNtuple->RegisterColumnD(&fEnergyDepositGvalue,"Energy deposited","eV");
     
     fIRT       = new TsIRTManager(fPm, scorerName);
     fUtils       = fIRT->GetUtils();
@@ -88,16 +92,27 @@ fPm(pM), fEnergyDepositPerEvent(0)
     
     for ( size_t u = 0; u < fVStepTimes.size(); u++ )
         fVEnergyDeposits.push_back(0.0);
+    
+    // For DNA information
+    fComponentName = fPm->GetStringParameter(GetFullParmName("Component"));
+    fStrandBreakMolecules = fPm->GetStringVector(GetFullParmName("StrandBreakMolecules"));
+    fNumberOfStrandBreakMolecules = fPm->GetVectorLength(GetFullParmName("StrandBreakMolecules"));
+    
+    fDNAMoleculesToInsert = fPm->GetStringVector(GetFullParmName("DNAMoleculesNames"));
+    fDNAMoleculesWeights = fPm->GetUnitlessVector(GetFullParmName("DNAMoleculesWeights"));
+    fNumberOfMoleculesToInsert = fPm->GetVectorLength(GetFullParmName("DNAMoleculesWeights"));
+    
+    GetDNAInformation();
 }
 
 
-TsScoreWithIRTPulses::~TsScoreWithIRTPulses()
+TsScoreDNADamagePulsed2::~TsScoreDNADamagePulsed2()
 {
     delete fIRT;
 }
 
 
-G4bool TsScoreWithIRTPulses::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool TsScoreDNADamagePulsed2::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
     if (!fIsActive) {
         fSkippedWhileInactive++;
@@ -109,12 +124,15 @@ G4bool TsScoreWithIRTPulses::ProcessHits(G4Step* aStep, G4TouchableHistory*)
         if ( edep > 0 ) {
             ResolveSolid(aStep);
             
+            // If used, it test if the hits fell within a virtual box.
+            // It assumes all density is unity, thus gets the mass from rho x cubic_volume
             if (fIRT->GetIRTProcedure()->GetTestIsInside()) {
                 if ( 0 == fMass )
                     fMass = fDensity * fIRT->GetIRTProcedure()->GetVirtualRegionCubicVolume();
                 
                 if (fIRT->GetIRTProcedure()->Inside(aStep->GetPreStepPoint()->GetPosition())) {
                     fEnergyDepositPerEvent += edep * aStep->GetPreStepPoint()->GetWeight();
+                    ScoreEnergyDepositInDNA(aStep);
                     return true;
                 } else {
                     return false;
@@ -125,6 +143,7 @@ G4bool TsScoreWithIRTPulses::ProcessHits(G4Step* aStep, G4TouchableHistory*)
                     fMass = fDensity * fSolid->GetCubicVolume();
                 
                 fEnergyDepositPerEvent += edep * aStep->GetPreStepPoint()->GetWeight();
+                ScoreEnergyDepositInDNA(aStep);
                 return true;
             }
         }
@@ -133,8 +152,44 @@ G4bool TsScoreWithIRTPulses::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     return false;
 }
 
+void TsScoreDNADamagePulsed2::ScoreEnergyDepositInDNA(G4Step* aStep) {
+    G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
+    const G4String& vName = touchable->GetVolume()->GetName();
+    
+    G4double edep = aStep->GetTotalEnergyDeposit() * aStep->GetPreStepPoint()->GetWeight();
+    // Comparing strings is expensive, but the chemistry takes much longer in comparison.
+    
+    if (G4StrUtil::contains(vName,"deoxyribose") || G4StrUtil::contains(vName,"phosphate")) {
+        G4int plasmidID, strandID;
+        G4int baseID = touchable->GetVolume(0)->GetCopyNo();
+        
+        if (G4StrUtil::contains(vName,"water")) {plasmidID = touchable->GetVolume(1)->GetCopyNo();}
+        else {plasmidID = touchable->GetVolume(2)->GetCopyNo();}
+        
+        if (G4StrUtil::contains(vName,"1")) {strandID = 1;}
+        else {strandID = 2;}
+        
+        if (fDNAEnergyDeposit.find(plasmidID) == fDNAEnergyDeposit.end()) {
+            fDNAEnergyDeposit[plasmidID][baseID][strandID] = edep;
+        } else {
+            if (fDNAEnergyDeposit[plasmidID].find(baseID) == fDNAEnergyDeposit[plasmidID].end()) {
+                fDNAEnergyDeposit[plasmidID][baseID][strandID] = edep;
+            } else {
+                if (fDNAEnergyDeposit[plasmidID][baseID].find(strandID) == fDNAEnergyDeposit[plasmidID][baseID].end()) {
+                    fDNAEnergyDeposit[plasmidID][baseID][strandID] = edep;
+                } else {
+                    fDNAEnergyDeposit[plasmidID][baseID][strandID] += edep;
+                }
+            }
+        }
+    } else {
+        return;
+    }
+    
+    return;
+}
 
-void TsScoreWithIRTPulses::UserHookForEndOfEvent() {
+void TsScoreDNADamagePulsed2::UserHookForEndOfEvent() {
     if(fEnergyDepositPerEvent > 0) {
         SampleTimeShift();
         fVEnergyDepositPerSampledTime.push_back(std::make_pair(fShiftTime,fEnergyDepositPerEvent));
@@ -146,14 +201,19 @@ void TsScoreWithIRTPulses::UserHookForEndOfEvent() {
     // If several pulses, then dose is split in dose/numberOfPulses
     if(fNumberOfPulses > 1 && fDosePerPulse >= fPrescribedDose/fNumberOfPulses) {
         fPulseCount++;
-        G4cout << "-- The pulse (" << fPulseCount << ") started at " << fPulseTimeShift/ps << " ps achieved dose per pulse " << fDosePerPulse/gray << " Gy. " << G4endl;
+        G4cout << "-- The pulse (" << fPulseCount << ") started at " << fPulseTimeShift/ps
+        << " ps achieved dose per pulse " << fDosePerPulse/gray << " Gy. " << G4endl;
+        
         fPulseTimeShift += fPulsesTimePeriod;
         fDosePerPulse = 0.0;
     }
     
     if ( fTotalEnergyDeposit/fMass >= fPrescribedDose ) {
         fPulseCount++;
-        G4cout << "-- With pulse (" << fPulseCount << ") started at " << fPulseTimeShift/ps << " ps achieved a Total Dose " << (fTotalEnergyDeposit/fMass)/gray << " Gy. " << G4endl;
+        
+        G4cout << "-- With pulse (" << fPulseCount << ") started at " << fPulseTimeShift/ps
+        << " ps achieved a Total Dose " << (fTotalEnergyDeposit/fMass)/gray << " Gy. " << G4endl;
+        
         for ( size_t t = 0; t < fVEnergyDepositPerSampledTime.size(); t++ ) {
             G4int tBin = fUtils->FindBin(fVEnergyDepositPerSampledTime[t].first, fVStepTimes);
             
@@ -161,7 +221,12 @@ void TsScoreWithIRTPulses::UserHookForEndOfEvent() {
                 fVEnergyDeposits[i] += fVEnergyDepositPerSampledTime[t].second;
         }
         
+        //------------------------------------------------
+        CheckForDirectDNABreaks();
+        InsertDNAMolecules();
         fIRT->runIRT();
+        CheckForIndirectDNABreaks();
+        //------------------------------------------------
         
         std::map<G4String, std::map<G4double, G4int>> irt = fIRT->GetGValues();
         for ( auto& nameTimeAndGvalue : irt ) {
@@ -190,10 +255,11 @@ void TsScoreWithIRTPulses::UserHookForEndOfEvent() {
             }
         }
         
+        Output();
+
         DeltaG.clear();
         irt.clear();
         fIRT->Clean();
-        Output();
         
         G4RunManager::GetRunManager()->AbortRun(true);
     }
@@ -202,7 +268,7 @@ void TsScoreWithIRTPulses::UserHookForEndOfEvent() {
 }
 
 
-void TsScoreWithIRTPulses::UserHookForPreTimeStepAction() {
+void TsScoreDNADamagePulsed2::UserHookForPreTimeStepAction() {
     G4TrackManyList* trackList = G4ITTrackHolder::Instance()->GetMainList();
     G4ManyFastLists<G4Track>::iterator it_begin = trackList->begin();
     G4ManyFastLists<G4Track>::iterator it_end   = trackList->end();
@@ -214,15 +280,14 @@ void TsScoreWithIRTPulses::UserHookForPreTimeStepAction() {
     }
     
     it_begin = trackList->begin();
-    for(;it_begin!=it_end;++it_begin){
+    for(;it_begin!=it_end;++it_begin)
         fIRT->AddMolecule(*it_begin, fShiftTime, 0, G4ThreeVector());
-    }
     
     G4Scheduler::Instance()->Stop();
 }
 
 
-void TsScoreWithIRTPulses::SampleTimeShift() {
+void TsScoreDNADamagePulsed2::SampleTimeShift() {
     fEventID = GetEventID();
     if ( fEventID == 1 )
         return;
@@ -241,10 +306,10 @@ void TsScoreWithIRTPulses::SampleTimeShift() {
 }
 
 
-void TsScoreWithIRTPulses::AbsorbResultsFromWorkerScorer(TsVScorer* workerScorer) {
+void TsScoreDNADamagePulsed2::AbsorbResultsFromWorkerScorer(TsVScorer* workerScorer) {
     TsVNtupleScorer::AbsorbResultsFromWorkerScorer(workerScorer);
     
-    TsScoreWithIRTPulses* workerGvalueScorer = dynamic_cast<TsScoreWithIRTPulses*>(workerScorer);
+    TsScoreDNADamagePulsed2* workerGvalueScorer = dynamic_cast<TsScoreDNADamagePulsed2*>(workerScorer);
     
     // scalar quantities
     fTotalEnergyDeposit += workerGvalueScorer->fTotalEnergyDeposit;
@@ -292,16 +357,15 @@ void TsScoreWithIRTPulses::AbsorbResultsFromWorkerScorer(TsVScorer* workerScorer
     workerGvalueScorer->fVEnergyDeposits.clear();
     workerGvalueScorer->fEnergyDepositPerEvent = 0.0;
     workerGvalueScorer->fDosePerPulse = 0.0;
+    return;
 }
 
 
-void TsScoreWithIRTPulses::Output() {
-    
+void TsScoreDNADamagePulsed2::Output() {
+    // G values
     std::map<G4String, std::map<G4double, G4double> >::iterator wIter;
     std::map<G4double, G4double>::iterator iter;
-    
     for ( wIter = fGValuePerSpeciePerTime.begin(); wIter != fGValuePerSpeciePerTime.end(); wIter++ ) {
-        
         for ( iter = (wIter->second).begin(); iter != (wIter->second).end(); iter++ ) {
             fTime = iter->first;
             fMoleculeName = wIter->first;
@@ -316,9 +380,9 @@ void TsScoreWithIRTPulses::Output() {
             fNtuple->Fill();
         }
     }
-    
     fNtuple->Write();
     
+    // Total energy deposit per history
     for ( size_t u = 0; u < fVEnergyDepositPerSampledTime.size(); u++ )  {
         G4double saveTime = fVEnergyDepositPerSampledTime[u].first/ps;
         G4double saveEdep = fVEnergyDepositPerSampledTime[u].second/eV;
@@ -327,9 +391,9 @@ void TsScoreWithIRTPulses::Output() {
     }
     fTimeOutFile.close();
     
+    // Delta G
     std::map<G4int, std::map<G4double, G4double> >::iterator wDeltaIter;
     std::map<G4double, G4double>::iterator deltaiter;
-    
     G4int ReactionIndex;
     G4double ReactionTime;
     G4double DeltaReaction;
@@ -359,10 +423,208 @@ void TsScoreWithIRTPulses::Output() {
         }
     }
     DeltaGFile.close();
+    
+    // DNA damage
+    std::ofstream StrandBreakOut(fOutFileName + "_StrandBreak.phsp");
+    
+    StrandBreakOut << "# TOPAS-nBio IRT: DNA Strand Break Map File"   << std::endl;
+    StrandBreakOut << "# BreakID = 1 if Direct SB, 2 if indirect SB from IRT, 3 if indirect SB from Gillespie"     << std::endl;
+    StrandBreakOut << "# | EventID | VolumeID | BaseID | StrandID | MoleculeID | BreakID |" << std::endl;
+    
+    for (G4int i = 0; i < 1; i++) {
+        if (fDirectStrandBreaks.find(i) != fDirectStrandBreaks.end()) {
+            for (size_t j = 0; j  < fDirectStrandBreaks[i].size(); j++) {
+                StrandBreakOut << std::setw(12) << i
+                << std::setw(11) << fDirectStrandBreaks[i][j][0]
+                << std::setw(9)  << fDirectStrandBreaks[i][j][1]
+                << std::setw(11) << fDirectStrandBreaks[i][j][2]
+                << std::setw(12) << 0
+                << std::setw(10) << 1 << std::endl;
+            }
+        }
+        
+        if (fIndirectStrandBreaks.find(i) != fIndirectStrandBreaks.end()) {
+            for (size_t j = 0; j  < fIndirectStrandBreaks[i].size(); j++) {
+                int algoCheck = 2;
+                if (fIndirectStrandBreaks[i][j][4] == 0) { // Checking the algorithm used
+                    algoCheck = 3;
+                }
+                
+                StrandBreakOut << std::setw(12) << i
+                << std::setw(11) << fIndirectStrandBreaks[i][j][0]
+                << std::setw(9)  << fIndirectStrandBreaks[i][j][1]
+                << std::setw(11) << fIndirectStrandBreaks[i][j][2]
+                << std::setw(12) << fIndirectStrandBreaks[i][j][3]
+                << std::setw(10) << algoCheck << std::endl;
+            }
+        }
+    }
+    
+    StrandBreakOut.close();
 }
 
 
-void TsScoreWithIRTPulses::Clear() {
+void TsScoreDNADamagePulsed2::GetDNAInformation() {
+    G4String Component = fComponentName;
+    G4StrUtil::to_lower(Component);
+    TsVGeometryComponent* DNAComponent     = fGm->GetComponent(Component);
+    TsIRTPlasmidSupercoiled* PlasmidComponent1 = dynamic_cast<TsIRTPlasmidSupercoiled*>(DNAComponent);
+    
+    if (PlasmidComponent1 != 0) {
+        fPHSPMolecules = PlasmidComponent1->GetDNANames();
+        fPHSPPosition  = PlasmidComponent1->GetDNAPositions();
+        fPHSPTime      = PlasmidComponent1->GetDNATimes();
+        fDNADetails    = PlasmidComponent1->GetDNADetails();
+    }
+    
+    else {
+        G4cout << "No DNA Compatible scorer found!!!" << G4endl;
+        exit(1);
+    }
+    
+    for (size_t i = 0; i < fPHSPTime.size(); i++) {
+        fPHSPIsAlive.push_back(true);
+    }
+}
+
+void TsScoreDNADamagePulsed2::InsertDNAMolecules() {
+    if (fDNAHasBeenInserted)
+        return;
+    
+    std::map<G4String,G4int> molIDs = fIRT->GetIRTConfiguration()->GetMoleculeIDs();
+    G4int accepted = 0;
+    for (size_t i = 0; i < fPHSPMolecules.size(); i++) {
+        if (fPHSPIsAlive[i]) {
+            G4String molName = GetSampledDNAMolecule();
+            G4int    molID   = molIDs[molName];
+            
+            TsIRTConfiguration::TsMolecule aMol;
+            aMol.id       = molID;
+            aMol.position = fPHSPPosition[i];
+            aMol.time     = 1 * ps;
+            aMol.spin     = 0;
+            aMol.trackID  = 100;
+            aMol.isDNA    = true;
+            aMol.isNew    = true;
+            aMol.volumeID = fDNADetails[i][0];
+            aMol.baseID   = fDNADetails[i][1];
+            aMol.strandID = fDNADetails[i][2];
+            
+            fIRT->AddMolecule(aMol);
+            accepted++;
+        } else {
+            fPHSPIsAlive[i] = true;
+        }
+    }
+    //dna.close();
+    G4cout << " -- DNA molecules inserted " << accepted << G4endl;
+    
+    fDNAHasBeenInserted = true;
+}
+
+G4String TsScoreDNADamagePulsed2::GetSampledDNAMolecule() {
+    G4double random = G4UniformRand();
+    G4double sum    = 0;
+    
+    for (int i = 0; i < fNumberOfMoleculesToInsert; i++) {
+        sum += fDNAMoleculesWeights[i];
+        if (random <= sum) {
+            return fDNAMoleculesToInsert[i];
+        }
+    }
+    
+    return fDNAMoleculesToInsert[fNumberOfMoleculesToInsert-1];
+}
+
+void TsScoreDNADamagePulsed2::CheckForDirectDNABreaks() {
+    // Check for Direct Strand Breaks
+    for ( auto& PlasmidAndElse : fDNAEnergyDeposit ) {
+        for ( auto& BaseAndElse : PlasmidAndElse.second ) {
+            for ( auto& StrandAndEnergy : BaseAndElse.second) {
+                if ( StrandAndEnergy.second >= 17.5 * eV ) {
+                    G4int PlasmidID = PlasmidAndElse.first;
+                    G4int BaseID    = BaseAndElse.first;
+                    G4int StrandID  = StrandAndEnergy.first;
+                    std::vector<G4int> tempbreak;
+                    tempbreak.push_back(PlasmidID);
+                    tempbreak.push_back(BaseID);
+                    tempbreak.push_back(StrandID);
+                    fDirectStrandBreaksInEvent.push_back(tempbreak);
+                }
+            }
+        }
+    }
+    
+    if (fDNAEnergyDeposit.size() != 0)
+        fDNAEnergyDeposit.clear();
+    
+    // Remove DNA Molecule of Strand Break from the Chemical Stage
+    for (size_t i = 0; i < fDirectStrandBreaksInEvent.size(); i++) {
+        for (size_t j = 0; j < fDNADetails.size(); j++) {
+            if ((fDNADetails[j][0] == fDirectStrandBreaksInEvent[i][0]) &&
+                (fDNADetails[j][1] == fDirectStrandBreaksInEvent[i][1]) &&
+                (fDNADetails[j][2] == fDirectStrandBreaksInEvent[i][2])) {
+                fPHSPIsAlive[j] = false;
+                break;
+            }
+        }
+    }
+    return;
+}
+
+
+void TsScoreDNADamagePulsed2::CheckForIndirectDNABreaks() {
+    // Score the indirect strand breaks
+    G4int fNbOfIRTRuns = 0;
+    for (int i = 0; i < fNumberOfStrandBreakMolecules; i++) {
+        G4int BreakMolID = (fIRT->GetIRTConfiguration()->GetMoleculeIDs())[fStrandBreakMolecules[i]];
+        
+        // Retrieves the products of DNA reactions, those that did survive further reactions: OHDeoxyribose, EAQDeoxyribose, HDeoxyribose
+        std::vector<TsIRTConfiguration::TsMolecule> SurvivingMolecules = fIRT->GetSurvivingMoleculesWithMolID(BreakMolID);
+        
+        G4cout << "Surviving of type " << BreakMolID << " " << SurvivingMolecules.size() << G4endl;
+        
+        for (size_t j = 0; j < SurvivingMolecules.size(); j++) {
+            if (fIndirectStrandBreaks.count(fNbOfIRTRuns)){ // .count indicates if a key exists in a map 0 or 1
+                //std::vector<G4int> thisBreak = SurvivingMolecules[j].exinfo;
+                std::vector<G4int> thisBreak;
+                thisBreak.push_back(SurvivingMolecules[j].volumeID);
+                thisBreak.push_back(SurvivingMolecules[j].baseID);
+                thisBreak.push_back(SurvivingMolecules[j].strandID);
+                thisBreak.push_back(int(i));
+                thisBreak.push_back(SurvivingMolecules[j].chemAlgo); // Adding identifier for IRT vs. Gillespie
+                fIndirectStrandBreaks[fNbOfIRTRuns].push_back(thisBreak);
+            }
+            else {
+                //std::vector<G4int> thisBreak = SurvivingMolecules[j].exinfo;
+                std::vector<G4int> thisBreak;
+                thisBreak.push_back(SurvivingMolecules[j].volumeID);
+                thisBreak.push_back(SurvivingMolecules[j].baseID);
+                thisBreak.push_back(SurvivingMolecules[j].strandID);
+                thisBreak.push_back(int(i));
+                thisBreak.push_back(SurvivingMolecules[j].chemAlgo);
+                std::vector<std::vector<G4int>> tempBreak;
+                tempBreak.push_back(thisBreak);
+                fIndirectStrandBreaks[fNbOfIRTRuns] = tempBreak;
+            }
+        }
+    }
+    
+    for (size_t i = 0; i < fDirectStrandBreaksInEvent.size(); i++)
+        if (fDirectStrandBreaks.count(fNbOfIRTRuns))
+            fDirectStrandBreaks[0].push_back(fDirectStrandBreaksInEvent[i]);
+        else {
+            std::vector<std::vector<G4int>> tempBreak;
+            tempBreak.push_back(fDirectStrandBreaksInEvent[i]);
+            fDirectStrandBreaks[fNbOfIRTRuns]= tempBreak;
+        }
+    
+    if (fDirectStrandBreaksInEvent.size() != 0)
+        fDirectStrandBreaksInEvent.clear();
+}
+
+
+void TsScoreDNADamagePulsed2::Clear() {
     fGValuePerSpeciePerTime.clear();
     fMoleculesPerSpeciePerTime.clear();
     fDeltaGPerReactionPerTime.clear();

@@ -30,6 +30,8 @@ public:
 	virtual void AddMolecule(G4int, G4ThreeVector, G4double,
                                G4int, G4bool, G4int, G4int, G4int);
 
+    virtual std::vector<TsIRTConfiguration::TsMolecule> GetSurvivingMoleculesWithMolID(G4int);
+
 	TsIRTConfiguration::TsMolecule ConstructMolecule(G4Track*, G4double, G4int, G4ThreeVector);
 	
 	virtual void Clean() {;}
@@ -53,7 +55,6 @@ public:
 	std::vector<G4String> GetProducts(G4int);
 
 	std::vector<G4int> GetSurvivingMolecules(G4int parentID=-1);
-	std::vector<TsIRTConfiguration::TsMolecule> GetSurvivingMoleculesWithMolID(G4int);
 
 	inline TsIRTConfiguration* GetIRTConfiguration() {return fReactionConf;}
 	inline std::unordered_map<G4int, TsIRTConfiguration::TsMolecule> GetChemicalSpecies() {return fChemicalSpecies;}

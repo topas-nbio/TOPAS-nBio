@@ -84,21 +84,8 @@ void TsIRT::Sampling(){
 }
 
 
-void TsIRT::AddMolecule(G4int molID, G4ThreeVector position, G4double time,
-                               G4int trackID, G4bool isDNA, G4int volumeID, G4int baseID, G4int strandID) {
-    TsIRTConfiguration::TsMolecule aMol;
-    aMol.id       = molID;
-    aMol.position = position;
-    aMol.time     = time;
-    aMol.spin     = 0;
-    aMol.trackID  = trackID;
-    aMol.parentID = 0;
-    aMol.reacted  = false;
-    aMol.isDNA    = isDNA;
-    aMol.isNew    = true;
-    aMol.volumeID = volumeID;
-    aMol.baseID   = baseID;
-    aMol.strandID = strandID;
+void TsIRT::AddMolecule(TsIRTConfiguration::TsMolecule aMol) {
+    G4ThreeVector position = aMol.position;
     
     if ( fXMin > position.x() ) fXMin = position.x();
     if ( fYMin > position.y() ) fYMin = position.y();
@@ -107,7 +94,7 @@ void TsIRT::AddMolecule(G4int molID, G4ThreeVector position, G4double time,
     if ( fXMax < position.x() ) fXMax = position.x();
     if ( fYMax < position.y() ) fYMax = position.y();
     if ( fZMax < position.z() ) fZMax = position.z();
-    
+
     fChemicalSpecies[fSpeciesIndex] = aMol;
     fSpeciesIndex++;
 }
@@ -504,6 +491,21 @@ void TsIRT::ConductReactions() {
 		RemoveFirstIRTElement();
 	}
 }
+
+
+std::vector<TsIRTConfiguration::TsMolecule> TsIRT::GetSurvivingMoleculesWithMolID(G4int molID) {
+    std::vector<TsIRTConfiguration::TsMolecule> aliveMolecules;
+    for (auto& indexAndMol: fChemicalSpecies) {
+        G4int i = indexAndMol.first;
+        if (!fChemicalSpecies[i].reacted) {
+            if (fChemicalSpecies[i].id == molID) {
+                aliveMolecules.push_back(fChemicalSpecies[i]);
+            }
+        }
+    }
+    return aliveMolecules;
+}
+
 
 void TsIRT::Clean() {
 	fChemicalSpecies.clear();
