@@ -96,7 +96,7 @@ TsVIRTProcedure::TsVIRTProcedure(TsParameterManager* pM, G4String parmName)
 	if ( fPm->ParameterExists("Ch/"+chemistryList+"/SpaceBinningWidth") )
 		fBinWidth = fPm->GetDoubleParameter("Ch/"+chemistryList+"/SpaceBinningWidth", "Length");
 	
-	fTestForContactReactions = false;
+	fTestForContactReactions = true;
 	if ( fPm->ParameterExists("Ch/"+chemistryList+"/TestForContactReactions"))
 		fTestForContactReactions = fPm->GetBooleanParameter("Ch/"+chemistryList+"/TestForContactReactions");
 	

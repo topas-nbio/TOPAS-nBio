@@ -215,7 +215,7 @@ void TsScoreDNADamagePulsed2::UserHookForEndOfEvent() {
         fPulseCount++;
         
         G4cout << "-- With pulse (" << fPulseCount << ") started at " << fPulseTimeShift/ps
-        << " ps achieved a Total Dose " << (fTotalEnergyDeposit/fMass)/gray << " Gy. " << G4endl;
+        << " ps achieved a Total Dose " << (fTotalEnergyDeposit/fMass)/gray << " Gy with " << fEventID << " histories. " << G4endl;
         
         for ( size_t t = 0; t < fVEnergyDepositPerSampledTime.size(); t++ ) {
             G4int tBin = fUtils->FindBin(fVEnergyDepositPerSampledTime[t].first, fVStepTimes);
