@@ -190,12 +190,15 @@ void TsScoreDNADamagePulsed2::ScoreEnergyDepositInDNA(G4Step* aStep) {
 }
 
 void TsScoreDNADamagePulsed2::UserHookForEndOfEvent() {
+    if(fEnergyDepositPerEvent == 0) return;
+
     if(fEnergyDepositPerEvent > 0) {
         SampleTimeShift();
         fVEnergyDepositPerSampledTime.push_back(std::make_pair(fShiftTime,fEnergyDepositPerEvent));
         fTotalEnergyDeposit += fEnergyDepositPerEvent;
         fDosePerPulse += fEnergyDepositPerEvent/fMass;
         fEnergyDepositPerEvent = 0;
+        fEventID++;
     }
     
     // If several pulses, then dose is split in dose/numberOfPulses
@@ -269,6 +272,8 @@ void TsScoreDNADamagePulsed2::UserHookForEndOfEvent() {
 
 
 void TsScoreDNADamagePulsed2::UserHookForPreTimeStepAction() {
+    if(fEnergyDepositPerEvent == 0) return;
+    
     G4TrackManyList* trackList = G4ITTrackHolder::Instance()->GetMainList();
     G4ManyFastLists<G4Track>::iterator it_begin = trackList->begin();
     G4ManyFastLists<G4Track>::iterator it_end   = trackList->end();
@@ -288,8 +293,8 @@ void TsScoreDNADamagePulsed2::UserHookForPreTimeStepAction() {
 
 
 void TsScoreDNADamagePulsed2::SampleTimeShift() {
-    fEventID = GetEventID();
-    if ( fEventID == 1 )
+    //fEventID = GetEventID();
+    if ( fEventID == 0 )
         return;
     
     if (fEventID != fOldEvent) { // sample time only once per history basis
@@ -517,7 +522,7 @@ void TsScoreDNADamagePulsed2::InsertDNAMolecules() {
             fPHSPIsAlive[i] = true;
         }
     }
-    //dna.close();
+    
     G4cout << " -- DNA molecules inserted " << accepted << G4endl;
     
     fDNAHasBeenInserted = true;

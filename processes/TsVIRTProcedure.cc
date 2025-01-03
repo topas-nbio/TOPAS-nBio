@@ -108,6 +108,7 @@ TsVIRTProcedure::TsVIRTProcedure(TsParameterManager* pM, G4String parmName)
 		fDx = fPm->GetDoubleParameter(GetFullParmName("OnlyIncludeChemicalSpeciesFromVirtualRegion/HLX"),"Length");
 		fDy = fPm->GetDoubleParameter(GetFullParmName("OnlyIncludeChemicalSpeciesFromVirtualRegion/HLY"),"Length");
 		fDz = fPm->GetDoubleParameter(GetFullParmName("OnlyIncludeChemicalSpeciesFromVirtualRegion/HLZ"),"Length");
+		std::cout << " -- Going to consider only tracks contained in a virtual region of " << 2*fDx/nm << " x " << 2*fDy/nm << " x " << 2*fDz/nm << " nm3 " << G4endl;
 		fTestIsInside = true;
 	}
 

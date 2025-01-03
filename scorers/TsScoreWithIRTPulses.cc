@@ -43,7 +43,7 @@ fPm(pM), fEnergyDepositPerEvent(0)
     fNtuple->RegisterColumnD(&fTime,    "Time", "picosecond");
     fNtuple->RegisterColumnS(&fMoleculeName, "MoleculeName");
     fNtuple->RegisterColumnD(&fMolecules,"Number of molecules","");
-    fNtuple->RegisterColumnD(&fEnergyDepositGvalue,"Number of molecules","eV");
+    fNtuple->RegisterColumnD(&fEnergyDepositGvalue,"Energy deposited","eV");
     
     fIRT       = new TsIRTManager(fPm, scorerName);
     fUtils       = fIRT->GetUtils();
@@ -135,25 +135,32 @@ G4bool TsScoreWithIRTPulses::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 
 void TsScoreWithIRTPulses::UserHookForEndOfEvent() {
+    if (fEnergyDepositPerEvent == 0 )
+        return;
+    
     if(fEnergyDepositPerEvent > 0) {
         SampleTimeShift();
         fVEnergyDepositPerSampledTime.push_back(std::make_pair(fShiftTime,fEnergyDepositPerEvent));
         fTotalEnergyDeposit += fEnergyDepositPerEvent;
         fDosePerPulse += fEnergyDepositPerEvent/fMass;
         fEnergyDepositPerEvent = 0;
+        fEventID++; // only events that contributed to the dose are considered
     }
     
     // If several pulses, then dose is split in dose/numberOfPulses
     if(fNumberOfPulses > 1 && fDosePerPulse >= fPrescribedDose/fNumberOfPulses) {
         fPulseCount++;
-        G4cout << "-- The pulse (" << fPulseCount << ") started at " << fPulseTimeShift/ps << " ps achieved dose per pulse " << fDosePerPulse/gray << " Gy. " << G4endl;
+        G4cout << "-- The pulse (" << fPulseCount << ") started at " << fPulseTimeShift/ps
+        << " ps achieved dose per pulse " << fDosePerPulse/gray << " Gy. " << G4endl;
         fPulseTimeShift += fPulsesTimePeriod;
         fDosePerPulse = 0.0;
     }
     
     if ( fTotalEnergyDeposit/fMass >= fPrescribedDose ) {
         fPulseCount++;
-        G4cout << "-- With pulse (" << fPulseCount << ") started at " << fPulseTimeShift/ps << " ps achieved a Total Dose " << (fTotalEnergyDeposit/fMass)/gray << " Gy. " << G4endl;
+        G4cout << "-- With pulse (" << fPulseCount << ") started at " << fPulseTimeShift/ps
+        << " ps achieved a Total Dose " << (fTotalEnergyDeposit/fMass)/gray << " Gy after " << fEventID << " histories." << G4endl;
+        
         for ( size_t t = 0; t < fVEnergyDepositPerSampledTime.size(); t++ ) {
             G4int tBin = fUtils->FindBin(fVEnergyDepositPerSampledTime[t].first, fVStepTimes);
             
@@ -203,6 +210,8 @@ void TsScoreWithIRTPulses::UserHookForEndOfEvent() {
 
 
 void TsScoreWithIRTPulses::UserHookForPreTimeStepAction() {
+    if (0 == fEnergyDepositPerEvent) return;
+    
     G4TrackManyList* trackList = G4ITTrackHolder::Instance()->GetMainList();
     G4ManyFastLists<G4Track>::iterator it_begin = trackList->begin();
     G4ManyFastLists<G4Track>::iterator it_end   = trackList->end();
@@ -223,8 +232,8 @@ void TsScoreWithIRTPulses::UserHookForPreTimeStepAction() {
 
 
 void TsScoreWithIRTPulses::SampleTimeShift() {
-    fEventID = GetEventID();
-    if ( fEventID == 1 )
+    //fEventID = GetEventID();
+    if ( fEventID == 0 )
         return;
     
     if (fEventID != fOldEvent) { // sample time only once per history basis

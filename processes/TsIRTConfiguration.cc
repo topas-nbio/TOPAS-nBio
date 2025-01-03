@@ -781,7 +781,7 @@ std::pair<G4int, G4double> TsIRTConfiguration::SampleIRTFirstOrderAndBackgroundR
 				else time = timeB * timeB;
 			}else{
 				scavengingCapacity = fReactions[u].scavengingCapacity;
-				if (scavengingCapacity <= 0)
+				if (scavengingCapacity <= 0) // This might be unnecessary.
 					time = -1;
 				else
 					time = -(std::log(1.0 - prob)/scavengingCapacity);

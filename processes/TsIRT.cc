@@ -166,7 +166,7 @@ void TsIRT::sampleReactions(G4int i) {
 			for ( int kk = fziniIndex; kk <= fzendIndex; kk++ ) {
 				for (auto& IndexAndAlive:fSpaceBinned[ii][jj][kk]) {
 					G4int j = IndexAndAlive.first;
-
+                
 					if (j == i) continue;
 
 					if ( !MoleculeExists(j) )
@@ -233,10 +233,10 @@ void TsIRT::sampleReactions(G4int i) {
 	G4double tscav = tnIscav.second;
 	G4double gTime = fChemicalSpecies[i].time;
 
-	if (gTime + tscav < fMinTime) {
+	if (gTime + tscav < fMinTime) { // This might be unnecessary.
 		gTime = fMinTime;
 	}
-
+                           
 	if ((fHighTimeScavenger && 0 < tscav) && (tscav+gTime <= fTimeCut)) {
 		tscav += gTime;
 		AddToIRT(tscav,tnIscav.first,i,i,fChemicalSpecies[i].time,fChemicalSpecies[i].position,fChemicalSpecies[i].position,true);
