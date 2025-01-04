@@ -93,8 +93,6 @@ private:
 	std::vector<G4double> fVEnergyDeposits;
 	std::vector<G4double> fVStepTimes;
     std::vector<std::pair<G4double,G4double>> fVEnergyDepositPerSampledTime;
-
-    std::ofstream fTimeOutFile;
     
     // DNA
     G4String* fStrandBreakMolecules;

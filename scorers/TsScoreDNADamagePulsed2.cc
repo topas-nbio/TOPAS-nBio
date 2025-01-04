@@ -86,10 +86,6 @@ fPm(pM), fEnergyDepositPerEvent(0)
         }
     }
     
-    G4String fileName = fPm->GetStringParameter("Sc/RootFileName") + ".bin";
-    remove(fileName);
-    fTimeOutFile.open(fileName, std::ios::binary);
-    
     for ( size_t u = 0; u < fVStepTimes.size(); u++ )
         fVEnergyDeposits.push_back(0.0);
     
@@ -102,6 +98,7 @@ fPm(pM), fEnergyDepositPerEvent(0)
     fDNAMoleculesWeights = fPm->GetUnitlessVector(GetFullParmName("DNAMoleculesWeights"));
     fNumberOfMoleculesToInsert = fPm->GetVectorLength(GetFullParmName("DNAMoleculesWeights"));
     
+    fDNAHasBeenInserted = false;
     GetDNAInformation();
 }
 
@@ -224,6 +221,16 @@ void TsScoreDNADamagePulsed2::UserHookForEndOfEvent() {
                 fVEnergyDeposits[i] += fVEnergyDepositPerSampledTime[t].second;
         }
         
+        // Total energy deposit per history
+        std::ofstream timeOutFile(fOutFileName + ".bin", std::ios::binary);
+        for ( size_t u = 0; u < fVEnergyDepositPerSampledTime.size(); u++ )  {
+            G4double saveTime = fVEnergyDepositPerSampledTime[u].first/ps;
+            G4double saveEdep = fVEnergyDepositPerSampledTime[u].second/eV;
+            timeOutFile.write(reinterpret_cast<char*>(&saveTime), sizeof saveTime);
+            timeOutFile.write(reinterpret_cast<char*>(&saveEdep), sizeof saveEdep);
+        }
+        timeOutFile.close();
+        
         //------------------------------------------------
         CheckForDirectDNABreaks();
         InsertDNAMolecules();
@@ -258,7 +265,7 @@ void TsScoreDNADamagePulsed2::UserHookForEndOfEvent() {
             }
         }
         
-        Output();
+        //Output();
 
         DeltaG.clear();
         irt.clear();
@@ -393,15 +400,6 @@ void TsScoreDNADamagePulsed2::Output() {
         }
     }
     fNtuple->Write();
-    
-    // Total energy deposit per history
-    for ( size_t u = 0; u < fVEnergyDepositPerSampledTime.size(); u++ )  {
-        G4double saveTime = fVEnergyDepositPerSampledTime[u].first/ps;
-        G4double saveEdep = fVEnergyDepositPerSampledTime[u].second/eV;
-        fTimeOutFile.write(reinterpret_cast<char*>(&saveTime), sizeof saveTime);
-        fTimeOutFile.write(reinterpret_cast<char*>(&saveEdep), sizeof saveEdep);
-    }
-    fTimeOutFile.close();
     
     // Delta G
     std::map<G4int, std::map<G4double, G4double> >::iterator wDeltaIter;

@@ -200,7 +200,6 @@ void TsScoreWithIRTPulses::UserHookForEndOfEvent() {
         DeltaG.clear();
         irt.clear();
         fIRT->Clean();
-        Output();
         
         G4RunManager::GetRunManager()->AbortRun(true);
     }
