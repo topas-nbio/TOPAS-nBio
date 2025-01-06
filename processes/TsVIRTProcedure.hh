@@ -21,11 +21,17 @@ public:
 	
 	virtual void runIRT(G4double startTime = -1, G4double finalTime = -1, G4double transTime=-1, G4bool isContinuation=false) {;}
 	
-	void AddMolecule(TsIRTConfiguration::TsMolecule);
-	void AddMolecule(G4Step*, G4double, G4int, G4ThreeVector);
-	void AddMolecule(G4Track*, G4double, G4int, G4ThreeVector);
-	void AddMolecule(const G4Track*, G4double, G4int, G4ThreeVector);
-	void AddMolecule(G4Track*, G4double, G4int, G4ThreeVector, G4bool);
+	virtual void AddMolecule(TsIRTConfiguration::TsMolecule);
+	virtual void AddMolecule(G4Step*, G4double, G4int, G4ThreeVector);
+	virtual void AddMolecule(G4Track*, G4double, G4int, G4ThreeVector);
+	virtual void AddMolecule(const G4Track*, G4double, G4int, G4ThreeVector);
+	virtual void AddMolecule(G4Track*, G4double, G4int, G4ThreeVector, G4bool);
+// Temporal function
+	virtual void AddMolecule(G4int, G4ThreeVector, G4double,
+                               G4int, G4bool, G4int, G4int, G4int);
+
+    virtual std::vector<TsIRTConfiguration::TsMolecule> GetSurvivingMoleculesWithMolID(G4int);
+
 	TsIRTConfiguration::TsMolecule ConstructMolecule(G4Track*, G4double, G4int, G4ThreeVector);
 	
 	virtual void Clean() {;}
@@ -34,6 +40,8 @@ public:
 	
 	inline std::vector<G4double> GetStepTimes() {return fStepTimes; };
 	inline TsIRTUtils* GetUtils() { return fUtils; };
+	inline G4double GetVirtualRegionCubicVolume() {return 8 * (fDx * fDy * fDz);}; 
+	inline G4bool GetTestIsInside() {return fTestIsInside;}; 
 	
 	void SetGValues(std::map<G4String, std::map<G4double, G4int>>);
 	void SetDeltaGValues(std::map<G4int, std::map<G4double, G4int>>);
@@ -47,7 +55,6 @@ public:
 	std::vector<G4String> GetProducts(G4int);
 
 	std::vector<G4int> GetSurvivingMolecules(G4int parentID=-1);
-	std::vector<TsIRTConfiguration::TsMolecule> GetSurvivingMoleculesWithMolID(G4int);
 
 	inline TsIRTConfiguration* GetIRTConfiguration() {return fReactionConf;}
 	inline std::unordered_map<G4int, TsIRTConfiguration::TsMolecule> GetChemicalSpecies() {return fChemicalSpecies;}

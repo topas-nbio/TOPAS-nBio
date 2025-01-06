@@ -112,7 +112,7 @@ TsEmDNAPhysics::TsEmDNAPhysics(TsParameterManager* pM)
     fName = "Default";
     if ( fPm->ParameterExists("Ph/ListName") )
         fName = fPm->GetStringParameter("Ph/ListName");
-    G4cout << fName << G4endl;
+
 }
 
 

@@ -2,6 +2,7 @@
 #include "TsVIRTProcedure.hh"
 #include "TsIRTUtils.hh"
 #include "TsIRTConfiguration.hh"
+#include "TsIRTConfiguration.hh"
 #include "TsParameterManager.hh"
 
 #include "G4Step.hh"
@@ -95,7 +96,7 @@ TsVIRTProcedure::TsVIRTProcedure(TsParameterManager* pM, G4String parmName)
 	if ( fPm->ParameterExists("Ch/"+chemistryList+"/SpaceBinningWidth") )
 		fBinWidth = fPm->GetDoubleParameter("Ch/"+chemistryList+"/SpaceBinningWidth", "Length");
 	
-	fTestForContactReactions = false;
+	fTestForContactReactions = true;
 	if ( fPm->ParameterExists("Ch/"+chemistryList+"/TestForContactReactions"))
 		fTestForContactReactions = fPm->GetBooleanParameter("Ch/"+chemistryList+"/TestForContactReactions");
 	
@@ -107,6 +108,7 @@ TsVIRTProcedure::TsVIRTProcedure(TsParameterManager* pM, G4String parmName)
 		fDx = fPm->GetDoubleParameter(GetFullParmName("OnlyIncludeChemicalSpeciesFromVirtualRegion/HLX"),"Length");
 		fDy = fPm->GetDoubleParameter(GetFullParmName("OnlyIncludeChemicalSpeciesFromVirtualRegion/HLY"),"Length");
 		fDz = fPm->GetDoubleParameter(GetFullParmName("OnlyIncludeChemicalSpeciesFromVirtualRegion/HLZ"),"Length");
+		std::cout << " -- Going to consider only tracks contained in a virtual region of " << 2*fDx/nm << " x " << 2*fDy/nm << " x " << 2*fDz/nm << " nm3 " << G4endl;
 		fTestIsInside = true;
 	}
 
@@ -144,6 +146,13 @@ G4bool TsVIRTProcedure::Inside(G4ThreeVector p ) {
 }
 
 
+void TsVIRTProcedure::AddMolecule(G4int, G4ThreeVector, G4double,
+                               G4int, G4bool, G4int, G4int, G4int)
+{
+	return;
+}
+
+
 void TsVIRTProcedure::AddMolecule(TsIRTConfiguration::TsMolecule aMol) {
 	if ( !fScorersInitialized )
 		initializeScorers();
@@ -157,7 +166,7 @@ void TsVIRTProcedure::AddMolecule(TsIRTConfiguration::TsMolecule aMol) {
 	
 	// count
 	G4int tBin = fUtils->FindBin(aMol.time, fStepTimes);
-	
+	G4cout << tBin << " " << fStepTimes[tBin] << G4endl;
 	if ( -1 < tBin ) {
 		for ( int tbin = tBin; tbin < (int)fStepTimes.size(); tbin++ ) {
 			if ( fTheGvalue.find(aMol.id) == fTheGvalue.end() )
@@ -360,7 +369,7 @@ void TsVIRTProcedure::initializeScorers() {
 			}
 		}
 	}
-	
+
 	fScorersInitialized = true;
 }
 
@@ -669,7 +678,7 @@ std::vector<G4int> TsVIRTProcedure::GetSurvivingMolecules(G4int parentID) {
 }
 
 std::vector<TsIRTConfiguration::TsMolecule> TsVIRTProcedure::GetSurvivingMoleculesWithMolID(G4int molID) {
-	std::vector<TsIRTConfiguration::TsMolecule> AliveMolecules;
+    std::vector<TsIRTConfiguration::TsMolecule> AliveMolecules;
 	for (auto& IndexAndMol: fChemicalSpecies) {
 		G4int i = IndexAndMol.first;
 		if (!fChemicalSpecies[i].reacted) {
@@ -680,6 +689,7 @@ std::vector<TsIRTConfiguration::TsMolecule> TsVIRTProcedure::GetSurvivingMolecul
 	}
 	return AliveMolecules;
 }
+
 
 G4bool TsVIRTProcedure::MoleculeExists(G4int Index) {
 	std::unordered_map<G4int,TsIRTConfiguration::TsMolecule>::iterator IT = fChemicalSpecies.find(Index);

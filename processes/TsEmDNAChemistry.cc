@@ -70,10 +70,14 @@
 #include "G4ProcessVector.hh"
 #include "G4ProcessTable.hh"
 
-
 #include "G4MolecularConfiguration.hh"
 #include "G4PhysicsConstructorFactory.hh"
 #include "G4Threading.hh"
+// Needed for IRT/IRT-sync/SBS, and kd-tree/octree
+#include "G4DNAMolecularStepByStepModel.hh"
+#include "G4DNAMolecularIRTModel.hh"
+#include "G4DNAIndependentReactionTimeModel.hh"
+#include "G4ChemicalMoleculeFinder.hh"
 
 #include <map>
 
@@ -107,7 +111,7 @@ void TsEmDNAChemistry::DefineParameters()
     fExistingMolecules["hydroxide"]        = "OHm";
     fExistingMolecules["solvatedelectron"] = "e_aq";
     fExistingMolecules["hydrogenperoxide"] = "H2O2";
-    //fExistingMolecules["atomicoxygen"]     = "Oxy";
+    fExistingMolecules["atomicoxygen"]     = "Oxy"; // O3P, but using Oxy for G4's compatiblity
     fExistingMolecules["product"]          = "Product";
     
     fDiffusionCoefficients["OH"]      = 2.8e-9*m2/s;
@@ -117,7 +121,7 @@ void TsEmDNAChemistry::DefineParameters()
     fDiffusionCoefficients["OHm"]     = 5.0e-9*m2/s;
     fDiffusionCoefficients["e_aq"]    = 4.9e-9*m2/s;
     fDiffusionCoefficients["H2O2"]    = 2.3e-9*m2/s;
-    //fDiffusionCoefficients["Oxy"]   = 2.0e9*nm*nm/s;
+    fDiffusionCoefficients["Oxy"]     = 2.0e9*nm*nm/s;
     fDiffusionCoefficients["Product"] = 0.0*m2/s;
     
     fName = "Default";
@@ -157,14 +161,14 @@ void TsEmDNAChemistry::DefineParameters()
     if ( numberOfReactions > 0 ) {
         for ( int i = 0; i < numberOfReactions; i++ ) {
             G4String parName = (*reactionNames)[i];
-
+            
             if ( G4StrUtil::contains(parName,"/BackgroundReaction/") )
                 continue;
-
-			if (fPm->ParameterExists(parName.substr(0,parName.find("Products")-1) + "/CompatibleWithStepByStep") &&
-				!fPm->GetBooleanParameter(parName.substr(0,parName.find("Products")-1) + "/CompatibleWithStepByStep"))
-				continue;
-			
+            
+            if (fPm->ParameterExists(parName.substr(0,parName.find("Products")-1) + "/CompatibleWithStepByStep") &&
+                !fPm->GetBooleanParameter(parName.substr(0,parName.find("Products")-1) + "/CompatibleWithStepByStep"))
+                continue;
+            
             G4String reactions = parName.substr(prefixLength, parName.find("Products")-prefixLength-1);
             G4String reactorA = reactions.substr(0, reactions.find("/"));
             G4String reactorB = reactions.substr(reactions.find("/") + 1);
@@ -206,19 +210,19 @@ void TsEmDNAChemistry::DefineParameters()
             fReactionRates.push_back(reactionRate);
         }
     }
-
+    
     // First order reactions (Scavengers)
     prefixLength = G4String("Ch/" + fName + "/BackgroundReaction/").length();
     for ( int i = 0; i < numberOfReactions; i++ ) {
         G4String parName = (*reactionNames)[i];
-
+        
         if ( G4StrUtil::contains(parName,"/Reaction/") )
             continue;
-
+        
         if (fPm->ParameterExists(parName.substr(0,parName.find("Products")-1) + "/CompatibleWithStepByStep") &&
             !fPm->GetBooleanParameter(parName.substr(0,parName.find("Products")-1) + "/CompatibleWithStepByStep"))
             continue;
-
+        
         G4String reactions = parName.substr(prefixLength, parName.find("Products")-prefixLength-1);
         G4String reactorA = reactions.substr(0, reactions.find("/"));
         G4String reactorB = reactions.substr(reactions.find("/") + 1);
@@ -229,16 +233,16 @@ void TsEmDNAChemistry::DefineParameters()
         G4double scavengingCapacity = 0;
         G4double concentration = 0;
         G4double reactionRate  = 0;
-
+        
         std::vector<G4String> Products;
         for ( int j = 0; j < nbOfProduct; j++ ) {
             G4StrUtil::to_lower(product[j]);
             if (product[j] != "none")
                 Products.push_back(fExistingMolecules[product[j]]);
         }
-
+        
         G4StrUtil::to_lower(reactorA);
-
+        
         if ( fPm->ParameterExists(parName.substr(0,parName.find("Products")-1) + "/ScavengingCapacity") ) {
             scavengingCapacity = fPm->GetDoubleParameter(parName.substr(0,parName.find("Products")-1) + "/ScavengingCapacity","perTime");
         }
@@ -247,7 +251,7 @@ void TsEmDNAChemistry::DefineParameters()
             reactionRate = fPm->GetDoubleParameter(parName.substr(0,parName.find("Products")-1) + "/ReactionRate","perMolarConcentration perTime");
             scavengingCapacity = concentration*reactionRate;
         }
-
+        
         G4bool hasProducts = false;
         if (Products.size() > 0) {
             hasProducts = true;
@@ -257,96 +261,102 @@ void TsEmDNAChemistry::DefineParameters()
         fScavengerHasProducts.push_back(hasProducts);
         fScavengerProducts.push_back(Products);
         std::cout << "-- Set scavenging capacity for molecule " << fExistingMolecules[reactorA] <<
-                    " of " << scavengingCapacity*s << " /s " << std::endl;
+        " of " << scavengingCapacity*s << " /s " << std::endl;
     }
-
-	// Remove molecules in material named (at contact, no following a power low as First order reactions)
-	if ( fPm->ParameterExists(GetFullParmName("RemoveInMaterial"))) {
-		fRemoveInMaterial = fPm->GetStringParameter(GetFullParmName("RemoveInMaterial"));
-		G4String* theMolecules = fPm->GetStringVector(GetFullParmName("RemoveInMaterialTheseMolecules"));
-		G4int nTheMaterials = fPm->GetVectorLength(GetFullParmName("RemoveInMaterialTheseMolecules"));
-		for ( int i = 0; i < nTheMaterials; i++ ) {
-			if ( !MoleculeExists(theMolecules[i]) )
-				Quit(GetFullParmName("RemoveInMaterialTheseMolecules"), "\n--- Molecule: " + theMolecules[i] + " was not found in database");
-			fRemoveInMaterialTheseMolecules.push_back(fExistingMolecules[theMolecules[i]]);
-		}
-	}
-	
- 
+    
+    // Remove molecules in material named (at contact, no following a power low as First order reactions)
+    if ( fPm->ParameterExists(GetFullParmName("RemoveInMaterial"))) {
+        fRemoveInMaterial = fPm->GetStringParameter(GetFullParmName("RemoveInMaterial"));
+        G4String* theMolecules = fPm->GetStringVector(GetFullParmName("RemoveInMaterialTheseMolecules"));
+        G4int nTheMaterials = fPm->GetVectorLength(GetFullParmName("RemoveInMaterialTheseMolecules"));
+        for ( int i = 0; i < nTheMaterials; i++ ) {
+            if ( !MoleculeExists(theMolecules[i]) )
+                Quit(GetFullParmName("RemoveInMaterialTheseMolecules"), "\n--- Molecule: " + theMolecules[i] + " was not found in database");
+            
+            fRemoveInMaterialTheseMolecules.push_back(fExistingMolecules[theMolecules[i]]);
+        }
+    }
+    
     fSetWaterConfiguration = false;
     if ( fPm->ParameterExists(GetFullParmName("SetWaterMolecularConfiguration")) )
         fSetWaterConfiguration = fPm->GetBooleanParameter(GetFullParmName("SetWaterMolecularConfiguration"));
     
     // Branching ratios
-    G4String parName = GetFullParmName("BranchingRatios/");
-
-    // Branching ratios Mode: 1 = New, 0 = Old.
-    // New doesn't works, probably needs new cross sections
-    size_t mode = 0;
-
+    G4String branchModelName = "topasnbio";
+    if (fPm->ParameterExists(GetFullParmName("BranchingRatiosModel"))) {
+        branchModelName = fPm->GetStringParameter(GetFullParmName("BranchingRatiosModel"));
+        G4StrUtil::to_lower(branchModelName);
+    }
+    
     /////////////////////////////////
     // Default Probabilities Ratio //
     /////////////////////////////////
-    if (mode == 1) {
+    if (branchModelName == "topasnbio") {
         // Ionization
         fIonizationStates = 1.0;
-
+        
         // Excitation Fifth Layer
-        fA1B1Relaxation        = 0.35;
-        fA1B1DissociativeDecay = 0.65;
-
+        fA1B1Relaxation        = 0.35;  // H2O
+        fA1B1DissociativeDecay = 0.65;  // H + OH
+        
         // Excitation Fourth Layer
-        fB1A1Relaxation         = 0.175;  //0.30;
-        fB1A1DissociativeDecay  = 0.0325; //0.15;
-        fB1A1AutoIonization     = 0.50;   //0.55;
-        fA1B1DissociativeDecay2 = 0.2535;
-        fB1A1DissociativeDecay2 = 0.039;
-
+        fB1A1Relaxation         = 0.175;  //0.30;  H2O
+        fB1A1DissociativeDecay  = 0.086;//0.0325; //0.15;  H2+ 2OH
+        fB1A1AutoIonization     = 0.50;   //0.55;  H3O+ + OH + e-aq
+        fB1A1DissociativeDecay1 = 0.2;//535; // H + OH
+        fB1A1DissociativeDecay2 = 0.039;  // 2H + O(3P)
+        
         // Excitation Third, Second And First Layers
-        fRydDiffAutoIonization = 0.5;
-        fRydDiffRelaxation     = 0.5;
-
+        fRydDiffAutoIonization = 0.5;  // H3O+ + OH + e-aq
+        fRydDiffRelaxation     = 0.5;  // H2O
+        
         // Disociative Attachment
-        fDissociativeAttachment = 1.0;
-
+        fDissociativeAttachment = 1.0; // OH- + OH + H2
+        
         // Electron Hole Recombination
-        fH2OvibDissociationDecay1 = 0.1365;
-        fH2OvibDissociationDecay2 = 0.3575;
-        fH2OvibDissociationDecay3 = 0.156;
-        fH2OvibDissociationDecay4 = 0.35;
+        fH2OvibDissociationDecay1 = 0.1925;  // H2 + 2OH
+        fH2OvibDissociationDecay2 = 0.3;//575;  // H + OH
+        fH2OvibDissociationDecay3 = 0.05; //0.156;   // 2H + O(3P)
+        fH2OvibDissociationDecay4 = 0.4575;    // H2O
     }
-    else {
+    else if (branchModelName == "g4dna"){
         // Ionization
         fIonizationStates = 1.0;
-
+        
         // Excitation Fifth Layer
-        fA1B1Relaxation        = 0.35;
-        fA1B1DissociativeDecay = 0.65;
-
+        fA1B1Relaxation        = 0.35; // H2O
+        fA1B1DissociativeDecay = 0.65; // H + OH
+        
         // Excitation Fourth Layer
-        fB1A1Relaxation         = 0.30;
-        fB1A1DissociativeDecay  = 0.15;
+        fB1A1Relaxation         = 0.20;//0.30;
+        fB1A1DissociativeDecay  = 0.25;//0.15;
         fB1A1AutoIonization     = 0.55;
-        fA1B1DissociativeDecay2 = 0;
+        fB1A1DissociativeDecay1 = 0;
         fB1A1DissociativeDecay2 = 0;
-
+        
         // Excitation Third, Second And First Layers
         fRydDiffAutoIonization = 0.5;
         fRydDiffRelaxation     = 0.5;
-
+        
         // Disociative Attachment
         fDissociativeAttachment = 1.0;
-
+        
         // Electron Hole Recombination
-        fH2OvibDissociationDecay1 = 0.15;
-        fH2OvibDissociationDecay2 = 0.55;
+        fH2OvibDissociationDecay1 = 0.17;//0.15;
+        fH2OvibDissociationDecay2 = 0.54;//0.55
         fH2OvibDissociationDecay3 = 0;
-        fH2OvibDissociationDecay4 = 0.3;
+        fH2OvibDissociationDecay4 = 0.29;//0.3;
+    } else {
+        Quit(GetFullParmName("BranchingRatiosModel"), "Model name: " + branchModelName + " is not supported. ");
     }
-
+    
+    G4cout << "Using branching ratios for selected model named: " << branchModelName << G4endl;
     //////////////////////////////////
     // Probabilities User Interface //
     //////////////////////////////////
+    // Branching ratios
+    G4String parName = GetFullParmName("BranchingRatios/");
+    
     // Ionisation
     if ( fPm->ParameterExists(parName + "IonizationStates/DissociativeDecay") )
         fIonizationStates = fPm->GetUnitlessParameter(parName + "IonizationStates/DissociativeDecay");
@@ -361,57 +371,67 @@ void TsEmDNAChemistry::DefineParameters()
         fA1B1Relaxation = fPm->GetUnitlessParameter(parName + "A1B1/Relaxation");
     std::cout << "-- Branching ratio: A1B1 Relaxation probability " << fA1B1Relaxation << std::endl;
     
+    if ( fA1B1DissociativeDecay + fA1B1Relaxation != 1 )
+        Quit("Error while defining branching rations", "Probabilities for fifth layer A1B1Relaxation and A1B1DissociativeDecay do not add to unity.");
+    
     // Excitation on the Fourth Layer
     if ( fPm->ParameterExists(parName + "B1A1/Relaxation"))
         fB1A1Relaxation = fPm->GetUnitlessParameter(parName + "B1A1/Relaxation");
     std::cout << "-- Branching ratio: B1A1 Relaxation probability " << fB1A1Relaxation << std::endl;
-
+    
     if ( fPm->ParameterExists(parName + "B1A1/DissociativeDecay"))
         fB1A1DissociativeDecay = fPm->GetUnitlessParameter(parName + "B1A1/DissociativeDecay");
     std::cout << "-- Branching ratio: B1A1 Dissociative decay probability " << fB1A1DissociativeDecay << std::endl;
-
+    
     if ( fPm->ParameterExists(parName + "B1A1/AutoIonization"))
         fB1A1AutoIonization = fPm->GetUnitlessParameter(parName + "B1A1/AutoIonization");
     std::cout << "-- Branching ratio: B1A1 Auto-ionization probability " << fB1A1AutoIonization << std::endl;
-
-    if ( fPm->ParameterExists(parName + "B1A1/AutoIonization"))
-        fA1B1DissociativeDecay2 = fPm->GetUnitlessParameter(parName + "A1B1/DissociativeDecay2");
-    std::cout << "-- Branching ratio: B1A1 Auto-ionization probability " << fA1B1DissociativeDecay2 << std::endl;
-
+    
+    if ( fPm->ParameterExists(parName + "B1A1/DissociativeDecay1"))
+        fB1A1DissociativeDecay1 = fPm->GetUnitlessParameter(parName + "A1B1/DissociativeDecay1");
+    std::cout << "-- Branching ratio: B1A1 Dissociative decay1 probability " << fB1A1DissociativeDecay1 << std::endl;
+    
     if ( fPm->ParameterExists(parName + "B1A1/DissociativeDecay2"))
         fB1A1DissociativeDecay2 = fPm->GetUnitlessParameter(parName + "B1A1/DissociativeDecay2");
     std::cout << "-- Branching ratio: B1A1 Dissociative decay2 probability " << fB1A1DissociativeDecay2 << std::endl;
+    
+    if (fB1A1Relaxation + fB1A1DissociativeDecay + fB1A1AutoIonization + fB1A1DissociativeDecay1 + fB1A1DissociativeDecay2 != 1)
+        Quit("Error while defining branching rations","Probabilities for fourth layer do not add to unity");
     
     // Excitation on the 3rd, 2nd and 1st Layer
     if ( fPm->ParameterExists(parName + "RydbergStatesAndDiffuseBands/AutoIoinization"))
         fRydDiffAutoIonization = fPm->GetUnitlessParameter(parName + "RydbergStatesAndDiffuseBands/AutoIoinization");
     std::cout << "-- Branching ratio: Rydberg states and diffuse bands auto-ionization probability " << fRydDiffAutoIonization << std::endl;
-
+    
     if ( fPm->ParameterExists(parName + "RydbergStatesAndDiffuseBands/Relaxation"))
         fRydDiffRelaxation = fPm->GetUnitlessParameter(parName + "RydbergStatesAndDiffuseBands/Relaxation");
     std::cout << "-- Branching ratio: Rydberg states and diffuse bands relaxation probability " << fRydDiffRelaxation << std::endl;
-
+    
+    if ( fRydDiffAutoIonization + fRydDiffRelaxation != 1)
+        Quit("Error while defining branching rations","Probabilities for 3rd, 2nd and 1st layer do not add to unity.");
+    
     // Dissociative Attachment
     if ( fPm->ParameterExists(parName + "DissociativeAttachment"))
         fDissociativeAttachment = fPm->GetUnitlessParameter(parName + "DissociativeAttachment");
     std::cout << "-- Branching ratio: dissociative attachment probability " << fDissociativeAttachment << std::endl;
-
-    // Electron Hole Recombination 
+    
+    // Electron Hole Recombination
     if ( fPm->ParameterExists(parName + "ElectronHole/DissociativeDecay1"))
         fH2OvibDissociationDecay1 = fPm->GetUnitlessParameter(parName + "H2OVibration/DissociativeDecay1");
     std::cout << "-- Branching ratio: H2O Electron Hole Recombination Dissociative decay1 probability " << fH2OvibDissociationDecay1 << std::endl;
-
+    
     if ( fPm->ParameterExists(parName + "ElectronHole/DissociativeDecay2"))
         fH2OvibDissociationDecay2 = fPm->GetUnitlessParameter(parName + "H2OVibration/DissociativeDecay2");
     std::cout << "-- Branching ratio: H2O Electron Hole Recombination Dissociative decay2 probability " << fH2OvibDissociationDecay2 << std::endl;
-
+    
     if ( fPm->ParameterExists(parName + "ElectronHole/DissociativeDecay3"))
         fH2OvibDissociationDecay3 = fPm->GetUnitlessParameter(parName + "H2OVibration/DissociativeDecay3");
     std::cout << "-- Branching ratio: H2O Electron Hole Recombination Dissociative decay3 probability " << fH2OvibDissociationDecay3 << std::endl;
-
+    
     if ( fPm->ParameterExists(parName + "ElectronHole/DissociativeDecay4"))
         fH2OvibDissociationDecay4 = fPm->GetUnitlessParameter(parName + "H2OVibration/DissociativeDecay4");
     std::cout << "-- Branching ratio: H2O Electron Hole Recombination Dissociative decay4 probability " << fH2OvibDissociationDecay4 << std::endl;
+    
 }
 
 
@@ -542,13 +562,13 @@ void TsEmDNAChemistry::ConstructDissociationChannels()
     decCh3->AddProduct(e_aq);
     decCh3->SetProbability(fB1A1AutoIonization);
     decCh3->SetDisplacementType(TsDNAWaterDissociationDisplacer::AutoIonisation);
-
+    
     //Decay 4: H + OH
     decCh4->AddProduct(H);
     decCh4->AddProduct(OH);
-    decCh4->SetProbability(fA1B1DissociativeDecay2);
+    decCh4->SetProbability(fB1A1DissociativeDecay1); // it reuses A1B1_DissociativeDecay, but we set a different probablity label
     decCh4->SetDisplacementType(TsDNAWaterDissociationDisplacer::A1B1_DissociationDecay);
-
+    
     //Decay 5: 2H + O
     decCh5->AddProduct(O);
     decCh5->AddProduct(H);
@@ -699,7 +719,7 @@ void TsEmDNAChemistry::ConstructDissociationChannels()
     occ->AddElectron(5, 1); // H_2O^-
     water->NewConfigurationWithElectronOccupancy("DissociativeAttachment", *occ);
     water->AddDecayChannel("DissociativeAttachment", decCh1);
-
+    
     //////////////////////////////////////////////////////////
     //            Electron-hole recombination               //
     //////////////////////////////////////////////////////////
@@ -715,30 +735,30 @@ void TsEmDNAChemistry::ConstructDissociationChannels()
     decCh1->AddProduct(OH);
     decCh1->SetProbability(fH2OvibDissociationDecay1);
     decCh1->SetDisplacementType(TsDNAWaterDissociationDisplacer::B1A1_DissociationDecay);
-
+    
     //Decay 2 : OH + H
     decCh2->AddProduct(OH);
     decCh2->AddProduct(H);
     decCh2->SetProbability(fH2OvibDissociationDecay2);
     decCh2->SetDisplacementType(TsDNAWaterDissociationDisplacer::A1B1_DissociationDecay);
-
+    
     //Decay 3 : 2H + O(3p)
     decCh3->AddProduct(O);
     decCh3->AddProduct(H);
     decCh3->AddProduct(H);
     decCh3->SetProbability(fH2OvibDissociationDecay3);
     decCh3->SetDisplacementType(TsDNAWaterDissociationDisplacer::B1A1_DissociationDecay2);
-
+    
     //Decay 4 : relaxation
     decCh4->SetProbability(fH2OvibDissociationDecay4);
-
+    
     const G4MolecularConfiguration* pH2Ovib = G4H2O::Definition()->NewConfiguration("H2Ovib");
-
+    
     water->AddDecayChannel(pH2Ovib, decCh1);
     water->AddDecayChannel(pH2Ovib, decCh2);
     water->AddDecayChannel(pH2Ovib, decCh3);
     water->AddDecayChannel(pH2Ovib, decCh4);
-
+    
     delete occ;
 }
 
@@ -752,7 +772,7 @@ void TsEmDNAChemistry::ConstructReactionTable(G4DNAMolecularReactionTable*
     G4MolecularConfiguration* H3Op = G4MoleculeTable::Instance()->GetConfiguration("H3Op");
     G4MolecularConfiguration* H    = G4MoleculeTable::Instance()->GetConfiguration("H");
     G4MolecularConfiguration* H2O2 = G4MoleculeTable::Instance()->GetConfiguration("H2O2");
-    //G4MolecularConfiguration* Oxy  = G4MoleculeTable::Instance()->GetConfiguration("Oxy");
+    G4MolecularConfiguration* Oxy  = G4MoleculeTable::Instance()->GetConfiguration("Oxy");
     
     std::map<G4String, G4MolecularConfiguration*> reactions;
     reactions["OH"]    = OH;
@@ -762,7 +782,7 @@ void TsEmDNAChemistry::ConstructReactionTable(G4DNAMolecularReactionTable*
     reactions["H3Op"]  = H3Op;
     reactions["H"]     = H;
     reactions["H2O2"]  = H2O2;
-    //reactions["Oxy"] = Oxy;
+    reactions["Oxy"] = Oxy;
     
     if ( fSetWaterConfiguration ) {
         G4MolecularConfiguration* H2O = G4MoleculeTable::Instance()->GetConfiguration("H2O");
@@ -868,20 +888,20 @@ void TsEmDNAChemistry::ConstructProcess()
                     moleculeDef->GetProcessManager()->AddDiscreteProcess(firstOrd);
                 }
             }
-	    for ( size_t u = 0; u < fRemoveInMaterialTheseMolecules.size(); u++ ) {
-				if ( moleculeDef->GetName() == G4MoleculeTable::Instance()->
-					GetConfiguration(fRemoveInMaterialTheseMolecules[u])->GetDefinition()->GetName())
-				{
-					TsDNARemoveInMaterial* removeProcess = new TsDNARemoveInMaterial();
-					G4MolecularConfiguration* mC = G4MoleculeTable::Instance()->
-												   GetConfiguration(fRemoveInMaterialTheseMolecules[u]);
-					if ( !G4Material::GetMaterial(fRemoveInMaterial) )
-						Quit("", "\n--- Material " + fRemoveInMaterial + " was not found " );
-					removeProcess->SetReaction(mC, G4Material::GetMaterial(fRemoveInMaterial));
-					moleculeDef->GetProcessManager()->AddDiscreteProcess(removeProcess);
-					G4cout << "-- Molecule " << mC->GetName() << " will be removed at contact of material " << fRemoveInMaterial << G4endl;
-				}
-	    }
+            for ( size_t u = 0; u < fRemoveInMaterialTheseMolecules.size(); u++ ) {
+                if ( moleculeDef->GetName() == G4MoleculeTable::Instance()->
+                    GetConfiguration(fRemoveInMaterialTheseMolecules[u])->GetDefinition()->GetName())
+                    {
+                    TsDNARemoveInMaterial* removeProcess = new TsDNARemoveInMaterial();
+                    G4MolecularConfiguration* mC = G4MoleculeTable::Instance()->
+                    GetConfiguration(fRemoveInMaterialTheseMolecules[u]);
+                    if ( !G4Material::GetMaterial(fRemoveInMaterial) )
+                        Quit("", "\n--- Material " + fRemoveInMaterial + " was not found " );
+                    removeProcess->SetReaction(mC, G4Material::GetMaterial(fRemoveInMaterial));
+                    moleculeDef->GetProcessManager()->AddDiscreteProcess(removeProcess);
+                    G4cout << "-- Molecule " << mC->GetName() << " will be removed at contact of material " << fRemoveInMaterial << G4endl;
+                    }
+            }
             
         } else if ( moleculeDef == G4H2O::Definition() ) {
             moleculeDef->GetProcessManager()
@@ -899,15 +919,45 @@ void TsEmDNAChemistry::ConstructProcess()
 
 void TsEmDNAChemistry::ConstructTimeStepModel(G4DNAMolecularReactionTable* reactionTable)
 {
-    G4VDNAReactionModel* reactionRadiusComputer =
-    new G4DNASmoluchowskiReactionModel();
-    reactionTable->PrintTable(reactionRadiusComputer);
+    if ( fPm->ParameterExists("Ch/RegisterMoleculeFinderMethod")){
+        G4String molFinder = fPm->GetStringParameter("Ch/RegisterMoleculeFinderMethod");
+        G4StrUtil::to_lower(molFinder);
+        if (molFinder == "octree" ) {
+            G4ChemicalMoleculeFinder::Instance()->SetOctreeUsed(true);
+            G4cout << "-- Registering Octree as molecule finder " << G4endl;
+        } else {
+            G4cout << "-- Registering kd-tree as molecule finder " << G4endl;
+        }
+    }
     
-    G4DNAMolecularStepByStepModel* stepByStep =
-    new G4DNAMolecularStepByStepModel();
-    stepByStep->SetReactionModel(reactionRadiusComputer);
-    
-    RegisterTimeStepModel(stepByStep, 0);
+    if ( !fPm->ParameterExists("Ch/RegisterTimeStepModel")) {
+        G4VDNAReactionModel* reactionRadiusComputer =
+        new G4DNASmoluchowskiReactionModel();
+        reactionTable->PrintTable(reactionRadiusComputer);
+        
+        G4DNAMolecularStepByStepModel* stepByStep =
+        new G4DNAMolecularStepByStepModel();
+        stepByStep->SetReactionModel(reactionRadiusComputer);
+        
+        RegisterTimeStepModel(stepByStep, 0);
+    } else {
+        G4String timeStepModel = fPm->GetStringParameter("Ch/RegisterTimeStepModel");
+        G4StrUtil::to_lower(timeStepModel);
+        if (timeStepModel == "g4irt") {
+            RegisterTimeStepModel(new G4DNAMolecularIRTModel(), 0);
+            G4cout << "-- Registering G4IRT " << G4endl;
+        } else if (timeStepModel == "g4stepbystep") {
+            RegisterTimeStepModel(new G4DNAMolecularStepByStepModel(), 0);
+            G4cout << "-- Registering G4StepByStep " << G4endl;
+        } else if (timeStepModel == "g4irtsync") {
+            RegisterTimeStepModel(new G4DNAIndependentReactionTimeModel(), 0);
+            G4cout << "-- Registering G4IRTSync " << G4endl;
+        } else {
+            G4cerr << "Error, time step model " << timeStepModel << " was not found." << G4endl;
+            G4cerr << "Options are: G4IRT, G4StepByStep and G4IRTSync" << G4endl;
+            fPm->AbortSession(1);
+        }
+    }
 }
 
 
@@ -926,4 +976,5 @@ void TsEmDNAChemistry::Quit(G4String parName, G4String message) {
     G4cerr << "--- Parameter: " << parName << " " << message << std::endl;
     fPm->AbortSession(1);
 }
+
 

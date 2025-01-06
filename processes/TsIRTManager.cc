@@ -1,7 +1,8 @@
 // Extra Class for TsEmDNAChemistry
 #include "TsIRTManager.hh"
 #include "TsIRT.hh"
-#include "TsHybridIRT.hh"
+//#include "TsHybridIRT.hh"
+//#include "TsContinuousIRT.hh"
 #include "TsParameterManager.hh"
 
 TsIRTManager::TsIRTManager(TsParameterManager* pM, G4String parmName)
@@ -18,13 +19,14 @@ TsIRTManager::TsIRTManager(TsParameterManager* pM, G4String parmName)
 	IRTType.toLower();
 	if (IRTType == "pure")
 		fIRTProcedure = new TsIRT(fPm,fName);
-	else if (IRTType == "hybrid") {
-		fIRTProcedure = new TsHybridIRT(fPm,fName);
-		fIRTType      = 1;
-	}
-	//else if (IRTType == "continuous")                  // This is Wook-Geun Implementation
-	//	fIRTProcedure = new TsIRTContinuous(fPm,fName);
-
+	//else if (IRTType == "hybrid") {
+	//	fIRTProcedure = new TsHybridIRT(fPm,fName);
+	//	fIRTType      = 1;
+	//}
+	//else if (IRTType == "continuous"){                 // This is Wook-Geun Implementation
+	//	fIRTProcedure = new TsContinuousIRT(fPm,fName);
+	//	fIRTType      = 1;
+	//}
 	else {
 		G4cout << "- Error in TOPAS-nBio IRT Manager!" << G4endl;
 		G4cout << "   There is no " << IRTType << " IRT Type" << G4endl;
@@ -52,6 +54,12 @@ std::pair<G4String, G4String> TsIRTManager::GetReactants(G4int reactIndex) {
 
 std::vector<G4String> TsIRTManager::GetProducts(G4int reactIndex) {
 	return fIRTProcedure->GetProducts(reactIndex);
+}
+
+// temporal function
+void TsIRTManager::AddMolecule(G4int molID, G4ThreeVector position, G4double time,
+                               G4int trackID, G4bool isDNA, G4int volumeID, G4int baseID, G4int strandID) {
+	fIRTProcedure->AddMolecule(molID, position, time, trackID, isDNA, volumeID, baseID, strandID);
 }
 
 void TsIRTManager::AddMolecule(TsIRTConfiguration::TsMolecule aMol) {
@@ -82,6 +90,12 @@ TsIRTUtils* TsIRTManager::GetUtils() {
 	return fIRTProcedure->GetUtils();
 }
 
+
+TsVIRTProcedure* TsIRTManager::GetIRTProcedure() {
+	return fIRTProcedure;
+}
+
+
 std::vector<G4double> TsIRTManager::GetStepTimes() {
 	return fIRTProcedure->GetStepTimes();
 }
@@ -105,3 +119,5 @@ std::map<G4int, std::map<G4double, G4int>>    TsIRTManager::GetDeltaGValues() {
 std::vector<TsIRTConfiguration::TsMolecule> TsIRTManager::GetSurvivingMoleculesWithMolID(G4int molID) {
 	return fIRTProcedure->GetSurvivingMoleculesWithMolID(molID);
 }
+
+

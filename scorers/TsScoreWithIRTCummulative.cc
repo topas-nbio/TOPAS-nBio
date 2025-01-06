@@ -10,9 +10,7 @@
 // ********************************************************************
 
 #include "TsScoreWithIRTCummulative.hh"
-#include "TsIRT.hh"
-#include "TsIRTConfiguration.hh"
-#include "TsIRTUtils.hh"
+#include "TsIRTManager.hh"
 
 #include "G4ITTrackHolder.hh"
 #include "G4EventManager.hh"
@@ -26,9 +24,7 @@
 #include "G4Electron_aq.hh"
 #include "G4UnitsTable.hh"
 #include "Randomize.hh"
-//#include <algorithm>
-//#include <stdlib.h>
-// #include <algorithm>
+
 
 TsScoreWithIRTCummulative::TsScoreWithIRTCummulative(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
                                                      G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer)
@@ -37,7 +33,15 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
 {
     SetUnit("");
     
-    fIRT = new TsIRT(fPm, fName);
+    if (fPm->GetIntegerParameter("Ts/NumberOfThreads") != 1) {
+        G4cerr << "TOPAS is exiting due to an error in parameter." << G4endl;
+        G4cerr << "Ts/NumberOfThreads has a value different than 1" << G4endl;
+        G4cerr << "This example only can be run in single thread mode" << G4endl;
+        G4cerr << "Set: i:Ts/NumberOfThreads = 1" << G4endl;
+        fPm->AbortSession(1);
+    }
+    
+    fIRT = new TsIRTManager(fPm, fName);
     fUtils = fIRT->GetUtils();
     fStepTimes = fIRT->GetStepTimes();
     for ( size_t u = 0; u < fStepTimes.size(); u++ ) {
@@ -51,10 +55,10 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
     fNtuple->RegisterColumnD(&fEnergy, "EnergyDeposit", "eV");
     
     fPrescribedDose = fPm->GetDoubleParameter(GetFullParmName("PrescribedDose"),"Dose");
-
+    
     fTimeDistribution = fPm->GetStringParameter(GetFullParmName("PulseDistribution"));
     fTimeDistribution.toLower();
-
+    
     fNumberOfPulses = 1;
     if ( fPm->ParameterExists(GetFullParmName("NumberOfPulses")) ) {
         fNumberOfPulses = fPm->GetIntegerParameter(GetFullParmName("NumberOfPulses"));
@@ -117,11 +121,16 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
         fSensitiveVolume = fPm->GetStringParameter(GetFullParmName("SensitiveVolumeName"));
     }
     
+    fReportDelta = false;
+    if ( fPm->ParameterExists(GetFullParmName("ReportDeltaGValues"))) {
+        fReportDelta = fPm->GetBooleanParameter(GetFullParmName("ReportDeltaGValues"));
+    }
+    
     fTCut = 1.0 * ps;
     
     fNbOfScoredEvents = 0;
     fNbOfScoredEventsEverywhere = 0;
-
+    
     fTotalDose = 0.0;
     fDosePerPulse = 0.0;
     fPulseTimeShift = 0.0;
@@ -132,6 +141,11 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
     G4String fileName = fPm->GetStringParameter("Sc/RootFileName") + ".bin";
     remove(fileName);
     fTimeOutFile.open(fileName, std::ios::binary | std::ios::app);
+    
+    fOutputFile = "TOPAS";
+    if ( fPm->ParameterExists(GetFullParmName("OutputFile"))) {
+        fOutputFile = fPm->GetStringParameter(GetFullParmName("OutputFile"));
+    }
 }
 
 
@@ -156,13 +170,20 @@ G4bool TsScoreWithIRTCummulative::ProcessHits(G4Step* aStep, G4TouchableHistory*
             G4double mass = 0.0;
             G4double density = aStep->GetPreStepPoint()->GetMaterial()->GetDensity();
             fEnergyDepositPerEventEverywhere += edep ;
-
+            
             if ( fTestIsInside ) {
                 G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
                 const G4String& volumeName = touchable->GetVolume()->GetName();
                 if( !volumeName.contains(fSensitiveVolume)) {
                     return false;
                 }
+                
+                mass = density * touchable->GetVolume()->GetLogicalVolume()->GetSolid()->GetCubicVolume();
+                G4double dose = edep / mass;
+                fTotalDose += dose;
+                fEnergyDepositPerEvent += edep ;
+                fDosePerPulse += dose;
+                return true;
             }
             
             mass = density * fSolid->GetCubicVolume();
@@ -278,10 +299,7 @@ void TsScoreWithIRTCummulative::UserHookForEndOfEvent() {
         G4cout << " --- IRT start for event " << GetEventID() << G4endl;
         
         for ( size_t t = 0; t < fVEnergyDepositPerEvent.size(); t++ ) {
-            if ( fTimeDistributionType != 3 )
-                tBin = fUtils->FindBin(fVEnergyDepositPerEvent[t].first, fStepTimes);
-            else
-                tBin = fUtils->FindBin(fVEnergyDepositPerEvent[t].first, fStepTimes);
+            tBin = fUtils->FindBin(fVEnergyDepositPerEvent[t].first, fStepTimes);
             
             for ( int i = tBin; i < (int)fStepTimes.size(); i++)
                 fVEnergyDeposit[i] += fVEnergyDepositPerEvent[t].second;
@@ -292,8 +310,9 @@ void TsScoreWithIRTCummulative::UserHookForEndOfEvent() {
             fTimeOutFile.write(reinterpret_cast<char*>(&saveEdep), sizeof saveEdep);
             
             G4cout << " --- energy deposit at time " << fVEnergyDepositPerEvent[t].first/ps
-                   << " ps " << fVEnergyDepositPerEvent[t].second/eV << G4endl;
+            << " ps " << fVEnergyDepositPerEvent[t].second/eV << G4endl;
         }
+        fTimeOutFile.close();
         
         fIRT->runIRT();
         std::map<G4String, std::map<G4double, G4int>> irt = fIRT->GetGValues();
@@ -313,8 +332,52 @@ void TsScoreWithIRTCummulative::UserHookForEndOfEvent() {
             }
         }
         
-        irt.clear();
+        if (fReportDelta) {
+            std::ofstream DeltaGFile(fOutputFile + "_DeltaG.phsp");
+            
+            std::map<G4int, std::map<G4double, G4double> >::iterator wDeltaIter;
+            std::map<G4int, std::map<G4double, G4double> >::iterator wDeltaIter2;
+            std::map<G4double, G4double>::iterator deltaiter;
+            std::map<G4double, G4double>::iterator deltaiter2;
+            
+            G4int ReactionIndex;
+            G4double ReactionTime;
+            G4double DeltaReaction;
+            G4double DeltaError;
+            G4String ReactA;
+            G4String ReactB;
+            
+            G4String OutputFileName = fPm->GetStringParameter(GetFullParmName("OutputFile"));
+            
+            DeltaGFile << "# reactionID moleculeA moleculeB prod1 prod2 prod3 Time(ps) DeltaG(/100eV) " << G4endl;
+            std::map<G4int, std::map<G4double, G4int>> DeltaG = fIRT->GetDeltaGValues();
+            
+            for ( auto& indexTimeAndDeltaG : DeltaG) {
+                G4int reactionIndex = indexTimeAndDeltaG.first;
+                for ( auto& timeAndDeltaG : (indexTimeAndDeltaG.second) ) {
+                    G4double time   = timeAndDeltaG.first;
+                    tBin = fUtils->FindBin(time, fStepTimes);
+                    G4double deltaG = 100 * timeAndDeltaG.second/(fVEnergyDeposit[tBin]/eV);
+                    G4String ReactA = (fIRT->GetReactants(reactionIndex)).first;
+                    G4String ReactB = (fIRT->GetReactants(reactionIndex)).second;
+                    std::vector<G4String> Products = fIRT->GetProducts(reactionIndex);
+                    DeltaGFile << reactionIndex+1 << "    "  << ReactA << "  "  << ReactB << "  ";
+                    
+                    while (Products.size() < 3)
+                        Products.push_back("None");
+                    
+                    for (size_t prod = 0; prod < Products.size(); prod++)
+                        DeltaGFile << Products[prod] << "  ";
+                    
+                    DeltaGFile << "  " << time/ps << "     " << deltaG << std::endl;
+                }
+            }
+            DeltaGFile.close();
+            DeltaG.clear();
+        }
         
+        
+        irt.clear();
         fIRT->Clean();
         
         G4cout << " ------ Needed " << fNbOfScoredEvents
@@ -322,11 +385,12 @@ void TsScoreWithIRTCummulative::UserHookForEndOfEvent() {
         << " Gy" << G4endl;
         
         fNtuple->Write();
-        fTimeOutFile.close();
+        
         Output();
         Clear();
         G4RunManager::GetRunManager()->AbortRun(true);
     }
 }
+
 
 

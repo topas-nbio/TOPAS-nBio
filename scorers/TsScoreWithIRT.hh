@@ -94,6 +94,9 @@ private:
 
     G4bool   fReportDelta;
     G4String fOutputFile;
+    
+    G4bool fTestIsInside;
+    G4String fSensitiveVolume;
 };
 
 #endif

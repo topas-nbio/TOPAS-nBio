@@ -10,8 +10,7 @@
 // ********************************************************************
 
 #include "TsScoreWithIRTMultipleTracks.hh"
-#include "TsIRT.hh"
-#include "TsIRTConfiguration.hh"
+#include "TsIRTManager.hh"
 
 #include "G4ITTrackHolder.hh"
 #include "G4EventManager.hh"
@@ -33,7 +32,7 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyLossKill(0), fName(scorerName)
 {
 	SetUnit("");
 	
-	fIRT = new TsIRT(fPm, fName);
+	fIRT = new TsIRTManager(fPm, fName);
 	
 	fNtuple->RegisterColumnD(&fGValue, "GValue: number of molecules per 100 eV of energy deposit", "");
 	fNtuple->RegisterColumnD(&fGValueError, "GValue statistical error", "");
@@ -148,11 +147,11 @@ G4bool TsScoreWithIRTMultipleTracks::ProcessHits(G4Step* aStep, G4TouchableHisto
 			const G4String name = GetMolecule(aStep->GetTrack())->GetName();
 			if ( fUseMultipleTracks ) {
 				time += fVTimeDelay[fNumberOfTracksPerEvent];
-				fIRT->AddMolecule(aStep, time, 0, G4ThreeVector(fSpatialOffsetX[fNumberOfTracksPerEvent],
+				fIRT->AddMolecule(aStep->GetTrack(), time, 0, G4ThreeVector(fSpatialOffsetX[fNumberOfTracksPerEvent],
 																fSpatialOffsetY[fNumberOfTracksPerEvent],
 																fSpatialOffsetZ[fNumberOfTracksPerEvent]));
 			} else {
-				fIRT->AddMolecule(aStep, time, 0, G4ThreeVector());
+				fIRT->AddMolecule(aStep->GetTrack(), time, 0, G4ThreeVector());
 			}
 			
 			aStep->GetTrack()->SetTrackStatus(fStopAndKill);

@@ -87,6 +87,8 @@ private:
 	G4double fEnergyDepositPerEventEverywhere;
 
 	G4double fMass;
+	G4double fTotalEDep;
+	G4double fPrescribedEDep;
 	G4double fTotalDose;
 	G4double fPrescribedDose;
 	G4int fNbOfScoredEvents;
@@ -94,6 +96,7 @@ private:
 	G4int fNbOfIRTRuns;
 	G4int fNumberOfRepetitions;
 	G4int fNumberOfThreads;
+	G4double fRadius;
 
 	G4double fTCut;
 	G4String fName;
@@ -108,6 +111,7 @@ private:
     G4int fNumberOfPulses;
     G4double fPulsesTimeDelay;
     G4double fDosePerPulse;
+	G4double fEDepPerPulse;
     G4double fPulseTimeShift;
 	
 	std::vector<G4double> fStepTimes;
@@ -144,7 +148,7 @@ private:
 
     // Molecules
     std::map<G4int,std::pair<G4double,G4double>> fPulseTimeLimits;
-    std::map<G4int, std::vector<TsIRTConfiguration::TsMolecule>> fMolecules; 
+    std::map<G4int, std::vector<TsIRTConfiguration::TsMolecule>> fMolecules;
 
     std::map<G4String, std::map<G4double, G4int>> fGValuesInRun;
     std::map<G4int, std::map<G4double, G4int>>    fDeltaGInRun;

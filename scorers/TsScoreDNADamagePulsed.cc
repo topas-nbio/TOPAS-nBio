@@ -13,7 +13,6 @@
 #include "TsScoreDNADamagePulsed.hh"
 #include "TsIRTManager.hh"
 #include "TsIRTConfiguration.hh"
-#include "TsIRTUtils.hh"
 
 #include "G4ITTrackHolder.hh"
 #include "G4EventManager.hh"
@@ -613,6 +612,57 @@ void TsScoreDNADamagePulsed::Output() {
         }
     }
     StrandBreakOut.close();
+    
+    std::ofstream DeltaGFile;
+    
+    std::map<G4int, std::map<G4double, G4double> >::iterator wDeltaIter;
+    std::map<G4int, std::map<G4double, G4double> >::iterator wDeltaIter2;
+    std::map<G4double, G4double>::iterator deltaiter;
+    std::map<G4double, G4double>::iterator deltaiter2;
+    
+    G4int ReactionIndex;
+    G4double ReactionTime;
+    G4double DeltaReaction;
+    G4double DeltaError;
+    G4String ReactA;
+    G4String ReactB;
+
+    G4String OutputFileName = fPm->GetStringParameter(GetFullParmName("OutputFile"));
+    DeltaGFile.open(fOutputFile + "_DeltaG.phsp", std::ofstream::app);
+    
+    for ( wDeltaIter = fDeltaGValues.begin(); wDeltaIter != fDeltaGValues.end(); wDeltaIter++ ) {
+        wDeltaIter2 = fDeltaGValues.find(wDeltaIter->first );
+        
+        for ( deltaiter = (wDeltaIter->second).begin(); deltaiter != (wDeltaIter->second).end(); deltaiter++) {
+            deltaiter2 = (wDeltaIter2->second).find( deltaiter->first );
+            
+            DeltaReaction = deltaiter->second/fNbOfIRTRuns;
+            if ( fNbOfScoredEvents > 1 ) {
+                DeltaError = sqrt( (1.0/(fNbOfIRTRuns-1)) * ( (deltaiter2->second)/fNbOfIRTRuns - DeltaReaction*DeltaReaction));
+            } else {
+                DeltaError = 1.0;
+            }
+            
+            ReactionTime  = deltaiter->first;
+            ReactionIndex = wDeltaIter->first;
+            ReactA = (fIRT->GetReactants(ReactionIndex)).first;
+            ReactB = (fIRT->GetReactants(ReactionIndex)).second;
+            std::vector<G4String> Products = fIRT->GetProducts(ReactionIndex);
+            DeltaGFile << ReactionIndex+1 << "    "  << ReactA << "  "  << ReactB << "  ";
+            
+            while (Products.size() < 3) {
+                Products.push_back("None");
+            }
+            
+            for (size_t prod = 0; prod < Products.size(); prod++) {
+                DeltaGFile << Products[prod] << "  ";
+            }
+            
+            DeltaGFile << "  " << ReactionTime * 1000 << "     " << DeltaReaction << "    " << DeltaError << std::endl;
+        }
+    }
+    
+    DeltaGFile.close();
 }
 
 

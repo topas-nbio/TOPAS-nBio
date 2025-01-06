@@ -9,83 +9,82 @@
 // ********************************************************************
 //
 
-#ifndef TsScoreWithIRTMultipleTracks_hh
-#define TsScoreWithIRTMultipleTracks_hh
+#ifndef TsScoreWithIRTPulses_hh
+#define TsScoreWithIRTPulses_hh
 
 #include "TsVNtupleScorer.hh"
 #include "TsIRTConfiguration.hh"
+
+#include "G4Timer.hh"
 #include "Randomize.hh"
 
 #include <stdint.h>
 
 class TsIRTManager;
 
-class TsScoreWithIRTMultipleTracks : public TsVNtupleScorer
+class TsScoreWithIRTPulses : public TsVNtupleScorer
 {
 public:
-    TsScoreWithIRTMultipleTracks(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
+    TsScoreWithIRTPulses(TsParameterManager* pM, TsMaterialManager* mM, TsGeometryManager* gM, TsScoringManager* scM, TsExtensionManager* eM,
                       G4String scorerName, G4String quantity, G4String outFileName, G4bool isSubScorer);
-    ~TsScoreWithIRTMultipleTracks();
+    ~TsScoreWithIRTPulses();
     
     virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
     void AbsorbResultsFromWorkerScorer(TsVScorer* workerScorer);
  
-    void UserHookForEndOfEvent();   
-
+    void UserHookForEndOfEvent();
+	
+	virtual void UserHookForPreTimeStepAction();
+	
 protected:
     
     void Output();
     void Clear();
-    
+    void SampleTimeShift();
+ 
     // Output variables
     G4double fGValue;
-    G4double fGValueError;
     G4double fTime;
     G4String fMoleculeName;
+    G4double fMolecules;
+    G4double fEnergyDepositGvalue;
 	
     std::map<G4String, std::map<G4double, G4double> > fGValuePerSpeciePerTime;
-    std::map<G4String, std::map<G4double, G4double> > fGValuePerSpeciePerTime2;
+    std::map<G4String, std::map<G4double, G4double> > fMoleculesPerSpeciePerTime;
+    std::map<G4int, std::map<G4double, G4double> > fDeltaGPerReactionPerTime;
    
 private:
     TsParameterManager* fPm;
 	TsIRTManager* fIRT;
+	TsIRTUtils* fUtils;
 
 	std::vector<TsIRTConfiguration::TsMolecule> fSpecies;
-	
+
     G4double fEnergyDepositPerEvent;
-    G4int fNbOfScoredEvents;
-    G4double fEnergyLossKill;
-    G4double fEnergyLossAbort;
-    G4double fEnergyLoss;
-	G4String fName;
-	
-    G4double fTCut;
-    G4double fTotalTrackLength;
-    G4double fMaximumTrackLength;
-    G4double fXMin;
-    G4double fYMin;
-    G4double fZMin;
-    G4double fXMax;
-    G4double fYMax;
-    G4double fZMax;
+
+    // Pulse definition
+    G4double fTotalEnergyDeposit;
+    G4double fPrescribedDose;
+    G4double fDosePerPulse;
+    G4double fDensity;
+    G4double fMass;
     
-    G4int  fMaximumNumberOfSteps;
-    G4bool fUseMaximumNumberOfSteps;
-    G4int  fNumberOfSteps;
-    
-    G4double fEnergyDepositPlusEnergyKinetic;
-    G4double fLET;
-	
-	G4bool fUseMultipleTracks;
-	G4int fNumberOfMultipleTracks;
-	G4int fNumberOfTracksPerEvent;
-	
-	std::vector<G4double> fVEnergyDeposit;
-	G4double* fVTimeDelay;
-	G4double* fSpatialOffsetX;
-	G4double* fSpatialOffsetY;
-	G4double* fSpatialOffsetZ;
-	G4double fTheTotalEdep;
+    G4double fShiftTime;
+    G4int fEventID;
+    G4int fOldEvent;
+    G4double fTimeMean;
+    G4double fTimeFWHM;
+    G4double fTimeStdv;
+    G4int fNumberOfPulses;
+    G4int fPulseCount;
+    G4double fPulsesTimePeriod; // = 1/frequency
+    G4double fPulseTimeShift; // Added to the molecules
+    	
+	std::vector<G4double> fVEnergyDeposits;
+	std::vector<G4double> fVStepTimes;
+    std::vector<std::pair<G4double,G4double>> fVEnergyDepositPerSampledTime;
+
+    std::ofstream fTimeOutFile;
 };
 
 #endif
