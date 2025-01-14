@@ -30,6 +30,7 @@ public:
 	void QuitIfMoleculeNotFound(G4String mol);
 	void Quit(const G4String& name, G4String message);
 
+
 private:
 	TsParameterManager* fPm;
 	TsIRTUtils* fUtils;
@@ -146,6 +147,7 @@ public:
 	inline G4int GetLastMoleculeID() { return fLastMoleculeID; }
 	inline G4int GetLastReactionID() { return fReactionID-1; }
 
+	std::map<G4int, std::vector<std::pair<G4int,G4int>>> GetReactability() {return fMoleculeCanReactWith;};
 	void Diffuse(TsMolecule& mol, G4double dt);
 	
 	void PrintMoleculesInformation();
