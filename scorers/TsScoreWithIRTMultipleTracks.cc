@@ -180,15 +180,15 @@ void TsScoreWithIRTMultipleTracks::UserHookForEndOfEvent() {
 				G4double time = timeAndGvalue.first;
 				G4double gvalue = timeAndGvalue.second;
 				
-				if ( fUseMultipleTracks ) {
-					// Assuming 2 tracks:
-					if (      time >= fVTimeDelay[0] && time < fVTimeDelay[1] )
-						gvalue *= 100/(fVEnergyDeposit[0]/eV);
-					else
-						gvalue *= 100/((fVEnergyDeposit[0]+fVEnergyDeposit[1])/eV);
-				} else {
-					gvalue *= 100/(fEnergyDepositPerEvent/eV);
-				}
+				//if ( fUseMultipleTracks ) {
+				//	// Assuming 2 tracks:
+				//	if (      time >= fVTimeDelay[0] && time < fVTimeDelay[1] )
+				//		gvalue *= 100/(fVEnergyDeposit[0]/eV);
+				//	else
+				//		gvalue *= 100/((fVEnergyDeposit[0]+fVEnergyDeposit[1])/eV);
+				//} else {
+				//	gvalue *= 100/(fEnergyDepositPerEvent/eV);
+				//}
 				fGValuePerSpeciePerTime[name][time] += gvalue;
 				fGValuePerSpeciePerTime2[name][time] += gvalue*gvalue;
 			}
