@@ -2,7 +2,7 @@
 #include "TsIRTManager.hh"
 #include "TsIRT.hh"
 //#include "TsHybridIRT.hh"
-//#include "TsContinuousIRT.hh"
+#include "TsIRTContinuous.hh"
 #include "TsParameterManager.hh"
 
 TsIRTManager::TsIRTManager(TsParameterManager* pM, G4String parmName)
@@ -23,10 +23,10 @@ TsIRTManager::TsIRTManager(TsParameterManager* pM, G4String parmName)
 	//	fIRTProcedure = new TsHybridIRT(fPm,fName);
 	//	fIRTType      = 1;
 	//}
-	//else if (IRTType == "continuous"){                 // This is Wook-Geun Implementation
-	//	fIRTProcedure = new TsContinuousIRT(fPm,fName);
-	//	fIRTType      = 1;
-	//}
+	else if (IRTType == "continuous"){                 // This is Wook-Geun Implementation
+		fIRTProcedure = new TsIRTContinuous(fPm,fName);
+		fIRTType      = 1;
+	}
 	else {
 		G4cout << "- Error in TOPAS-nBio IRT Manager!" << G4endl;
 		G4cout << "   There is no " << IRTType << " IRT Type" << G4endl;

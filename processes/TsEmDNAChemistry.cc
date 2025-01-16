@@ -328,8 +328,8 @@ void TsEmDNAChemistry::DefineParameters()
         fA1B1DissociativeDecay = 0.65; // H + OH
         
         // Excitation Fourth Layer
-        fB1A1Relaxation         = 0.20;//0.30;
-        fB1A1DissociativeDecay  = 0.25;//0.15;
+        fB1A1Relaxation         = 0.30;//0.30;
+        fB1A1DissociativeDecay  = 0.15;//0.15;
         fB1A1AutoIonization     = 0.55;
         fB1A1DissociativeDecay1 = 0;
         fB1A1DissociativeDecay2 = 0;
@@ -342,10 +342,10 @@ void TsEmDNAChemistry::DefineParameters()
         fDissociativeAttachment = 1.0;
         
         // Electron Hole Recombination
-        fH2OvibDissociationDecay1 = 0.17;//0.15;
-        fH2OvibDissociationDecay2 = 0.54;//0.55
+        fH2OvibDissociationDecay1 = 0.15;//0.15;
+        fH2OvibDissociationDecay2 = 0.55;//0.55
         fH2OvibDissociationDecay3 = 0;
-        fH2OvibDissociationDecay4 = 0.29;//0.3;
+        fH2OvibDissociationDecay4 = 0.30;//0.3;
     } else {
         Quit(GetFullParmName("BranchingRatiosModel"), "Model name: " + branchModelName + " is not supported. ");
     }

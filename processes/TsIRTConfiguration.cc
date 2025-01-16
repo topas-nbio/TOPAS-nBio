@@ -593,6 +593,20 @@ void TsIRTConfiguration::InsertBackgroundReaction(G4String A, G4String B, std::v
 	aMolecularReaction.reactionType = 6;
 	aMolecularReaction.sampleExponential = sampleExponential;// true;
 
+	if ( fMoleculeCanReactWith.find(molA) == fMoleculeCanReactWith.end() ) { // key not found
+		fMoleculeCanReactWith[molA].push_back(std::make_pair(molB, index));
+	} else {
+//		G4bool found = false;
+//		for ( size_t u = 0; u < fMoleculeCanReactWith[molA].size(); u++ ) {
+//			if ( molB == fMoleculeCanReactWith[molA][u].first) {
+//				found = true;
+//				break;
+//			}
+//		}
+//		if ( !found )
+			fMoleculeCanReactWith[molA].push_back(std::make_pair(molB,index));
+	}
+
 	fReactions[index] = aMolecularReaction;
 }
 
