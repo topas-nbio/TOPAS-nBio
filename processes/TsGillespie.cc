@@ -177,13 +177,8 @@ void TsGillespie::RecoverReactionData() {
 		}
 
 
-	}*/
-/*
-	for(auto it = fConcentrations.begin(); it != fConcentrations.end(); ++it){
-		G4cout<<fMoleculeNames[it->first]<<'\t'<<it->second<<G4endl;
-		fTotalNumberOfMolecules += it->second;
-	}*/
-/*
+	}
+
 	G4cout<<"Reactability: "<<G4endl;
 
 	auto test = fMoleculeCanReactWith.begin();
@@ -250,7 +245,6 @@ void TsGillespie::Clean() {
 }
 
 std::pair<G4int, G4double> TsGillespie::Propensity() {
-
 	if(fCurrentTime < fIrradiationTime)	fPropensity = fInsertPropensity;
 	else fPropensity = 0;
 
@@ -275,11 +269,18 @@ std::pair<G4int, G4double> TsGillespie::Propensity() {
 				}
 			}
 			else {
+//				prop[i] = 0;
 				if(ConA < 1) prop[i] = 0;
-				else prop[i] = fReactions[i].scavengingCapacity; // Kobs * ConA;
+				else prop[i] = Kobs * ConA; // Kobs * ConA;
 			}
 
 			fPropensity += prop[i];
+
+//			G4cout<<"Full sampling: "<< i<<'\t'<<
+//					fMoleculeNames[ReactA]<<" ("<<ConA<<") "<<
+//					fMoleculeNames[ReactB]<<" ("<<ConB<<") "<<
+//					Kobs<<'\t'<<
+//					prop[i]<<'\t'<<fPropensity<<'\t'<<fInsertPropensity<<G4endl;
 		}
 
 	}else{ // partial sampling
@@ -304,9 +305,16 @@ std::pair<G4int, G4double> TsGillespie::Propensity() {
 				}
 			}
 			else {
+//				prop[i] = 0;
 				if(ConA < 1) prop[i] = 0;
-				else prop[i] = fReactions[i].scavengingCapacity; // Kobs * ConA;
+				else prop[i] = Kobs * ConA; // Kobs * ConA;
 			}
+
+//			G4cout<<"Partial sampling: "<< i<<'\t'<<
+//					fMoleculeNames[ReactA]<<" ("<<ConA<<") "<<
+//					fMoleculeNames[ReactB]<<" ("<<ConB<<") "<<
+//					Kobs<<'\t'<<
+//					prop[i]<<'\t'<<fInsertPropensity<<G4endl;
 
 //		    G4cout<<"Sampling: "<<i<<'\t'<<fReactions[i].reactionType<<'\t'<<fMoleculeNames[ReactA]<<" ("<<fConcentrations[ReactA]<<") + "<<fMoleculeNames[ReactB]<<" ("<<fConcentrations[ReactB]<<") "<<prop[i]<<'\t'<<fPropensity<<G4endl;
 		}
@@ -314,11 +322,6 @@ std::pair<G4int, G4double> TsGillespie::Propensity() {
 		for(auto& IndexAndReaction: fReactions){
 			G4int i = IndexAndReaction.first;
 			fPropensity += prop[i];
-
-			G4int ReactA  = fReactions[i].reactorA;
-			G4int ReactB  = fReactions[i].reactorB;
-
-
 		}
 	}
 
@@ -337,7 +340,7 @@ std::pair<G4int, G4double> TsGillespie::Propensity() {
 		if( rand < PartialProp) return std::make_pair(-IndexAndInput.first, fPropensity);
 	}
 
-	return std::make_pair(i, DBL_MAX);
+	return std::make_pair(-1, -1);
 }
 
 G4double TsGillespie::TimeIncrement(G4double Prop) {
@@ -454,14 +457,6 @@ void TsGillespie::DoReaction(G4double Prop, G4int Index) {
 
 	fDeltaGPerReactionPerTime[index][fTimeSteps[tBin]]++;
 
-
-//	if(fIrradiationTime < fCurrentTime){
-//		if(fConcentrations[9] + fConcentrations[10] == 1){
-//			fConcentrations[9] = 0;
-//			fConcentrations[10] = 0;
-//		}
-//	}
-
 }
 
 
@@ -533,8 +528,6 @@ void TsGillespie::RunAlt(G4double iniT, G4double finT) {
 
 	G4int max_time = fTimeSteps.size() - 1;
 
-
-	// unit remove
 	while(fCurrentTime <= fFinalTime) {
 		auto step = Propensity();
 		G4double StepPropensity = step.second;
@@ -573,7 +566,6 @@ void TsGillespie::RunAlt(G4double iniT, G4double finT) {
 }
 
 void TsGillespie::DiffuseAllMolecules() {
-	// remove unit
 	for(auto& IndexAndMolecule:fMoleculesFromIRT) {
 		G4int Index = IndexAndMolecule.first;
 		G4double dT = std::abs(fCurrentTime - fMoleculesFromIRT[Index].time);
@@ -595,7 +587,6 @@ void TsGillespie::AddEscapeYields(std::map<G4int,G4int> Yields,G4double Time) {
 	G4int tBin = fUtils->FindBin(Time,fTimeSteps);
 	for (size_t i = tBin; i < fTimeSteps.size(); i++) {
 		G4double time = fTimeSteps[i];
-//		G4cout<<i<<'\t'<<time<<'\t'<<Time<<'\n';
 		for (auto& IndexAndYields:Yields) {
 			G4int Index = IndexAndYields.first;
 			G4int Yield = IndexAndYields.second;
@@ -604,10 +595,9 @@ void TsGillespie::AddEscapeYields(std::map<G4int,G4int> Yields,G4double Time) {
 			fMoleculesAtTime[Name][time] += Yield;
 		}
 	}
-//	G4cout<<Time/s<<'\t'<<Yields[9]<<'\t'<<Yields[10]<<'\n';
+
 	fPulseTimes.push_back(Time);
 	fEscapeYieldsAtTime.push_back(Yields);
-	//fEscapeYieldsAtTime[Time] = Yields;
 }
 
 void TsGillespie::SetMolPerTime(G4int index, G4double Gvalue){

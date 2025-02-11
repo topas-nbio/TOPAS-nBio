@@ -615,8 +615,6 @@ void TsScoreWithIRTAndGillespieContinuous::RunAndSaveInfo() {
             }
         }
 
-    	fGillespie->SetDeltaGValues(fDeltaGInRun);
-
         fGillespie->RunAlt(TimeStart, TimeEnd);
 
         fGValuesInRun = fGillespie->GetGValues();

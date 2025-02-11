@@ -469,6 +469,7 @@ void TsIRTConfiguration::ResolveReactionParameters() {
 			G4double Rs = 0.29 * nm; // distance between water molecules (0.29-0.31 nm adjustable)
 
 			kdiff = 4 * pi * sumDiffCoeff * effectiveReactionRadius * Avogadro;
+
 			kact = kdiff * kobs / (kdiff - kobs);
 
             G4double sigmaEffRs = reactionRadius + Rs;
@@ -582,12 +583,12 @@ void TsIRTConfiguration::InsertBackgroundReaction(G4String A, G4String B, std::v
 	aMolecularReaction.effectiveReactionRadius = kobs / (4. * CLHEP::pi * sumDiffCoeff * CLHEP::Avogadro);
 
 	if(kobs == -1.0){
-                aMolecularReaction.concentration = 0; 
-                aMolecularReaction.scavengingCapacity = concentration;
-        }else{
-                aMolecularReaction.concentration = concentration;
-                aMolecularReaction.scavengingCapacity = kobs * concentration;
-        }
+		aMolecularReaction.concentration = 0;
+		aMolecularReaction.scavengingCapacity = concentration;
+	}else{
+		aMolecularReaction.concentration = concentration;
+		aMolecularReaction.scavengingCapacity = kobs * concentration;
+	}
 
 	aMolecularReaction.index = index;
 	aMolecularReaction.reactionType = 6;
@@ -795,6 +796,7 @@ std::pair<G4int, G4double> TsIRTConfiguration::SampleIRTFirstOrderAndBackgroundR
 				else time = timeB * timeB;
 			}else{
 				scavengingCapacity = fReactions[u].scavengingCapacity;
+
 				if (scavengingCapacity <= 0) // This might be unnecessary.
 					time = -1;
 				else

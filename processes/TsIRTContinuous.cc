@@ -38,6 +38,8 @@ TsIRTContinuous::TsIRTContinuous(TsParameterManager* pM, G4String parmName): TsV
 	fHighTimeScavenger = true;
 	fNHTimeCut = 10 * us;
 
+	fBinWidth = 100 * um;
+
 	fXMin = -0.5 * fBinWidth;
 	fYMin = -0.5 * fBinWidth;
 	fZMin = -0.5 * fBinWidth;
@@ -50,6 +52,7 @@ TsIRTContinuous::TsIRTContinuous(TsParameterManager* pM, G4String parmName): TsV
 	fNy = round((fYMax-fYMin)/fBinWidth) == 0 ? 1 : round((fYMax-fYMin)/fBinWidth);
 	fNz = round((fZMax-fZMin)/fBinWidth) == 0 ? 1 : round((fZMax-fZMin)/fBinWidth);
 
+	fTimeCut = fStepTimes[fStepTimes.size()-1];
 }
 
 
@@ -74,15 +77,15 @@ void TsIRTContinuous::Sampling(G4int pulse){
 		fChemicalSpecies[fSpeciesIndex] = aMol;
 
 		// count
-		G4int tBin = fUtils->FindBin(aMol.time, fStepTimes);
-		if ( -1 < tBin ) {
-			for ( int tbin = tBin; tbin < (int)fStepTimes.size(); tbin++ ) {
-				if ( fTheGvalue.find(aMol.id) == fTheGvalue.end() )
-					fTheGvalue[aMol.id][tbin] = 1;
-				else
-					fTheGvalue[aMol.id][tbin]++;
-			}
-		}
+//		G4int tBin = fUtils->FindBin(aMol.time, fStepTimes);
+//		if ( -1 < tBin ) {
+//			for ( int tbin = tBin; tbin < (int)fStepTimes.size(); tbin++ ) {
+//				if ( fTheGvalue.find(aMol.id) == fTheGvalue.end() )
+//					fTheGvalue[aMol.id][tbin] = 1;
+//				else
+//					fTheGvalue[aMol.id][tbin]++;
+//			}
+//		}
 
 		G4int I = fUtils->FindBin(fNx, fXMin, fXMax, fChemicalSpecies[fSpeciesIndex].position.x());
 		G4int J = fUtils->FindBin(fNy, fYMin, fYMax, fChemicalSpecies[fSpeciesIndex].position.y());
@@ -206,13 +209,13 @@ void TsIRTContinuous::sampleReactions(G4int i) {
 
 	if ( !MoleculeExists(i) )
 		return;
-/*
+
 	// background contact reaction
 	G4int indexOf1stOrder = fReactionConf->ContactFirstOrderAndBackgroundReactions(fChemicalSpecies[i]);
 	if ( -1 < indexOf1stOrder ) {
 		AddToIRT(fChemicalSpecies[i].time,indexOf1stOrder,i,i,fChemicalSpecies[i].time,fChemicalSpecies[i].position,fChemicalSpecies[i].position,true);
 		return;
-	}*/
+	}
 
 	G4ThreeVector thisPos = fChemicalSpecies[i].position;
 
@@ -244,7 +247,10 @@ void TsIRTContinuous::sampleReactions(G4int i) {
 						G4double r = fReactionConf->GetReaction(indexOfReaction).reactionRadius;
 						if ( (timeI == timeJ) && (origPositionI - origPositionJ).mag() < r ) {
 							G4double p = fReactionConf->GetReaction(indexOfReaction).probabilityOfReaction;
-							if(G4UniformRand() < p)	AddToIRT(timeI,indexOfReaction,i,j,fChemicalSpecies[i].time,fChemicalSpecies[i].position,fChemicalSpecies[j].position,false);
+							if(G4UniformRand() < p)	{
+								AddToIRT(timeI,indexOfReaction,i,j,fChemicalSpecies[i].time,fChemicalSpecies[i].position,fChemicalSpecies[j].position,false);
+								continue;
+							}
 						}
 
 						G4bool resampleA = false, resampleB = false;
@@ -293,7 +299,7 @@ void TsIRTContinuous::sampleReactions(G4int i) {
 		gTime = fMinTime;
 	}
                            
-	if ((fHighTimeScavenger && 0 < tscav) && (tscav+gTime <= fTimeCut)) {
+	if ((fHighTimeScavenger && 0 < tscav) && (tscav+gTime <= fTimeCut) && (tscav <= fNHTimeCut)) {
 		tscav += gTime;
 		AddToIRT(tscav,tnIscav.first,i,i,fChemicalSpecies[i].time,fChemicalSpecies[i].position,fChemicalSpecies[i].position,true);
 	}
@@ -423,22 +429,22 @@ void TsIRTContinuous::ConductReactions() {
 
 				if ( 0 <= tBin ) {
 					for ( int ti = tBin; ti < (int)fStepTimes.size(); ti++ ) {
-						fTheGvalue[fChemicalSpecies[iM].id][ti]--;
-						fTheGvalue[fChemicalSpecies[jM].id][ti]--;
-						if ( fReportDelta )
+//						fTheGvalue[fChemicalSpecies[iM].id][ti]--;
+//						fTheGvalue[fChemicalSpecies[jM].id][ti]--;
+//						if ( fReportDelta )
 							fDeltaGValues[indexOfReaction][fStepTimes[ti]]++; // <-- there should be a DeltaG for GvalueInVolume too
 						
 					}
 					
-					if ( fTestIsInside ) {
-						if ( Inside(fChemicalSpecies[iM].position)) {
-							for ( int ti = tBin; ti < (int)fStepTimes.size(); ti++ ) {
-								fTheGvalueInVolume[fChemicalSpecies[iM].id][ti]--;
-								fTheGvalueInVolume[fChemicalSpecies[jM].id][ti]--;
-							}
-							reactionIsInside = true;
-						}
-					}
+//					if ( fTestIsInside ) {
+//						if ( Inside(fChemicalSpecies[iM].position)) {
+//							for ( int ti = tBin; ti < (int)fStepTimes.size(); ti++ ) {
+//								fTheGvalueInVolume[fChemicalSpecies[iM].id][ti]--;
+//								fTheGvalueInVolume[fChemicalSpecies[jM].id][ti]--;
+//							}
+//							reactionIsInside = true;
+//						}
+//					}
 				}
 
 				if (fChemicalSpecies[iM].volumeID >= 0) {
@@ -470,17 +476,17 @@ void TsIRTContinuous::ConductReactions() {
 
 				if ( 0 <= tBin ) {
 					for ( int ti = tBin; ti < (int)fStepTimes.size(); ti++ ) {
-						fTheGvalue[fChemicalSpecies[iM].id][ti]--;
-						if ( fReportDelta )
+//						fTheGvalue[fChemicalSpecies[iM].id][ti]--;
+//						if ( fReportDelta )
 							fDeltaGValues[indexOfReaction][fStepTimes[ti]]++; // there should be a DeltaG for GValueinVolume too
-					}
-					if ( fTestIsInside ) {
-						if ( Inside(fChemicalSpecies[iM].position)) {
-							for ( int ti = tBin; ti < (int)fStepTimes.size(); ti++ ) {
-								fTheGvalueInVolume[fChemicalSpecies[iM].id][ti]--;
-							}
-							reactionIsInside = true;
-						}
+//					}
+//					if ( fTestIsInside ) {
+//						if ( Inside(fChemicalSpecies[iM].position)) {
+//							for ( int ti = tBin; ti < (int)fStepTimes.size(); ti++ ) {
+//								fTheGvalueInVolume[fChemicalSpecies[iM].id][ti]--;
+//							}
+//							reactionIsInside = true;
+//						}
 					}
 				}
 
@@ -534,17 +540,17 @@ void TsIRTContinuous::ConductReactions() {
 				fChemicalSpecies[fSpeciesIndex] = aProd;
 				fSpeciesIndex++;
 				
-				if ( 0 <= tBin ) {
-					for ( int ti = tBin; ti < (int)fStepTimes.size(); ti++ )
-						fTheGvalue[aProd.id][ti]++;
-					
-					if ( fTestIsInside ) {
-						if ( reactionIsInside) {
-							for ( int ti = tBin; ti < (int)fStepTimes.size(); ti++ )
-								fTheGvalueInVolume[aProd.id][ti]++;
-						}
-					}
-				}
+//				if ( 0 <= tBin ) {
+//					for ( int ti = tBin; ti < (int)fStepTimes.size(); ti++ )
+//						fTheGvalue[aProd.id][ti]++;
+//
+//					if ( fTestIsInside ) {
+//						if ( reactionIsInside) {
+//							for ( int ti = tBin; ti < (int)fStepTimes.size(); ti++ )
+//								fTheGvalueInVolume[aProd.id][ti]++;
+//						}
+//					}
+//				}
 
                 if (fChemVerbosity && u != 0)
                 {
