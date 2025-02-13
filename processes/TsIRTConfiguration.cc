@@ -456,7 +456,10 @@ void TsIRTConfiguration::ResolveReactionParameters() {
             effectiveReactionRadius = kobs / (4. * CLHEP::pi * sumDiffCoeff * CLHEP::Avogadro);
             reactionRadius = effectiveReactionRadius;
             
-            if(rc != 0) reactionRadius = rc/log(1+rc/effectiveReactionRadius);
+            if(rc != 0){
+            	if(-rc > effectiveReactionRadius) reactionRadius = 0;
+            	else reactionRadius = rc/log(1+rc/effectiveReactionRadius);
+            }
             
 			kdiff = kobs;
 			if ( reactionType == 5 ) probability = 0.25;
@@ -952,7 +955,6 @@ G4double TsIRTConfiguration::IonicRate(G4double IonicStrength, TsMolecularReacti
 	G4double Rate = 0.0;
 	if ( BackGround == 6 ) {
 		Rate = Reaction.scavengingCapacity;
-		Rate /= 1E-7;
 	} else {
 		Rate = Reaction.kobs;
 	}
@@ -1240,7 +1242,7 @@ void TsIRTConfiguration::AdjustReactionRateForPH(G4String pHOrConcentration) {
 		fReactions[i].kobs /= fPm->GetUnitValue("/M/s");
 		fReactions[i].scavengingCapacity /= 1/s;
 
-		if ((chargeA != 0 && chargeB != 0) && (!(ReactA == "e_aq^-1" && ReactB == "e_aq^-1"))) {
+		if ((chargeA != 0 && chargeB != 0)) {
 			if (fReactions[i].reactionType != 6) {
 				k_Before = fReactions[i].kobs;
 				fReactions[i].kobs = IonicRate(Ionic, fReactions[i]);
@@ -1248,19 +1250,19 @@ void TsIRTConfiguration::AdjustReactionRateForPH(G4String pHOrConcentration) {
 
 			else if (fReactions[i].reactionType == 6 && ReactB == "H3O^1") {
 				k_Before = fReactions[i].scavengingCapacity;
-				fReactions[i].scavengingCapacity = IonicRate(Ionic, fReactions[i]) * HCon;
+				fReactions[i].scavengingCapacity = IonicRate(Ionic, fReactions[i])/ 1e-7 * HCon;
 			}
 
 			else if (fReactions[i].reactionType == 6 && ReactB == "OH^-1") {
 				k_Before = fReactions[i].scavengingCapacity;
-				fReactions[i].scavengingCapacity = IonicRate(Ionic, fReactions[i]) * OHCon;
+				fReactions[i].scavengingCapacity = IonicRate(Ionic, fReactions[i])/ 1e-7 * OHCon;
 			}
 
 			else {
 				G4cout << "========= "<< fReactions[i].reactionType << G4endl;
 				k_Before = fReactions[i].kobs;
-				fReactions[i].kobs = fReactions[i].kobs * 1E-7;
-				fReactions[i].kobs = IonicRate(Ionic, fReactions[i]);
+//				fReactions[i].kobs = fReactions[i].kobs * 1E-7;
+				fReactions[i].scavengingCapacity = IonicRate(Ionic, fReactions[i]);
 			}
 		}
 

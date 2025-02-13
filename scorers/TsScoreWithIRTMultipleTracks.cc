@@ -181,11 +181,20 @@ void TsScoreWithIRTMultipleTracks::UserHookForEndOfEvent() {
 				G4double gvalue = timeAndGvalue.second;
 				
 				if ( fUseMultipleTracks ) {
-					// Assuming 2 tracks:
-					if (      time >= fVTimeDelay[0] && time < fVTimeDelay[1] )
-						gvalue *= 100/(fVEnergyDeposit[0]/eV);
-					else
-						gvalue *= 100/((fVEnergyDeposit[0]+fVEnergyDeposit[1])/eV);
+//					// Assuming 2 tracks:
+//					if (      time >= fVTimeDelay[0] && time < fVTimeDelay[1] )
+//						gvalue *= 100/(fVEnergyDeposit[0]/eV);
+//					else
+//						gvalue *= 100/((fVEnergyDeposit[0]+fVEnergyDeposit[1])/eV);
+
+					G4double de = 0;
+					G4int i = 0;
+					while(time >= fVTimeDelay[i] && i < fNumberOfMultipleTracks){
+						de += fVEnergyDeposit[i]/eV;
+						i++;
+					}
+					gvalue *= 100/de;
+
 				} else {
 					gvalue *= 100/(fEnergyDepositPerEvent/eV);
 				}
@@ -194,6 +203,7 @@ void TsScoreWithIRTMultipleTracks::UserHookForEndOfEvent() {
 			}
 		}
 		
+		fIRT->Clean();
 		fNbOfScoredEvents++;
 		irt.clear();
 		
