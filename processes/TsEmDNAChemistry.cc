@@ -282,7 +282,7 @@ void TsEmDNAChemistry::DefineParameters()
         fSetWaterConfiguration = fPm->GetBooleanParameter(GetFullParmName("SetWaterMolecularConfiguration"));
     
     // Branching ratios
-    G4String branchModelName = "topasnbio";
+    G4String branchModelName = "g4dna";
     if (fPm->ParameterExists(GetFullParmName("BranchingRatiosModel"))) {
         branchModelName = fPm->GetStringParameter(GetFullParmName("BranchingRatiosModel"));
         G4StrUtil::to_lower(branchModelName);
@@ -388,7 +388,7 @@ void TsEmDNAChemistry::DefineParameters()
     std::cout << "-- Branching ratio: B1A1 Auto-ionization probability " << fB1A1AutoIonization << std::endl;
     
     if ( fPm->ParameterExists(parName + "B1A1/DissociativeDecay1"))
-        fB1A1DissociativeDecay1 = fPm->GetUnitlessParameter(parName + "A1B1/DissociativeDecay1");
+        fB1A1DissociativeDecay1 = fPm->GetUnitlessParameter(parName + "B1A1/DissociativeDecay1");
     std::cout << "-- Branching ratio: B1A1 Dissociative decay1 probability " << fB1A1DissociativeDecay1 << std::endl;
     
     if ( fPm->ParameterExists(parName + "B1A1/DissociativeDecay2"))
@@ -417,19 +417,19 @@ void TsEmDNAChemistry::DefineParameters()
     
     // Electron Hole Recombination
     if ( fPm->ParameterExists(parName + "ElectronHole/DissociativeDecay1"))
-        fH2OvibDissociationDecay1 = fPm->GetUnitlessParameter(parName + "H2OVibration/DissociativeDecay1");
+        fH2OvibDissociationDecay1 = fPm->GetUnitlessParameter(parName + "ElectronHole/DissociativeDecay1");
     std::cout << "-- Branching ratio: H2O Electron Hole Recombination Dissociative decay1 probability " << fH2OvibDissociationDecay1 << std::endl;
     
     if ( fPm->ParameterExists(parName + "ElectronHole/DissociativeDecay2"))
-        fH2OvibDissociationDecay2 = fPm->GetUnitlessParameter(parName + "H2OVibration/DissociativeDecay2");
+        fH2OvibDissociationDecay2 = fPm->GetUnitlessParameter(parName + "ElectronHole/DissociativeDecay2");
     std::cout << "-- Branching ratio: H2O Electron Hole Recombination Dissociative decay2 probability " << fH2OvibDissociationDecay2 << std::endl;
     
     if ( fPm->ParameterExists(parName + "ElectronHole/DissociativeDecay3"))
-        fH2OvibDissociationDecay3 = fPm->GetUnitlessParameter(parName + "H2OVibration/DissociativeDecay3");
+        fH2OvibDissociationDecay3 = fPm->GetUnitlessParameter(parName + "ElectronHole/DissociativeDecay3");
     std::cout << "-- Branching ratio: H2O Electron Hole Recombination Dissociative decay3 probability " << fH2OvibDissociationDecay3 << std::endl;
     
     if ( fPm->ParameterExists(parName + "ElectronHole/DissociativeDecay4"))
-        fH2OvibDissociationDecay4 = fPm->GetUnitlessParameter(parName + "H2OVibration/DissociativeDecay4");
+        fH2OvibDissociationDecay4 = fPm->GetUnitlessParameter(parName + "ElectronHole/DissociativeDecay4");
     std::cout << "-- Branching ratio: H2O Electron Hole Recombination Dissociative decay4 probability " << fH2OvibDissociationDecay4 << std::endl;
     
 }
