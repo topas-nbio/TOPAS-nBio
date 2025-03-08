@@ -157,6 +157,7 @@ void TsScoreDNADamagePulsed2::ScoreEnergyDepositInDNA(G4Step* aStep) {
     // Comparing strings is expensive, but the chemistry takes much longer in comparison.
     
     if (G4StrUtil::contains(vName,"deoxyribose") || G4StrUtil::contains(vName,"phosphate")) {
+
         G4int plasmidID, strandID;
         G4int baseID = touchable->GetVolume(0)->GetCopyNo();
         

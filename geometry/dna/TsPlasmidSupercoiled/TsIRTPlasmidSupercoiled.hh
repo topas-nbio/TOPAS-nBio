@@ -114,6 +114,7 @@ private:
 	G4double fZMax;
  
 	std::vector<G4int> fTracks;
+    G4String* fSequence;
 };
 
 #endif
