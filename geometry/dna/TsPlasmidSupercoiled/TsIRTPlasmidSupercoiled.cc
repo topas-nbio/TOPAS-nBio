@@ -110,13 +110,15 @@ G4VPhysicalVolume* TsIRTPlasmidSupercoiled::Construct()
     G4LogicalVolume* subComponent = 0;
     G4String plasmidName = "plasmid";
     for ( int p = 0; p < nPlasdmids; p++ ) {
-        if ( p == 0 )
+        if ( p == 0 ) {
             if (isDNAFabric)
                 subComponent = CreateLogicVolumeDNAFabric(p,rotations[p],translations[p]);
             else
-                subComponent = CreateLogicVolumeXYZ(p,rotations[p],translations[p]);
-            else
-                CreatePhysicalVolume(plasmidName, p, true, subComponent, rotations[p], translations[p], fEnvelopePhys);
+                subComponent = CreateLogicVolumeBezier(p,rotations[p],translations[p]);//CreateLogicVolumeXYZ(p,rotations[p],translations[p]);
+            
+        } else {
+            CreatePhysicalVolume(plasmidName, p, true, subComponent, rotations[p], translations[p], fEnvelopePhys);
+        }
         AddPlasmidInformation(p, rotations[p], translations[p]);
     }
     
@@ -125,6 +127,319 @@ G4VPhysicalVolume* TsIRTPlasmidSupercoiled::Construct()
     //theInstance = this;
     
     return fEnvelopePhys;
+}
+
+void TsIRTPlasmidSupercoiled::Bezier(G4ThreeVector &start,
+                                  G4ThreeVector &MidPoint1,
+                                  G4ThreeVector &MidPoint2,
+                                  G4ThreeVector &end,
+                                  std::vector<G4ThreeVector> &path,
+                                  G4int nSteps)
+{
+    G4double j=0.0;
+    for (G4int k=0;k<nSteps-1;k++){
+        j+=1.0/(G4double)nSteps;
+        G4ThreeVector BezPt = pow(1.0-j,3.0)*start + 3.0*pow(1.0-j,2.0)*j*MidPoint1 +
+        3.0*(1.0-j)*j*j*MidPoint2 + j*j*j*end;
+        path.push_back(BezPt);
+    }
+}
+
+
+G4LogicalVolume* TsIRTPlasmidSupercoiled::CreateLogicVolumeBezier(G4int copy, G4RotationMatrix* rot, G4ThreeVector* trans) {
+    std::vector<G4ThreeVector> path;
+    std::vector<DNA*> DNAPts; //ptrs to DNA
+    
+    for ( size_t u = 0; u < fVertexes.size(); u++ )
+        path.push_back(fVertexes[u]-G4ThreeVector(fOffsetX, fOffsetY, fOffsetZ));
+    
+    //Box
+    
+    std::string boxNameSolid = fGeoName + "_solid";
+    G4Box* box_solid = new G4Box(boxNameSolid, 0.5*(fXMax-fXMin)+0.5*3.4*nm,
+                                 0.5*(fYMax-fYMin)+0.5*3.4*nm,
+                                 0.5*(fZMax-fZMin)+0.5*3.4*nm);
+    
+    G4String boxNameLogic       = fGeoName + "_logic";
+    G4LogicalVolume* box_logic  = CreateLogicalVolume(boxNameLogic, box_solid);
+    G4VPhysicalVolume* box_phys = CreatePhysicalVolume(boxNameLogic, copy, true, box_logic, rot, trans, fEnvelopePhys);
+    
+    G4bool segment = false;
+    if (fPm->ParameterExists(GetFullParmName("SegmentPlasmidPath")))
+        segment = fPm->GetBooleanParameter(GetFullParmName("SegmentPlasmidPath"));
+    
+    std::vector<G4ThreeVector> SmoothedPath;
+    
+    if ( segment ) {
+        //****************************************************************************
+        //                   Smooth the path                                        //
+        //****************************************************************************
+        
+        for (size_t i=1;i<path.size()-1;i++){
+            G4ThreeVector OffDirect(0,0,0), OnDirect(0,0,0);
+            OffDirect=(path[i]-path[i-1]).unit();
+            OnDirect=(path[i]-path[i+1]).unit();
+            
+            //trace 2nm
+            G4ThreeVector MidPoint1(0,0,0), MidPoint2(0,0,0);
+            MidPoint1 = path[i-1]+(2.0*OffDirect*nm);
+            MidPoint2 = path[i]+(2.0*OnDirect*nm);
+            Bezier(path[i-1],
+                   MidPoint1,
+                   MidPoint2,
+                   path[i],
+                   SmoothedPath,
+                   500);
+        }
+        
+        //Join last pt to first pt
+        G4ThreeVector OffDirect(0,0,0), OnDirect(0,0,0);
+        OffDirect=(SmoothedPath[SmoothedPath.size()-1]-SmoothedPath[0]).unit();
+        OnDirect=(SmoothedPath[0]-path[1]).unit();
+        
+        //trace 2nm
+        G4ThreeVector MidPoint1(0,0,0), MidPoint2(0,0,0);
+        MidPoint1 = SmoothedPath[SmoothedPath.size()-1]+(2.0*OffDirect*nm);
+        MidPoint2 = SmoothedPath[0]+(2.0*OnDirect*nm);
+        Bezier(SmoothedPath[SmoothedPath.size()-1],
+               MidPoint1,
+               MidPoint2,
+               SmoothedPath[0],
+               SmoothedPath,
+               500);
+        
+    } else {
+        SmoothedPath = path;
+    }
+    
+    G4bool BuildHalfCyl=false;
+    G4bool BuildQuartCyl=false;
+    G4bool BuildSphere=false;
+    
+    G4String DNAModel = "Sphere";
+    if (fPm->ParameterExists(GetFullParmName("DNA_Model"))){
+        DNAModel = fPm->GetStringParameter(GetFullParmName("DNA_Model"));
+    }
+    
+    if (DNAModel=="HalfCyl") {
+        BuildHalfCyl=true;
+    } else if (DNAModel=="Sphere") {
+        BuildSphere=true;
+    } else if (DNAModel=="QuartCyl") {
+        BuildQuartCyl=true;
+    } else {
+        G4cerr << "Error. DNA model " << DNAModel << " not found. " << G4endl;
+        G4cerr << "Use: HalfCyl, QuartCyl or Sphere" << G4endl;
+    }
+    
+    DNACoordinates * co = new DNACoordinates;
+    co->Generate(SmoothedPath,
+                 DNAPts,
+                 BuildHalfCyl,
+                 BuildQuartCyl,
+                 BuildSphere,
+                 segment);
+    delete co;
+    
+    PlaceDNA(DNAPts,
+             BuildHalfCyl,
+             BuildQuartCyl,
+             BuildSphere, box_phys);
+    
+    return box_logic;
+}
+
+
+void TsIRTPlasmidSupercoiled::PlaceDNA(std::vector<DNA *> &DNApt,
+                                    G4bool BuildHalfCyl,
+                                    G4bool BuildQuartCyl,
+                                    G4bool BuildSphere, G4VPhysicalVolume* parent)
+{
+    G4LogicalVolume* lBasea = 0;
+    G4LogicalVolume* lBaset = 0;
+    G4LogicalVolume* lBasec = 0;
+    G4LogicalVolume* lBaseg = 0;
+    G4LogicalVolume* lBack1 = 0;
+    G4LogicalVolume* lBack2 = 0;
+    
+    //Spherical DNA
+    if (BuildSphere){
+        G4Orb* gDNA_basea = new G4Orb("base_adenine",  0.208*nm);
+        G4Orb* gDNA_baset = new G4Orb("base_thymine",  0.208*nm);
+        G4Orb* gDNA_basec = new G4Orb("base_cytosine",  0.208*nm);
+        G4Orb* gDNA_baseg = new G4Orb("base_guanine",  0.208*nm);
+        
+        lBasea = CreateLogicalVolume("base_adenine", gDNA_basea);
+        lBaset = CreateLogicalVolume("base_thymine", gDNA_baset);
+        lBasec = CreateLogicalVolume("base_cytosine", gDNA_basec);
+        lBaseg = CreateLogicalVolume("base_guanine", gDNA_baseg);
+        
+        G4Orb* gDNA_backbone1 = new G4Orb("deoxyribose1", 0.29*nm);
+        G4Orb* gDNA_backbone2 = new G4Orb("deoxyribose2", 0.29*nm);
+        
+        lBack1 = CreateLogicalVolume("deoxyribose1", gDNA_backbone1);
+        lBack2 = CreateLogicalVolume("deoxyribose2", gDNA_backbone2);
+    }
+    //Cylinder DNA
+    else {
+        G4double SweptAngle=0.0;
+        G4double StartAngle1=0.0;
+        G4double StartAngle2=0.0;
+        if (BuildQuartCyl){
+            SweptAngle=90.0;
+            StartAngle1=135.0;
+            StartAngle2=-45.0;
+        }
+        else if (BuildHalfCyl){
+            SweptAngle=180.0;
+            StartAngle1=180.0;
+            StartAngle2=0.0;
+        }
+        
+        G4Tubs* gDNA_base1 = new G4Tubs("DNA_base1",
+                                        0*nm, //pRmin
+                                        0.5*nm,
+                                        ((0.34-0.01)/2.0)*nm,
+                                        StartAngle1*deg, //pSphi //180
+                                        180*deg); //pDphi
+        G4Tubs* gDNA_base2 = new G4Tubs("DNA_base2",
+                                        0*nm, //pRmin
+                                        0.5*nm,
+                                        ((0.34-0.01)/2.0)*nm,
+                                        StartAngle2*deg, //pSphi //0
+                                        180*deg); //pDphi
+        
+        
+        lBasea = CreateLogicalVolume("base_adenine", gDNA_base1);
+        lBaset = CreateLogicalVolume("base_thymine", gDNA_base2);
+        lBasec = CreateLogicalVolume("base_cytosine", gDNA_base1);
+        lBaseg = CreateLogicalVolume("base_guanine", gDNA_base2);
+        
+        
+        G4Tubs* gDNA_backbone1 = new G4Tubs("deoxyribose1",
+                                            0.5*nm,
+                                            1.15*nm,
+                                            ((0.34-0.01)/2.0)*nm,
+                                            180*deg, //pSphi
+                                            SweptAngle*deg); //pDphi
+        G4Tubs* gDNA_backbone2 = new G4Tubs("deoxyribose2",
+                                            0.5*nm,
+                                            1.15*nm,
+                                            ((0.34-0.01)/2.0)*nm,
+                                            0*deg, //pSphi
+                                            SweptAngle*deg); //pDphi
+        
+        lBack1 = CreateLogicalVolume("deoxyribose1", gDNA_backbone1);
+        lBack2 = CreateLogicalVolume("deoxyribose2", gDNA_backbone2);
+    }
+    
+    G4int sequenceLength = 0;
+    if ( fPm->ParameterExists(GetFullParmName("DNASequence"))) {
+        fSequence = fPm->GetStringVector(GetFullParmName("DNASequence"));
+        sequenceLength = fPm->GetVectorLength(GetFullParmName("DNASequence"));
+    }
+    
+    //place the DNA
+    G4cout << " == Total bp : " << DNApt.size() << G4endl;
+    G4int index = 0;
+    
+    for (size_t bp=0; bp<DNApt.size(); bp++){
+        G4int bpID = DNApt[bp]->GetBP();
+        G4int Stra = DNApt[bp]->GetStrand();
+        G4bool IsBac = DNApt[bp]->GetIsBack();
+        G4bool IsBas = DNApt[bp]->GetIsBase();
+        
+        G4RotationMatrix* rotation = DNApt[bp]->GetRot();
+        G4ThreeVector position = G4ThreeVector(DNApt[bp]->GetPos());
+        //G4String nucleotideName = sequenceLength > 0 ? fSequence[index] : "a";
+        //G4StrUtil::to_lower(nucleotideName);
+        if (IsBac){
+            if (Stra==1){
+                CreatePhysicalVolume("deoxyribose1", bpID, true, lBack1, rotation, new G4ThreeVector(position), parent);
+                fSampleDNANames.push_back("deoxyribose1");
+                fSampleDNATimes.push_back(1*ps);
+                fSampleDNAPositions.push_back(position);
+                fSampleDNADetails.push_back({-1,bpID,1});
+            }
+            else if (Stra==2){
+                CreatePhysicalVolume("deoxyribose2", bpID, true, lBack2, rotation, new G4ThreeVector(position), parent);
+                fSampleDNANames.push_back("deoxyribose2");
+                fSampleDNATimes.push_back(1*ps);
+                fSampleDNAPositions.push_back(position);
+                fSampleDNADetails.push_back({-1,bpID,2});
+            }
+        } else if (IsBas) {
+            index = bpID;
+            
+            if ( sequenceLength > 0 && index > sequenceLength-1 )
+                continue;
+            
+            G4String base1 = "base1", base2="base2";
+            G4String irtBase1 = "a", irtBase2 = "t";
+            
+            G4String nucleotideName = sequenceLength > 0 ? fSequence[index] : "a";
+            G4StrUtil::to_lower(nucleotideName);
+            
+            if ( nucleotideName == "a") {
+                base1 = "base_adenine";
+                base2 = "base_thymine";
+                irtBase1 = "a";
+                irtBase2 = "t";
+            } else if ( nucleotideName == "t" ) {
+                base2 = "base_adenine";
+                base1 = "base_thymine";
+                irtBase2 = "a";
+                irtBase1 = "t";
+            } else if ( nucleotideName == "c" ) {
+                base1 = "base_cytosine";
+                base2 = "base_guanine";
+                irtBase1 = "c";
+                irtBase2 = "g";
+            } else {
+                base2 = "base_cytosine";
+                base1 = "base_guanine";
+                irtBase2 = "c";
+                irtBase1 = "g";
+            }
+                   
+            if (Stra==1){
+                if (nucleotideName == "a" )
+                    CreatePhysicalVolume(base1, bpID, true, lBasea, rotation, new G4ThreeVector(position), parent);
+                else if (nucleotideName == "t" )
+                    CreatePhysicalVolume(base1, bpID, true, lBaset, rotation, new G4ThreeVector(position), parent);
+                else if (nucleotideName == "c")
+                    CreatePhysicalVolume(base1, bpID, true, lBasec, rotation, new G4ThreeVector(position), parent);
+                else
+                    CreatePhysicalVolume(base1, bpID, true, lBaseg, rotation, new G4ThreeVector(position), parent);
+                
+                fSampleDNANames.push_back(irtBase1);
+                fSampleDNATimes.push_back(1*ps);
+                fSampleDNAPositions.push_back(position);
+                fSampleDNADetails.push_back({-1,bpID,1});
+                
+            }
+            else if (Stra==2){
+                if (nucleotideName == "a" )
+                    CreatePhysicalVolume(base2, bpID, true, lBasea, rotation, new G4ThreeVector(position), parent);
+                else if (nucleotideName == "t" )
+                    CreatePhysicalVolume(base2, bpID, true, lBaset, rotation, new G4ThreeVector(position), parent);
+                else if (nucleotideName == "c")
+                    CreatePhysicalVolume(base2, bpID, true, lBasec, rotation, new G4ThreeVector(position), parent);
+                else
+                    CreatePhysicalVolume(base2, bpID, true, lBaseg, rotation, new G4ThreeVector(position), parent);
+                
+                fSampleDNANames.push_back(irtBase2);
+                fSampleDNATimes.push_back(1*ps);
+                fSampleDNAPositions.push_back(position);
+                fSampleDNADetails.push_back({-1,bpID,2});
+               
+            }
+            
+            G4cout << irtBase1 << irtBase2 << " " ;
+        }
+    }
+    
+    G4cout<<G4endl<<"base pairs: "<<(0.25*DNApt.size()/1000.0)<<" kbp"<<G4endl;
 }
 
 
@@ -223,7 +538,7 @@ G4LogicalVolume* TsIRTPlasmidSupercoiled::CreateLogicVolumeXYZ(G4int copy, G4Rot
             nChain = (fVertexes[vertex] - fVertexes[vertex+1]).mag() / (0.34 * nm);
         }
         
-
+        
         //Calculo de los angulos para los segmentos
         G4double phi0   = std::atan2(zfn - zin,std::sqrt( ((xfn-xin) * (xfn-xin)) + ((yfn-yin) * (yfn-yin)) ));
         G4double theta0 = std::atan2(xfn-xin,yfn-yin);
@@ -474,7 +789,7 @@ G4LogicalVolume* TsIRTPlasmidSupercoiled::CreateLogicVolumeDNAFabric(G4int copy,
     
     G4cout << "#### Creating plasmid base pairs: begin" << G4endl;
     for(size_t i = 0; i < fMolecules.size(); i++)
-    {
+        {
         G4String name        = fMolecules[i].fName;
         G4double radius      = fMolecules[i].fRadius;
         G4double waterRadius = fMolecules[i].fRadiusWater;
@@ -514,21 +829,21 @@ G4LogicalVolume* TsIRTPlasmidSupercoiled::CreateLogicVolumeDNAFabric(G4int copy,
         G4VSolid* moleculeWaterCut_solid = 0;
         G4LogicalVolume* moleculeWater_logic = 0;
         if(waterRadius > (0 + tol)*nm)
-        {
+            {
             G4String nameWaterSolid = name+"_waterShell";
             if ( G4StrUtil::contains(name,"phosphate") ) {
-                moleculeWaterCut_solid = CreateCutSolid(wphosphate, fMolecules[i], fMolecules, false);
+                moleculeWaterCut_solid = CreateCutSolid(wphosphate, fMolecules[i], fMolecules);//, false);
             } else if ( G4StrUtil::contains(name,"base") ) {
-                moleculeWaterCut_solid = CreateCutSolid(wpurineAndPyrimidine, fMolecules[i], fMolecules, false);
+                moleculeWaterCut_solid = CreateCutSolid(wpurineAndPyrimidine, fMolecules[i], fMolecules);//, false);
             } else if ( G4StrUtil::contains(name,"deoxyribose") ) {
-                moleculeWaterCut_solid = CreateCutSolid(wdeoxyribose, fMolecules[i], fMolecules, false);
+                moleculeWaterCut_solid = CreateCutSolid(wdeoxyribose, fMolecules[i], fMolecules);//, false);
             }
             
             //moleculeWater_logic = CreateLogicalVolume(nameWaterSolid, materialDNA, moleculeWaterCut_solid);
             moleculeWater_logic = CreateLogicalVolume(nameWaterSolid, moleculeWaterCut_solid);
             //moleculeWater_logic->SetVisAttributes(wshell);
             moleculeWater_phys = CreatePhysicalVolume(nameWaterSolid, copyNum, true, moleculeWater_logic, 0, new G4ThreeVector(moleculePosition), box_phys);
-        }
+            }
         
         // Dna volume part
         G4VSolid* moleculeCut_solid = 0;
@@ -538,13 +853,13 @@ G4LogicalVolume* TsIRTPlasmidSupercoiled::CreateLogicVolumeDNAFabric(G4int copy,
         G4LogicalVolume* molecule_logic = 0;
         
         if ( G4StrUtil::contains(name,"phosphate") ) {
-            moleculeCut_solid = CreateCutSolid(phosphate, fMolecules[i], fMolecules, true);
+            moleculeCut_solid = CreateCutSolid(phosphate, fMolecules[i], fMolecules);//, true);
         } else if ( G4StrUtil::contains(name,"base") ) {
-            moleculeCut_solid = CreateCutSolid(purineAndPyrimidine, fMolecules[i], fMolecules, true);
+            moleculeCut_solid = CreateCutSolid(purineAndPyrimidine, fMolecules[i], fMolecules);//, true);
         } else if ( G4StrUtil::contains(name,"deoxyribose") ) {
-            moleculeCut_solid = CreateCutSolid(deoxyribose, fMolecules[i], fMolecules, true);
+            moleculeCut_solid = CreateCutSolid(deoxyribose, fMolecules[i], fMolecules);//, true);
         } else if ( G4StrUtil::contains(name,"histone") ) {
-            moleculeCut_solid = CreateCutSolid(histone, fMolecules[i], fMolecules, true);
+            moleculeCut_solid = CreateCutSolid(histone, fMolecules[i], fMolecules);//, true);
         }
         
         molecule_logic = CreateLogicalVolume(nameLogic, moleculeCut_solid);
@@ -555,7 +870,7 @@ G4LogicalVolume* TsIRTPlasmidSupercoiled::CreateLogicVolumeDNAFabric(G4int copy,
             CreatePhysicalVolume(namePhys, copyNum, true, molecule_logic, 0, new G4ThreeVector(position), moleculeWater_phys);
         else
             CreatePhysicalVolume(namePhys, copyNum, true, molecule_logic, 0, new G4ThreeVector(moleculePosition), box_phys);
-    }
+        }
     G4cout << "#### Creating plasmid base pairs: end" << G4endl;
     // Clear the containers
     
@@ -597,7 +912,7 @@ void TsIRTPlasmidSupercoiled::ReadXYZFile(G4String fileName)
     G4double x, y, z;
     fXMin = 1*mm, fYMin = 1*mm, fZMin = 1*mm;
     fXMax=0.0, fYMax=0.0, fZMax=0.0;
-    std::ifstream plasmidFile(fileName); 
+    std::ifstream plasmidFile(fileName);
     while(true) {
         plasmidFile >> x >> y >> z;
         if ( !plasmidFile.good() ) break;
@@ -644,10 +959,10 @@ void TsIRTPlasmidSupercoiled::ReadDNAFabricFile(G4String fileName)
     
     // Check if the file was correctly opened
     if(!file.is_open())
-    {
+        {
         G4String msg = fileName+" could not be opened";
         G4Exception("PhysGeoImport::ReadDNAFabricFile()", "Geo_InputFileNotOpened", FatalException, msg);
-    }
+        }
     
     fXMin = 1*mm, fYMin = 1*mm, fZMin = 1*mm;
     fXMax=0.0, fYMax=0.0, fZMax=0.0;
@@ -656,7 +971,7 @@ void TsIRTPlasmidSupercoiled::ReadDNAFabricFile(G4String fileName)
     std::string line;
     // Read the file line per line
     while(std::getline(file, line) )
-    {
+        {
         // Check the line to determine if it is empty
         if(line.empty()) continue; // skip the line if it is empty
         
@@ -674,24 +989,24 @@ void TsIRTPlasmidSupercoiled::ReadDNAFabricFile(G4String fileName)
         
         // Use the file
         else if(firstItem=="_Name")
-        {
+            {
             std::string name;
             issLine >> name;
             
             fGeoName = name;
-        }
+            }
         else if(firstItem=="_Size")
-        {
+            {
             G4double size;
             issLine >> size;
             size *= nm;
             
             fSize = size;
-        }
+            }
         else if(firstItem == "_Version") {;}
         else if(firstItem=="_Number") {;}
         else if(firstItem=="_Radius")
-        {
+            {
             std::string name;
             issLine >> name;
             
@@ -705,9 +1020,9 @@ void TsIRTPlasmidSupercoiled::ReadDNAFabricFile(G4String fileName)
             
             fRadiusMap[name] = radius;
             fWaterRadiusMap[name] = waterRadius;
-        }
+            }
         else if(firstItem=="_pl")
-        {
+            {
             std::string name;
             issLine >> name;
             
@@ -746,18 +1061,67 @@ void TsIRTPlasmidSupercoiled::ReadDNAFabricFile(G4String fileName)
                 fZMin = z;
             if ( fZMax < z )
                 fZMax = z;
-        }
+            }
         else
-        {
+            {
             // Geant4 exception
             G4String msg = firstItem+" is not defined in the parser. Check the input file: "+fileName+".";
             G4Exception("PhysGeoImport::ReadDNAFabricFile()", "Geo_WrongParse", FatalException, msg);
+            }
         }
-    }
     fOffsetX = (fXMin + fXMax)*0.5;
     fOffsetY = (fYMin + fYMax)*0.5;
     fOffsetZ = (fZMin + fZMax)*0.5;
     file.close();
+}
+
+
+G4VSolid* TsIRTPlasmidSupercoiled::CreateCutSolid(G4VSolid *pSolidOrbRef,
+                                                  TempMolecule &molRef,
+                                                  std::vector<TempMolecule> &molList){
+    
+    G4VSolid* pSolidCut = (G4VSolid*)pSolidOrbRef;
+    G4double radiusRef = molRef.fRadius;//fSx * fHydration;
+    G4ThreeVector posRef = molRef.fPosition;
+    
+    for(int i=0; i<(G4int) molList.size(); i++)
+        {
+        G4ThreeVector posTar = molList[i].fPosition;
+        G4double radiusTar = molList[i].fRadius;//fSx * fHydration;
+        
+        G4double distance = std::abs( (posRef - posTar).getR() );
+        
+        if(distance==0) continue;
+        else if(distance <= radiusRef+radiusTar){
+            
+            G4Box* solidBox = new G4Box("solidBox",
+                                        radiusTar * 2,
+                                        radiusTar * 2,
+                                        radiusTar * 2);
+            
+            G4ThreeVector diff = (posTar - posRef).unit();
+            //G4cout << "---- Good " << G4endl;
+            //diff = diff.transform(*molRef.fRotation).unit();
+            
+            G4double d = (radiusRef - radiusTar + distance)/2. + solidBox->GetZHalfLength();
+            
+            G4ThreeVector pos = d * diff;
+            G4ThreeVector unit(0,0,1);
+            
+            G4RotationMatrix* rotMat = new G4RotationMatrix();
+            G4ThreeVector cross = diff.cross(unit).unit();
+            G4double angle = acos(unit.dot(diff));
+            rotMat->rotate(angle, cross);
+            
+            pSolidCut = new G4SubtractionSolid("solidCut",
+                                               pSolidCut,
+                                               solidBox,
+                                               rotMat,
+                                               pos);
+        }
+        }
+    
+    return pSolidCut;
 }
 
 
@@ -793,20 +1157,20 @@ G4VSolid* TsIRTPlasmidSupercoiled::CreateCutSolid(G4Orb *solidOrbRef,
     // Look the other volumes of the voxel
     // Loop on all the target volumes (other volumes with potential overlaps)
     for(int i=0, ie=molList.size(); i<ie; ++i)
-    {
+        {
         G4ThreeVector posTar = molList[i].fPosition;
         
         G4double rTar = posRef.z();
         G4double zTar = posTar.z();
         
         if(zTar>rTar+20*nm)
-        {
+            {
             break;
-        }
+            }
         else if(zTar<rTar-20*nm)
-        {
+            {
             continue;
-        }
+            }
         
         
         // Retrieve current target sphere informations
@@ -820,7 +1184,7 @@ G4VSolid* TsIRTPlasmidSupercoiled::CreateCutSolid(G4Orb *solidOrbRef,
         // Use the distance to check if the current target is also the reference.
         // This can only happen once per loop.
         if(distance==0 && !isOurVol)
-        {
+            {
             // Target volume is also reference volume.
             
             // Set the flag
@@ -828,19 +1192,19 @@ G4VSolid* TsIRTPlasmidSupercoiled::CreateCutSolid(G4Orb *solidOrbRef,
             
             // Next iteration
             continue;
-        }
+            }
         // If the condition is correct more than one time then there is a mistake somewhere.
         else if(distance == 0 && isOurVol)
-        {
+            {
             G4cerr<<"********************* Fatal Error **************************"<<G4endl;
             G4cerr<<"DetectorConstruction::CreateCutSolid: Two volumes are placed at the same position."<<G4endl;
             exit(EXIT_FAILURE);
-        }
+            }
         
         // If the volumes are differents then we want to know if they are
         // close enough to overlap and, thus, to intiate a cut.
         else if(distance <= radiusRef+radiusTar)
-        {
+            {
             // Volumes are close enough, there will be a cut
             
             // Box used to cut
@@ -889,8 +1253,8 @@ G4VSolid* TsIRTPlasmidSupercoiled::CreateCutSolid(G4Orb *solidOrbRef,
             
             // Set the cut flag
             isCutted = true;
+            }
         }
-    }
     
     //delete rotMat;
     if(isCutted) return solidCut;
@@ -898,6 +1262,7 @@ G4VSolid* TsIRTPlasmidSupercoiled::CreateCutSolid(G4Orb *solidOrbRef,
     // Otherwise, we return the original volume
     else return solidOrbRef;
 }
+
 
 
 

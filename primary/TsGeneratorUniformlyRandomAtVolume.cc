@@ -69,6 +69,11 @@ void TsGeneratorUniformlyRandomAtVolume::ResolveParameters() {
 		G4cerr << "Specify the direction of the primaries: inside, outside or isotropic" << G4endl;
 		fPm->AbortSession(1);
 	}
+
+	fConvergeTo1MeV = false;
+	if ( fPm->ParameterExists(GetFullParmName("ConvergeTo1MeV")))
+		fConvergeTo1MeV = fPm->GetBooleanParameter(GetFullParmName("ConvergeTo1MeV"));
+
 }
 
 
@@ -136,7 +141,11 @@ void TsGeneratorUniformlyRandomAtVolume::GeneratePrimaries(G4Event* anEvent) {
 			G4double aRandom = G4UniformRand();
 			G4int j = fSpectrumNBins - 1;
 			while ((fSpectrumBinTops[j] >= aRandom) && (j >= 0)) j--;
-			p.kEnergy = fSpectrumEnergies[j+1];
+	                if (fConvergeTo1MeV && fSpectrumEnergies[j+1] >= 1.0 * CLHEP::MeV)
+				p.kEnergy = 0.999999 * CLHEP::MeV;
+			else
+				p.kEnergy = fSpectrumEnergies[j+1];
+		
 		}
 	} else {
 		p.kEnergy = fEnergy;
