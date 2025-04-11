@@ -1,9 +1,0 @@
-# Data from Sauer MC, Schmidt KH, Hart EJ, Naleway CA, Jonah CD. LET depen-dence of transient yields in the pulse radiolysis of aqueous systems withdeuterons and alpha particles.Radiat Res. 1977;70:91–106
-# | Unrestricted LET (keV/um) | G Values (Species/100 eV) at 1 us | G Values STD (Species/100 eV) at 1 us |
-            4.76347e+0                          1.65868e+0                    0.0575099
-            5.10262e+0                          1.76305e+0                    0.0639000
-            5.31536e+0                          1.57135e+0                    0.0511200
-            6.42953e+0                          1.45421e+0                    0.0489900
-            8.48247e+0                          1.17945e+0                    0.0383400
-            1.12524e+1                          1.00266e+0                    0.0212970
-            1.65672e+1                          5.97977e-1                    0.0298189

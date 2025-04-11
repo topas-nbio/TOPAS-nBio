@@ -57,9 +57,6 @@ Shows how to activate the step-by-step transport of chemical species
 Shows how to set the chemistry parameters different than those provided by the Geant4-DNA default 
 chemistry list.
 
-#### ActiveChemistryExtended.txt
-Shows how to customize the chemistry parameters using an extended list of reactions.
-
 #### RemoveChemicalSpeciesInVolume.txt
 Shows how to terminate the transport of chemical species in a user-defined volume with specific
 material. 

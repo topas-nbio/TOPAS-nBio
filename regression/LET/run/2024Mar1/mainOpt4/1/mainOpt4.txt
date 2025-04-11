@@ -1,5 +1,0 @@
-sv:Ph/Default/Modules = 1 "g4em-dna_opt4"
-
-includeFile = depFile1.txt
-
-Ts/Seed = 28972

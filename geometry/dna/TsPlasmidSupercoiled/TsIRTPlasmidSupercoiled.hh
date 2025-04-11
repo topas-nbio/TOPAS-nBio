@@ -17,8 +17,6 @@
 #include "G4ThreeVector.hh"
 #include "G4Orb.hh"
 #include "G4Point3D.hh"
-#include "DNACoordinates.hh"
-#include "DNA.hh"
 
 #include <map>
 #include <vector>
@@ -45,23 +43,11 @@ public:
 	void AddPlasmidInformation(G4int, G4RotationMatrix*, G4ThreeVector*);
 	
 public:
-    G4LogicalVolume* CreateLogicVolumeBezier(G4int, G4RotationMatrix*, G4ThreeVector*);
 	G4LogicalVolume* CreateLogicVolumeXYZ(G4int, G4RotationMatrix*, G4ThreeVector*);
 	G4LogicalVolume* CreateLogicVolumeDNAFabric(G4int,G4RotationMatrix*, G4ThreeVector*);
 	
 private:
-    void PlaceDNA(std::vector<DNA*> &DNApt,
-                  G4bool BuildHalfCyl,
-                  G4bool BuildQuartCyl,
-                  G4bool BuildSphere, G4VPhysicalVolume*);
-    
-    void Bezier(G4ThreeVector &start,
-                G4ThreeVector &MidPoint1,
-                G4ThreeVector &MidPoint2,
-                G4ThreeVector &end,
-                std::vector<G4ThreeVector> &path,
-                G4int nSteps);
-    
+	
 	struct TempMolecule
 	{
 		TempMolecule(std::string name, int copyNumber, G4ThreeVector position, double radius, double waterRadius, std::string material, int strand)
@@ -73,7 +59,6 @@ private:
 			fRadius = radius;
 			fRadiusWater = waterRadius;
 			fStrand = strand;
-            fRotation = 0;
 		}
 		
 		std::string fName;
@@ -86,7 +71,6 @@ private:
 		
 		double fRadius;
 		double fRadiusWater;
-        G4RotationMatrix* fRotation;
 		
 		bool operator<(const TempMolecule& str) const
 		{
@@ -118,10 +102,6 @@ private:
 							 TempMolecule &molRef,
 							 std::vector<TempMolecule> &molList,
 							 G4bool in);
-    G4VSolid* CreateCutSolid(G4VSolid *solidOrbRef,
-                             TempMolecule &molRef,
-                             std::vector<TempMolecule> &molList);
-    
 	G4double fSize;
 	G4double fOffsetX;
 	G4double fOffsetY;
@@ -134,8 +114,6 @@ private:
 	G4double fZMax;
  
 	std::vector<G4int> fTracks;
-    G4String* fSequence;
 };
 
 #endif
-

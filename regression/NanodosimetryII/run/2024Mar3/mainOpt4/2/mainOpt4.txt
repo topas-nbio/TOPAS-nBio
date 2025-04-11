@@ -1,4 +1,0 @@
-includeFile = depFile1.txt
-
-sv:Ph/Default/Modules = 1 "g4em-dna_opt4"
-Ts/Seed = 13504

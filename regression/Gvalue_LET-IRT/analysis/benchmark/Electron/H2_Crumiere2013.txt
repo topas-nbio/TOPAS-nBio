@@ -1,3 +1,0 @@
-# Data from Crumiere F, Vandenborre J, Essehli R, Blain G, Barbet J Fattahi M. LETeffects on the hydrogen production induced by the radiolysis of purewater.Radiat Phys Chem. 2013;82:74–79.
-# | Unrestricted LET (keV/um) | G Values (Species/100 eV) at 1 us | G Values STD (Species/100 eV) at 1 us |
-			2.99730e-1                        4.51392e-1                           0.047966

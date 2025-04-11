@@ -1,3 +1,0 @@
-# Data from Wasselin-Trupin V, Baldacchino G, Bouffard S, Hickel B. Hydrogen per-oxide yields in water radiolysis by high-energy ion beams at constantLET.Radiat Phys Chem. 2002;65:53–61.
-# | Unrestricted LET (keV/um) | G Values (Species/100 eV) at 1 us | G Values STD (Species/100 eV) at 1 us |
-		 5.25649e-1 			          6.95284e-1								0.0000000

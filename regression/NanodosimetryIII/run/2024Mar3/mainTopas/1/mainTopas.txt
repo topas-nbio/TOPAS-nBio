@@ -1,7 +1,0 @@
-Ph/Default/Modules = 1 "TsEmDNAPhysics"
-s:Ph/Default/Electron/SetElasticScatteringModel = "ELSEPA"
-s:Ph/Default/SolvatedElectronThermalizationModel = "Meesungnoen"
-
-includeFile = depFile1.txt
-
-Ts/Seed = 8327

@@ -1,3 +1,0 @@
-# Data From Burns WG. Effect of radiation type in water radiolysis.J Chem SOCFaraday Trans. 1981;77:2803–2813
-# | Unrestricted LET (keV/um) | G Values (Species/100 eV) at 1 us | G Values STD (Species/100 eV) at 1 us |
-         1.99675E-1                          2.65097                              0.06164
