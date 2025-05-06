@@ -43,7 +43,6 @@ TsNtupleForCulture::~TsNtupleForCulture() {;}
 
 G4bool TsNtupleForCulture::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-    ResolveSolid(aStep);
     
     G4double flagEnergyDep      = aStep->GetTotalEnergyDeposit();
     
