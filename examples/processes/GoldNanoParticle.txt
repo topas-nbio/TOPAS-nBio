@@ -1,0 +1,41 @@
+# Test for using electron/photon interactions in Gold material
+# Note: Only electron and photon interactions are supported. 
+
+Ts/UseQt = "True"
+
+s:Gr/view/Type = "OpenGL"
+Ge/World/HLX = 400 nm
+Ge/World/HLY = 400 nm
+Ge/World/HLZ = 400 nm
+Ge/World/Material = "G4_WATER"
+
+s:Ge/MyBox/Type     = "TsSphere"
+s:Ge/MyBox/Material = "G4_Au"
+s:Ge/MyBox/Parent   = "World"
+d:Ge/MyBox/RMax     = 150 nm
+s:Ge/MyBox/Color = "Yellow"
+
+# It requires a region (use lower-case)
+s:Ge/MyBox/AssignToRegionNamed = "nanoparticle"
+
+# Active the physics in region
+sv:Ph/Default/Modules = 1 "TsEmDNAPhysics"
+b:Ph/Default/PhysicsForGold/Active = "True"
+s:Ph/Default/PhysicsForGold/Region = Ge/MyBox/AssignToRegionNamed
+
+# Set a beam, zero radius and zero divergence
+s:So/Demo/BeamParticle = "e-"
+s:So/Demo/BeamPositionDistribution = "None"
+s:So/Demo/BeamAngularDistribution = "None"
+d:So/Demo/BeamEnergy = 20 keV 
+u:So/Demo/BeamEnergySpread = 0 
+i:So/Demo/NumberOfHistoriesInRun = 10
+
+s:Gr/ViewA/Type             = "OpenGL"
+d:Gr/ViewA/Theta            = 90 deg 
+d:Gr/ViewA/Phi              = 0 deg 
+u:Gr/ViewA/Zoom             = 2.
+
+# Good practice, report the simulation time
+b:Ts/ShowCPUTime = "True"
+
