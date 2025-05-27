@@ -419,7 +419,7 @@ void TsIRT::ConductReactions() {
 				aProd.isDNA = false;
 				fConcentrations[aProd.id]++;
 
-				if (fMolecules[aProd.id] == "") {continue;}
+				if (fMoleculesName[aProd.id] == "") {continue;}
 
 				if (dnaVolumeID >= 0) {
 					aProd.volumeID = dnaVolumeID;
