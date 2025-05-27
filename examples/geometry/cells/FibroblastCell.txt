@@ -69,6 +69,6 @@ d:Gr/ViewA/Theta = 0 deg
 d:Gr/ViewA/Phi = 0 deg
 u:Gr/ViewA/Zoom = 2.
 
-Ts/PauseBeforeQuit = "False"
+Ts/PauseBeforeQuit = "True"
 b:Ts/ShowCPUTime = "True"
 

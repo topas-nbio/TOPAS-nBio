@@ -72,5 +72,5 @@ s:Gr/ViewA/Type = "OpenGL"
 i:Gr/ViewA/WindowSizeX = 1024
 i:Gr/ViewA/WindowSizeY = 768
 
-Ts/PauseBeforeQuit = "False"
+Ts/PauseBeforeQuit = "True"
 b:Ts/ShowCPUTime = "True"
