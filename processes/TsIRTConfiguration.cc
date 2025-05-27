@@ -496,6 +496,9 @@ void TsIRTConfiguration::ResolveReactionParameters() {
 void TsIRTConfiguration::InsertReaction(G4String molA, G4String molB, std::vector<G4int> products,
 		G4double kobs, G4int reactionType)
 {
+	QuitIfMoleculeNotFound(molA);
+	QuitIfMoleculeNotFound(molB);
+	
 	G4int index = fReactionID;
 	fReactionID++;
 	fTotalBinaryReaction++;
@@ -558,6 +561,9 @@ void TsIRTConfiguration::InsertReaction(G4String molA, G4String molB, std::vecto
 void TsIRTConfiguration::InsertBackgroundReaction(G4String A, G4String B, std::vector<G4int> p,
 												  G4double kobs, G4double concentration, G4bool sampleExponential)
 {
+	QuitIfMoleculeNotFound(A);
+	QuitIfMoleculeNotFound(B);
+
 	G4String molNameA = fExistingMolecules[A];
 	G4String molNameB = fExistingMolecules[B];
 	
