@@ -282,7 +282,7 @@ void TsEmDNAChemistry::DefineParameters()
         fSetWaterConfiguration = fPm->GetBooleanParameter(GetFullParmName("SetWaterMolecularConfiguration"));
     
     // Branching ratios
-    G4String branchModelName = "g4dna";
+    G4String branchModelName = "topasnbio";
     if (fPm->ParameterExists(GetFullParmName("BranchingRatiosModel"))) {
         branchModelName = fPm->GetStringParameter(GetFullParmName("BranchingRatiosModel"));
         G4StrUtil::to_lower(branchModelName);
@@ -291,7 +291,7 @@ void TsEmDNAChemistry::DefineParameters()
     /////////////////////////////////
     // Default Probabilities Ratio //
     /////////////////////////////////
-    if (branchModelName == "topasnbio") {
+    if (branchModelName == "topasnbio") { //  Default values in TOPAS-nBio
         // Ionization
         fIonizationStates = 1.0;
         
@@ -300,11 +300,11 @@ void TsEmDNAChemistry::DefineParameters()
         fA1B1DissociativeDecay = 0.65;  // H + OH
         
         // Excitation Fourth Layer
-        fB1A1Relaxation         = 0.175;  //0.30;  H2O
-        fB1A1DissociativeDecay  = 0.086;//0.0325; //0.15;  H2+ 2OH
-        fB1A1AutoIonization     = 0.50;   //0.55;  H3O+ + OH + e-aq
-        fB1A1DissociativeDecay1 = 0.2;//535; // H + OH
-        fB1A1DissociativeDecay2 = 0.039;  // 2H + O(3P)
+        fB1A1Relaxation         = 0.26; // H2O
+        fB1A1DissociativeDecay  = 0.19; // H2+ 2OH
+        fB1A1AutoIonization     = 0.55; // H3O+ + OH + e-aq
+        fB1A1DissociativeDecay1 = 0.;   // H + OH
+        fB1A1DissociativeDecay2 = 0.;   // 2H + O(3P)
         
         // Excitation Third, Second And First Layers
         fRydDiffAutoIonization = 0.5;  // H3O+ + OH + e-aq
@@ -314,22 +314,50 @@ void TsEmDNAChemistry::DefineParameters()
         fDissociativeAttachment = 1.0; // OH- + OH + H2
         
         // Electron Hole Recombination
-        fH2OvibDissociationDecay1 = 0.1925;  // H2 + 2OH
-        fH2OvibDissociationDecay2 = 0.3;//575;  // H + OH
-        fH2OvibDissociationDecay3 = 0.05; //0.156;   // 2H + O(3P)
-        fH2OvibDissociationDecay4 = 0.4575;    // H2O
+        fH2OvibDissociationDecay1 = 0.19;   // H2 + 2OH
+        fH2OvibDissociationDecay2 = 0.55;   // H + OH
+        fH2OvibDissociationDecay3 = 0.;     // 2H + O(3P)
+        fH2OvibDissociationDecay4 = 0.26;   // H2O
     }
-    else if (branchModelName == "g4dna"){
+    else if (branchModelName == "experimental") { // For testing
         // Ionization
         fIonizationStates = 1.0;
         
         // Excitation Fifth Layer
-        fA1B1Relaxation        = 0.35; // H2O
-        fA1B1DissociativeDecay = 0.65; // H + OH
+        fA1B1Relaxation        = 0.35; 
+        fA1B1DissociativeDecay = 0.65;  
         
         // Excitation Fourth Layer
-        fB1A1Relaxation         = 0.30;//0.30;
-        fB1A1DissociativeDecay  = 0.15;//0.15;
+        fB1A1Relaxation         = 0.175;
+        fB1A1DissociativeDecay  = 0.086;
+        fB1A1AutoIonization     = 0.50;
+        fB1A1DissociativeDecay1 = 0.2;
+        fB1A1DissociativeDecay2 = 0.039;
+        
+        // Excitation Third, Second And First Layers
+        fRydDiffAutoIonization = 0.5;
+        fRydDiffRelaxation     = 0.5;
+        
+        // Disociative Attachment
+        fDissociativeAttachment = 1.0;
+        
+        // Electron Hole Recombination
+        fH2OvibDissociationDecay1 = 0.1925;
+        fH2OvibDissociationDecay2 = 0.3;
+        fH2OvibDissociationDecay3 = 0.05;
+        fH2OvibDissociationDecay4 = 0.4575;
+    }
+    else if (branchModelName == "g4dna"){ // Default values from Geant4-DNA
+        // Ionization
+        fIonizationStates = 1.0;
+        
+        // Excitation Fifth Layer
+        fA1B1Relaxation        = 0.35;
+        fA1B1DissociativeDecay = 0.65;
+        
+        // Excitation Fourth Layer
+        fB1A1Relaxation         = 0.30;
+        fB1A1DissociativeDecay  = 0.15;
         fB1A1AutoIonization     = 0.55;
         fB1A1DissociativeDecay1 = 0;
         fB1A1DissociativeDecay2 = 0;
@@ -342,10 +370,10 @@ void TsEmDNAChemistry::DefineParameters()
         fDissociativeAttachment = 1.0;
         
         // Electron Hole Recombination
-        fH2OvibDissociationDecay1 = 0.15;//0.15;
-        fH2OvibDissociationDecay2 = 0.55;//0.55
+        fH2OvibDissociationDecay1 = 0.15;
+        fH2OvibDissociationDecay2 = 0.55;
         fH2OvibDissociationDecay3 = 0;
-        fH2OvibDissociationDecay4 = 0.30;//0.3;
+        fH2OvibDissociationDecay4 = 0.30;
     } else {
         Quit(GetFullParmName("BranchingRatiosModel"), "Model name: " + branchModelName + " is not supported. ");
     }
