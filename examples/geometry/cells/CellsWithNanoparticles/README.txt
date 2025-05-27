@@ -3,29 +3,36 @@
 
 Cell Models for TOPAS/Geant4 and the inclusion of nano particles in particle scattering simulations.
 
-The C++ classes in this repository extend the functionality of the TOPAS (http://www.topasmc.org/) Monte-Carlo program, which is itself a wrapper of the Geant4 MCS Toolkit (http://geant4.org).
+The C++ classes in this repository extend the functionality of the TOPAS (https://github.com/OpenTOPAS/OpenTOPAS) Monte-Carlo program, which is itself a wrapper of the Geant4 MCS Toolkit (http://geant4.org).
 
 
 2) Installation:
 
-Installation:
+The following instructions assume you are on MacOS.
+Change directories as appropriate for other operating systems:
+- (see quickStart guides on https://github.com/OpenTOPAS/OpenTOPAS and the README on https://github.com/topas-nbio/TOPAS-nBio)
 
-Navigate to the TOPAS extension directory:
+Navigate to the Applications directory:
 
-  cd ~/topas_extensions/
+  cd /Applications/
 
 Clone or download the sourcecode into your TOPAS extension directory:
  
   git clone https://github.com/BAMresearch/TOPAS-CellModels.git
  
-Change to your topas directory:
+Change to your build directory:
 
-  cd ~/Topas/
+  cd /Applications/TOPAS/OpenTOPAS-build/
 
-Install it:
+Run cmake:
 
-  cmake ./ -DTOPAS_EXTENSIONS_DIR=~/topas_extensions/TOPAS-CellModels &&  make -j4
+  cmake ../OpenTOPAS -DTOPAS_EXTENSIONS_DIR=/Applications/TOPAS-CellModels/
 
+Followed by:
+
+  make -j20 install
+
+NOTE: In order to run other TOPAS-nBio simulations (i.e. NOT nanoparticles) you would need to redo the cmake/make described in the README (https://github.com/topas-nbio/TOPAS-nBio) 
 
 3) Description:
 
