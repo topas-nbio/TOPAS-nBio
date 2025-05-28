@@ -1,7 +1,7 @@
 ## 
 i:Ts/Verbosity = 0
 sv:Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry"
-s:Ph/Default/Electron/SetElasticScatteringModel = "CPA100"
+s:Ph/Default/Electron/SetElasticScatteringModel = "ELSEPA"
 
 includeFile = TOPASFrickeReactions.txt
 
@@ -47,7 +47,7 @@ d:Sc/nbOfMol/CutOffTime = 1 ps
 d:Sc/nbOfMol/TimeLower = 1.0 ps
 d:Sc/nbOfMol/TimeUpper = 50 s 
 i:Sc/nbOfMol/TimeBins  = 200
-b:Sc/nbOfMol/HighTimeScavenger = "True"
+b:Sc/nbOfMol/EnableHighTimeScavengers = "True"
 sv:Sc/nbOfMol/ReportMoleculesNamed = 1 "Fe3"
 
 i:So/Demo/NumberOfHistoriesInRun = 300
