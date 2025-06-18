@@ -247,10 +247,10 @@ G4bool TsScoreWithIRTCummulative::ProcessHits(G4Step* aStep, G4TouchableHistory*
 
 
 void TsScoreWithIRTCummulative::UserHookForPreTimeStepAction() {
-    if (G4Scheduler::Instance()->GetNbSteps() == 2) {
+    if (!G4EventManager::GetEventManager()->GetConstCurrentEvent()->IsAborted()) {
         G4TrackManyList* trackList = G4ITTrackHolder::Instance()->GetMainList();
         G4ManyFastLists<G4Track>::iterator it_begin = trackList->begin();
-        G4ManyFastLists<G4Track>::iterator it_end = trackList->end();
+        G4ManyFastLists<G4Track>::iterator it_end   = trackList->end();
         
         for(;it_begin!=it_end;++it_begin){
             if ( fTestIsInside ) {

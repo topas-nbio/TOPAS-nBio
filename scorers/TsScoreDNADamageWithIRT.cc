@@ -241,10 +241,10 @@ void TsScoreDNADamageWithIRT::UserHookForEndOfEvent() {
 
 
 void TsScoreDNADamageWithIRT::UserHookForPreTimeStepAction() {
-	if (G4Scheduler::Instance()->GetNbSteps() == 2) {
-		G4TrackManyList* trackList = G4ITTrackHolder::Instance()->GetMainList();
-		G4ManyFastLists<G4Track>::iterator it_begin = trackList->begin();
-		G4ManyFastLists<G4Track>::iterator it_end = trackList->end();
+    if (!G4EventManager::GetEventManager()->GetConstCurrentEvent()->IsAborted()) {
+        G4TrackManyList* trackList = G4ITTrackHolder::Instance()->GetMainList();
+        G4ManyFastLists<G4Track>::iterator it_begin = trackList->begin();
+        G4ManyFastLists<G4Track>::iterator it_end   = trackList->end();
 		
 		for(;it_begin!=it_end;++it_begin){
 			const G4String& matName = it_begin->GetMaterial()->GetName();
