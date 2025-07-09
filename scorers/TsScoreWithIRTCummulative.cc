@@ -251,6 +251,16 @@ void TsScoreWithIRTCummulative::UserHookForPreTimeStepAction() {
         G4TrackManyList* trackList = G4ITTrackHolder::Instance()->GetMainList();
         G4ManyFastLists<G4Track>::iterator it_begin = trackList->begin();
         G4ManyFastLists<G4Track>::iterator it_end   = trackList->end();
+
+        for(;it_begin!=it_end;++it_begin) {
+            G4Molecule* Molecule = GetMolecule(*it_begin);
+            const G4MoleculeDefinition* MolDef = Molecule->GetDefinition();
+            if (MolDef == G4H2O::Definition()) {
+                return;
+            }
+        }
+        
+        it_begin = trackList->begin();
         
         for(;it_begin!=it_end;++it_begin){
             if ( fTestIsInside ) {
