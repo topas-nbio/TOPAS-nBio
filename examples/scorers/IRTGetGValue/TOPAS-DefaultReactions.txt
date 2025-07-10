@@ -63,7 +63,7 @@ b:Ch/TOPASChemistry/Reaction/Hydrogen/Hydrogen/CompatibleWithStepByStep = "True"
 
 # R8: OH + H -> H2O
 sv:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydrogen/Products    = 1 "None"
-d:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydrogen/ReactionRate = 1.55e10 /M/s #2.0e10 /M/s
+d:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydrogen/ReactionRate = 2.0e10 /M/s
 i:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydrogen/ReactionType = 2
 b:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydrogen/CompatibleWithStepByStep = "True"
 
