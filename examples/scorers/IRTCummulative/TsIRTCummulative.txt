@@ -15,13 +15,13 @@ i:Ts/Seed = 1234
 
 sv:Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry"
 s:Ph/Default/Electron/SetElasticScatteringModel = "ELSEPA"
-s:Ch/ChemistryName = "Plante"
-includeFile        = PlanteReactions.txt
+s:Ch/ChemistryName = "TOPASChemistry"
+includeFile        = TOPAS-DefaultReactions.txt
 
-b:Ch/Plante/ChemicalStageTransportActive = "True"
-d:Ch/Plante/ChemicalStageTimeEnd         = 1.00001 ps
-dv:Ch/Plante/ChemicalStageTimeStepsHighEdges = 1 999999 ps
-dv:Ch/Plante/ChemicalStageTimeStepsResolutions = 1 0.5 ps
+b:Ch/TOPASChemistry/ChemicalStageTransportActive = "True"
+d:Ch/TOPASChemistry/ChemicalStageTimeEnd         = 1.00001 ps
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsHighEdges = 1 999999 ps
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsResolutions = 1 0.5 ps
 
 #######################
 ###### Geometry #######
