@@ -69,5 +69,6 @@ d:Sc/gvalue/PulseTimeMean     = 0.9 us
 d:Sc/gvalue/PulseTimeFWHM     = 1.8 us 
 sv:Sc/gvalue/ReportMoleculesNamed = 10 "OH^0" "e_aq^-1" "H3O^1" "H2O2^0" "H^0" "H_2^0" "OH^-1" "O2^-1" "HO2^0" "O2^0"
 s:Sc/gvalue/SensitiveVolumeName  = "target"
+b:Sc/gvalue/ForceLowTimeCutTo1ps = "True"
 
 #######################
