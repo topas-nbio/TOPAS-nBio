@@ -1,7 +1,7 @@
 # 
 # Set physics and chemistry processes
 sv:Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry"
-s:Ph/Default/Electron/SetElasticScatteringModel = "CPA100"
+s:Ph/Default/Electron/SetElasticScatteringModel = "ELSEPA"
 
 includeFile = ./TOPASChemistry.txt
 s:Ch/ChemistryName = "TOPASChemistry" 

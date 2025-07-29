@@ -76,7 +76,7 @@ private:
     G4double fB1A1Relaxation;
     G4double fB1A1DissociativeDecay;
     G4double fB1A1AutoIonization;
-    G4double fA1B1DissociativeDecay2;
+    G4double fB1A1DissociativeDecay1;
     G4double fB1A1DissociativeDecay2;
 
     // Third, Second and First Layer Excitation

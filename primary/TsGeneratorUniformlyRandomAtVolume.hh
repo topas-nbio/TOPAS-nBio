@@ -27,6 +27,7 @@ public:
 	
 private:
 	G4bool fGenerateOnSurface;
+	G4bool fConvergeTo1MeV;
 	G4ThreeVector fPos;
 	G4ThreeVector fCenter;
 	G4String fSolid;

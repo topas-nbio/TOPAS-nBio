@@ -32,7 +32,7 @@ fPm(pM), fEnergyDepositPerEvent(0)
         G4DNAChemistryManager::Instance()->ResetCounterWhenRunEnds(false);
     }
     
-    fNtuple->RegisterColumnD(&fGValue, "GValue: number of molecules per energy deposit per 100 eV", "");
+    fNtuple->RegisterColumnD(&fGValue, "GValue: number of molecules per energy deposit per eV", "");
     fNtuple->RegisterColumnD(&fGValueError, "GValue statistical error", "");
     fNtuple->RegisterColumnD(&fTime,    "Time", "picosecond");
     fNtuple->RegisterColumnS(&fMoleculeName, "MoleculeName");

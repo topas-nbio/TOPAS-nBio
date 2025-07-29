@@ -24,6 +24,7 @@
 class G4VSolid;
 class G4Material;
 class G4LogicalVolume;
+class TsGeneratorManager;
 
 class TsIRTPlasmidSupercoiled : public TsVGeometryComponent
 {
@@ -33,10 +34,17 @@ public:
 	~TsIRTPlasmidSupercoiled();
 	
 	G4VPhysicalVolume* Construct();
+
+	std::vector<G4String> GetDNANames() {return fDNANames;}
+	std::vector<G4double> GetDNATimes() {return fDNATimes;}
+	std::vector<G4ThreeVector> GetDNAPositions() {return fDNAPositions;}
+	std::vector<std::vector<G4int>> GetDNADetails() {return fDNADetails;}
+
+	void AddPlasmidInformation(G4int, G4RotationMatrix*, G4ThreeVector*);
 	
 public:
-	G4LogicalVolume* CreateLogicVolume(G4String fileName, G4int copyNumber,
-									   G4RotationMatrix* rot, G4ThreeVector* trans);
+	G4LogicalVolume* CreateLogicVolumeXYZ(G4int, G4RotationMatrix*, G4ThreeVector*);
+	G4LogicalVolume* CreateLogicVolumeDNAFabric(G4int,G4RotationMatrix*, G4ThreeVector*);
 	
 private:
 	
@@ -69,17 +77,27 @@ private:
 			return (fPosition.z() < str.fPosition.z() );
 		}
 	};
-	
-	std::vector<std::pair<G4int, std::pair<G4int, G4ThreeVector>>> fDNASpecies;
+
 	std::string fGeoName;
-	
 	std::map<std::string, G4double> fRadiusMap;
 	std::map<std::string, G4double> fWaterRadiusMap;
 	
 	std::vector<TempMolecule> fMolecules;
 	G4Orb* fSolid;
+
+	std::vector<G4String> fDNANames;
+	std::vector<G4double> fDNATimes;
+	std::vector<G4ThreeVector> fDNAPositions;
+	std::vector<std::vector<G4int>> fDNADetails;
+	std::vector<G4ThreeVector> fVertexes;
+
+	std::vector<G4String> fSampleDNANames;
+	std::vector<G4double> fSampleDNATimes;
+	std::vector<G4ThreeVector> fSampleDNAPositions;
+	std::vector<std::vector<G4int>> fSampleDNADetails;
 	
-	void ParseFile(G4String fileName);
+	void ReadXYZFile(G4String);
+	void ReadDNAFabricFile(G4String);
 	G4VSolid* CreateCutSolid(G4Orb *solidOrbRef,
 							 TempMolecule &molRef,
 							 std::vector<TempMolecule> &molList,
@@ -95,7 +113,7 @@ private:
 	G4double fZMin;
 	G4double fZMax;
  
+	std::vector<G4int> fTracks;
 };
 
 #endif
-

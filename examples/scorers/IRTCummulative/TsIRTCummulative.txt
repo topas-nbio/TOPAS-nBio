@@ -14,14 +14,14 @@ i:Ts/Seed = 1234
 #######################
 
 sv:Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry"
-s:Ph/Default/Electron/SetElasticScatteringModel = "CPA100"
-s:Ch/ChemistryName = "Plante"
-includeFile        = PlanteReactions.txt
+s:Ph/Default/Electron/SetElasticScatteringModel = "ELSEPA"
+s:Ch/ChemistryName = "TOPASChemistry"
+includeFile        = TOPAS-DefaultReactions.txt
 
-b:Ch/Plante/ChemicalStageTransportActive = "True"
-d:Ch/Plante/ChemicalStageTimeEnd         = 1.00001 ps
-dv:Ch/Plante/ChemicalStageTimeStepsHighEdges = 1 999999 ps
-dv:Ch/Plante/ChemicalStageTimeStepsResolutions = 1 0.5 ps
+b:Ch/TOPASChemistry/ChemicalStageTransportActive = "True"
+d:Ch/TOPASChemistry/ChemicalStageTimeEnd         = 1.00001 ps
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsHighEdges = 1 999999 ps
+dv:Ch/TOPASChemistry/ChemicalStageTimeStepsResolutions = 1 0.5 ps
 
 #######################
 ###### Geometry #######
@@ -70,6 +70,5 @@ d:Sc/gvalue/PulseTimeFWHM     = 1.8 us
 sv:Sc/gvalue/ReportMoleculesNamed = 10 "OH^0" "e_aq^-1" "H3O^1" "H2O2^0" "H^0" "H_2^0" "OH^-1" "O2^-1" "HO2^0" "O2^0"
 s:Sc/gvalue/SensitiveVolumeName  = "target"
 b:Sc/gvalue/ForceLowTimeCutTo1ps = "True"
-b:Sc/gvalue/EnableHighTimeScavengers = "True"
 
 #######################

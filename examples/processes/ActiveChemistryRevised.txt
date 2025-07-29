@@ -18,7 +18,7 @@ d:Ge/Segment/HL       = 80.5 nm
 d:Ge/Segment/RMax     = 15.0 nm
 
 # Set the parameters to configure chemistry from TOPASChemistry.txt
-includeFile = TOPASChemistry.txt   # Alternatively TOPASChemistry_Extended.txt can be used.
+includeFile = TOPASChemistry.txt 
 s:Ch/ChemistryName = "TOPASChemistry"
 # This gives access of the hits with the scoring manager
 b:Ch/TOPASChemistry/ChemicalStageTransportActive = "True"
