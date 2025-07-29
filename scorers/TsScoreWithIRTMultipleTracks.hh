@@ -18,7 +18,7 @@
 
 #include <stdint.h>
 
-class TsIRT;
+class TsIRTManager;
 
 class TsScoreWithIRTMultipleTracks : public TsVNtupleScorer
 {
@@ -48,7 +48,7 @@ protected:
    
 private:
     TsParameterManager* fPm;
-	TsIRT* fIRT;
+	TsIRTManager* fIRT;
 
 	std::vector<TsIRTConfiguration::TsMolecule> fSpecies;
 	

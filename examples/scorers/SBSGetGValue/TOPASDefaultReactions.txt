@@ -17,6 +17,18 @@ b:Ch/TOPASChemistry/SetWaterMolecularConfiguration = "False"
 ##### Reaction Table #####
 ##########################
 
+# Type I
+
+sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydrogen/Products = 2 "Hydroxide" "Dyhydrogen"
+d:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydrogen/ReactionRate = 2.5e10 /M/s
+i:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydrogen/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydrogen/CompatibleWithStepByStep = "True"
+
+sv:Ch/TOPASChemistry/Reaction/Hydrogen/Hydrogen/Products = 1 "Dyhydrogen"
+d:Ch/TOPASChemistry/Reaction/Hydrogen/Hydrogen/ReactionRate = 0.78e10 /M/s
+i:Ch/TOPASChemistry/Reaction/Hydrogen/Hydrogen/ReactionType = 1
+b:Ch/TOPASChemistry/Reaction/Hydrogen/Hydrogen/CompatibleWithStepByStep = "True"
+
 # Type II
 
 sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydroxyl/Products = 1 "Hydroxide"
@@ -62,17 +74,5 @@ sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydronium/Products = 1 "Hydrogen"
 d:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydronium/ReactionRate = 2.3e10 /M/s
 i:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydronium/ReactionType = 4
 b:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydronium/CompatibleWithStepByStep = "True"
-
-# Type V
-
-sv:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydrogen/Products = 2 "Hydroxide" "Dyhydrogen"
-d:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydrogen/ReactionRate = 2.5e10 /M/s
-i:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydrogen/ReactionType = 5
-b:Ch/TOPASChemistry/Reaction/SolvatedElectron/Hydrogen/CompatibleWithStepByStep = "True"
-
-sv:Ch/TOPASChemistry/Reaction/Hydrogen/Hydrogen/Products = 1 "Dyhydrogen"
-d:Ch/TOPASChemistry/Reaction/Hydrogen/Hydrogen/ReactionRate = 0.78e10 /M/s
-i:Ch/TOPASChemistry/Reaction/Hydrogen/Hydrogen/ReactionType = 5
-b:Ch/TOPASChemistry/Reaction/Hydrogen/Hydrogen/CompatibleWithStepByStep = "True"
 
 ##########################

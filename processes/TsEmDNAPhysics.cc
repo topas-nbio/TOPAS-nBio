@@ -13,6 +13,20 @@
 #include "TsEmDNAPhysics.hh"
 #include "TsParameterManager.hh"
 
+#include "TsDNARuddIonisationExtendedModel.hh"
+#include "TsSplitProcessG4DNA.hh"
+#include "TsDNARuddIonisationExtendedRITRACKSModel.hh"
+#include "TsDNAELSEPAElasticModel.hh"
+
+#include "TsDNAChargeDecrease.hh"
+#include "TsDNAChargeIncrease.hh"
+#include "TsDNAKRIonBornExcitationModel.hh"
+#include "TsDNAKRIonIonisationScaledModel.hh"
+#include "TsDNAKRIonMillerGreenExcitationModel.hh"
+#include "TsDNAKondoRamosLiChargeDecrease.hh"
+#include "TsDNAKondoRamosLiChargeIncrease.hh"
+
+
 #include "G4SystemOfUnits.hh"
 #include "G4DNAGenericIonsManager.hh"
 
@@ -21,7 +35,6 @@
 #include "G4DNAChampionElasticModel.hh"
 #include "G4DNAScreenedRutherfordElasticModel.hh"
 //#include "G4DNAELSEPAElasticModel.hh"
-#include "TsDNAELSEPAElasticModel.hh"
 
 #include "G4DNAExcitation.hh"
 #include "G4DNAAttachment.hh"
@@ -84,9 +97,6 @@
 #include "G4DNAVacuumModel.hh"
 
 #include "G4DNARuddIonisationModel.hh"
-#include "TsDNARuddIonisationExtendedModel.hh"
-#include "TsSplitProcessG4DNA.hh"
-#include "TsDNARuddIonisationExtendedRITRACKSModel.hh"
 #include "G4ProcessManager.hh"
 
 #include "G4EmParameters.hh"
@@ -145,6 +155,12 @@ void TsEmDNAPhysics::ConstructParticle()
     genericIonsManager->GetIon("alpha+");
     genericIonsManager->GetIon("helium");
     genericIonsManager->GetIon("hydrogen");
+
+    genericIonsManager->GetIon("lithium+++");
+    genericIonsManager->GetIon("lithium++");
+    genericIonsManager->GetIon("lithium+");
+    genericIonsManager->GetIon("lithium");
+
 }
 
 
@@ -660,7 +676,37 @@ void TsEmDNAPhysics::ConstructProcess()
                 theDNAIonisationProcess->SetEmModel(new G4DNARuddIonisationExtendedModel());
                 ph->RegisterProcess(theDNAIonisationProcess, particle);
                 ph->RegisterProcess(new G4DNAChargeIncrease("helium_G4DNAChargeIncrease"), particle);
+            
+            } else if ( particleName == "lithium+++" || particleName == "lithium++" || particleName == "lithium+" || particleName == "lithium") {
+                // Ionization
+                G4DNAIonisation* specificIonIonisationProcess  = new G4DNAIonisation("lithium_G4DNAIonisation");
+                TsDNAKRIonIonisationScaledModel* mod1 = new TsDNAKRIonIonisationScaledModel();
+                specificIonIonisationProcess->AddEmModel(1,mod1);
+                ph->RegisterProcess(specificIonIonisationProcess, particle);
                 
+                // Excitation
+                G4DNAExcitation* specificIonExcitationProcess = new G4DNAExcitation("lithium_G4DNAExcitation");
+                TsDNAKRIonMillerGreenExcitationModel* emod1   = new TsDNAKRIonMillerGreenExcitationModel();
+                emod1->SetLowEnergyLimit(70*eV);
+                emod1->SetHighEnergyLimit(3.5*MeV);
+                specificIonExcitationProcess->AddEmModel(1,emod1);
+                
+                TsDNAKRIonBornExcitationModel* emod2 = new TsDNAKRIonBornExcitationModel();
+                emod2->SetLowEnergyLimit(3.5*MeV);
+                emod2->SetHighEnergyLimit(700*MeV);
+                specificIonExcitationProcess->AddEmModel(2,emod2);
+                
+                ph->RegisterProcess(specificIonExcitationProcess, particle);
+                
+                //Charge Transfer Only for lithium
+                ph->RegisterProcess(new TsDNAChargeIncrease("lithium_TsDNAChargeIncrease"),particle);
+                ph->RegisterProcess(new TsDNAChargeDecrease("lithium_TsDNAChargeDecrease"),particle);
+                
+                // We assume elastic by WentzelVI
+                G4hMultipleScattering* msc = new G4hMultipleScattering();
+                msc->SetEmModel(new G4LowEWentzelVIModel(), 1);
+                ph->RegisterProcess(msc, particle);
+
             } else if ( particleName == "GenericIon" ) {
                 G4String ionEModel = "default";
                 if ( fPm->ParameterExists("Ph/"+fName+"/GenericIon/SetElasticScatteringModel") )

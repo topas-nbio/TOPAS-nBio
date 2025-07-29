@@ -1,4 +1,4 @@
-// Extra Class for TsEmDNAChemistryExtended 
+// Extra Class for TsEmDNAChemistry
 //
 // ********************************************************************
 // *                                                                  *

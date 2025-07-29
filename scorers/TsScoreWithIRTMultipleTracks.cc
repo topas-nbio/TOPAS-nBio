@@ -10,8 +10,7 @@
 // ********************************************************************
 
 #include "TsScoreWithIRTMultipleTracks.hh"
-#include "TsIRT.hh"
-#include "TsIRTConfiguration.hh"
+#include "TsIRTManager.hh"
 
 #include "G4ITTrackHolder.hh"
 #include "G4EventManager.hh"
@@ -33,7 +32,7 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyLossKill(0), fName(scorerName)
 {
 	SetUnit("");
 	
-	fIRT = new TsIRT(fPm, fName);
+	fIRT = new TsIRTManager(fPm, fName);
 	
 	fNtuple->RegisterColumnD(&fGValue, "GValue: number of molecules per 100 eV of energy deposit", "");
 	fNtuple->RegisterColumnD(&fGValueError, "GValue statistical error", "");
@@ -148,11 +147,11 @@ G4bool TsScoreWithIRTMultipleTracks::ProcessHits(G4Step* aStep, G4TouchableHisto
 			const G4String name = GetMolecule(aStep->GetTrack())->GetName();
 			if ( fUseMultipleTracks ) {
 				time += fVTimeDelay[fNumberOfTracksPerEvent];
-				fIRT->AddMolecule(aStep, time, 0, G4ThreeVector(fSpatialOffsetX[fNumberOfTracksPerEvent],
+				fIRT->AddMolecule(aStep->GetTrack(), time, 0, G4ThreeVector(fSpatialOffsetX[fNumberOfTracksPerEvent],
 																fSpatialOffsetY[fNumberOfTracksPerEvent],
 																fSpatialOffsetZ[fNumberOfTracksPerEvent]));
 			} else {
-				fIRT->AddMolecule(aStep, time, 0, G4ThreeVector());
+				fIRT->AddMolecule(aStep->GetTrack(), time, 0, G4ThreeVector());
 			}
 			
 			aStep->GetTrack()->SetTrackStatus(fStopAndKill);
@@ -181,20 +180,30 @@ void TsScoreWithIRTMultipleTracks::UserHookForEndOfEvent() {
 				G4double time = timeAndGvalue.first;
 				G4double gvalue = timeAndGvalue.second;
 				
-				//if ( fUseMultipleTracks ) {
-				//	// Assuming 2 tracks:
-				//	if (      time >= fVTimeDelay[0] && time < fVTimeDelay[1] )
-				//		gvalue *= 100/(fVEnergyDeposit[0]/eV);
-				//	else
-				//		gvalue *= 100/((fVEnergyDeposit[0]+fVEnergyDeposit[1])/eV);
-				//} else {
-				//	gvalue *= 100/(fEnergyDepositPerEvent/eV);
-				//}
+				if ( fUseMultipleTracks ) {
+//					// Assuming 2 tracks:
+//					if (      time >= fVTimeDelay[0] && time < fVTimeDelay[1] )
+//						gvalue *= 100/(fVEnergyDeposit[0]/eV);
+//					else
+//						gvalue *= 100/((fVEnergyDeposit[0]+fVEnergyDeposit[1])/eV);
+
+					G4double de = 0;
+					G4int i = 0;
+					while(time >= fVTimeDelay[i] && i < fNumberOfMultipleTracks){
+						de += fVEnergyDeposit[i]/eV;
+						i++;
+					}
+					gvalue *= 100/de;
+
+				} else {
+					gvalue *= 100/(fEnergyDepositPerEvent/eV);
+				}
 				fGValuePerSpeciePerTime[name][time] += gvalue;
 				fGValuePerSpeciePerTime2[name][time] += gvalue*gvalue;
 			}
 		}
 		
+		fIRT->Clean();
 		fNbOfScoredEvents++;
 		irt.clear();
 		

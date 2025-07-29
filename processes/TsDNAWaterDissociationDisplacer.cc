@@ -137,10 +137,10 @@ vector<G4ThreeVector> TsDNAWaterDissociationDisplacer::GetProductsDisplacement(c
 
     G4int decayType = pDecayChannel->GetDisplacementType();
 
-    G4double theOHRMSDisplacement = 0.62 * nanometer;
-    G4double theH3OOHDisplacement = 0.62 * nanometer; // significant
-    G4double theOH2Displacement   = 0.62 * nanometer; // not significant at lowLET
-    G4double theHOHDisplacement   = 0.62 * nanometer; // significant at lowLET
+    G4double theOHRMSDisplacement = 0.775 * nanometer;
+    G4double theH3OOHDisplacement = 0.775 * nanometer; // significant
+    G4double theOH2Displacement   = 0.775 * nanometer; // not significant at lowLET
+    G4double theHOHDisplacement   = 0.775 * nanometer; // significant at lowLET
 
     switch (decayType)
     {

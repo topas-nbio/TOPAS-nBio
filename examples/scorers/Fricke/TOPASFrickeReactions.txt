@@ -163,7 +163,7 @@ i:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/Fe2/ReactionType = 6
 b:Ch/TOPASChemistry/BackgroundReaction/Hydroxyl/Fe2/CompatibleWithStepByStep = "False"
 
 sv:Ch/TOPASChemistry/BackgroundReaction/Hydroperoxy/Fe2/Products = 2 "Fe3" "Dioxidanide"
-d:Ch/TOPASChemistry/BackgroundReaction/Hydroperoxy/Fe2/ReactionRate = 9.0e5 /M/s
+d:Ch/TOPASChemistry/BackgroundReaction/Hydroperoxy/Fe2/ReactionRate = 7.9e5 /M/s
 d:Ch/TOPASChemistry/BackgroundReaction/Hydroperoxy/Fe2/Concentration =  Ch/FeSO4/Concentration M
 i:Ch/TOPASChemistry/BackgroundReaction/Hydroperoxy/Fe2/ReactionType = 6
 b:Ch/TOPASChemistry/BackgroundReaction/Hydroperoxy/Fe2/CompatibleWithStepByStep = "False"

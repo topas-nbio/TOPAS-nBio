@@ -27,7 +27,7 @@
 #include "Randomize.hh"
 
 TsCellCulture::TsCellCulture(TsParameterManager* pM, TsExtensionManager* eM, TsMaterialManager* mM, TsGeometryManager* gM,
-			 TsVGeometryComponent* parentComponent, G4VPhysicalVolume* parentVolume, G4String& name) :
+                             TsVGeometryComponent* parentComponent, G4VPhysicalVolume* parentVolume, G4String& name) :
 TsVGeometryComponent(pM, eM, mM, gM, parentComponent, parentVolume, name)
 {
     ResolveParameters();
@@ -69,36 +69,38 @@ G4VPhysicalVolume* TsCellCulture::Construct()
     //***********************************************************************
     // Optional : include a nucleus and/or mitochondria in the cell
     //***********************************************************************
-
+    
     // Nucleus
     G4String subComponentName1 = "Nucleus";
     G4Orb* gNucleus = new G4Orb("gNucleus", NuclRadius);
     G4LogicalVolume* lNucleus = CreateLogicalVolume(subComponentName1, gNucleus);
-
+    
     // Randomly place cells in the volume
-    G4int nCell = 0;
     G4double x, y, z;
     
-    while(nCell < NbOfCells) {
-        x = (2*G4UniformRand()-1)*(HLX-CellRadius) ;
-        y = (2*G4UniformRand()-1)*(HLY-CellRadius) ;
-        z = (2*G4UniformRand()-1)*(HLZ-CellRadius) ;
+    for (int nCell = 1; nCell <= NbOfCells; nCell++) {
+        G4ThreeVector* position = new G4ThreeVector();
+        G4VPhysicalVolume* pCell = CreatePhysicalVolume("Cell", nCell, true, lCell, new G4RotationMatrix(), position, fEnvelopePhys);
+        CreatePhysicalVolume("Nucleus", lNucleus, new G4RotationMatrix(), new G4ThreeVector(), pCell);
         
-        if (gBox->Inside(G4ThreeVector(x, y, z)) == kInside) {
-            G4ThreeVector* position = new G4ThreeVector(x,y,z);
-            G4VPhysicalVolume* pCell = CreatePhysicalVolume("Cell", nCell, true, lCell, new G4RotationMatrix(), position, fEnvelopePhys);
+        G4bool sample = true;
+        while (sample) {
+            x = (2*G4UniformRand()-1)*(HLX-CellRadius) ;
+            y = (2*G4UniformRand()-1)*(HLY-CellRadius) ;
+            z = (2*G4UniformRand()-1)*(HLZ-CellRadius) ;
             
-            if (pCell->CheckOverlaps(1000, 0., false, 1)) {
-                delete pCell;
-                G4cout << "**** Finding new position for volume Cell : " << nCell <<  " ****" << G4endl;
-            } else {
-                CreatePhysicalVolume("Nucleus", lNucleus, new G4RotationMatrix(), new G4ThreeVector(), pCell);
-                nCell++;
+            if (gBox->Inside(G4ThreeVector(x, y, z)) == kInside) {
+                pCell->SetTranslation(G4ThreeVector(x,y,z));
+                
+                if (!pCell->CheckOverlaps(1000, 0., false, 1)) {
+                    sample = false;
+                }
             }
         }
     }
-
+    
     InstantiateChildren(fEnvelopePhys);
-	
-	return fEnvelopePhys;
+    
+    return fEnvelopePhys;
 }
+

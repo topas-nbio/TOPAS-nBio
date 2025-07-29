@@ -1,0 +1,42 @@
+# TOPAS-nBio example
+# To use lithium processes for excitation and charge exchange 
+# In order to run this example unzip G4LithiumFiles.zip and follow the rest of the instructions in the README.
+
+b:Ge/QuitIfOverlapDetected="false"
+i:Ts/TrackingVerbosity = 1
+
+d:Ge/World/HLX=5 nm
+d:Ge/World/HLY=5 nm
+d:Ge/World/HLZ=5 nm
+b:Ge/World/Invisible = "True"
+s:Ge/World/Material = "G4_WATER"
+
+s:Ge/MyCell/Type="TsSphere"
+s:Ge/MyCell/Material="G4_WATER"
+s:Ge/MyCell/Parent="World"
+d:Ge/MyCell/RMax = Ge/World/HLX nm
+s:Ge/MyCell/Color="magenta"
+
+# Define the physics 
+sv:Ph/Default/Modules = 1 "TsEmDNAPhysics"
+
+# Shoot particles
+s:So/lithium/Type = "Beam"
+s:So/lithium/Component = "BeamPosition1"
+s:So/lithium/BeamParticle = "lithium"
+d:So/lithium/BeamEnergy = 0.84 MeV 
+u:So/lithium/BeamEnergySpread = 0.0 
+s:So/lithium/BeamAngularDistribution = "None"
+s:So/lithium/BeamPositionDistribution = "None"
+i:So/lithium/NumberOfHistoriesInRun   = 1
+
+s:Ge/BeamPosition1/Parent = "World"
+s:Ge/BeamPosition1/Type = "Group"
+d:Ge/BeamPosition1/RotX = 0 deg
+
+s:Ge/BeamPosition2/Parent = "World"
+s:Ge/BeamPosition2/Type = "Group"
+d:Ge/BeamPosition2/RotX = 180 deg
+
+b:Ts/ShowCPUTime = "True"
+

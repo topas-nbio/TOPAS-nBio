@@ -5,10 +5,7 @@
 #
 sv:Ch/TOPASChemistry/DiffusionCoefficients/Molecules = 7 
 "SolvatedElectron" "Hydroxyl"  "Hydrogen"  "Hydronium" "DyHydrogen" "Hydroxide" "HydrogenPeroxide"
-dv:Ch/TOPASChemistry/DiffusionCoefficients/Values    = 7  
- 4.900e9 2.30e9 8.0e9 9.46e9 4.8e9 5.3e9 2.3e9 nm2/s
-#4.900e9 2.20e9 7.0e9 9.46e9 4.8e9 5.3e9 2.3e9 nm2/s
-#4.825e9 2.13e9 7.5e9 9.46e9 4.8e9 5.3e9 2.3e9 nm2/s
+dv:Ch/TOPASChemistry/DiffusionCoefficients/Values    = 7 4.900e9 2.20e9 7.0e9 9.46e9 4.8e9 5.3e9 2.3e9 nm2/s
 
 
 #4.5e9 2.8e9 7e9 9.0e9 5.0e9 5.0e9 2.2e9 nm2/s
@@ -63,7 +60,7 @@ i:Ch/TOPASChemistry/Reaction/Hydrogen/HydrogenPeroxide/ReactionType = 2
 b:Ch/TOPASChemistry/Reaction/Hydrogen/HydrogenPeroxide/CompatibleWithStepByStep = "True"
 
 sv:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydroxyl/Products = 1 "HydrogenPeroxide"
-d:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydroxyl/ReactionRate = 0.55e10 /M/s 
+d:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydroxyl/ReactionRate = 1.1e10 /M/s 
 i:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydroxyl/ReactionType = 2
 b:Ch/TOPASChemistry/Reaction/Hydroxyl/Hydroxyl/CompatibleWithStepByStep = "True"
 
