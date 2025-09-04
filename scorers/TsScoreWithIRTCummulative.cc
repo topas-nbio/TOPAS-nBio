@@ -74,6 +74,11 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
     fLowLimitTo1ps = false;
     if ( fPm->ParameterExists(GetFullParmName("ForceLowTimeCutTo1ps")) )
         fLowLimitTo1ps = fPm->GetBooleanParameter(GetFullParmName("ForceLowTimeCutTo1ps"));
+
+    fTimeLower = 1.0 * ps;
+    if ( fPm->ParameterExists(GetFullParmName("TimeLower")) )
+        fTimeLower = fPm->GetDoubleParameter(GetFullParmName("TimeLower"),"Time");
+
     
     if ( fTimeDistribution == "gaussian" ) {
         fTimeDistributionType = 1;
@@ -266,12 +271,14 @@ void TsScoreWithIRTCummulative::UserHookForPreTimeStepAction() {
             if ( fTestIsInside ) {
                 const G4String& volumeName = (*it_begin)->GetVolume()->GetName();
                 if ( volumeName.contains(fSensitiveVolume) ) {
-                    G4double time = fShiftTime;
+                    //make sure that no molecule is created before the starting time of IRT as defined by the TimeLower parameter
+                    G4double time = std::max(fShiftTime,fTimeLower);
                     fIRT->AddMolecule(*it_begin, time, 0, G4ThreeVector());
                 }
             }
             else {
-                fIRT->AddMolecule(*it_begin, fShiftTime, 0, G4ThreeVector());
+                G4double time = std::max(fShiftTime,fTimeLower);
+                fIRT->AddMolecule(*it_begin, time, 0, G4ThreeVector());
             }
         }
         
