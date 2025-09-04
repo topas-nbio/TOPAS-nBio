@@ -63,6 +63,7 @@ void TsIRT::Sampling(){
 
 		G4int t = (*it).first; 
 
+		// Make sure that the molecule time is not 0.0 when fStepTimes are modified by Scoring options to avoid wrong initialization of Gvalues, which can lead to wrong results
 		G4int tBin = fUtils->FindBin(aMol.time, fStepTimes);
 		if ( -1 < tBin ) {
 			for ( int tbin = tBin; tbin < (int)fStepTimes.size(); tbin++ ) {
