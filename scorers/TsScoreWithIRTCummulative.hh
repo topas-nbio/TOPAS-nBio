@@ -84,6 +84,8 @@ private:
 	G4int fOldEvent;
 	G4double fShiftTime;
 	G4double fMinShiftTime;
+	G4double fTimeLower;
+
 	
 	G4double* fTimeValues;
 	G4double* fTimeWeights;
