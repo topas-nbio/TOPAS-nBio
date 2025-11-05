@@ -15,6 +15,7 @@
 #include "TsVNtupleScorer.hh"
 #include "TsIRTConfiguration.hh"
 #include "Randomize.hh"
+#include "G4Material.hh"
 
 #include <stdint.h>
 
@@ -53,6 +54,8 @@ private:
 	std::map<G4int, std::map<G4int, G4double>> fDirectSSB;
 	G4String fOutputFileName;
 	
+	G4Material* fMaterial;
+
 };
 
 #endif

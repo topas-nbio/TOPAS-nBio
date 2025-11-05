@@ -96,6 +96,7 @@ void TsIRT::AddMolecule(TsIRTConfiguration::TsMolecule aMol) {
     if ( fZMax < position.z() ) fZMax = position.z();
 
     fChemicalSpecies[fSpeciesIndex] = aMol;
+
     fSpeciesIndex++;
 }
 
@@ -144,9 +145,7 @@ TsIRTConfiguration::TsMolecule TsIRT::ConstructMolecule(G4Track* aTrack, G4doubl
 
 void TsIRT::sampleReactions(G4int i) {
 
-    if ( fChemicalSpecies[i].isDNA )
-        return;
-
+	fMoleculesName = fReactionConf->GetMoleculeNames();
 	if ( !MoleculeExists(i) )
 		return;
 
@@ -166,6 +165,8 @@ void TsIRT::sampleReactions(G4int i) {
 			for ( int kk = fziniIndex; kk <= fzendIndex; kk++ ) {
 				for (auto& IndexAndAlive:fSpaceBinned[ii][jj][kk]) {
 					G4int j = IndexAndAlive.first;
+
+					if(fChemicalSpecies[i].isDNA && fChemicalSpecies[j].isDNA) continue;
                 
 					if (j == i) continue;
 
@@ -174,6 +175,7 @@ void TsIRT::sampleReactions(G4int i) {
 
 					G4int indexOfReaction = fReactionConf->GetReactionIndex(fChemicalSpecies[i].id,
 																			fChemicalSpecies[j].id);
+
 					if( -1 < indexOfReaction ) {
 						G4double timeI = fChemicalSpecies[i].time;
 						G4double timeJ = fChemicalSpecies[j].time;
@@ -326,9 +328,8 @@ void TsIRT::ConductReactions() {
 				products = fReactionConf->GetReactionProducts(indexOfReaction);
 				
 				if(fChemVerbosity > 0){
-				if ( fMoleculesName[fChemicalSpecies[iM].id]  == "OH^0" || fMoleculesName[fChemicalSpecies[jM].id]  == "OH^0" )
-					G4cout<<"At time: "<<irt-fMinTime<<" ns"<<'\t'<<fMoleculesName[fChemicalSpecies[iM].id] << "(" << iM << ")" 
-								<<" + "<<fMoleculesName[fChemicalSpecies[jM].id]<< "(" << jM << ")" << " => " << G4endl;
+					G4cout<<"At time: "<<irt-fMinTime<<" ns"<<'\t'<<fMoleculesName[fChemicalSpecies[iM].id] << "(" << iM << ")"
+								<<" + "<<fMoleculesName[fChemicalSpecies[jM].id]<< "(" << jM << ")" << " => ";
 				}
 
 				if ( 0 <= tBin ) {
@@ -471,15 +472,6 @@ void TsIRT::ConductReactions() {
             if (fChemVerbosity) {
                 G4cout << G4endl;
             }
-
-			if(fChemVerbosity >= 2){
-				if (products.size() == 0)
-				{
-					G4cout << "No product"<<G4endl;
-				}else{
-	                G4cout << G4endl;
-				}
-			}
 
 		} else {
 			break;
