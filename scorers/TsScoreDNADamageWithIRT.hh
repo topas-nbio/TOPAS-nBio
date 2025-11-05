@@ -19,7 +19,8 @@
 
 #include <stdint.h>
 
-class TsIRT;
+// class TsIRT;
+class TsIRTManager;
 
 class TsScoreDNADamageWithIRT : public TsVNtupleScorer
 {
@@ -45,7 +46,8 @@ protected:
 	
 private:
     TsParameterManager* fPm;
-	TsIRT* fIRT;
+	// TsIRT* fIRT;
+	TsIRTManager* fIRT;
 
 	G4double fPrescribedDose;
     G4double fEnergyDepositPerEvent;

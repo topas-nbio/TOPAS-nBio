@@ -9,6 +9,8 @@
 // *                                                                  *
 // ********************************************************************
 
+#include "TsIRTManager.hh"
+
 #include "TsScoreDNADamageWithIRT.hh"
 #include "TsIRT.hh" 
 #include "TsIRTConfiguration.hh"
@@ -34,7 +36,8 @@ fPm(pM), fEnergyDepositPerEvent(0), fName(scorerName), fOutputFileName(outFileNa
 {
 	SetUnit("");
 	
-	fIRT = new TsIRT(fPm, fName);
+	// fIRT = new TsIRT(fPm, fName);
+	fIRT = new TsIRTManager(fPm, fName);
 	
 	fNtuple->RegisterColumnD(&fTime, "Time", "ps");
 	fNtuple->RegisterColumnI(&fOHDNAReactions, "Yield");

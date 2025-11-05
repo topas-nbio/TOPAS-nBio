@@ -115,4 +115,6 @@ std::vector<TsIRTConfiguration::TsMolecule> TsIRTManager::GetSurvivingMoleculesW
 	return fIRTProcedure->GetSurvivingMoleculesWithMolID(molID);
 }
 
-
+std::map<G4int, std::pair<G4int,G4int>>       TsIRTManager::GetReactedDNA() {
+	return fIRTProcedure->GetReactedDNA();
+}
