@@ -854,13 +854,6 @@ void TsEmDNAChemistry::ConstructProcess()
         ph->RegisterProcess(new G4DNAElectronSolvation("e-_G4DNAElectronSolvation"),
                    G4Electron::Definition());
     }
-    
-
-
-    G4DNAElectronSolvation* solvation = (G4DNAElectronSolvation*)process;
-    G4VEmModel* solvationModel = new G4DNAOneStepThermalizationModel();
-    solvation->SetEmModel(solvationModel, 0);
-
 
     G4bool useExtendedProtonLimit = false;
     if ( fPm->ParameterExists(GetFullParmName("UseExtendedProtonLimit") ) )
