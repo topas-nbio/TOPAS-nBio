@@ -17,7 +17,7 @@ public:
 	TsIRTConfiguration(G4String, TsParameterManager*);
 	~TsIRTConfiguration();
 
-	void AddMolecule(G4String name, G4double diffusionCoefficient, G4double charge, G4double radius);
+	void AddMolecule(G4String name, G4double diffusionCoefficient, G4double charge, G4double radius, G4int moleculeID=0);
 	G4bool MoleculeExists(G4String name);
 	void ResolveReactionParameters();
 	void InsertReaction(G4String, G4String, std::vector<G4int>, G4double, G4int);

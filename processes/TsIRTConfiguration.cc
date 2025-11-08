@@ -123,9 +123,15 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 																"/DiffusionCoefficient","surface perTime");
 		G4String symbol = fPm->GetStringParameter("Mo/" + moleculesDontExist[u] + "/Symbol");
 		
-		AddMolecule(symbol, diffusionCoefficient, charge, radius);
-		
+		if ( fPm->ParameterExists("Mo/" + moleculesDontExist[u] + "/AssignMoleculeID"))
+			AddMolecule(symbol,
+						diffusionCoefficient, charge, radius,
+						fPm->GetIntegerParameter("Mo/" + moleculesDontExist[u] + "/AssignMoleculeID"));
+		else
+			AddMolecule(symbol, diffusionCoefficient, charge, radius);
+
 		fExistingMolecules[moleculesDontExist[u]] = symbol;
+
     }
 	
 	G4String parName = "Ch/" + chemistryList + "/SetAllReactionsTotallyDiffusionControlled";
@@ -367,17 +373,25 @@ TsIRTConfiguration::~TsIRTConfiguration()
 
 
 void TsIRTConfiguration::AddMolecule(G4String name, G4double diffusionCoefficient,
-									 G4double charge, G4double radius) {
-	fLastMoleculeID++;
+									 G4double charge, G4double radius, G4int moleculeID) {
+
 	TsMoleculeDefinition aMolecule;
 	aMolecule.diffusionCoefficient = diffusionCoefficient;
 	aMolecule.charge = charge;
 	aMolecule.radius = radius;
 	
-	fMoleculesDefinition[fLastMoleculeID] = aMolecule;
-	fMoleculesID[name] = fLastMoleculeID;
-	fMoleculesName[fLastMoleculeID] = name;
-	
+	if(moleculeID != 0){
+		fMoleculesDefinition[moleculeID] = aMolecule;
+		fMoleculesID[name] = moleculeID;
+		fMoleculesName[moleculeID] = name;
+		fLastMoleculeID = moleculeID;
+	}else{
+		fLastMoleculeID++;
+		fMoleculesDefinition[fLastMoleculeID] = aMolecule;
+		fMoleculesID[name] = fLastMoleculeID;
+		fMoleculesName[fLastMoleculeID] = name;
+	}
+
 	G4bool found = false;
 	for (auto it = fExistingMolecules.begin(); it != fExistingMolecules.end(); ++it) {
 		if (it->second == name) {

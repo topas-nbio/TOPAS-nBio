@@ -9,6 +9,8 @@
 // *                                                                  *
 // ********************************************************************
 
+#include "TsIRTManager.hh"
+
 #include "TsScoreDNADamageWithIRT.hh"
 #include "TsIRT.hh" 
 #include "TsIRTConfiguration.hh"
@@ -34,7 +36,8 @@ fPm(pM), fEnergyDepositPerEvent(0), fName(scorerName), fOutputFileName(outFileNa
 {
 	SetUnit("");
 	
-	fIRT = new TsIRT(fPm, fName);
+	// fIRT = new TsIRT(fPm, fName);
+	fIRT = new TsIRTManager(fPm, fName);
 	
 	fNtuple->RegisterColumnD(&fTime, "Time", "ps");
 	fNtuple->RegisterColumnI(&fOHDNAReactions, "Yield");
@@ -42,6 +45,8 @@ fPm(pM), fEnergyDepositPerEvent(0), fName(scorerName), fOutputFileName(outFileNa
 	fPrescribedDose = fPm->GetDoubleParameter(GetFullParmName("PrescribedDose"),"Dose");
 	fNbOfScoredEvents = 0;
 	fEnergyDepositPerEvent = 0.0;
+
+	fMaterial = G4Material::GetMaterial("G4_WATER");
 }
 
 
@@ -179,7 +184,7 @@ void TsScoreDNADamageWithIRT::UserHookForEndOfEvent() {
 			fIRT->AddMolecule(aMol);
 			totalSpecies++;
 		}
-		
+
 		dna.close();
 		G4cout << " ---   Running IRT for " << totalSpecies << " dna and "
 		<< fNbOfScoredEvents << " chemical species" << G4endl;
@@ -245,10 +250,22 @@ void TsScoreDNADamageWithIRT::UserHookForPreTimeStepAction() {
         G4TrackManyList* trackList = G4ITTrackHolder::Instance()->GetMainList();
         G4ManyFastLists<G4Track>::iterator it_begin = trackList->begin();
         G4ManyFastLists<G4Track>::iterator it_end   = trackList->end();
-		
+
+        for(;it_begin!=it_end;++it_begin) {
+            G4Molecule* Molecule = GetMolecule(*it_begin);
+            const G4MoleculeDefinition* MolDef = Molecule->GetDefinition();
+            if (MolDef == G4H2O::Definition()) {
+                return;
+            }
+        }
+
+        it_begin = trackList->begin();
+
 		for(;it_begin!=it_end;++it_begin){
-			const G4String& matName = it_begin->GetMaterial()->GetName();
-			if ( matName == "G4_WATER" ) {
+			const G4Material* material = it_begin->GetMaterial()->GetBaseMaterial();
+			if(!material) material = it_begin->GetMaterial();
+
+			if ( material == fMaterial ) {
 				G4double time = it_begin->GetGlobalTime();
 				fIRT->AddMolecule(*it_begin, time, 0, G4ThreeVector());
 			}
