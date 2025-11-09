@@ -80,7 +80,7 @@ jobs:
             "version": "$GITHUB_SHA",
             "exe": "$GITHUB_WORKSPACE/.github/scripts/run-topas-docker.sh"
           }
-EOF
+          EOF
 
       - name: Run qi-topas-nbio test suite
         id: nrtest
