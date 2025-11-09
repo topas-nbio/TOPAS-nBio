@@ -1,6 +1,11 @@
 name: TOPAS-nBio CI
 
 on:
+  push:
+    branches:
+      - workflow
+    paths-ignore:
+      - '*.md'
   workflow_dispatch:
   pull_request:
     branches:
