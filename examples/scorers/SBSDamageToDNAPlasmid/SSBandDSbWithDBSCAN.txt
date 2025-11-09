@@ -86,7 +86,7 @@ d:So/Field/BeamPositionCutOffY      = 10  nm
 s:So/Field/BeamAngularDistribution  = "None"
 i:So/Field/NumberOfHistoriesInRun   = 2500
 
-i:Ts/ShowHistoryCountAtInterval     = 5
+i:Ts/ShowHistoryCountAtInterval     = 250
 
 d:Ge/BeamPosition/TransZ = -1.0 * Ge/World/HLZ nm
 d:Ge/BeamPosition/RotX   = 0 deg
