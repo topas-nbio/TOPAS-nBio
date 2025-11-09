@@ -97,11 +97,26 @@ jobs:
           set -euo pipefail
           source "$NRTEST_ENV/bin/activate"
           cd "$TEST_SUITE_DIR"
+          if [ -d benchmark ]; then
+            find benchmark -mindepth 1 -maxdepth 1 -type d -regex '.*/[0-9].*' -exec rm -rf {} +
+          fi
           BENCHMARK_DIR="benchmark/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-$(date +%Y-%m-%d-%H%M%S)"
           rm -rf "$BENCHMARK_DIR"
           mkdir -p "$BENCHMARK_DIR"
           echo "benchmark_dir=$TEST_SUITE_DIR/$BENCHMARK_DIR" >> "$GITHUB_OUTPUT"
           nrtest execute apps/topas-docker.json tests/ -o "$BENCHMARK_DIR"
+
+      - name: Compare against TOPAS-nBio-v4.0_2025Nov09
+        if: steps.nrtest.outputs.benchmark_dir != ''
+        env:
+          NRTEST_ENV: ${{ env.NRTEST_ENV }}
+          TEST_SUITE_DIR: ${{ env.TEST_SUITE_DIR }}
+        run: |
+          set -euo pipefail
+          source "$NRTEST_ENV/bin/activate"
+          cd "$TEST_SUITE_DIR"
+          BENCHMARK_DIR="${{ steps.nrtest.outputs.benchmark_dir }}"
+          nrtest compare "benchmark/TOPAS-nBio-v4.0_2025Nov09" "$BENCHMARK_DIR"
 
       - name: Upload nrtest benchmark
         if: always() && steps.nrtest.outputs.benchmark_dir != ''
