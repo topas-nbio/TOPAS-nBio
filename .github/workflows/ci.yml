@@ -75,11 +75,11 @@ jobs:
       - name: Configure nrtest app manifest
         run: |
           cat <<EOF > "$TEST_SUITE_DIR/apps/topas-docker.json"
-{
-  "name": "topas",
-  "version": "$GITHUB_SHA",
-  "exe": "$GITHUB_WORKSPACE/.github/scripts/run-topas-docker.sh"
-}
+          {
+            "name": "topas",
+            "version": "$GITHUB_SHA",
+            "exe": "$GITHUB_WORKSPACE/.github/scripts/run-topas-docker.sh"
+          }
 EOF
 
       - name: Run qi-topas-nbio test suite
