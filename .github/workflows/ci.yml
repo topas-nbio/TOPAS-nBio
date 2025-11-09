@@ -102,7 +102,7 @@ jobs:
           fi
           BENCHMARK_DIR="benchmark/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-$(date +%Y-%m-%d-%H%M%S)"
           rm -rf "$BENCHMARK_DIR"
-          mkdir -p "$BENCHMARK_DIR"
+          mkdir -p "$(dirname "$BENCHMARK_DIR")"
           echo "benchmark_dir=$TEST_SUITE_DIR/$BENCHMARK_DIR" >> "$GITHUB_OUTPUT"
           nrtest execute apps/topas-docker.json tests/ -o "$BENCHMARK_DIR"
 
