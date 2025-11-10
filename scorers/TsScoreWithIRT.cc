@@ -179,7 +179,7 @@ G4bool TsScoreWithIRT::ProcessHits(G4Step* aStep, G4TouchableHistory*)
             if ( fTestIsInside ) {
                 G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
                 const G4String& volumeName = touchable->GetVolume()->GetName();
-                if( !volumeName.contains(fSensitiveVolume)) {
+                if( !G4StrUtil::contains(volumeName,fSensitiveVolume)) {
                     return false;
                 }
                 
@@ -273,7 +273,7 @@ void TsScoreWithIRT::UserHookForPreTimeStepAction() {
             G4double time = it_begin->GetGlobalTime();
             if ( fTestIsInside ) {
                 const G4String& volumeName = (*it_begin)->GetVolume()->GetName();
-                if ( volumeName.contains(fSensitiveVolume) ) {
+                if ( G4StrUtil::contains(volumeName,fSensitiveVolume) ) {
                     fIRT->AddMolecule(*it_begin, time, 0, G4ThreeVector());
                 }
             } else {

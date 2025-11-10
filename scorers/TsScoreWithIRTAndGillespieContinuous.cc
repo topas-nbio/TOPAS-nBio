@@ -58,7 +58,7 @@ fPm(pM), fEnergyDepositPerEvent(0), fName(scorerName), fOldEvent(-1)
     fPrescribedDose = fPm->GetDoubleParameter(GetFullParmName("PrescribedDose"),"Dose");
 
     fTimeDistribution = fPm->GetStringParameter(GetFullParmName("PulseDistribution"));
-    fTimeDistribution.toLower();
+    G4StrUtil::to_lower(fTimeDistribution);
 
     fNumberOfPulses  = 1;
     fPulsesTimeDelay = 0;

@@ -61,18 +61,10 @@ G4bool TsScoreClusterSizeInRandomCylinders::ProcessHits(G4Step* aStep, G4Touchab
     G4bool scoreIon = false;
     G4bool scoreExc = false;
            
-#if GEANT4_VERSION_MAJOR >= 11
     if ( G4StrUtil::contains(processName,"Ionisation") )
-#else
-    if ( processName.contains("Ionisation") )
-#endif
 	 scoreIon = true;
 
-#if GEANT4_VERSION_MAJOR >= 11
     if ( G4StrUtil::contains(processName,"Excitation"))
-#else
-    if ( processName.contains("Excitation"))
-#endif
 	 scoreExc = true;
 
     if ( scoreIon || scoreExc ) { 
