@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TOPAS_DOCKER_IMAGE: opentopas/opentopas:v4.1.0
-      G4DATA_DIR: /Applications/G4Data
+      G4DATA_DIR: ${{ github.workspace }}/.cache/GEANT4/G4DATA
       TEST_SUITE_DIR: ${{ github.workspace }}/qi-topas-nbio
       NRTEST_ENV: ${{ github.workspace }}/.cache/nrtest-env
 
