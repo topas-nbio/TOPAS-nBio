@@ -29,4 +29,30 @@ if [ ! -x "$TOPAS_DOCKER_LAUNCHER" ]; then
 	exit 1
 fi
 
-"$TOPAS_DOCKER_LAUNCHER" -g4data="$G4DATA_DIR" -extensions="$TOPAS_NBIO_ROOT" "${CONTAINER_ARGS[@]}"
+CMD=( "$TOPAS_DOCKER_LAUNCHER" "-g4data=$G4DATA_DIR" "-extensions=$TOPAS_NBIO_ROOT" "${CONTAINER_ARGS[@]}" )
+
+if [ -t 1 ]; then
+	exec "${CMD[@]}"
+fi
+
+if command -v python3 >/dev/null 2>&1; then
+	python3 - "$TOPAS_DOCKER_LAUNCHER" "-g4data=$G4DATA_DIR" "-extensions=$TOPAS_NBIO_ROOT" "${CONTAINER_ARGS[@]}" <<'PY'
+import os
+import pty
+import sys
+
+cmd = sys.argv[1:]
+if not cmd:
+	sys.exit("no command provided to pseudo-tty launcher")
+
+raise SystemExit(pty.spawn(cmd))
+PY
+	exit $?
+fi
+
+LOG_FILE=$(mktemp "${TMPDIR:-/tmp}/topas-docker.XXXXXX")
+script -q "$LOG_FILE" "${CMD[@]}"
+status=$?
+cat "$LOG_FILE"
+rm -f "$LOG_FILE"
+exit $status
