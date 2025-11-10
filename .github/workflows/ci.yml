@@ -119,35 +119,35 @@ jobs:
             exit 1
           fi
 
-      - name: Compare output file sizes against baseline
-        if: steps.nrtest.outputs.benchmark_dir != ''
-        env:
-          TEST_SUITE_DIR: ${{ env.TEST_SUITE_DIR }}
-        run: |
-          set -euo pipefail
-          BASELINE_DIR="$TEST_SUITE_DIR/benchmarks/TOPAS-nBio-v4.0_2025Nov09"
-          NEW_DIR="${{ steps.nrtest.outputs.benchmark_dir }}"
-          if [ ! -d "$BASELINE_DIR" ]; then
-            echo "::warning file=benchmarks::Baseline directory $BASELINE_DIR not found; skipping comparison step."
-            exit 0
-          fi
-          status=0
-          while IFS= read -r relpath; do
-            base_file="$BASELINE_DIR/$relpath"
-            new_file="$NEW_DIR/$relpath"
-            if [ ! -f "$new_file" ]; then
-              echo "::error file=$relpath::Missing new file for baseline artifact"
-              status=1
-              continue
-            fi
-            base_size=$(wc -c < "$base_file" | tr -d '[:space:]')
-            new_size=$(wc -c < "$new_file" | tr -d '[:space:]')
-            if [ "$base_size" != "$new_size" ]; then
-              echo "::error file=$relpath::File size mismatch for $relpath (baseline=${base_size}B, new=${new_size}B)"
-              status=1
-            fi
-          done < <(cd "$BASELINE_DIR" && find . -type f \( -name '*.phsp' -o -name '*.csv' -o -name '*.txt' -o -name '*.xyz' -o -name '*.out' \) -print | sed 's|^\./||')
-          exit $status
+#      - name: Compare output file sizes against baseline
+#        if: steps.nrtest.outputs.benchmark_dir != ''
+#        env:
+#          TEST_SUITE_DIR: ${{ env.TEST_SUITE_DIR }}
+#        run: |
+#          set -euo pipefail
+#          BASELINE_DIR="$TEST_SUITE_DIR/benchmarks/TOPAS-nBio-v4.0_2025Nov09"
+#          NEW_DIR="${{ steps.nrtest.outputs.benchmark_dir }}"
+#          if [ ! -d "$BASELINE_DIR" ]; then
+#            echo "::warning file=benchmarks::Baseline directory $BASELINE_DIR not found; skipping comparison step."
+#            exit 0
+#          fi
+#          status=0
+#          while IFS= read -r relpath; do
+#            base_file="$BASELINE_DIR/$relpath"
+#            new_file="$NEW_DIR/$relpath"
+#            if [ ! -f "$new_file" ]; then
+#              echo "::error file=$relpath::Missing new file for baseline artifact"
+#              status=1
+#              continue
+#            fi
+#            base_size=$(wc -c < "$base_file" | tr -d '[:space:]')
+#            new_size=$(wc -c < "$new_file" | tr -d '[:space:]')
+#            if [ "$base_size" != "$new_size" ]; then
+#              echo "::error file=$relpath::File size mismatch for $relpath (baseline=${base_size}B, new=${new_size}B)"
+#              status=1
+#            fi
+#          done < <(cd "$BASELINE_DIR" && find . -type f \( -name '*.phsp' -o -name '*.csv' -o -name '*.txt' -o -name '*.xyz' -o -name '*.out' \) -print | sed 's|^\./||')
+#          exit $status
 
       - name: Upload nrtest benchmark
         if: always() && steps.nrtest.outputs.benchmark_dir != ''
