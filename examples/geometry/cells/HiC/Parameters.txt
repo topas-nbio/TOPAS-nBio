@@ -1,5 +1,6 @@
-i:Ts/NumberOfThreads = 4
-Tf/NumberOfSequentialTimes = 10
+i:Ts/NumberOfThreads = 0
+Tf/NumberOfSequentialTimes = 1
+Ts/ShowHistoryCountAtInterval = 100
 b:Ts/PauseBeforeQuit = "f"
 b:Ts/DumpParameters = "f"
 i:Ts/Seed = 1234
