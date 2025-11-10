@@ -143,7 +143,7 @@ jobs:
             base_size=$(wc -c < "$base_file" | tr -d '[:space:]')
             new_size=$(wc -c < "$new_file" | tr -d '[:space:]')
             if [ "$base_size" != "$new_size" ]; then
-              echo "::error file=$relpath::File size mismatch (baseline=${base_size}B, new=${new_size}B)"
+              echo "::error file=$relpath::File size mismatch for $relpath (baseline=${base_size}B, new=${new_size}B)"
               status=1
             fi
           done < <(cd "$BASELINE_DIR" && find . -type f \( -name '*.phsp' -o -name '*.csv' -o -name '*.txt' -o -name '*.xyz' -o -name '*.out' \) -print | sed 's|^\./||')
