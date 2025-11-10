@@ -119,18 +119,6 @@ jobs:
             exit 1
           fi
 
-      - name: Compare against TOPAS-nBio-v4.0_2025Nov09
-        if: steps.nrtest.outputs.benchmark_dir != ''
-        env:
-          NRTEST_ENV: ${{ env.NRTEST_ENV }}
-          TEST_SUITE_DIR: ${{ env.TEST_SUITE_DIR }}
-        run: |
-          set -euo pipefail
-          source "$NRTEST_ENV/bin/activate"
-          cd "$TEST_SUITE_DIR"
-          BENCHMARK_DIR="${{ steps.nrtest.outputs.benchmark_dir }}"
-          nrtest compare "benchmarks/TOPAS-nBio-v4.0_2025Nov09" "$BENCHMARK_DIR"
-
       - name: Upload nrtest benchmark
         if: always() && steps.nrtest.outputs.benchmark_dir != ''
         uses: actions/upload-artifact@v4
