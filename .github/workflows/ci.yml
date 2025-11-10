@@ -101,10 +101,10 @@ jobs:
           set -euo pipefail
           source "$NRTEST_ENV/bin/activate"
           cd "$TEST_SUITE_DIR"
-          if [ -d benchmark ]; then
-            find benchmark -mindepth 1 -maxdepth 1 -type d -regex '.*/[0-9].*' -exec rm -rf {} +
+          if [ -d benchmarks ]; then
+            find benchmarks -mindepth 1 -maxdepth 1 -type d -regex '.*/[0-9].*' -exec rm -rf {} +
           fi
-          BENCHMARK_DIR="benchmark/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-$(date +%Y-%m-%d-%H%M%S)"
+          BENCHMARK_DIR="benchmarks/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-$(date +%Y-%m-%d-%H%M%S)"
           rm -rf "$BENCHMARK_DIR"
           mkdir -p "$(dirname "$BENCHMARK_DIR")"
           echo "benchmark_dir=$TEST_SUITE_DIR/$BENCHMARK_DIR" >> "$GITHUB_OUTPUT"
@@ -129,7 +129,7 @@ jobs:
           source "$NRTEST_ENV/bin/activate"
           cd "$TEST_SUITE_DIR"
           BENCHMARK_DIR="${{ steps.nrtest.outputs.benchmark_dir }}"
-          nrtest compare "benchmark/TOPAS-nBio-v4.0_2025Nov09" "$BENCHMARK_DIR"
+          nrtest compare "benchmarks/TOPAS-nBio-v4.0_2025Nov09" "$BENCHMARK_DIR"
 
       - name: Upload nrtest benchmark
         if: always() && steps.nrtest.outputs.benchmark_dir != ''
