@@ -35,6 +35,23 @@ TsScoreDNADamageWithIRT::TsScoreDNADamageWithIRT(TsParameterManager* pM, TsMater
 fPm(pM), fEnergyDepositPerEvent(0), fName(scorerName), fOutputFileName(outFileName)
 {
 	SetUnit("");
+
+        G4String chemistryList = "TOPASChemistry";
+        if (fPm->ParameterExists("Ch/ChemistryName"))
+                chemistryList = fPm->GetStringParameter("Ch/ChemistryName");
+
+        G4String irtProcedureParm = "Ch/" + chemistryList + "/IRTProcedure";
+        if (fPm->ParameterExists(irtProcedureParm)) {
+                G4String irtProcedure = fPm->GetStringParameter(irtProcedureParm);
+                G4StrUtil::to_lower(irtProcedure);
+                if (irtProcedure == "continuous") {
+                        G4cerr << "TOPAS is exiting due to an incompatible configuration." << G4endl;
+                        G4cerr << "Scorer " << fName << " cannot be combined with "
+                               << irtProcedureParm << " = \"Continuous\"." << G4endl;
+                        G4cerr << "Change it to \"Pure\"." <<  G4endl;
+                        fPm->AbortSession(1);
+                }   
+        }   
 	
 	// fIRT = new TsIRT(fPm, fName);
 	fIRT = new TsIRTManager(fPm, fName);

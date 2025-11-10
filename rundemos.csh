@@ -78,6 +78,7 @@ set scorer_cases = ( \
     IRTInterTrack/TsIRTInterTrack.txt \
     IRTCummulative/TsIRTCummulative.txt \
     IRTTemperature/TemperatureExample_90C.txt \
+    IRTAndGillespieContinuous/TsIRTAndGillespieGvalue.txt \
     ProteinDataBank/PDB4DNA.txt \
     ParticleTuple/particleTuple.txt \
     SBSDamageToDNAPlasmid/FullDNADamageInPlasmid.txt \
