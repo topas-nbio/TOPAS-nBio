@@ -81,7 +81,7 @@ b:Sc/yield/ReportDeltaGValues       = "True"
 b:Sc/yield/RecyclePulses            = "False"
 
 # Pulse Configuration
-d:Sc/yield/PrescribedDose    = 2 Gy
+d:Sc/yield/PrescribedDose    = 0.5 Gy
 d:Sc/yield/IrradiationTime = 1 s
 s:Sc/yield/PulseDistribution = "Uniform"
 d:Sc/yield/PulseTimeMean     = 0.5 * Sc/yield/IrradiationTime s
