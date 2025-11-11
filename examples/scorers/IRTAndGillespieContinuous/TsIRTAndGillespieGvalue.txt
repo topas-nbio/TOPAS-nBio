@@ -1,0 +1,97 @@
+##############################################################
+#####################- TOPAS PARAMETERS-######################
+##############################################################
+
+i:Ts/NumberOfThreads = 8
+i:Ts/Verbosity = 0
+b:Ts/PauseBeforeQuit = "False"
+b:Ts/ShowCPUTime = "True"
+i:Ts/Seed = 2
+i:Ts/ShowHistoryCountAtInterval  = 5000000
+
+##############################################################
+####################- PHYSICS PARAMETERS-#####################
+##############################################################
+
+sv:Ph/Default/Modules = 2 "TsEmDNAPhysics" "TsEmDNAChemistry"
+s:Ph/Default/Electron/SetElasticScatteringModel = "ELSEPA" 
+s:Ph/Default/SolvatedElectronThermalizationModel = "Ritchie"
+
+##############################################################
+###################- CHEMISTRY PARAMETERS-####################
+##############################################################
+includeFile = TOPAS-LongTimeChemiistry-simplified.txt 
+includeFile = TOPASBranching.txt
+
+s:Ch/ChemistryName = "TOPASChemistry"
+
+b:Ch/TOPASChemistry/ChemicalStageTransportActive = "True"
+d:Ch/TOPASChemistry/ChemicalStageTimeEnd    = 10 ps
+dv:Ch/TOPASChemistry/AddTimeStepHighEdge    = 1 999999 ps
+dv:Ch/TOPASChemistry/AddTimeStepResolution  = 1 1e-6 ps
+d:Ch/TOPASChemistry/SpaceBinningWidth       = 100 um
+s:Ch/TOPASChemistry/IRTProcedure            = "Continuous"
+
+##############################################################
+####################- GEOMETRY PARAMETERS-####################
+##############################################################
+d:Ge/WorldLength = 3 um
+d:Ge/GillespieWorld = 3 um
+
+Ge/World/HLX = 1.5 um 
+Ge/World/HLY = 1.5 um 
+Ge/World/HLZ = 1.5 um 
+Ge/World/Material = "G4_WATER"
+
+s:Ge/Target/Parent   = "World"
+s:Ge/Target/Type     = "TsBox"
+s:Ge/Target/Material = "G4_WATER"
+d:Ge/Target/HLX = 1.5 um
+d:Ge/Target/HLY = 1.5 um
+d:Ge/Target/HLZ = 1.5 um
+
+##############################################################
+####################- SOURCE PARAMETERS-######################
+##############################################################
+
+d:So/Demo/BeamEnergy = 100 MeV 
+u:So/Demo/BeamEnergySpread = 0 
+s:So/Demo/BeamPositionDistribution = "Flat"
+d:So/Demo/BeamPositionCutoffX = 1.4 um
+d:So/Demo/BeamPositionCutoffY = 1.4 um
+s:So/Demo/BeamAngularDistribution = "None"
+s:So/Demo/BeamParticle = "proton"
+i:So/Demo/NumberOfHistoriesInRun = 200000 
+
+##############################################################
+####################- SCORING PARAMETERS-#####################
+##############################################################
+
+s:Sc/yield/Quantity = "IRTContinuous"
+s:Sc/yield/Component = "Target"
+d:Sc/yield/TimeLower = 1 ps
+d:Sc/yield/TimeUpper = 10 s
+i:Sc/yield/TimeBins  = 1000
+
+# Boolean Configuration of Scorer
+b:Sc/yield/EnableHighTimeScavengers = "True"
+b:Sc/yield/ForceLowTimeCutTo1ps     = "False"
+b:Sc/yield/SavePulseInformation     = "False"
+b:Sc/yield/ReportDeltaGValues       = "True"
+b:Sc/yield/RecyclePulses            = "False"
+
+# Pulse Configuration
+d:Sc/yield/PrescribedDose    = 2 Gy
+d:Sc/yield/IrradiationTime = 1 s
+s:Sc/yield/PulseDistribution = "Uniform"
+d:Sc/yield/PulseTimeMean     = 0.5 * Sc/yield/IrradiationTime s
+d:Sc/yield/PulseTimeFWHM     = Sc/yield/IrradiationTime s
+i:Sc/yield/NumberOfPulses  = 1
+d:Sc/yield/PulsesFrequency = 100 /s 
+
+# Output Options
+i:Sc/yield/NumberOfRepetitions      = 8
+s:Sc/yield/OutputFile = "gvalues"
+s:Sc/yield/OutputType = "ASCII"
+s:Sc/yield/IfOutputFileAlreadyExists = "Overwrite"
+
