@@ -31,6 +31,24 @@ TsScoreWithIRTMultipleTracks::TsScoreWithIRTMultipleTracks(TsParameterManager* p
 fPm(pM), fEnergyDepositPerEvent(0), fEnergyLossKill(0), fName(scorerName)
 {
 	SetUnit("");
+
+	G4String chemistryList = "TOPASChemistry";
+	if (fPm->ParameterExists("Ch/ChemistryName"))
+		chemistryList = fPm->GetStringParameter("Ch/ChemistryName");
+
+	G4String irtProcedureParm = "Ch/" + chemistryList + "/IRTProcedure";
+	if (fPm->ParameterExists(irtProcedureParm)) {
+		G4String irtProcedure = fPm->GetStringParameter(irtProcedureParm);
+		G4StrUtil::to_lower(irtProcedure);
+		if (irtProcedure == "continuous") {
+			G4cerr << "TOPAS is exiting due to an incompatible configuration." << G4endl;
+			G4cerr << "Scorer " << fName << " cannot be combined with "
+			       << irtProcedureParm << " = \"Continuous\"." << G4endl;
+                        G4cerr << "Change it to \"Pure\"." <<  G4endl;
+                        G4cerr << "If you need to use the \"Continuous\" mode, then use the scorer named \"IRTContinuous\"." << G4endl;
+			fPm->AbortSession(1);
+		}
+	}
 	
 	fIRT = new TsIRTManager(fPm, fName);
 	
@@ -327,5 +345,3 @@ void TsScoreWithIRTMultipleTracks::Clear() {
 	fNbOfScoredEvents = 0;
 	UpdateFileNameForUpcomingRun();
 }
-
-

@@ -32,6 +32,24 @@ TsScoreWithIRTCummulative::TsScoreWithIRTCummulative(TsParameterManager* pM, TsM
 fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(scorerName), fOldEvent(-1)
 {
     SetUnit("");
+
+    G4String chemistryList = "TOPASChemistry";
+    if (fPm->ParameterExists("Ch/ChemistryName"))
+        chemistryList = fPm->GetStringParameter("Ch/ChemistryName");
+
+    G4String irtProcedureParm = "Ch/" + chemistryList + "/IRTProcedure";
+    if (fPm->ParameterExists(irtProcedureParm)) {
+        G4String irtProcedure = fPm->GetStringParameter(irtProcedureParm);
+        G4StrUtil::to_lower(irtProcedure);
+        if (irtProcedure == "continuous") {
+            G4cerr << "TOPAS is exiting due to an incompatible configuration." << G4endl;
+            G4cerr << "Scorer " << fName << " cannot be combined with "
+                   << irtProcedureParm << " = \"Continuous\"." << G4endl;
+            G4cerr << "Change it to \"Pure\"." <<  G4endl;
+            G4cerr << "If you need to use the \"Continuous\" mode, then use the scorer named \"IRTContinuous\"." << G4endl;
+            fPm->AbortSession(1);
+        }
+    }
     
     if (fPm->GetIntegerParameter("Ts/NumberOfThreads") != 1) {
         G4cerr << "TOPAS is exiting due to an error in parameter." << G4endl;
@@ -57,7 +75,7 @@ fPm(pM), fEnergyDepositPerEvent(0), fEnergyDepositPerEventEverywhere(0), fName(s
     fPrescribedDose = fPm->GetDoubleParameter(GetFullParmName("PrescribedDose"),"Dose");
     
     fTimeDistribution = fPm->GetStringParameter(GetFullParmName("PulseDistribution"));
-    fTimeDistribution.toLower();
+    G4StrUtil::to_lower(fTimeDistribution);
     
     fNumberOfPulses = 1;
     if ( fPm->ParameterExists(GetFullParmName("NumberOfPulses")) ) {
@@ -179,7 +197,7 @@ G4bool TsScoreWithIRTCummulative::ProcessHits(G4Step* aStep, G4TouchableHistory*
             if ( fTestIsInside ) {
                 G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
                 const G4String& volumeName = touchable->GetVolume()->GetName();
-                if( !volumeName.contains(fSensitiveVolume)) {
+                if( !G4StrUtil::contains(volumeName,fSensitiveVolume)) {
                     return false;
                 }
                 
@@ -270,7 +288,7 @@ void TsScoreWithIRTCummulative::UserHookForPreTimeStepAction() {
         for(;it_begin!=it_end;++it_begin){
             if ( fTestIsInside ) {
                 const G4String& volumeName = (*it_begin)->GetVolume()->GetName();
-                if ( volumeName.contains(fSensitiveVolume) ) {
+                if ( G4StrUtil::contains(volumeName,fSensitiveVolume) ) {
                     //make sure that no molecule is created before the starting time of IRT as defined by the TimeLower parameter
                     G4double time = std::max(fShiftTime,fTimeLower);
                     fIRT->AddMolecule(*it_begin, time, 0, G4ThreeVector());
@@ -408,6 +426,4 @@ void TsScoreWithIRTCummulative::UserHookForEndOfEvent() {
         G4RunManager::GetRunManager()->AbortRun(true);
     }
 }
-
-
 

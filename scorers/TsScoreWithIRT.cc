@@ -33,6 +33,24 @@ TsScoreWithIRT::TsScoreWithIRT(TsParameterManager* pM, TsMaterialManager* mM, Ts
 fPm(pM), fEnergyDepositPerEvent(0), fEnergyLossKill(0), fName(scorerName)
 {
     SetUnit("");
+
+    G4String chemistryList = "TOPASChemistry";
+    if (fPm->ParameterExists("Ch/ChemistryName"))
+        chemistryList = fPm->GetStringParameter("Ch/ChemistryName");
+
+    G4String irtProcedureParm = "Ch/" + chemistryList + "/IRTProcedure";
+    if (fPm->ParameterExists(irtProcedureParm)) {
+        G4String irtProcedure = fPm->GetStringParameter(irtProcedureParm);
+        G4StrUtil::to_lower(irtProcedure);
+        if (irtProcedure == "continuous") {
+            G4cerr << "TOPAS is exiting due to an incompatible configuration." << G4endl;
+            G4cerr << "Scorer " << fName << " cannot be combined with "
+                   << irtProcedureParm << " = \"Continuous\"." << G4endl;
+            G4cerr << "Change it to \"Pure\"." <<  G4endl;
+            G4cerr << "If you need to use the \"Continuous\" mode, then use the scorer named \"IRTContinuous\"." << G4endl;
+            fPm->AbortSession(1);
+        }
+    }
     
     fNtuple->RegisterColumnD(&fGValue, "GValue: number of molecules per 100 eV of energy deposit", "");
     fNtuple->RegisterColumnD(&fGValueError, "GValue statistical error", "");
@@ -161,7 +179,7 @@ G4bool TsScoreWithIRT::ProcessHits(G4Step* aStep, G4TouchableHistory*)
             if ( fTestIsInside ) {
                 G4TouchableHistory* touchable = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
                 const G4String& volumeName = touchable->GetVolume()->GetName();
-                if( !volumeName.contains(fSensitiveVolume)) {
+                if( !G4StrUtil::contains(volumeName,fSensitiveVolume)) {
                     return false;
                 }
                 
@@ -255,7 +273,7 @@ void TsScoreWithIRT::UserHookForPreTimeStepAction() {
             G4double time = it_begin->GetGlobalTime();
             if ( fTestIsInside ) {
                 const G4String& volumeName = (*it_begin)->GetVolume()->GetName();
-                if ( volumeName.contains(fSensitiveVolume) ) {
+                if ( G4StrUtil::contains(volumeName,fSensitiveVolume) ) {
                     fIRT->AddMolecule(*it_begin, time, 0, G4ThreeVector());
                 }
             } else {
@@ -479,6 +497,4 @@ void TsScoreWithIRT::Clear() {
     }
     UpdateFileNameForUpcomingRun();
 }
-
-
 

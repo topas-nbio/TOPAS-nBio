@@ -15,7 +15,7 @@ TsIRTManager::TsIRTManager(TsParameterManager* pM, G4String parmName)
 	if ( fPm->ParameterExists(parName) )
 		IRTType = fPm->GetStringParameter(parName);
 
-	IRTType.toLower();
+	G4StrUtil::to_lower(IRTType);
 	if (IRTType == "pure")
 		fIRTProcedure = new TsIRT(fPm,fName);
 	else if (IRTType == "continuous"){                 // This is Wook-Geun Implementation

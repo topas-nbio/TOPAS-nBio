@@ -73,10 +73,10 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 	
 	for ( int i = 0; i < numberOfMolecules; i++ ) {
 		G4String fullName = (*moleculeNames)[i];
-		fullName.toLower();
+		G4StrUtil::to_lower(fullName);
 		G4bool moleculeExists = false;
 		
-		if ( fullName.contains("diffusioncoefficient") ) {
+		if ( G4StrUtil::contains(fullName,"diffusioncoefficient") ) {
 			G4String molName = fullName.substr(3, fullName.find("diffusioncoefficient")-4);
 			if ( fExistingMolecules.find(molName) != fExistingMolecules.end() ) {
 				G4int molID =  fMoleculesID[fExistingMolecules[molName]];
@@ -87,7 +87,7 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 			}
 		}
 		
-		if (fullName.contains("radius") ) {
+		if (G4StrUtil::contains(fullName,"radius") ) {
 			G4String molName = fullName.substr(3, fullName.find("radius")-4);
 			if ( fExistingMolecules.find(molName) != fExistingMolecules.end() ) {
 				G4int molID =  fMoleculesID[fExistingMolecules[molName]];
@@ -98,7 +98,7 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 			}
 		}
 		
-		if (fullName.contains("charge")) {
+		if (G4StrUtil::contains(fullName,"charge")) {
 			G4String molName = fullName.substr(3, fullName.find("charge")-4);
 			if ( fExistingMolecules.find(molName) != fExistingMolecules.end() ) {
 				G4int molID =  fMoleculesID[fExistingMolecules[molName]];
@@ -109,14 +109,14 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 			}
 		}
 		
-		if (fullName.contains("symbol") && !moleculeExists) {
+		if (G4StrUtil::contains(fullName,"symbol") && !moleculeExists) {
 			moleculesDontExist.push_back(fullName.substr(3, fullName.find("symbol")-4));
 		}
 	}
 	
 	// Creates user-defined molecules.
 	for ( size_t u = 0; u < moleculesDontExist.size(); u++ ) {
-		moleculesDontExist[u].toLower();
+		G4StrUtil::to_lower(moleculesDontExist[u]);
 		G4double charge = fPm->GetUnitlessParameter("Mo/" + moleculesDontExist[u] + "/Charge");
 		G4double radius = fPm->GetDoubleParameter("Mo/" + moleculesDontExist[u] + "/Radius", "Length");
 		G4double diffusionCoefficient = fPm->GetDoubleParameter("Mo/" + moleculesDontExist[u] +
@@ -146,7 +146,7 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 	
 	for ( int i = 0; i < numberOfReactions; i++ ) {
 		G4String aparName = (*reactionNames)[i];
-		if ( aparName.contains("BackgroundReaction") || aparName.contains("/DissociationReaction/"))
+		if ( G4StrUtil::contains(aparName,"BackgroundReaction") || G4StrUtil::contains(aparName,"/DissociationReaction/"))
 			continue;
 		
 		if ( fPm->ParameterExists(aparName.substr(0,aparName.find("Products")-1) + "/Active") &&
@@ -156,19 +156,19 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 		G4String reactions = aparName.substr(prefixLength, aparName.find("Products")-prefixLength-1);
 		G4String reactorA = reactions.substr(0, reactions.find("/"));
 		G4String reactorB = reactions.substr(reactions.find("/") + 1);
-		reactorA.toLower();
-		reactorB.toLower();
+		G4StrUtil::to_lower(reactorA);
+		G4StrUtil::to_lower(reactorB);
 		G4String* product = fPm->GetStringVector(aparName);
 		G4int nbOfProduct = fPm->GetVectorLength(aparName);
 		std::vector<G4int> vProduct;
 		
 		for ( int j = 0; j < nbOfProduct; j++ ) {
-			product[j].toLower();
+			G4StrUtil::to_lower(product[j]);
 			vProduct.push_back(fMoleculesID[fExistingMolecules[product[j]]]);
 		}
 
-		reactorA.toLower();
-		reactorB.toLower();
+		G4StrUtil::to_lower(reactorA);
+		G4StrUtil::to_lower(reactorB);
 		
 		G4int reactionType = fPm->GetIntegerParameter(aparName.substr(0,aparName.find("Products")-1) + "/ReactionType");
 
@@ -224,7 +224,7 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 				
 				std::vector<G4int> productsOfChannel;
 				for (G4int k = 0; k < nbProductsInChannel; k++) {
-					productInChannel[k].toLower();
+					G4StrUtil::to_lower(productInChannel[k]);
 					QuitIfMoleculeNotFound(productInChannel[k]);
 					productsOfChannel.push_back(fMoleculesID[fExistingMolecules[productInChannel[k]]]);
 				}
@@ -240,7 +240,7 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 	prefixLength = G4String("Ch/" + chemistryList + "/BackgroundReaction/").length();
 	for ( int i = 0; i < numberOfReactions; i++ ) {
 		G4String aparName = (*reactionNames)[i];
-		if ( aparName.contains("/Reaction/") || aparName.contains("/DissociationReaction/"))
+		if ( G4StrUtil::contains(aparName,"/Reaction/") || G4StrUtil::contains(aparName,"/DissociationReaction/"))
 			continue;
 		
 		if ( fPm->ParameterExists(aparName.substr(0,aparName.find("Products")-1) + "/Active") &&
@@ -250,19 +250,19 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 		G4String reactions = aparName.substr(prefixLength, aparName.find("Products")-prefixLength-1);
 		G4String reactorA = reactions.substr(0, reactions.find("/"));
 		G4String reactorB = reactions.substr(reactions.find("/") + 1);
-		reactorA.toLower();
-		reactorB.toLower();
+		G4StrUtil::to_lower(reactorA);
+		G4StrUtil::to_lower(reactorB);
 		G4String* product = fPm->GetStringVector(aparName);
 		G4int nbOfProduct = fPm->GetVectorLength(aparName);
 		std::vector<G4int> vProduct;
 		
 		for ( int j = 0; j < nbOfProduct; j++ ) {
-			product[j].toLower();
+			G4StrUtil::to_lower(product[j]);
 			vProduct.push_back(fMoleculesID[fExistingMolecules[product[j]]]);
 		}
 		
-		reactorA.toLower();
-		reactorB.toLower();
+		G4StrUtil::to_lower(reactorA);
+		G4StrUtil::to_lower(reactorB);
 		
 		if ( fPm->ParameterExists(aparName.substr(0,aparName.find("Products")-1) + "/ScavengingCapacity") ) {
 			G4double scavengingCapacity = fPm->GetDoubleParameter(aparName.substr(0,aparName.find("Products")-1) +
@@ -279,7 +279,7 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 			if ( fPm->ParameterExists(aparName.substr(0,aparName.find("Products")-1) + "/ScavengingModel"))
 				scavengingExponentialModel = fPm->GetStringParameter(aparName.substr(0,aparName.find("Products")-1) + "/ScavengingModel");
 			
-			scavengingExponentialModel.toLower();
+			G4StrUtil::to_lower(scavengingExponentialModel);
 			if ( scavengingExponentialModel == "exponentialsinglefactor" ) {
 				InsertBackgroundReaction(reactorA, reactorB,vProduct,reactionRate,concentration,false);
 			} else if (scavengingExponentialModel == "exponentialdoublefactor" ) {
@@ -295,7 +295,7 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 	prefixLength = G4String("Ch/" + chemistryList + "/DissociationReaction/").length();
 	for ( int i = 0; i < numberOfReactions; i++ ) {
 		G4String aparName = (*reactionNames)[i];
-		if ( aparName.contains("/Reaction/") || aparName.contains("/BackgroundReaction/"))
+		if ( G4StrUtil::contains(aparName,"/Reaction/") || G4StrUtil::contains(aparName,"/BackgroundReaction/"))
 			continue;
 		
 		if ( fPm->ParameterExists(aparName.substr(0,aparName.find("Products")-1) + "/Active") &&
@@ -305,17 +305,17 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 		G4String reactions = aparName.substr(prefixLength, aparName.find("Products")-prefixLength-1);
 		G4String reactorA = reactions.substr(0, reactions.find("/"));
 		G4String reactorB = "none";
-		reactorA.toLower();
+		G4StrUtil::to_lower(reactorA);
 		G4String* product = fPm->GetStringVector(aparName);
 		G4int nbOfProduct = fPm->GetVectorLength(aparName);
 		std::vector<G4int> vProduct;
 		
 		for ( int j = 0; j < nbOfProduct; j++ ) {
-			product[j].toLower();
+			G4StrUtil::to_lower(product[j]);
 			vProduct.push_back(fMoleculesID[fExistingMolecules[product[j]]]);
 		}
 		
-		reactorA.toLower();
+		G4StrUtil::to_lower(reactorA);
 		
 		G4double concentration = 0;
 		G4double reactionRate = fPm->GetDoubleParameter(aparName.substr(0,aparName.find("Products")-1) +"/DissociationRate","perTime");
@@ -343,7 +343,7 @@ fKick(false), fAllTotallyDiffusionControlled(false)
 		fpHValue                = 7.1;
 		
 		fpHSolvent = fPm->GetStringParameter("Ch/"+chemistryList+"/ModelAcidPropertiesFromSubstance");
-		fpHSolvent.toLower();
+		G4StrUtil::to_lower(fpHSolvent);
 		if (fPm->ParameterExists("Ch/"+chemistryList+"/ModelAcidPropertiesWithConcentration") &&
 			fPm->ParameterExists("Ch/"+chemistryList+"/ModelAcidPropertiesWithpH")) {
 			G4String message = "Cannot be defined when parameter: Ch/" + chemistryList + "/ModelAcidPropertiesWithConcentration is used.";

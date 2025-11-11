@@ -44,7 +44,7 @@ d:Ge/target/HLZ      = 1.25 um
 
 s:So/Demo/Type                     = "PhaseSpace"
 s:So/Demo/Component                = "World"
-s:So/Demo/PhaseSpaceFileName       = "twoAlphas"
+s:So/Demo/PhaseSpaceFileName       = "phsp/twoAlphas"
 i:So/Demo/PhaseSpaceMultipleUse    = 1
 
 #############################

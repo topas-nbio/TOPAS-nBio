@@ -57,6 +57,8 @@ set geometry_cases = ( \
     cells/EllipsoidCell.txt \
     cells/FibroblastCell.txt \
     cells/SphericalCell.txt \
+    cells/HiC/Parameters.txt \
+    cells/Neuron/Neuron.txt \
     other/generateRandomCylinders.txt \
     other/readBackRandomCylindres.txt )
 
@@ -65,25 +67,49 @@ set process_cases = ( \
     ActiveChemistryRevised.txt \
     ActiveCustomizablePhysics.txt \
     G4DNAModelPerRegion.txt \
+    GoldNanoParticle.txt \
     RemoveChemicalSpeciesInVolume.txt )
 
 set scorer_cases = ( \
     DBSCAN/DBSCAN.txt \
+    Fricke/FrickeIRT.txt \
+    IonizationDetail/IonizationDetailInRandomCylinders.txt \
+    IRTGetGValue/TsIRTGvalue.txt \
+    IRTInterTrack/TsIRTInterTrack.txt \
+    IRTCummulative/TsIRTCummulative.txt \
+    IRTTemperature/TemperatureExample_90C.txt \
+    IRTAndGillespieContinuous/TsIRTAndGillespieGvalue.txt \
     ProteinDataBank/PDB4DNA.txt \
     ParticleTuple/particleTuple.txt \
-    IonizationDetail/IonizationDetailInRandomCylinders.txt \
     SBSDamageToDNAPlasmid/FullDNADamageInPlasmid.txt \
     SBSDamageToDNAPlasmid/SSBandDSbWithDBSCAN.txt \
     SBSMoleculesAtATime/TsSpeciesAtTime.txt \
     SBSGetGValue/GvalueG4DNADefault.txt \
     SBSGetGValue/GvalueRevisedPhysicsChemistry.txt )
 
+set green = `tput setaf 2` 
+set red   = `tput setaf 1`
+set reset = `tput sgr0` 
+
+# --- Detect UTF-8 support and choose symbols ---
+if (`locale charmap` == "UTF-8") then
+    set check = "✅"
+    set cross = "❌"
+else
+    set check = "[ Success ]"
+    set cross = "[ FAIL ]"
+endif
+
 set exec_log = out
 
+set start_time = `date +%s` 
 echo "Running TOPAS-nBio demos using repository root: $repo_root"
 
 cd "$repo_root/examples/geometry"
-echo "-- Geometry demos --"
+echo ""
+echo "======================================"
+echo "** Geometry demos **"
+echo "======================================"
 foreach case ($geometry_cases)
     set case_dir = $case:h
     set case_file = $case:t
@@ -95,21 +121,24 @@ foreach case ($geometry_cases)
     echo 'b:Ts/UseQt = "False"' >> run.txt
     echo 'b:Ts/PauseBeforeQuit = "False"' >> run.txt
     echo 'b:Gr/Enable = "False"' >> run.txt
-    echo "Running $case - run.txt"
+    echo "🚀 Running $case " 
     topas run.txt >&! $exec_log
     set matches = `awk '/Execution/ {count++} END {print count+0}' $exec_log`
     if ("$matches" == "1") then
-        echo "--success-- $case"
+        printf "   %s%s [ Success ]%s %s\n" "$green" "$check" "$reset" "$case" 
     else
-        echo "--failed -- $case"
+        printf "   %s%s [ Fail ]%s %s\n" "$red" "$cross" "$reset" "$case" 
     endif
-    rm -f $exec_log run.txt *.xyz *.phsp *.header *.csv
+    rm -f $exec_log run.txt *.xyz *.phsp *.header *.csv *.sdd
     popd > /dev/null
 end
 rm -f *.xyz *.phsp *.header *.csv $exec_log
 
 cd "$repo_root/examples/processes"
-echo "-- Process demos --"
+echo ""
+echo "======================================"
+echo "** Process demos **"
+echo "======================================"
 foreach case ($process_cases)
     set case_dir = $case:h
     set case_file = $case:t
@@ -121,13 +150,13 @@ foreach case ($process_cases)
     echo 'b:Ts/UseQt = "False"' >> run.txt
     echo 'b:Ts/PauseBeforeQuit = "False"' >> run.txt
     echo 'b:Gr/Enable = "False"' >> run.txt
-    echo "Running $case - run.txt"
+    echo "🚀 Running $case " 
     topas run.txt >&! $exec_log
     set matches = `awk '/Execution/ {count++} END {print count+0}' $exec_log`
     if ("$matches" == "1") then
-        echo "--success-- $case"
+        printf "   %s%s [ Success ]%s %s\n" "$green" "$check" "$reset" "$case" 
     else
-        echo "--failed -- $case"
+        printf "   %s%s [ Fail ]%s %s\n" "$red" "$cross" "$reset" "$case" 
     endif
     rm -f $exec_log run.txt
     popd > /dev/null
@@ -135,7 +164,10 @@ end
 rm -f $exec_log
 
 cd "$repo_root/examples/scorers"
-echo "-- Scorer demos --"
+echo ""
+echo "======================================"
+echo "** Scorer demos **"
+echo "======================================"
 foreach case ($scorer_cases)
     set case_dir = $case:h
     set case_file = $case:t
@@ -147,21 +179,27 @@ foreach case ($scorer_cases)
     echo 'b:Ts/UseQt = "False"' >> run.txt
     echo 'b:Ts/PauseBeforeQuit = "False"' >> run.txt
     echo 'b:Gr/Enable = "False"' >> run.txt
-    echo "Running $case - run.txt"
+    echo "🚀 Running $case " 
     topas run.txt >&! $exec_log
     set matches = `awk '/Execution/ {count++} END {print count+0}' $exec_log`
     if ("$matches" == "1") then
-        echo "--success-- $case"
+        printf "   %s%s [ Success ]%s %s\n" "$green" "$check" "$reset" "$case" 
     else
-        echo "--failed -- $case"
+        printf "   %s%s [ Fail ]%s %s\n" "$red" "$cross" "$reset" "$case" 
     endif
-    rm -f $exec_log run.txt *.root *.phsp *.header *csv
+    rm -f $exec_log run.txt *.root *.phsp *.header *.csv *.bin
     popd > /dev/null
 end
 rm -f *.root *.phsp *.header *csv $exec_log
 
 cd "$start_dir"
 
+set end_time = `date +%s`
+@ elapsed = $end_time - $start_time
+
+printf "\n📊  Regression completed in %d seconds (%.2f minutes)\n" $elapsed `echo "$elapsed / 60.0" | bc -l`
+
 if (! $_demo_had_nonomatch) then
     unset nonomatch
 endif
+
