@@ -371,8 +371,9 @@ void TsIRT::ConductReactions() {
 				
 			} else {
 				fReactionConf->Diffuse(fChemicalSpecies[iM],irt-fChemicalSpecies[iM].time);
-				for ( int ip = 0; ip < 3; ip++ )
-					positions.push_back(fChemicalSpecies[iM].position);
+                positions = fReactionConf->GetBackgroundPositionOfProducts(fChemicalSpecies[iM], indexOfReaction);
+                //for ( int ip = 0; ip < 3; ip++ )
+					//positions.push_back(fChemicalSpecies[iM].position);
 				
 				binReaction = fReactionConf->GetReaction(indexOfReaction);
 				if (binReaction.index < 0) {continue;} // why this would be < 0 if indexOfReaction exists?
