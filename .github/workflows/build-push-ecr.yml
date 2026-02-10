@@ -1,0 +1,63 @@
+# Build a Docker image from OpenTOPAS + TOPAS-nBio (main branch) and push to AWS ECR.
+#
+# Required GitHub Secrets (Settings → Secrets and variables → Actions):
+#   AWS_ROLE_ARN
+#   ECR_REPOSITORY_URI
+#
+name: Build and push to ECR
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '*.md'
+      - 'LICENSE'
+      - '.gitignore'
+
+env:
+  OPENTOPAS_IMAGE: opentopas/opentopas:latest
+  AWS_REGION: us-east-2
+
+jobs:
+  build-and-push:
+    name: Build image and push to ECR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout TOPAS-nBio (main)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Pull OpenTOPAS base image
+        run: docker pull ${{ env.OPENTOPAS_IMAGE }}
+
+      - name: Build image with TOPAS-nBio extension
+        run: |
+          docker build \
+            -f .github/workflows/Dockerfile.ecr \
+            -t ${{ secrets.ECR_REPOSITORY_URI }}:latest \
+            -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ github.sha }} \
+            .
+
+      - name: Push image to ECR
+        run: |
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}:latest
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}:${{ github.sha }}
+

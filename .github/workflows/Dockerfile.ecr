@@ -1,0 +1,23 @@
+# Starts from the official OpenTOPAS docker image (https://hub.docker.com/r/opentopas/opentopas),
+# adds the TOPAS-nBio source code from the main branch,
+# then rebuilds OpenTOPAS with the extension and installs over the original (no duplicate install).
+
+# Start building this image from the official OpenTOPAS docker image
+FROM opentopas/opentopas:latest
+
+# Copy the TOPAS-nBio extension source code into the image under /extensions/src
+COPY . /extensions/src
+
+# Re-build OpenTOPAS with TOPAS-nBio and and replace the original -build and -install directories.
+# This saves space in the image as opposed to building and installing in a new directory which would results in two copies of OpenTOPAS (with/without nBio)
+# NOTE: As of 06 Feb 2026 the opentopas docker image (https://hub.docker.com/r/opentopas/opentopas) is for qt5 and does not support qt6.
+# When this gets updated to qt6 the cmake command -DTOPAS_USE_QT6=ON should be added below.
+RUN cd /Applications/TOPAS/OpenTOPAS-build && \
+    cmake /Applications/TOPAS/OpenTOPAS \
+        -DCMAKE_INSTALL_PREFIX=/Applications/TOPAS/OpenTOPAS-install \
+        -DTOPAS_EXTENSIONS_DIR=/extensions/src \
+        -DTOPAS_USE_QT=ON && \
+    make -j$(nproc) install && \
+    rm -rf /extensions
+
+
