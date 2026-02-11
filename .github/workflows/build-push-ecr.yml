@@ -83,9 +83,9 @@ jobs:
           aws ecr-public describe-images \
             --repository-name "${REPO_NAME}" \
             --query 'sort_by(imageDetails,&imagePushedAt)[].imageDigest' \
-            --output text > /tmp/digests.txt || echo "" > /tmp/digests.txt
+            --output text | tr '\t' '\n' > /tmp/digests.txt
 
-          COUNT=$(wc -w < /tmp/digests.txt || echo 0)
+          COUNT=$(wc -l < /tmp/digests.txt || echo 0)
           echo "Found ${COUNT} images in repository"
 
           KEEP=1 # Keep only this number of images on the repository
