@@ -72,3 +72,39 @@ jobs:
             docker push ${{ secrets.ECR_REPOSITORY_URI }}:latest
           fi
 
+      - name: Prune old images in ECR Public
+        run: |
+
+          REPO_URI="${{ secrets.ECR_REPOSITORY_URI }}"
+          REPO_NAME="${REPO_URI##*/}"
+          echo "ECR Public repository name: ${REPO_NAME}"
+
+          # List image digests sorted by push time (oldest first)
+          aws ecr-public describe-images \
+            --repository-name "${REPO_NAME}" \
+            --query 'sort_by(imageDetails,&imagePushedAt)[].imageDigest' \
+            --output text > /tmp/digests.txt || echo "" > /tmp/digests.txt
+
+          COUNT=$(wc -w < /tmp/digests.txt || echo 0)
+          echo "Found ${COUNT} images in repository"
+
+          KEEP=1 # Keep only this number of images on the repository
+
+          if [ "${COUNT}" -le "${KEEP}" ]; then
+            echo "Image count (${COUNT}) <= ${KEEP}, nothing to delete."
+            exit 0
+          fi
+
+          DELETE_COUNT=$((COUNT - KEEP))
+          echo "Deleting ${DELETE_COUNT} oldest images..."
+
+          # Delete the oldest (COUNT - KEEP) images
+          head -n "${DELETE_COUNT}" /tmp/digests.txt | while read -r DIGEST; do
+            if [ -n "${DIGEST}" ]; then
+              echo "Deleting image digest: ${DIGEST}"
+              aws ecr-public batch-delete-image \
+                --repository-name "${REPO_NAME}" \
+                --image-ids imageDigest="${DIGEST}"
+            fi
+          done
+
