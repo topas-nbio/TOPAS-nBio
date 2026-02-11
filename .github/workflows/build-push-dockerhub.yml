@@ -1,11 +1,11 @@
-# Build a Docker image from OpenTOPAS + TOPAS-nBio and push to AWS ECR.
-# Runs on push of a tag matching "v*" (e.g. v1.0) or manually (default tag: latest).#
+# Build a Docker image from OpenTOPAS + TOPAS-nBio and push to Docker Hub.
+# Runs on push of a tag matching "v*" (e.g. v1.0) or manually (default tag: latest).
 #
 # Required GitHub Secrets (Settings → Secrets and variables → Actions):
-#   AWS_ROLE_ARN
-#   ECR_REPOSITORY_URI
+#   DOCKERHUB_USERNAME  - Docker Hub username (must have push access to opentopas)
+#   DOCKERHUB_TOKEN     - Docker Hub Personal Access Token
 #
-name: Build and push to ECR
+name: Build and push to Docker Hub
 
 on:
   push:
@@ -23,15 +23,14 @@ on:
 
 env:
   OPENTOPAS_IMAGE: opentopas/opentopas:latest
-  AWS_REGION: us-east-1
+  DOCKERHUB_IMAGE: tmasilela/topas-nbio
 
 jobs:
   build-and-push:
-    name: Build image and push to ECR
+    name: Build image and push to Docker Hub
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
     env:
       TAG: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.tag || 'latest') || github.ref_name }}
 
@@ -42,17 +41,11 @@ jobs:
           ref: ${{ github.ref }}
           fetch-depth: 0
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Login to Amazon ECR Public
-        id: ecr-login
-        uses: aws-actions/amazon-ecr-login@v2
-        with:
-          registry-type: public
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Pull OpenTOPAS base image
         run: docker pull ${{ env.OPENTOPAS_IMAGE }}
@@ -61,14 +54,13 @@ jobs:
         run: |
           docker build \
             -f .github/workflows/Dockerfile.ecr \
-            -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }} \
+            -t ${{ env.DOCKERHUB_IMAGE }}:${{ env.TAG }} \
             .
 
-      - name: Push image to ECR
+      - name: Push image to Docker Hub
         run: |
-          docker push ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }}
+          docker push ${{ env.DOCKERHUB_IMAGE }}:${{ env.TAG }}
           if [[ "${{ env.TAG }}" != "latest" ]]; then
-            docker tag ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }} ${{ secrets.ECR_REPOSITORY_URI }}:latest
-            docker push ${{ secrets.ECR_REPOSITORY_URI }}:latest
+            docker tag ${{ env.DOCKERHUB_IMAGE }}:${{ env.TAG }} ${{ env.DOCKERHUB_IMAGE }}:latest
+            docker push ${{ env.DOCKERHUB_IMAGE }}:latest
           fi
-
