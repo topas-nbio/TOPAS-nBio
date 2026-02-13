@@ -96,10 +96,11 @@ jobs:
       - name: Pull OpenTOPAS base image
         run: docker pull ${{ env.OPENTOPAS_IMAGE }}
 
+      # added explicit platform since was seeing weird behaviour where no changes in workflow would push either a single image then the next day a manifest list / visa versa
       - name: Build image with TOPAS-nBio extension
         run: |
           docker build \
-            --platform=linux/amd64 \ # added since was seeing weird behaviour where no changes in workflow would push either a single image or a manifest list
+            --platform=linux/amd64 \
             -f .github/workflows/Dockerfile.ecr \
             -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }} .
 
