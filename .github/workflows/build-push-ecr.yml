@@ -54,44 +54,44 @@ jobs:
         with:
           registry-type: public
 
-      - name: Prune old images in ECR Public (before push, keep limit)
-        run: |
-          set -euo pipefail
-          REPO_URI="${{ secrets.ECR_REPOSITORY_URI }}"
-          REPO_NAME="${REPO_URI##*/}"
+      # - name: Prune old images in ECR Public (before push, keep limit)
+      #   run: |
+      #     set -euo pipefail
+      #     REPO_URI="${{ secrets.ECR_REPOSITORY_URI }}"
+      #     REPO_NAME="${REPO_URI##*/}"
 
-          KEEP=1 # Keep only this number of images on the repository
+      #     KEEP=1 # Keep only this number of images on the repository
           
-          echo "ECR Public repository: ${REPO_NAME}, will keep at most ${KEEP} images after this run."
+      #     echo "ECR Public repository: ${REPO_NAME}, will keep at most ${KEEP} images after this run."
 
-          aws ecr-public describe-images \
-            --repository-name "${REPO_NAME}" \
-            --query 'sort_by(imageDetails,&imagePushedAt)[].imageDigest' \
-            --output text | tr '\t' '\n' | grep -v '^$' > /tmp/digests.txt || true
-          COUNT=$(grep -c . /tmp/digests.txt 2>/dev/null) || COUNT=0
-          if [ "${COUNT}" -eq 0 ]; then
-            echo "No images in repository yet, nothing to prune."
-            exit 0
-          fi
-          echo "Found ${COUNT} images in repository."
+      #     aws ecr-public describe-images \
+      #       --repository-name "${REPO_NAME}" \
+      #       --query 'sort_by(imageDetails,&imagePushedAt)[].imageDigest' \
+      #       --output text | tr '\t' '\n' | grep -v '^$' > /tmp/digests.txt || true
+      #     COUNT=$(grep -c . /tmp/digests.txt 2>/dev/null) || COUNT=0
+      #     if [ "${COUNT}" -eq 0 ]; then
+      #       echo "No images in repository yet, nothing to prune."
+      #       exit 0
+      #     fi
+      #     echo "Found ${COUNT} images in repository."
 
-          # If we're at or over KEEP, delete oldest first so that after this push we have at most KEEP.
-          DELETE_COUNT=$((COUNT - KEEP + 1))
-          if [ "${DELETE_COUNT}" -le 0 ]; then
-            echo "Image count (${COUNT}) < ${KEEP}, no prune needed before push."
-            exit 0
-          fi
-          echo "Deleting ${DELETE_COUNT} oldest image(s) before push..."
+      #     # If we're at or over KEEP, delete oldest first so that after this push we have at most KEEP.
+      #     DELETE_COUNT=$((COUNT - KEEP + 1))
+      #     if [ "${DELETE_COUNT}" -le 0 ]; then
+      #       echo "Image count (${COUNT}) < ${KEEP}, no prune needed before push."
+      #       exit 0
+      #     fi
+      #     echo "Deleting ${DELETE_COUNT} oldest image(s) before push..."
 
-          head -n "${DELETE_COUNT}" /tmp/digests.txt | while read -r DIGEST; do
-            [ -z "${DIGEST}" ] && continue
-            echo "Deleting image digest: ${DIGEST}"
-            if ! aws ecr-public batch-delete-image \
-              --repository-name "${REPO_NAME}" \
-              --image-ids imageDigest="${DIGEST}"; then
-              echo "Note: delete failed for ${DIGEST} (e.g. referenced by manifest list), continuing."
-            fi
-          done
+      #     head -n "${DELETE_COUNT}" /tmp/digests.txt | while read -r DIGEST; do
+      #       [ -z "${DIGEST}" ] && continue
+      #       echo "Deleting image digest: ${DIGEST}"
+      #       if ! aws ecr-public batch-delete-image \
+      #         --repository-name "${REPO_NAME}" \
+      #         --image-ids imageDigest="${DIGEST}"; then
+      #         echo "Note: delete failed for ${DIGEST} (e.g. referenced by manifest list), continuing."
+      #       fi
+      #     done
 
       - name: Pull OpenTOPAS base image
         run: docker pull ${{ env.OPENTOPAS_IMAGE }}
