@@ -97,10 +97,9 @@ jobs:
         run: docker pull ${{ env.OPENTOPAS_IMAGE }}
 
       - name: Build image with TOPAS-nBio extension
-        env:
-          DOCKER_DEFAULT_PLATFORM: linux/amd64 # added since was seeing weird behaviour where no changes in workflow would push either a single image or a manifest list
         run: |
           docker build \
+            --platform=linux/amd64 \ # added since was seeing weird behaviour where no changes in workflow would push either a single image or a manifest list
             -f .github/workflows/Dockerfile.ecr \
             -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }} \
             .
