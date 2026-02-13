@@ -68,8 +68,7 @@ jobs:
             --repository-name "${REPO_NAME}" \
             --query 'sort_by(imageDetails,&imagePushedAt)[].imageDigest' \
             --output text | tr '\t' '\n' | grep -v '^$' > /tmp/digests.txt || true
-          echo "" >> /tmp/digests.txt
-          COUNT=$(grep -c . /tmp/digests.txt 2>/dev/null || echo 0)
+          COUNT=$(grep -c . /tmp/digests.txt 2>/dev/null) || COUNT=0
           if [ "${COUNT}" -eq 0 ]; then
             echo "No images in repository yet, nothing to prune."
             exit 0
