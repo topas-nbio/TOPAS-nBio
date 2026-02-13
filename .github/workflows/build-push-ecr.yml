@@ -101,6 +101,8 @@ jobs:
         run: |
           docker build \
             --platform=linux/amd64 \
+            --provenance=false \
+            --sbom=false \
             -f .github/workflows/Dockerfile.ecr \
             -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }} .
 
