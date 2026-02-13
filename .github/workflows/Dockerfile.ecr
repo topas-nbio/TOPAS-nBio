@@ -20,4 +20,4 @@ RUN cd /Applications/TOPAS/OpenTOPAS-build && \
     make -j$(nproc) install && \
     rm -rf /extensions
 
-
+ENTRYPOINT ["/bin/bash", "-lc"]
