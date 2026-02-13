@@ -101,8 +101,7 @@ jobs:
           docker build \
             --platform=linux/amd64 \ # added since was seeing weird behaviour where no changes in workflow would push either a single image or a manifest list
             -f .github/workflows/Dockerfile.ecr \
-            -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }} \
-            .
+            -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }} .
 
       - name: Push image to ECR
         run: |
