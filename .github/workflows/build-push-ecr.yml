@@ -56,7 +56,6 @@ jobs:
 
       - name: Prune old images in ECR Public (before push, keep limit)
         run: |
-          set -euo pipefail
           REPO_URI="${{ secrets.ECR_REPOSITORY_URI }}"
           REPO_NAME="${REPO_URI##*/}"
 
