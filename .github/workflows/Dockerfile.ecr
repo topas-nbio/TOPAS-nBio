@@ -27,15 +27,4 @@ apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Insert AWS Batch mode block before "exec topas" in the existing entrypoint script
 # This allows the TOPAS-nBio image to be used as is locally, but also allows it to be used in AWS Batch.
-RUN sed -i '/^exec topas "\$@"/i \
-# --- AWS Batch mode: S3 in → TOPAS → S3 out ---\
-if [[ "\${TOPAS_AWS_BATCH_MODE:-}" == "1" ]]; then\
-  echo "Running in AWS Batch mode: syncing from S3, running TOPAS, syncing to S3"\
-  mkdir -p /work\
-  aws s3 sync "s3://\${INPUT_BUCKET}/\${SIM_DIR}/" /work/\
-  cd /work\
-  /Applications/TOPAS/OpenTOPAS-install/bin/topas "\${FILE_TO_RUN}"\
-  aws s3 sync . "s3://\${OUTPUT_BUCKET}/\${AWS_BATCH_JOB_ID}/"\
-  exit 0\
-fi\
-' /usr/local/bin/topas-entrypoint.sh
+RUN sed -i '/^exec topas "\$@"/i # --- AWS Batch mode ---; if [[ "\${TOPAS_AWS_BATCH_MODE:-}" == "1" ]]; then echo '\''Running in AWS Batch mode: syncing from S3, running TOPAS, syncing to S3'\''; mkdir -p /work; aws s3 sync "s3://\${INPUT_BUCKET}/\${SIM_DIR}/" /work/; cd /work; /Applications/TOPAS/OpenTOPAS-install/bin/topas "\${FILE_TO_RUN}"; aws s3 sync . "s3://\${OUTPUT_BUCKET}/\${AWS_BATCH_JOB_ID}/"; exit 0; fi' /usr/local/bin/topas-entrypoint.sh
