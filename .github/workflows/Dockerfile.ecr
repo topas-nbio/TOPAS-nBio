@@ -8,7 +8,7 @@ FROM opentopas/opentopas:latest
 # Copy the TOPAS-nBio extension source code into the image under /extensions/src
 COPY . /extensions/src
 
-# Re-build OpenTOPAS with TOPAS-nBio and and replace the original -build and -install directories.
+# Re-build OpenTOPAS with TOPAS-nBio and replace the original -build and -install directories.
 # This saves space in the image as opposed to building and installing in a new directory which would results in two copies of OpenTOPAS (with/without nBio)
 # NOTE: As of 06 Feb 2026 the opentopas docker image (https://hub.docker.com/r/opentopas/opentopas) is for qt5 and does not support qt6.
 # When this gets updated to qt6 the cmake command -DTOPAS_USE_QT6=ON should be added below.
@@ -19,6 +19,36 @@ RUN cd /Applications/TOPAS/OpenTOPAS-build && \
         -DTOPAS_USE_QT=ON && \
     make -j$(nproc) install && \
     rm -rf /extensions
+
+# Installing G4Data files
+RUN mkdir -p /Applications/G4Data && cd /Applications/G4Data && \
+wget https://cern.ch/geant4-data/datasets/G4NDL.4.7.1.tar.gz && \
+wget https://cern.ch/geant4-data/datasets/G4EMLOW.8.6.1.tar.gz && \
+wget https://cern.ch/geant4-data/datasets/G4PhotonEvaporation.6.1.tar.gz && \
+wget https://cern.ch/geant4-data/datasets/G4RadioactiveDecay.6.1.2.tar.gz && \
+wget https://cern.ch/geant4-data/datasets/G4PARTICLEXS.4.1.tar.gz && \
+wget https://cern.ch/geant4-data/datasets/G4PII.1.3.tar.gz && \
+wget https://cern.ch/geant4-data/datasets/G4RealSurface.2.2.tar.gz && \
+wget https://cern.ch/geant4-data/datasets/G4SAIDDATA.2.0.tar.gz && \
+wget https://cern.ch/geant4-data/datasets/G4ABLA.3.3.tar.gz && \
+wget https://cern.ch/geant4-data/datasets/G4INCL.1.2.tar.gz && \
+wget https://cern.ch/geant4-data/datasets/G4ENSDFSTATE.3.0.tar.gz && \
+wget https://cern.ch/geant4-data/datasets/G4TENDL.1.4.tar.gz && \
+wget ftp://gdo-nuclear.ucllnl.org/LEND_GND1.3/LEND_GND1.3_ENDF.BVII.1.tar.gz && \
+tar zxf G4NDL.4.7.1.tar.gz && \
+tar zxf G4EMLOW.8.6.1.tar.gz && \
+tar zxf G4PhotonEvaporation.6.1.tar.gz && \
+tar zxf G4RadioactiveDecay.6.1.2.tar.gz && \
+tar zxf G4PARTICLEXS.4.1.tar.gz && \
+tar zxf G4PII.1.3.tar.gz && \
+tar zxf G4RealSurface.2.2.tar.gz && \
+tar zxf G4SAIDDATA.2.0.tar.gz && \
+tar zxf G4ABLA.3.3.tar.gz && \
+tar zxf G4INCL.1.2.tar.gz && \
+tar zxf G4ENSDFSTATE.3.0.tar.gz && \
+tar zxf G4TENDL.1.4.tar.gz && \
+tar zxf LEND_GND1.3_ENDF.BVII.1.tar.gz && \
+rm *.tar.gz
 
 # Install awscli. This allows the container to interact with AWS services.
 RUN apt-get update && \
