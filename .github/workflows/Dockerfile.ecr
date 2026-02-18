@@ -55,7 +55,63 @@ RUN apt-get update && \
 DEBIAN_FRONTEND=noninteractive apt-get install -y awscli && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Insert AWS Batch mode block before "exec topas" in the existing entrypoint script
+# Batch-mode wrapper script used when running under AWS Batch.
+# This keeps the entrypoint modification simple and makes it easier to maintain
+# the more complex S3 + TOPAS logic.
+RUN cat <<'EOF' >/usr/local/bin/topas-batch-mode.sh
+#!/bin/bash
+
+echo "Running in AWS Batch mode: syncing from S3, running TOPAS, syncing to S3"
+
+# Create working directories
+mkdir -p /work/input /work/run /work/output
+
+#Sync inputs from the input bucket into /work/input
+aws s3 sync "s3://${INPUT_BUCKET}/${SIM_DIR}/" /work/input/
+
+# Copy inputs to a separate run directory so /work/input stays as pure inputs
+cp -r /work/input/ /work/run/
+
+cd /work/run
+
+# Record the list of files before the simulation
+find . -type f -print | sort > /work/before.txt
+
+# Run TOPAS; capture stdout/stderr into a log file
+/Applications/TOPAS/OpenTOPAS-install/bin/topas "${FILE_TO_RUN}" > topas.log 2>&1
+
+# Record the list of files after the simulation
+find . -type f -print | sort > /work/after.txt
+
+# Determine which files are new (present after, but not before) and copy only those into 
+# /work/output (preserving directory structure).
+comm -13 /work/before.txt /work/after.txt | while read -r path; do
+  mkdir -p "/work/output/$(dirname "$path")"
+  cp "./$path" "/work/output/$path"
+done
+
+# Create a small log file with basic AWS job details inside outputs
+# More details such as memory, cpu utilization, etc. are available in the CloudWatch logs.
+LOG_FILE="/work/output/aws_job_details.log"
+{
+  echo "AWS_BATCH_JOB_ID=${AWS_BATCH_JOB_ID:-}"
+  echo "JOB_INDEX=${JOB_INDEX:-}"
+  echo "INPUT_BUCKET=${INPUT_BUCKET:-}"
+  echo "OUTPUT_BUCKET=${OUTPUT_BUCKET:-}"
+  echo "SIM_DIR=${SIM_DIR:-}"
+  echo "FILE_TO_RUN=${FILE_TO_RUN:-}"
+} > "$LOG_FILE"
+
+# Sync inputs and outputs back to the output bucket using the same SIM_DIR layout as inputs.
+# For example: s3://<output-bucket>/projects/fricke_project/2025-02-18/run_1/inputs|outputs/
+aws s3 sync /work/input/  "s3://${OUTPUT_BUCKET}/${SIM_DIR}/inputs/"
+aws s3 sync /work/output/ "s3://${OUTPUT_BUCKET}/${SIM_DIR}/outputs/"
+
+exit 0
+EOF
+
+RUN chmod +x /usr/local/bin/topas-batch-mode.sh
+
+# Insert AWS Batch mode block before "exec topas" in the existing entrypoint script.
 # This allows the TOPAS-nBio image to be used as is locally, but also allows it to be used in AWS Batch.
-# Wasn't working with multiline sed for some reason.
-RUN sed -i '/^exec topas "\$@"/i if [[ "\${TOPAS_AWS_BATCH_MODE:-}" == "1" ]]; then echo '\''Running in AWS Batch mode: syncing from S3, running TOPAS, syncing to S3'\''; mkdir -p /work; aws s3 sync "s3://\${INPUT_BUCKET}/\${SIM_DIR}/" /work/; cd /work; /Applications/TOPAS/OpenTOPAS-install/bin/topas "\${FILE_TO_RUN}"; aws s3 sync . "s3://\${OUTPUT_BUCKET}/\${AWS_BATCH_JOB_ID}/"; exit 0; fi' /usr/local/bin/topas-entrypoint.sh
+RUN sed -i '/^exec topas "\$@"/i if [[ "\${TOPAS_AWS_BATCH_MODE:-}" == "1" ]]; then /usr/local/bin/topas-batch-mode.sh; fi' /usr/local/bin/topas-entrypoint.sh
