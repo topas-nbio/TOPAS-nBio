@@ -54,6 +54,10 @@ jobs:
         with:
           registry-type: public
 
+      - name: Pull cache image for layer reuse (G4 data, etc.)
+        run: |
+          docker pull ${{ secrets.ECR_REPOSITORY_URI }}:latest || true
+
       - name: Prune old images in ECR Public (before push, keep limit)
         run: |
           REPO_URI="${{ secrets.ECR_REPOSITORY_URI }}"
@@ -95,13 +99,14 @@ jobs:
       - name: Pull OpenTOPAS base image
         run: docker pull ${{ env.OPENTOPAS_IMAGE }}
 
-      # added explicit platform since was seeing weird behaviour where no changes in workflow would push either a single image then the next day a manifest list / visa versa
+      # Build using cache from previous image so G4 data and other unchanged layers are reused.
       - name: Build image with TOPAS-nBio extension
         run: |
           docker build \
             --platform=linux/amd64 \
             --provenance=false \
             --sbom=false \
+            --cache-from ${{ secrets.ECR_REPOSITORY_URI }}:latest \
             -f .github/workflows/Dockerfile.ecr \
             -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }} .
 
