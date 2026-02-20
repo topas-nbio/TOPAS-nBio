@@ -1,5 +1,5 @@
 # Build a Docker image from OpenTOPAS + TOPAS-nBio and push to AWS ECR.
-# Runs on push of a tag matching "v*" (e.g. v1.0) or manually (default tag: latest).#
+# Runs on push of a tag matching "v*" (e.g. v1.0) or manually (default tag: latest).
 #
 # Required GitHub Secrets (Settings → Secrets and variables → Actions):
 #   AWS_ROLE_ARN
@@ -58,41 +58,44 @@ jobs:
         run: |
           docker pull ${{ secrets.ECR_REPOSITORY_URI }}:latest || true
 
-      - name: Prune old images in ECR Public (before push, keep limit)
+      - name: Prune old images in ECR Public (tag-aware: keep 1 for latest, 1 for postprocess)
         run: |
           REPO_URI="${{ secrets.ECR_REPOSITORY_URI }}"
           REPO_NAME="${REPO_URI##*/}"
+          echo "ECR Public repository: ${REPO_NAME}, tag-aware prune (keep newest with tag latest, newest with tag postprocess)."
 
-          KEEP=1 # Keep only this number of images on the repository
-          
-          echo "ECR Public repository: ${REPO_NAME}, will keep at most ${KEEP} images after this run."
-
-          aws ecr-public describe-images \
-            --repository-name "${REPO_NAME}" \
-            --query 'sort_by(imageDetails,&imagePushedAt)[].imageDigest' \
-            --output text | tr '\t' '\n' | grep -v '^$' > /tmp/digests.txt || true
-          COUNT=$(grep -c . /tmp/digests.txt 2>/dev/null) || COUNT=0
-          if [ "${COUNT}" -eq 0 ]; then
+          # Get full image list with tags and push date
+          aws ecr-public describe-images --repository-name "${REPO_NAME}" --output json > /tmp/images.json || true
+          if [ ! -s /tmp/images.json ]; then
             echo "No images in repository yet, nothing to prune."
             exit 0
           fi
-          echo "Found ${COUNT} images in repository."
 
-          # If we're at or over KEEP, delete oldest first so that after this push we have at most KEEP.
-          DELETE_COUNT=$((COUNT - KEEP + 1))
-          if [ "${DELETE_COUNT}" -le 0 ]; then
-            echo "Image count (${COUNT}) < ${KEEP}, no prune needed before push."
-            exit 0
-          fi
-          echo "Deleting ${DELETE_COUNT} oldest image(s) before push..."
+          # For each tag we care about, find the digest of the newest image (by imagePushedAt) that has that tag
+          KEEP_DIGESTS=""
+          for TAG in latest postprocess; do
+            DIGEST=$(jq -r --arg tag "$TAG" '
+              [.imageDetails[] | select(.imageTags != null and (.imageTags | index($tag))) | {digest: .imageDigest, pushed: .imagePushedAt}]
+              | sort_by(.pushed) | last | .digest // empty
+            ' /tmp/images.json)
+            if [ -n "${DIGEST}" ]; then
+              KEEP_DIGESTS="${KEEP_DIGESTS} ${DIGEST}"
+              echo "Keeping digest ${DIGEST} (newest with tag ${TAG})"
+            fi
+          done
 
-          head -n "${DELETE_COUNT}" /tmp/digests.txt | while read -r DIGEST; do
-            [ -z "${DIGEST}" ] && continue
-            echo "Deleting image digest: ${DIGEST}"
-            if ! aws ecr-public batch-delete-image \
-              --repository-name "${REPO_NAME}" \
-              --image-ids imageDigest="${DIGEST}"; then
-              echo "Note: delete failed for ${DIGEST} (e.g. referenced by manifest list), continuing."
+          # Delete any digest not in the keep set
+          ALL_DIGESTS=$(jq -r '.imageDetails[].imageDigest' /tmp/images.json | sort -u)
+          for DIGEST in $ALL_DIGESTS; do
+            if echo "$KEEP_DIGESTS" | grep -qF "$DIGEST"; then
+              echo "Skipping (keep): ${DIGEST}"
+            else
+              echo "Deleting image digest: ${DIGEST}"
+              if ! aws ecr-public batch-delete-image \
+                --repository-name "${REPO_NAME}" \
+                --image-ids imageDigest="${DIGEST}"; then
+                echo "Note: delete failed for ${DIGEST}, continuing."
+              fi
             fi
           done
 
@@ -107,15 +110,28 @@ jobs:
             --provenance=false \
             --sbom=false \
             --cache-from ${{ secrets.ECR_REPOSITORY_URI }}:latest \
-            -f .github/workflows/Dockerfile.ecr \
+            -f .github/workflows/dockerFile.ecr \
             -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }} .
 
-      - name: Push image to ECR
+      - name: Push TOPAS image to ECR
         run: |
           docker push ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }}
           if [[ "${{ env.TAG }}" != "latest" ]]; then
             docker tag ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }} ${{ secrets.ECR_REPOSITORY_URI }}:latest
             docker push ${{ secrets.ECR_REPOSITORY_URI }}:latest
           fi
+
+      - name: Build postprocess image
+        run: |
+          docker build \
+            --platform=linux/amd64 \
+            --provenance=false \
+            --sbom=false \
+            -f .github/workflows/dockerFilePostP.ecr \
+            -t ${{ secrets.ECR_REPOSITORY_URI }}:postprocess .
+
+      - name: Push postprocess image to ECR
+        run: |
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}:postprocess
 
 

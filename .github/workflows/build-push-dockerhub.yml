@@ -53,7 +53,7 @@ jobs:
       - name: Build image with TOPAS-nBio extension
         run: |
           docker build \
-            -f .github/workflows/Dockerfile.ecr \
+            -f .github/workflows/dockerFile.ecr \
             -t ${{ env.DOCKERHUB_IMAGE }}:${{ env.TAG }} \
             .
 

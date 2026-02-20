@@ -69,8 +69,7 @@ mkdir -p /work/input /work/run /work/output
 # Sync inputs from the input bucket into /work/input
 aws s3 sync "s3://${INPUT_BUCKET}/${SIM_DIR}/" /work/input/
 
-# Copy contents of /work/input into /work/run so that the files (e.g. FrickeIRT.txt)
-# live directly under /work/run rather than under /work/run/input.
+# Copy contents of /work/input into /work/run so that the parameter files to be run live directly under /work/run
 cp -r /work/input/. /work/run/
 
 cd /work/run
@@ -79,7 +78,7 @@ cd /work/run
 find . -type f -print | sort > /work/before.txt
 
 # Run TOPAS; capture stdout/stderr into a log file
-/Applications/TOPAS/OpenTOPAS-install/bin/topas "${FILE_TO_RUN}" > topas.log 2>&1
+/Applications/TOPAS/OpenTOPAS-install/bin/topas "${FILE_TO_RUN}" 2>&1 | tee topas.log
 
 # Record the list of files after the simulation
 find . -type f -print | sort > /work/after.txt
@@ -104,7 +103,6 @@ LOG_FILE="/work/output/aws_job_details.log"
 } > "$LOG_FILE"
 
 # Sync inputs and outputs back to the output bucket using the same SIM_DIR layout as inputs.
-# For example: s3://<output-bucket>/projects/fricke_project/2025-02-18/run_1/inputs|outputs/
 aws s3 sync /work/input/  "s3://${OUTPUT_BUCKET}/${SIM_DIR}/inputs/"
 aws s3 sync /work/output/ "s3://${OUTPUT_BUCKET}/${SIM_DIR}/outputs/"
 
@@ -114,7 +112,6 @@ EOF
 RUN chmod +x /usr/local/bin/topas-batch-mode.sh
 
 # Insert AWS Batch mode block before "exec topas" in the existing entrypoint script.
-# When TOPAS_AWS_BATCH_MODE=1, exec the batch-mode wrapper and never fall
-# through to the original 'exec topas "$@"', which would otherwise try to run
-# TsUserParameters.txt with no arguments.
+# When TOPAS_AWS_BATCH_MODE=1, i.e. when using the image on AWS Batch,execute the batch-mode wrapper
+# This allows the TOPAS-nBio image to still be used locally following the OpenTOPAS Docker README instructions.
 RUN sed -i '/^exec topas "\$@"/i if [[ "\${TOPAS_AWS_BATCH_MODE:-}" == "1" ]]; then exec /usr/local/bin/topas-batch-mode.sh; fi' /usr/local/bin/topas-entrypoint.sh

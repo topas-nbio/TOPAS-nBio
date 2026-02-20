@@ -1,0 +1,10 @@
+# Thin postprocess image: Amazon Linux 2023 + Python 3 + AWS CLI + runner script.
+# Used by AWS Batch job topas-nbio-postprocess-job to accumulate run outputs and run a user script.
+FROM public.ecr.aws/amazonlinux/amazonlinux:2023
+
+RUN dnf install -y python3 awscli && dnf clean all
+
+COPY .github/workflows/postprocess-runner.sh /usr/local/bin/postprocess-runner.sh
+RUN chmod +x /usr/local/bin/postprocess-runner.sh
+
+ENTRYPOINT ["/usr/local/bin/postprocess-runner.sh"]
