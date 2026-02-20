@@ -58,7 +58,7 @@ jobs:
         run: |
           docker pull ${{ secrets.ECR_REPOSITORY_URI }}:latest || true
 
-      - name: Prune old images in ECR Public (tag-aware: keep 1 for latest, 1 for postprocess)
+      - name: Prune old images in ECR Public. Keep 1 for nBio image, and 1 postprocessing image.
         run: |
           REPO_URI="${{ secrets.ECR_REPOSITORY_URI }}"
           REPO_NAME="${REPO_URI##*/}"
