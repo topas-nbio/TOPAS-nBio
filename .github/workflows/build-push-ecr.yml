@@ -1,5 +1,5 @@
-# Build a Docker image from OpenTOPAS + TOPAS-nBio and push to AWS ECR.
-# Runs on push of a tag matching "v*" (e.g. v1.0) or manually (default tag: latest).
+# Build TOPAS-nBio and postprocess Docker images and push to AWS ECR.
+# Runs only manually (workflow_dispatch). Default tag for the TOPAS-nBio image is "latest".
 #
 # Required GitHub Secrets (Settings → Secrets and variables → Actions):
 #   AWS_ROLE_ARN
@@ -8,16 +8,10 @@
 name: Build and push to ECR
 
 on:
-  push:
-    tags: [ 'v*' ]
-    paths-ignore:
-      - '*.md'
-      - 'LICENSE'
-      - '.gitignore'
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Version tag for the image (defaults to "latest")'
+        description: 'Tag for the TOPAS-nBio image (default: latest)'
         required: false
         default: 'latest'
 
@@ -33,13 +27,19 @@ jobs:
       contents: read
       id-token: write
     env:
-      TAG: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.tag || 'latest') || github.ref_name }}
+      TAG: ${{ github.event.inputs.tag || 'latest' }}
 
     steps:
+      - name: Set image tag
+        run: |
+          if [ -z "${{ env.TAG }}" ] || [ "${{ env.TAG }}" = "-" ]; then
+            echo "TAG=latest" >> "$GITHUB_ENV"
+          fi
+          echo "Using tag: ${{ env.TAG }}"
+
       - name: Checkout TOPAS-nBio
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}
           fetch-depth: 0
 
       - name: Configure AWS credentials
@@ -54,62 +54,32 @@ jobs:
         with:
           registry-type: public
 
-      - name: Pull cache image for layer reuse (G4 data, etc.)
-        run: |
-          docker pull ${{ secrets.ECR_REPOSITORY_URI }}:latest || true
-
-      - name: Prune old images in ECR Public. Keep 1 for nBio image, and 1 postprocessing image.
+      - name: Delete all images in ECR repository
         run: |
           REPO_URI="${{ secrets.ECR_REPOSITORY_URI }}"
           REPO_NAME="${REPO_URI##*/}"
-          echo "ECR Public repository: ${REPO_NAME}, tag-aware prune (keep newest with tag latest, newest with tag postprocess)."
-
-          # Get full image list with tags and push date
+          echo "Deleting all images in ECR Public repository: ${REPO_NAME}"
           aws ecr-public describe-images --repository-name "${REPO_NAME}" --output json > /tmp/images.json || true
           if [ ! -s /tmp/images.json ]; then
-            echo "No images in repository yet, nothing to prune."
+            echo "Repository is empty, nothing to delete."
             exit 0
           fi
-
-          # For each tag we care about, find the digest of the newest image (by imagePushedAt) that has that tag
-          KEEP_DIGESTS=""
-          for TAG in latest postprocess; do
-            DIGEST=$(jq -r --arg tag "$TAG" '
-              [.imageDetails[] | select(.imageTags != null and (.imageTags | index($tag))) | {digest: .imageDigest, pushed: .imagePushedAt}]
-              | sort_by(.pushed) | last | .digest // empty
-            ' /tmp/images.json)
-            if [ -n "${DIGEST}" ]; then
-              KEEP_DIGESTS="${KEEP_DIGESTS} ${DIGEST}"
-              echo "Keeping digest ${DIGEST} (newest with tag ${TAG})"
-            fi
-          done
-
-          # Delete any digest not in the keep set
-          ALL_DIGESTS=$(jq -r '.imageDetails[].imageDigest' /tmp/images.json | sort -u)
-          for DIGEST in $ALL_DIGESTS; do
-            if echo "$KEEP_DIGESTS" | grep -qF "$DIGEST"; then
-              echo "Skipping (keep): ${DIGEST}"
-            else
-              echo "Deleting image digest: ${DIGEST}"
-              if ! aws ecr-public batch-delete-image \
-                --repository-name "${REPO_NAME}" \
-                --image-ids imageDigest="${DIGEST}"; then
-                echo "Note: delete failed for ${DIGEST}, continuing."
-              fi
-            fi
+          for DIGEST in $(jq -r '.imageDetails[].imageDigest' /tmp/images.json | sort -u); do
+            echo "Deleting digest: ${DIGEST}"
+            aws ecr-public batch-delete-image \
+              --repository-name "${REPO_NAME}" \
+              --image-ids imageDigest="${DIGEST}" || true
           done
 
       - name: Pull OpenTOPAS base image
         run: docker pull ${{ env.OPENTOPAS_IMAGE }}
 
-      # Build using cache from previous image so G4 data and other unchanged layers are reused.
       - name: Build image with TOPAS-nBio extension
         run: |
           docker build \
             --platform=linux/amd64 \
             --provenance=false \
             --sbom=false \
-            --cache-from ${{ secrets.ECR_REPOSITORY_URI }}:latest \
             -f .github/workflows/dockerFile.ecr \
             -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }} .
 
@@ -133,5 +103,3 @@ jobs:
       - name: Push postprocess image to ECR
         run: |
           docker push ${{ secrets.ECR_REPOSITORY_URI }}:postprocess
-
-
