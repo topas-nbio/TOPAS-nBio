@@ -1,10 +1,12 @@
 #!/bin/bash
 set -e
 # Postprocess runner: sync S3 prefix to local, accumulate run_*/outputs (exclude *.log),
-# download user script, run it from the accumulated dir. User script writes results to
-# the current directory (same dir as the script and accumulated data). New files created
-# by the script are uploaded to S3 under SIM_DIR/postP_results/.
-# Env: OUTPUT_BUCKET, SIM_DIR, SCRIPT_S3_URI, SCRIPT_FILENAME (optional, default: infer from S3 URI)
+# download user script, (optionally) install extra pip packages, run the script from
+# the accumulated dir. User script writes results to the current directory (same dir
+# as the script and accumulated data). New files created by the script are uploaded
+# to S3 under SIM_DIR/postP_results/.
+# Env: OUTPUT_BUCKET, SIM_DIR, SCRIPT_S3_URI, SCRIPT_FILENAME (optional, default: infer from S3 URI),
+#      EXTRA_PIP_PACKAGES (optional, space-separated list of pip packages to install)
 
 WORK_DIR="/work"
 ACCUM_DIR="${WORK_DIR}/accumulated"
@@ -36,6 +38,18 @@ SCRIPT_FILENAME="${SCRIPT_FILENAME:-$(basename "${SCRIPT_S3_URI}")}"
 aws s3 cp "${SCRIPT_S3_URI}" "${ACCUM_DIR}/${SCRIPT_FILENAME}" --only-show-errors
 
 cd "${ACCUM_DIR}"
+
+# Optionally install extra Python packages requested via EXTRA_PIP_PACKAGES.
+if [[ -n "${EXTRA_PIP_PACKAGES:-}" ]]; then
+  echo "Installing extra Python packages: ${EXTRA_PIP_PACKAGES}"
+  if command -v pip3 >/dev/null 2>&1; then
+    pip3 install --no-cache-dir ${EXTRA_PIP_PACKAGES} || { echo "pip3 install failed"; exit 1; }
+  else
+    echo "pip3 not found in the postprocess image; cannot install EXTRA_PIP_PACKAGES."
+    exit 1
+  fi
+fi
+
 find . -type f -print | sort > "${WORK_DIR}/before.txt"
 
 echo "Running user script: ${SCRIPT_FILENAME} (write results to current directory)"
