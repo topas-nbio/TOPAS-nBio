@@ -54,9 +54,17 @@ find . -type f -print | sort > "${WORK_DIR}/before.txt"
 
 echo "Running user script: ${SCRIPT_FILENAME} (write results to current directory)"
 if [[ "$SCRIPT_FILENAME" == *.py ]]; then
-  python3 "${SCRIPT_FILENAME}" || { echo "User script failed"; exit 1; }
+  python3 "${SCRIPT_FILENAME}" 2>&1 | tee postprocess_stdout.log
+  status=${PIPESTATUS[0]}
 else
-  chmod +x "${SCRIPT_FILENAME}" && ./"${SCRIPT_FILENAME}" || { echo "User script failed"; exit 1; }
+  chmod +x "${SCRIPT_FILENAME}"
+  ./"${SCRIPT_FILENAME}" 2>&1 | tee postprocess_stdout.log
+  status=${PIPESTATUS[0]}
+fi
+
+if [ "$status" -ne 0 ]; then
+  echo "User script failed"
+  exit 1
 fi
 
 find . -type f -print | sort > "${WORK_DIR}/after.txt"

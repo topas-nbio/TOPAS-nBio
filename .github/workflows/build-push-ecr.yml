@@ -1,10 +1,18 @@
-# Build TOPAS-nBio and postprocess Docker images and push to AWS ECR.
-# Runs only manually (workflow_dispatch). Default tag for the TOPAS-nBio image is "latest".
-#
-# Required GitHub Secrets (Settings → Secrets and variables → Actions):
-#   AWS_ROLE_ARN
-#   ECR_REPOSITORY_URI
-#
+# ============================================================================================================= #
+#                                                                                                               #
+# This workflow builds TOPAS-nBio and postprocessing images and pushes them to AWS ECR. It only runs manually.  #
+#                                                                                                               #
+# The default tag for the TOPAS-nBio image is "latest". If this is changed the cloud section in the TOPAS-nBio  # 
+# ReadTheDocs also needs to be updated.                                                                         #
+#                                                                                                               #
+# Before pushing the images to ECR, all existing images in the repository are deleted. This safeguard was added #
+# to remain below the 50 Gb/month limit imposed by AWS ECR Public.                                              #
+#                                                                                                               #
+# Required GitHub Secrets (Settings → Secrets and variables → Actions):                                         #
+#   AWS_ROLE_ARN                                                                                                #
+#   ECR_REPOSITORY_URI                                                                                          #
+# ============================================================================================================= #
+
 name: Build and push to ECR
 
 on:

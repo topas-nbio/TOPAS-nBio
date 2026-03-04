@@ -1,11 +1,22 @@
-# Starts from the official OpenTOPAS docker image (https://hub.docker.com/r/opentopas/opentopas),
-# adds the TOPAS-nBio source code from the main branch,
-# then rebuilds OpenTOPAS with the extension and installs over the original (no duplicate install).
+# ============================================================================================================= #
+#                                                                                                               #
+# This file contains the Docker instructions to build the TOPAS-nBio image for AWS Batch.                       #
+#                                                                                                               #
+# 1. The OpenTOPAS docker image (https://hub.docker.com/r/opentopas/opentopas) is used as the base image.       #
+# 2. The G4Data files are downloaded and extracted into the image.                                              #
+# 3. The TOPAS-nBio source code is copied into the image.                                                       #
+# 4. OpenTOPAS is rebuilt with the TOPAS-nBio extension and installed over the original                         #
+# 5. The AWS CLI is installed so that the container can sync your input and output files with S3.               #
+# 6. A batch-mode script is added and only used when the image is running on AWS Batch. When the env variable   #  
+#    TOPAS_AWS_BATCH_MODE is set, the topas entrypoint script is modified to first exec the batch-mode script.  #
+#    Consequently, the image can be used on AWS Batch, but still works locally by following the OpenTOPAS       #
+#    instructions defined in OpenTOPAS/docker/README.Docker.md, in which case the normal exec topas @ is used.  #                                               #
+# ============================================================================================================= #
 
-# Start building this image from the official OpenTOPAS docker image
+# 1. Start building this image from the official OpenTOPAS docker image
 FROM opentopas/opentopas:latest
 
-# Installing G4Data files
+# 2. Installing G4Data files into the image
 RUN mkdir -p /Applications/G4Data && cd /Applications/G4Data && \
 wget -q https://cern.ch/geant4-data/datasets/G4NDL.4.7.1.tar.gz && \
 wget -q https://cern.ch/geant4-data/datasets/G4EMLOW.8.6.1.tar.gz && \
@@ -35,11 +46,10 @@ tar zxf G4TENDL.1.4.tar.gz && \
 tar zxf LEND_GND1.3_ENDF.BVII.1.tar.gz && \
 rm *.tar.gz
 
-# Copy the TOPAS-nBio extension source code into the image under /extensions/src
+# 3. Copy the TOPAS-nBio extension source code into the image under /extensions/src
 COPY . /extensions/src
 
-# Re-build OpenTOPAS with TOPAS-nBio and replace the original -build and -install directories.
-# This saves space in the image as opposed to building and installing in a new directory which would results in two copies of OpenTOPAS (with/without nBio)
+# 4. Re-build OpenTOPAS with TOPAS-nBio and replace the original -build and -install directories.
 # NOTE: As of 06 Feb 2026 the opentopas docker image (https://hub.docker.com/r/opentopas/opentopas) is for qt5 and does not support qt6.
 # When this gets updated to qt6 the cmake command -DTOPAS_USE_QT6=ON should be added below.
 RUN cd /Applications/TOPAS/OpenTOPAS-build && \
@@ -50,14 +60,13 @@ RUN cd /Applications/TOPAS/OpenTOPAS-build && \
     make -j$(nproc) install && \
     rm -rf /extensions
 
-# Install awscli. This allows the container to interact with AWS services.
+# 5. Install awscli. This allows the container to interact with AWS services.
 RUN apt-get update && \
 DEBIAN_FRONTEND=noninteractive apt-get install -y awscli && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Batch-mode wrapper script used when running under AWS Batch.
-# This keeps the entrypoint modification simple and makes it easier to maintain
-# the more complex S3 + TOPAS logic.
+# 6. Batch-mode wrapper script used when running under AWS Batch.
+# This keeps the entrypoint modification simple and makes it easier to maintain the otherwise more complex S3 + TOPAS logic.
 RUN cat <<'EOF' >/usr/local/bin/topas-batch-mode.sh
 #!/bin/bash
 
@@ -112,6 +121,5 @@ EOF
 RUN chmod +x /usr/local/bin/topas-batch-mode.sh
 
 # Insert AWS Batch mode block before "exec topas" in the existing entrypoint script.
-# When TOPAS_AWS_BATCH_MODE=1, i.e. when using the image on AWS Batch, execute the batch-mode wrapper
-# This allows the TOPAS-nBio image to still be used locally following the OpenTOPAS Docker README instructions.
+# When TOPAS_AWS_BATCH_MODE=1, i.e. when using the image on AWS Batch, execute the batch-mode script instead of exec topas @
 RUN sed -i '/^exec topas "\$@"/i if [[ "\${TOPAS_AWS_BATCH_MODE:-}" == "1" ]]; then exec /usr/local/bin/topas-batch-mode.sh; fi' /usr/local/bin/topas-entrypoint.sh
