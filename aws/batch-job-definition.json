@@ -1,0 +1,53 @@
+[
+  {
+    "jobDefinitionName": "topas-nbio-job",
+    "type": "container",
+    "platformCapabilities": ["EC2"],
+    "containerProperties": {
+      "image": "public.ecr.aws/q4p2q6v1/topas-nbio-test",
+      "jobRoleArn": "",
+      "executionRoleArn": "",
+      "resourceRequirements": [
+        { "type": "VCPU", "value": "4" },
+        { "type": "MEMORY", "value": "8192" }
+      ],
+      "environment": [
+        { "name": "INPUT_BUCKET", "value": "topas-nbio-input" },
+        { "name": "OUTPUT_BUCKET", "value": "topas-nbio-output" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/aws/batch/topas-nbio",
+          "awslogs-region": "us-east-1"
+        }
+      }
+    },
+    "retryStrategy": { "attempts": 1 }
+  },
+  {
+    "jobDefinitionName": "topas-nbio-postprocess-job",
+    "type": "container",
+    "platformCapabilities": ["EC2"],
+    "containerProperties": {
+      "image": "public.ecr.aws/q4p2q6v1/topas-nbio-test:postprocess",
+      "jobRoleArn": "",
+      "executionRoleArn": "",
+      "resourceRequirements": [
+        { "type": "VCPU", "value": "1" },
+        { "type": "MEMORY", "value": "2048" }
+      ],
+      "environment": [
+        { "name": "OUTPUT_BUCKET", "value": "topas-nbio-output" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/aws/batch/topas-nbio",
+          "awslogs-region": "us-east-1"
+        }
+      }
+    },
+    "retryStrategy": { "attempts": 1 }
+  }
+]

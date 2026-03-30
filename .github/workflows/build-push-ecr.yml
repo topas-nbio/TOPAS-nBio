@@ -2,8 +2,7 @@
 #                                                                                                               #
 # This workflow builds TOPAS-nBio and postprocessing images and pushes them to AWS ECR. It only runs manually.  #
 #                                                                                                               #
-# The default tag for the TOPAS-nBio image is "latest". If this is changed the cloud section in the TOPAS-nBio  # 
-# ReadTheDocs also needs to be updated.                                                                         #
+# The default tag for the TOPAS-nBio image is "latest", while the postprocessing image uses tag "postprocess".  #
 #                                                                                                               #
 # Before pushing the images to ECR, all existing images in the repository are deleted. This safeguard was added #
 # to remain below the 50 Gb/month limit imposed by AWS ECR Public.                                              #
@@ -88,7 +87,7 @@ jobs:
             --platform=linux/amd64 \
             --provenance=false \
             --sbom=false \
-            -f .github/workflows/dockerFile.ecr \
+            -f .github/workflows/cloud/dockerFile.ecr \
             -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }} .
 
       - name: Push TOPAS image to ECR
@@ -105,7 +104,7 @@ jobs:
             --platform=linux/amd64 \
             --provenance=false \
             --sbom=false \
-            -f .github/workflows/dockerFilePostP.ecr \
+            -f .github/workflows/cloud/dockerFilePostP.ecr \
             -t ${{ secrets.ECR_REPOSITORY_URI }}:postprocess .
 
       - name: Push postprocess image to ECR

@@ -1,23 +1,23 @@
-# Build a Docker image from OpenTOPAS + TOPAS-nBio and push to Docker Hub.
-# Runs on push of a tag matching "v*" (e.g. v1.0) or manually (default tag: latest).
-#
-# Required GitHub Secrets (Settings → Secrets and variables → Actions):
-#   DOCKERHUB_USERNAME  - Docker Hub username (must have push access to opentopas)
-#   DOCKERHUB_TOKEN     - Docker Hub Personal Access Token
-#
+# ============================================================================================================= #
+#                                                                                                               #
+# This workflow builds TOPAS-nBio and postprocessing images and pushes them to Docker Hub. It only runs         #
+# manually (workflow_dispatch).                                                                                 #
+#                                                                                                               #
+# TOPAS-nBio is tagged with the name "latest", while the postprocessing image uses the tag "postprocess".       #
+# Both are pushed to the Docker Hub repository named in DOCKERHUB_IMAGE.                                        #
+#                                                                                                               #
+# Required GitHub Secrets (Settings → Secrets and variables → Actions):                                         #
+#   DOCKERHUB_USERNAME  - Docker Hub username                                                                   #
+#   DOCKERHUB_TOKEN     - Docker Hub access token (or password)                                                 #
+# ============================================================================================================= #
+
 name: Build and push to Docker Hub
 
 on:
-  push:
-    tags: [ 'v*' ]
-    paths-ignore:
-      - '*.md'
-      - 'LICENSE'
-      - '.gitignore'
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Version tag for the image (defaults to "latest")'
+        description: 'Tag for the TOPAS-nBio image (default: latest)'
         required: false
         default: 'latest'
 
@@ -32,13 +32,19 @@ jobs:
     permissions:
       contents: read
     env:
-      TAG: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.tag || 'latest') || github.ref_name }}
+      TAG: ${{ github.event.inputs.tag || 'latest' }}
 
     steps:
+      - name: Set image tag
+        run: |
+          if [ -z "${{ env.TAG }}" ] || [ "${{ env.TAG }}" = "-" ]; then
+            echo "TAG=latest" >> "$GITHUB_ENV"
+          fi
+          echo "Using tag: ${{ env.TAG }}"
+
       - name: Checkout TOPAS-nBio
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}
           fetch-depth: 0
 
       - name: Login to Docker Hub
@@ -53,14 +59,31 @@ jobs:
       - name: Build image with TOPAS-nBio extension
         run: |
           docker build \
-            -f .github/workflows/dockerFile.ecr \
+            --platform=linux/amd64 \
+            --provenance=false \
+            --sbom=false \
+            -f .github/workflows/cloud/dockerFile.ecr \
             -t ${{ env.DOCKERHUB_IMAGE }}:${{ env.TAG }} \
             .
 
-      - name: Push image to Docker Hub
+      - name: Push TOPAS image to Docker Hub
         run: |
           docker push ${{ env.DOCKERHUB_IMAGE }}:${{ env.TAG }}
           if [[ "${{ env.TAG }}" != "latest" ]]; then
             docker tag ${{ env.DOCKERHUB_IMAGE }}:${{ env.TAG }} ${{ env.DOCKERHUB_IMAGE }}:latest
             docker push ${{ env.DOCKERHUB_IMAGE }}:latest
           fi
+
+      - name: Build postprocess image
+        run: |
+          docker build \
+            --platform=linux/amd64 \
+            --provenance=false \
+            --sbom=false \
+            -f .github/workflows/cloud/dockerFilePostP.ecr \
+            -t ${{ env.DOCKERHUB_IMAGE }}:postprocess \
+            .
+
+      - name: Push postprocess image to Docker Hub
+        run: |
+          docker push ${{ env.DOCKERHUB_IMAGE }}:postprocess

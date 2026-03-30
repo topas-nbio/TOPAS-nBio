@@ -1,0 +1,16 @@
+{
+  "computeEnvironmentName": "topas-nbio-compute-env",
+  "type": "MANAGED",
+  "state": "ENABLED",
+  "computeResources": {
+    "type": "EC2",
+    "minvCpus": 0,
+    "maxvCpus": 256,
+    "desiredvCpus": 0,
+    "instanceTypes": ["optimal"],
+    "subnets": ["subnet-0c6d1202ff6b42f20", "subnet-0b562550d838735dc"],
+    "securityGroupIds": ["sg-087d60bc163922976"],
+    "instanceRole": "arn:aws:iam::650810417112:instance-profile/TOPAS-nBio-BatchEC2Role"
+  },
+  "serviceRole": "arn:aws:iam::650810417112:role/TOPAS-nBio-BatchServiceRole"
+}
