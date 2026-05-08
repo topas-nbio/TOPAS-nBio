@@ -16,6 +16,8 @@ OUTPUT_BUCKET="topas-nbio-output"
 
 LOCAL_SIM_DIR="/Applications/TOPAS/public/TOPAS-nBio/examples/scorers/Fricke"
 FILE_TO_RUN="FrickeIRT.txt"       # Main TOPAS parameter file
+JOB_QUEUE="topas-nbio-queue"
+JOB_DEFINITION="topas-nbio-job"
 
 ########################################################################################
 #
@@ -30,13 +32,18 @@ for i in $(seq 1 "$NUM_JOBS"); do
   # Copy local simulation files into this job-specific directory
   cp -r "${LOCAL_SIM_DIR}/." "${JOB_DIR}/"
 
+  # Removes PauseBeforeQuit which would otherwise keep the session active
+  PARAM_FILE="${JOB_DIR}/${FILE_TO_RUN}"
+  awk '$0 !~ /PauseBeforeQuit/ { print }' "${PARAM_FILE}" > "${PARAM_FILE}.tmp" && mv "${PARAM_FILE}.tmp" "${PARAM_FILE}"
+
   # Generate a random seed for this job
   SEED=$RANDOM
 
-  # Append the seed to the end of the main parameter file for this job
+  # Append the seed to the end of the main parameter file and disable graphics
   {
     echo ""
     echo "i:Ts/Seed = ${SEED}"
+    echo "b:Gr/Enable = \"False\""
   } >> "${JOB_DIR}/${FILE_TO_RUN}"
 
   # Job-specific SIM_DIR prefix in S3, e.g. projects/fricke_project/2025-02-18/run_1
@@ -51,8 +58,8 @@ for i in $(seq 1 "$NUM_JOBS"); do
   # Submit the job. TOPAS_XVFB_DISPLAY prevents Xvfb conflicts when multiple jobs share an instance.
   aws batch submit-job \
     --job-name "${JOB_NAME}-${i}" \
-    --job-queue topas-nbio-queue \
-    --job-definition topas-nbio-job \
+    --job-queue "${JOB_QUEUE}" \
+    --job-definition "${JOB_DEFINITION}" \
     --container-overrides "{
       \"environment\": [
         {\"name\": \"TOPAS_AWS_BATCH_MODE\", \"value\": \"1\"},

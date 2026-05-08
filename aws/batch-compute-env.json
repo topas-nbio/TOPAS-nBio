@@ -8,9 +8,9 @@
     "maxvCpus": 256,
     "desiredvCpus": 0,
     "instanceTypes": ["optimal"],
-    "subnets": ["subnet-0c6d1202ff6b42f20", "subnet-0b562550d838735dc"],
-    "securityGroupIds": ["sg-087d60bc163922976"],
-    "instanceRole": "arn:aws:iam::650810417112:instance-profile/TOPAS-nBio-BatchEC2Role"
+    "subnets": ["subnet-xxxxxxxx", "subnet-yyyyyyyy"],
+    "securityGroupIds": ["sg-xxxxxxxx"],
+    "instanceRole": "arn:aws:iam::ACCOUNT_ID:instance-profile/TOPAS-nBio-BatchEC2Role"
   },
-  "serviceRole": "arn:aws:iam::650810417112:role/TOPAS-nBio-BatchServiceRole"
+  "serviceRole": "arn:aws:iam::ACCOUNT_ID:role/TOPAS-nBio-BatchServiceRole"
 }

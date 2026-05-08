@@ -1,15 +1,14 @@
 {
-  "jobDefinitionName": "topas-nbio-job",
+  "jobDefinitionName": "topas-nbio-postprocess-job",
   "type": "container",
   "platformCapabilities": ["EC2"],
   "containerProperties": {
     "image": "TEMPLATE",
     "resourceRequirements": [
-      { "type": "VCPU", "value": "4" },
-      { "type": "MEMORY", "value": "8192" }
+      { "type": "VCPU", "value": "1" },
+      { "type": "MEMORY", "value": "2048" }
     ],
     "environment": [
-      { "name": "INPUT_BUCKET", "value": "topas-nbio-input" },
       { "name": "OUTPUT_BUCKET", "value": "topas-nbio-output" }
     ],
     "logConfiguration": {

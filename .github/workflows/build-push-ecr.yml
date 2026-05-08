@@ -87,7 +87,7 @@ jobs:
             --platform=linux/amd64 \
             --provenance=false \
             --sbom=false \
-            -f .github/workflows/cloud/dockerFile.ecr \
+            -f .github/workflows/cloud/dockerFile.txt \
             -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }} .
 
       - name: Push TOPAS image to ECR
@@ -104,9 +104,9 @@ jobs:
             --platform=linux/amd64 \
             --provenance=false \
             --sbom=false \
-            -f .github/workflows/cloud/dockerFilePostP.ecr \
-            -t ${{ secrets.ECR_REPOSITORY_URI }}:postprocess .
+            -f .github/workflows/cloud/dockerFilePostP.txt \
+            -t ${{ secrets.ECR_REPOSITORY_URI }}:postprocessing .
 
       - name: Push postprocess image to ECR
         run: |
-          docker push ${{ secrets.ECR_REPOSITORY_URI }}:postprocess
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}:postprocessing

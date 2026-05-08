@@ -23,7 +23,7 @@ on:
 
 env:
   OPENTOPAS_IMAGE: opentopas/opentopas:latest
-  DOCKERHUB_IMAGE: tmasilela/topas-nbio
+  DOCKERHUB_IMAGE: opentopas/topas-nbio:latest
 
 jobs:
   build-and-push:
@@ -62,7 +62,7 @@ jobs:
             --platform=linux/amd64 \
             --provenance=false \
             --sbom=false \
-            -f .github/workflows/cloud/dockerFile.ecr \
+            -f .github/workflows/cloud/dockerFile.txt \
             -t ${{ env.DOCKERHUB_IMAGE }}:${{ env.TAG }} \
             .
 
@@ -80,10 +80,10 @@ jobs:
             --platform=linux/amd64 \
             --provenance=false \
             --sbom=false \
-            -f .github/workflows/cloud/dockerFilePostP.ecr \
-            -t ${{ env.DOCKERHUB_IMAGE }}:postprocess \
+            -f .github/workflows/cloud/dockerFilePostP.txt \
+            -t ${{ env.DOCKERHUB_IMAGE }}:postprocessing \
             .
 
       - name: Push postprocess image to Docker Hub
         run: |
-          docker push ${{ env.DOCKERHUB_IMAGE }}:postprocess
+          docker push ${{ env.DOCKERHUB_IMAGE }}:postprocessing
