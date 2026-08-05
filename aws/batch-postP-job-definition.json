@@ -3,7 +3,7 @@
   "type": "container",
   "platformCapabilities": ["EC2"],
   "containerProperties": {
-    "image": "public.ecr.aws/q0u0d8d4/topas-nbio",
+    "image": "public.ecr.aws/q0u0d8d4/topas-nbio:postprocessing",
     "resourceRequirements": [
       { "type": "VCPU", "value": "1" },
       { "type": "MEMORY", "value": "2048" }
