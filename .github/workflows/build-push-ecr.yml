@@ -2,7 +2,7 @@
 #                                                                                                               #
 # This workflow builds TOPAS-nBio and postprocessing images and pushes them to AWS ECR. It only runs manually.  #
 #                                                                                                               #
-# The default tag for the TOPAS-nBio image is "latest", while the postprocessing image uses tag "postprocess".  #
+# The default tag for the TOPAS-nBio image is "latest", while the postprocessing image uses "postprocessing".   #
 #                                                                                                               #
 # Before pushing the images to ECR, all existing images in the repository are deleted. This safeguard was added #
 # to remain below the 50 Gb/month limit imposed by AWS ECR Public.                                              #

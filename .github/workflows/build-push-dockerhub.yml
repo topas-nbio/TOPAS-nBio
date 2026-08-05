@@ -3,12 +3,12 @@
 # This workflow builds TOPAS-nBio and postprocessing images and pushes them to Docker Hub. It only runs         #
 # manually (workflow_dispatch).                                                                                 #
 #                                                                                                               #
-# TOPAS-nBio is tagged with the name "latest", while the postprocessing image uses the tag "postprocess".       #
+# TOPAS-nBio is tagged with the name "latest", while the postprocessing image uses the tag "postprocessing".    #
 # Both are pushed to the Docker Hub repository named in DOCKERHUB_IMAGE.                                        #
 #                                                                                                               #
 # Required GitHub Secrets (Settings → Secrets and variables → Actions):                                         #
 #   DOCKERHUB_USERNAME  - Docker Hub username                                                                   #
-#   DOCKERHUB_TOKEN     - Docker Hub access token (or password)                                                 #
+#   DOCKERHUB_TOKEN     - Docker Hub personal access token                                                      #
 # ============================================================================================================= #
 
 name: Build and push to Docker Hub
