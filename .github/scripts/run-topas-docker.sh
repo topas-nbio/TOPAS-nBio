@@ -22,6 +22,7 @@ if [ -z "${TOPAS_NBIO_ROOT:-}" ]; then
 fi
 
 : "${TOPAS_DOCKER_LAUNCHER:=$TOPAS_NBIO_ROOT/docker-run}"
+: "${TOPAS_DOCKER_IMAGE:=opentopas/opentopas:v4.3.0-geant4-11.3.2-amd64}"
 : "${G4DATA_DIR:=$HOME/Applications/GEANT4/G4DATA}"
 
 if [ ! -x "$TOPAS_DOCKER_LAUNCHER" ]; then
@@ -29,14 +30,14 @@ if [ ! -x "$TOPAS_DOCKER_LAUNCHER" ]; then
 	exit 1
 fi
 
-CMD=( "$TOPAS_DOCKER_LAUNCHER" "-g4data=$G4DATA_DIR" "-extensions=$TOPAS_NBIO_ROOT" "${CONTAINER_ARGS[@]}" )
+CMD=( "$TOPAS_DOCKER_LAUNCHER" "-image=$TOPAS_DOCKER_IMAGE" "-g4data=$G4DATA_DIR" "-extensions=$TOPAS_NBIO_ROOT" "${CONTAINER_ARGS[@]}" )
 
 if [ -t 1 ]; then
 	exec "${CMD[@]}"
 fi
 
 if command -v python3 >/dev/null 2>&1; then
-	python3 - "$TOPAS_DOCKER_LAUNCHER" "-g4data=$G4DATA_DIR" "-extensions=$TOPAS_NBIO_ROOT" "${CONTAINER_ARGS[@]}" <<'PY'
+	python3 - "${CMD[@]}" <<'PY'
 import os
 import pty
 import sys
