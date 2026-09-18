@@ -1,6 +1,14 @@
 # TOPAS-nBio (Version 4.1.0)
 This is the TOPAS-nBio extension repository, a Monte Carlo simulation framework for (sub-) cellular radiobiology.
 
+> [!WARNING]
+> TOPAS-nBio 4.1.0 is not compatible with Geant4 11.4.2. In this combination,
+> Geant4-DNA chemistry may produce no molecules, so the TOPAS-nBio build is
+> intentionally stopped with a compatibility error. Use Geant4 11.3.2 when
+> building TOPAS-nBio. This restriction concerns the TOPAS-nBio and Geant4
+> combination; it does not indicate a known incompatibility with the TOPAS
+> 4.3.0 candidate release itself.
+
 TOPAS-nBio is described here: https://topas-nbio.readthedocs.io/. 
 This page includes a class documentation and the license.
 

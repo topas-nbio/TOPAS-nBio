@@ -14,7 +14,8 @@
 # ============================================================================================================= #
 
 # 1. Start building this image from the official OpenTOPAS docker image
-FROM opentopas/opentopas:latest
+ARG OPENTOPAS_IMAGE=opentopas/opentopas:v4.3.0-geant4-11.3.2-amd64
+FROM ${OPENTOPAS_IMAGE}
 
 # 2. Installing G4Data files into the image
 RUN mkdir -p /Applications/G4Data && cd /Applications/G4Data && \

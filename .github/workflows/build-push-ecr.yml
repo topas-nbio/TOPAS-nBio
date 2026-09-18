@@ -2,10 +2,9 @@
 #                                                                                                               #
 # This workflow builds TOPAS-nBio and postprocessing images and pushes them to AWS ECR. It only runs manually.  #
 #                                                                                                               #
-# The default tag for the TOPAS-nBio image is "latest", while the postprocessing image uses "postprocessing".   #
+# TOPAS-nBio uses a versioned tag plus a latest alias; postprocessing uses "postprocessing".                    #
 #                                                                                                               #
-# Before pushing the images to ECR, all existing images in the repository are deleted. This safeguard was added #
-# to remain below the 50 Gb/month limit imposed by AWS ECR Public.                                              #
+# Existing images are retained so registered AWS Batch jobs can continue using pinned tags.                   #
 #                                                                                                               #
 # Required GitHub Secrets (Settings → Secrets and variables → Actions):                                         #
 #   AWS_ROLE_ARN                                                                                                #
@@ -18,12 +17,12 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Tag for the TOPAS-nBio image (default: latest)'
+        description: 'Output image tag; default identifies the TOPAS/Geant4 base and architecture'
         required: false
-        default: 'latest'
+        default: 'topas-v4.3.0-geant4-11.3.2-amd64'
 
 env:
-  OPENTOPAS_IMAGE: opentopas/opentopas:latest
+  OPENTOPAS_IMAGE: opentopas/opentopas:v4.3.0-geant4-11.3.2-amd64
   AWS_REGION: us-east-1
 
 jobs:
@@ -34,15 +33,17 @@ jobs:
       contents: read
       id-token: write
     env:
-      TAG: ${{ github.event.inputs.tag || 'latest' }}
+      TAG: ${{ github.event.inputs.tag || 'topas-v4.3.0-geant4-11.3.2-amd64' }}
 
     steps:
-      - name: Set image tag
+      - name: Validate image tag
         run: |
-          if [ -z "${{ env.TAG }}" ] || [ "${{ env.TAG }}" = "-" ]; then
-            echo "TAG=latest" >> "$GITHUB_ENV"
+          set -euo pipefail
+          if [[ ! "$TAG" =~ ^[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,127}$ ]]; then
+            echo "Invalid Docker image tag: $TAG"
+            exit 1
           fi
-          echo "Using tag: ${{ env.TAG }}"
+          echo "Using tag: $TAG"
 
       - name: Checkout TOPAS-nBio
         uses: actions/checkout@v4
@@ -61,23 +62,6 @@ jobs:
         with:
           registry-type: public
 
-      - name: Delete all images in ECR repository
-        run: |
-          REPO_URI="${{ secrets.ECR_REPOSITORY_URI }}"
-          REPO_NAME="${REPO_URI##*/}"
-          echo "Deleting all images in ECR Public repository: ${REPO_NAME}"
-          aws ecr-public describe-images --repository-name "${REPO_NAME}" --output json > /tmp/images.json || true
-          if [ ! -s /tmp/images.json ]; then
-            echo "Repository is empty, nothing to delete."
-            exit 0
-          fi
-          for DIGEST in $(jq -r '.imageDetails[].imageDigest' /tmp/images.json | sort -u); do
-            echo "Deleting digest: ${DIGEST}"
-            aws ecr-public batch-delete-image \
-              --repository-name "${REPO_NAME}" \
-              --image-ids imageDigest="${DIGEST}" || true
-          done
-
       - name: Pull OpenTOPAS base image
         run: docker pull ${{ env.OPENTOPAS_IMAGE }}
 
@@ -88,13 +72,14 @@ jobs:
             --provenance=false \
             --sbom=false \
             -f .github/workflows/cloud/dockerFile.txt \
-            -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }} .
+            --build-arg "OPENTOPAS_IMAGE=${{ env.OPENTOPAS_IMAGE }}" \
+            -t ${{ secrets.ECR_REPOSITORY_URI }}:${TAG} .
 
       - name: Push TOPAS image to ECR
         run: |
-          docker push ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }}
-          if [[ "${{ env.TAG }}" != "latest" ]]; then
-            docker tag ${{ secrets.ECR_REPOSITORY_URI }}:${{ env.TAG }} ${{ secrets.ECR_REPOSITORY_URI }}:latest
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}:${TAG}
+          if [[ "${TAG}" != "latest" ]]; then
+            docker tag ${{ secrets.ECR_REPOSITORY_URI }}:${TAG} ${{ secrets.ECR_REPOSITORY_URI }}:latest
             docker push ${{ secrets.ECR_REPOSITORY_URI }}:latest
           fi
 

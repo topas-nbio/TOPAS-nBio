@@ -11,6 +11,8 @@
 #   DOCKERHUB_TOKEN     - Docker Hub personal access token                                                      #
 # ============================================================================================================= #
 
+# Optional destination: the first push may create this repository if Docker Hub
+# organization permissions and namespace settings allow it. See aws/README.md.
 name: Build and push to Docker Hub
 
 on:
@@ -22,8 +24,8 @@ on:
         default: 'latest'
 
 env:
-  OPENTOPAS_IMAGE: opentopas/opentopas:latest
-  DOCKERHUB_IMAGE: opentopas/topas-nbio:latest
+  OPENTOPAS_IMAGE: opentopas/opentopas:v4.3.0-geant4-11.3.2-amd64
+  DOCKERHUB_IMAGE: opentopas/topas-nbio
 
 jobs:
   build-and-push:
@@ -35,12 +37,14 @@ jobs:
       TAG: ${{ github.event.inputs.tag || 'latest' }}
 
     steps:
-      - name: Set image tag
+      - name: Validate image tag
         run: |
-          if [ -z "${{ env.TAG }}" ] || [ "${{ env.TAG }}" = "-" ]; then
-            echo "TAG=latest" >> "$GITHUB_ENV"
+          set -euo pipefail
+          if [[ ! "$TAG" =~ ^[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,127}$ ]]; then
+            echo "Invalid Docker image tag: $TAG"
+            exit 1
           fi
-          echo "Using tag: ${{ env.TAG }}"
+          echo "Using tag: $TAG"
 
       - name: Checkout TOPAS-nBio
         uses: actions/checkout@v4
@@ -63,14 +67,15 @@ jobs:
             --provenance=false \
             --sbom=false \
             -f .github/workflows/cloud/dockerFile.txt \
-            -t ${{ env.DOCKERHUB_IMAGE }}:${{ env.TAG }} \
+            --build-arg "OPENTOPAS_IMAGE=${{ env.OPENTOPAS_IMAGE }}" \
+            -t ${{ env.DOCKERHUB_IMAGE }}:${TAG} \
             .
 
       - name: Push TOPAS image to Docker Hub
         run: |
-          docker push ${{ env.DOCKERHUB_IMAGE }}:${{ env.TAG }}
-          if [[ "${{ env.TAG }}" != "latest" ]]; then
-            docker tag ${{ env.DOCKERHUB_IMAGE }}:${{ env.TAG }} ${{ env.DOCKERHUB_IMAGE }}:latest
+          docker push ${{ env.DOCKERHUB_IMAGE }}:${TAG}
+          if [[ "${TAG}" != "latest" ]]; then
+            docker tag ${{ env.DOCKERHUB_IMAGE }}:${TAG} ${{ env.DOCKERHUB_IMAGE }}:latest
             docker push ${{ env.DOCKERHUB_IMAGE }}:latest
           fi
 
